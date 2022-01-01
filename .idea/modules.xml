@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Workout_Tracker_Gym_Log.iml" filepath="$PROJECT_DIR$/.idea/modules/Workout_Tracker_Gym_Log.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Workout_Tracker_Gym_Log.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Workout_Tracker_Gym_Log.app.iml" />
+    </modules>
+  </component>
+</project>
