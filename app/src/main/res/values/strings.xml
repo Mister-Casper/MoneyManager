@@ -1,6 +1,30 @@
 <resources>
     <string name="app_name">MoneyManager</string>
+
     <string name="home">Home</string>
     <string name="statistic">Statistic</string>
     <string name="transaction">Trasaction</string>
+
+    <string name="sign_up_to_save">Sign up to save your information</string>
+    <string name="sign_up">SIGN IN</string>
+    <string name="log_in">Sign up</string>
+    <string name="comtimue">Continue without creating an account</string>
+    <string name="or">OR</string>
+    <string name="dont_have_account">"Don't have an account? "</string>
+    <string name="have_account">"Already have an account? "</string>
+    <string name="login_here">Login here</string>
+    <string name="lets_get_started">Let\'s Get Started!</string>
+    <string name="create_an_account">Create an account to get all features</string>
+    <string name="create_account">CREATE</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="cant_login">Your login attempt was not successful. Please try again.</string>
+    <string name="username">Username</string>
+    <string name="short_login">Login is too short</string>
+    <string name="email_isnt_valid">Email address isn\'t valid</string>
+    <string name="password_short">Password is too short</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="passwords_bot_matches">Passwords do not match</string>
+    <string name="sign_in_with_google">Sign in With Google</string>
+
 </resources>
