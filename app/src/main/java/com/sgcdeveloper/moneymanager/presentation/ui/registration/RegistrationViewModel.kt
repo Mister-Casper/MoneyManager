@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -16,7 +17,7 @@ open class RegistrationViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : AndroidViewModel(app) {
 
-    val isSigned = mutableStateOf(appPreferencesHelper.getIsSigned())
+    val loginStatus = mutableStateOf(appPreferencesHelper.getLoginStatus())
     val isSignInError = mutableStateOf(false)
 
     fun onEvent(registrationEvent: RegistrationEvent) {
@@ -24,8 +25,8 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignIn -> {
                 authRepository.signIn(registrationEvent) {
                     if (it) {
-                        isSigned.value = true
-                        appPreferencesHelper.setIsSigned(true)
+                        loginStatus.value = LoginStatus.None
+                        appPreferencesHelper.setLoginStatus(LoginStatus.None)
                     } else {
                         isSignInError.value = true
                     }
@@ -34,16 +35,16 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.CreateAccount -> {
                 authRepository.signUp(registrationEvent) {
                     if (it) {
-                        isSigned.value = true
-                        appPreferencesHelper.setIsSigned(true)
+                        loginStatus.value = LoginStatus.Initing
+                        appPreferencesHelper.setLoginStatus(LoginStatus.Initing)
                     } else {
                         isSignInError.value = true
                     }
                 }
             }
             is RegistrationEvent.Skip ->{
-                isSigned.value = true
-                appPreferencesHelper.setIsSigned(true)
+                loginStatus.value = LoginStatus.Initing
+                appPreferencesHelper.setLoginStatus(LoginStatus.Initing)
             }
         }
     }

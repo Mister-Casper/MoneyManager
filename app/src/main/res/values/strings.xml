@@ -26,5 +26,10 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="passwords_bot_matches">Passwords do not match</string>
     <string name="sign_in_with_google">Sign in With Google</string>
+    <string name="add_account">Add account</string>
+    <string name="choose_a_name">Choose a name for your account.</string>
+    <string name="choose_a_default_currency">Choose a default currency for your account.</string>
+    <string name="money_default">How much money do you have now?</string>
+    <string name="next">NEXT</string>
 
 </resources>
