@@ -7,7 +7,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultSettings @Inject constructor() {
 
-    val isSigned: Boolean = false
+    val loginStatus: LoginStatus = LoginStatus.Registering
 
     init {
         if (Locale.getDefault().country == "US") {

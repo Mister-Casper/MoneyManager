@@ -8,15 +8,15 @@ import javax.inject.Inject
 class AppPreferencesHelper @Inject constructor(context: Context, private val defaultSettings: DefaultSettings) {
     private var prefs: SharedPreferences = context.getSharedPreferences(this.javaClass.name, MODE_PRIVATE)
 
-    fun getIsSigned(): Boolean {
-        return prefs.getBoolean(IS_SIGNED,defaultSettings.isSigned)
+    fun getLoginStatus(): LoginStatus {
+        return LoginStatus.values()[prefs.getInt(LOGIN_STATUS,defaultSettings.loginStatus.ordinal)]
     }
 
-    fun setIsSigned(isSigned:Boolean) {
-        prefs.edit().putBoolean(IS_SIGNED,isSigned).apply()
+    fun setLoginStatus(loginStatus:LoginStatus) {
+        prefs.edit().putInt(LOGIN_STATUS,loginStatus.ordinal).apply()
     }
 
     companion object {
-        private const val IS_SIGNED = "IS_SIGNED"
+        private const val LOGIN_STATUS = "LOGIN_STATUS"
     }
 }

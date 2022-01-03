@@ -22,10 +22,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.registration.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.StartScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
@@ -51,21 +53,23 @@ class MainActivity : ComponentActivity() {
             MoneyManagerTheme {
                 this.window.statusBarColor = MaterialTheme.colors.primaryVariant.toArgb()
 
-                val isSigned = remember { registrationViewModel.isSigned }
+                val loginStatus = remember { registrationViewModel.loginStatus }
 
                 Surface(
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.padding(top = LocalContext.current.pxToDp(getStatusBarHeight()).dp)
                 ) {
-                    if (isSigned.value) {
+                    if (loginStatus.value == LoginStatus.None) {
                         MoneyManagerScreen(
                             moneyManagerViewModel,
                             homeViewModel,
                             transactionViewModel,
                             statisticViewModel
                         )
-                    } else
+                    } else if (loginStatus.value == LoginStatus.Registering)
                         StartScreen(registrationViewModel, authResultLauncher, isGoogleSigned)
+                    else
+                        InitScreen()
                 }
             }
         }
