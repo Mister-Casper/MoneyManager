@@ -4,7 +4,6 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEv
 
 interface AuthRepository {
     fun signIn(registrationEvent: RegistrationEvent.SignIn, onResult: (Boolean) -> Unit)
-    fun signInWithGoogle()
 
     fun signUp(registrationEvent: RegistrationEvent.CreateAccount, onResult: (Boolean) -> Unit)
 }

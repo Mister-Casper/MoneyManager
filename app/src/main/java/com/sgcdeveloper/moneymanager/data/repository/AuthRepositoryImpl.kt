@@ -24,10 +24,6 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
             }
     }
 
-    override fun signInWithGoogle() {
-        TODO("Not yet implemented")
-    }
-
     override fun signUp(registrationEvent: RegistrationEvent.CreateAccount, onResult: (Boolean) -> Unit) {
         if(registrationEvent.email.isEmpty() || registrationEvent.password.isEmpty()) {
             onResult(false)

@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.registration
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -106,5 +107,9 @@ fun InitScreen() {
             Text(text = stringResource(id = R.string.next), color = Color.White)
         }
 
+    }
+
+    BackHandler {
+        // Ignore
     }
 }

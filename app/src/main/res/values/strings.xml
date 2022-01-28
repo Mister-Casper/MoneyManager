@@ -31,5 +31,7 @@
     <string name="choose_a_default_currency">Choose a default currency for your account.</string>
     <string name="money_default">How much money do you have now?</string>
     <string name="next">NEXT</string>
+    <string name="check_internet">Check your internet connection.</string>
+    <string name="login_is_too_shirt">Username is too short</string>
 
 </resources>
