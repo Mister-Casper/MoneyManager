@@ -1,25 +1,45 @@
-package com.sgcdeveloper.moneymanager.presentation.ui.registration
+package com.sgcdeveloper.moneymanager.presentation.ui.init
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
 
 @Composable
-fun InitScreen() {
+fun InitScreen(initViewModel: InitViewModel) {
+    val accountName = remember { initViewModel.userName }
+    val money = remember { initViewModel.defaultMoney }
+    val currency = remember { initViewModel.currency }
+    val dialogState = remember { initViewModel.dialogState }
+
+    if(dialogState.value is DialogState.SelectCurrenciesDialogState){
+        SelectCurrenciesDialog(initViewModel.currencies,initViewModel.currency.value,{
+            initViewModel.onEvent(InitEvent.ChangeCurrency(it))
+        },{
+            initViewModel.onEvent(InitEvent.CloseDialog)
+        })
+    }
+
     Column(Modifier.fillMaxSize()) {
         Text(
             text = stringResource(id = R.string.add_account),
@@ -35,14 +55,10 @@ fun InitScreen() {
             color = MaterialTheme.colors.secondary
         )
 
-        val accountName = rememberSaveable { mutableStateOf("") }
-        val money = rememberSaveable { mutableStateOf("") }
-        val currency = rememberSaveable { mutableStateOf("") }
-
         TextField(
             value = accountName.value,
             onValueChange = {
-                accountName.value = it
+                initViewModel.onEvent(InitEvent.ChangeUserName(it))
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -61,15 +77,26 @@ fun InitScreen() {
             color = MaterialTheme.colors.secondary
         )
 
+        val source = remember { MutableInteractionSource() }
+
+        if (source.collectIsPressedAsState().value) {
+            initViewModel.onEvent(InitEvent.ShowChangeCurrencyDialog)
+        }
+
         TextField(
-            value = currency.value,
+            value = currency.value.name,
             onValueChange = {},
+            readOnly = true,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-            singleLine = true
+            singleLine = true,
+            trailingIcon = {
+                Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
+            },
+            interactionSource = source
         )
 
         Text(
@@ -84,14 +111,15 @@ fun InitScreen() {
         TextField(
             value = money.value,
             onValueChange = {
-                money.value = it
+                initViewModel.onEvent(InitEvent.ChangeDefaultMoney(it))
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-            singleLine = true
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
         Button(

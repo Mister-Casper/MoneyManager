@@ -16,12 +16,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
 @Composable
-fun SignInScreen(navController: NavController, registrationViewModel: RegistrationViewModel) {
+fun SignInScreen(registrationViewModel: RegistrationViewModel) {
     val login = rememberSaveable { registrationViewModel.login }
 
     val password = rememberSaveable { registrationViewModel.password }

@@ -17,6 +17,7 @@ import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.util.Network.checkInternetConnection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 
 
@@ -29,8 +30,6 @@ open class RegistrationViewModel @Inject constructor(
 
     val isSignInError = mutableStateOf(false)
     val isInternetConnection = mutableStateOf(true)
-
-    private var googleSignInClient: GoogleSignInClient
 
     private val _onGoogleSignIn: MutableLiveData<GoogleSignInEvent> = MutableLiveData()
     val onGoogleSignIn: LiveData<GoogleSignInEvent> = _onGoogleSignIn
@@ -51,7 +50,14 @@ open class RegistrationViewModel @Inject constructor(
 
     val navigationRoute = mutableStateOf("")
 
+    private var googleSignInClient: GoogleSignInClient
+
     init {
+        val currencies = mutableListOf<String>()
+        Currency.getAvailableCurrencies().forEach { currency ->
+            currencies.add(currency.currencyCode + " - " + currency.displayName)
+        }
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(app.getString(R.string.default_web_client_id))
             .requestEmail()
@@ -168,7 +174,7 @@ open class RegistrationViewModel @Inject constructor(
         return isConnected
     }
 
-    private fun isValidEmail(target: CharSequence?): Boolean {
+    private fun isValidEmail(target: CharSequence): Boolean {
         return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches()
     }
 }

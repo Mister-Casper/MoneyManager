@@ -2,7 +2,9 @@ package com.sgcdeveloper.moneymanager.di
 
 import android.content.Context
 import com.sgcdeveloper.moneymanager.data.repository.AuthRepositoryImpl
+import com.sgcdeveloper.moneymanager.data.repository.CurrencyRepositoryImpl
 import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
+import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,4 +21,6 @@ class AppModule {
     @Provides
     fun provideAuthRepository(authRepository: AuthRepositoryImpl):AuthRepository = authRepository
 
+    @Provides
+    fun provideCurrencyRepository(): CurrencyRepository = CurrencyRepositoryImpl()
 }

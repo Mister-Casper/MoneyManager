@@ -33,5 +33,7 @@
     <string name="next">NEXT</string>
     <string name="check_internet">Check your internet connection.</string>
     <string name="login_is_too_shirt">Username is too short</string>
+    <string name="search">Search...</string>
+    <string name="select_currency">Select currency</string>
 
 </resources>

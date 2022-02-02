@@ -28,9 +28,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.registration.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         setContent {
+            val initViewModel: InitViewModel by viewModels()
             val homeViewModel: HomeViewModel by viewModels()
             val statisticViewModel: StatisticViewModel by viewModels()
             val transactionViewModel: TransactionViewModel by viewModels()
@@ -90,7 +92,7 @@ class MainActivity : ComponentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignInScreen(navController = navController, registrationViewModel = registrationViewModel)
+                            SignInScreen(registrationViewModel = registrationViewModel)
                         }
                         composable(
                             Screen.SignUp.route,
@@ -130,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                 animationSpec = tween(100)
                             )
                         }) {
-                            InitScreen()
+                            InitScreen(initViewModel)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(
