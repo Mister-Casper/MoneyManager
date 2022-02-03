@@ -27,7 +27,7 @@ class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
     }
 
     override fun getDefaultCurrency(): Currency {
-        return getUICurrency(getInstance(Locale.getDefault()), Locale.getDefault())
+        return currencyLocales[Locale.getDefault()] ?: getUICurrency(getInstance(Locale.US), Locale.US)
     }
 
     private fun getUICurrency(currency: java.util.Currency, locale: Locale): Currency {
