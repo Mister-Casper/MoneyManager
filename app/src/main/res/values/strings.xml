@@ -33,7 +33,11 @@
     <string name="next">NEXT</string>
     <string name="check_internet">Check your internet connection.</string>
     <string name="login_is_too_shirt">Username is too short</string>
-    <string name="search">Search...</string>
+
+    <string name="search">Search…</string>
     <string name="select_currency">Select currency</string>
+
+    <string name="wallet_number">Wallet %1$d</string>
+    <string name="choose_a_default_wallet_name">"Choose a name for your default wallet. "</string>
 
 </resources>

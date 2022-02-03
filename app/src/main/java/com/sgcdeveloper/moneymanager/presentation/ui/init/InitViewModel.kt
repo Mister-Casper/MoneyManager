@@ -3,24 +3,35 @@ package com.sgcdeveloper.moneymanager.presentation.ui.init
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 open class InitViewModel @Inject constructor(
     private val app: Application,
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     val currencies = currencyRepository.getCurrencies()
 
-    val userName = mutableStateOf("")
+    val userName = mutableStateOf(appPreferencesHelper.getUserNAme())
     val currency = mutableStateOf(currencyRepository.getDefaultCurrency())
     val defaultMoney = mutableStateOf("0.0")
+    val defaultWalletName = mutableStateOf(app.getString(R.string.wallet_number, 1))
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
+
+    val isMoveNext = mutableStateOf(false)
+    val isNextEnable = mutableStateOf(true)
 
     fun onEvent(initEvent: InitEvent) {
         when (initEvent) {
@@ -30,18 +41,42 @@ open class InitViewModel @Inject constructor(
             }
             is InitEvent.ChangeDefaultMoney -> {
                 val newMoneyValue = initEvent.newDefaultMoney
-                if (newMoneyValue.isWillBeDouble())
+                if (newMoneyValue.isWillBeDouble() && newMoneyValue.length <= MAX_MONEY_LENGTH)
                     defaultMoney.value = initEvent.newDefaultMoney
             }
             is InitEvent.ChangeUserName -> {
-                userName.value = initEvent.newUserName
+                if (initEvent.newUserName.length <= MAX_USER_NAME_LENGTH)
+                    userName.value = initEvent.newUserName
             }
             is InitEvent.ShowChangeCurrencyDialog -> {
-                dialogState.value = DialogState.SelectCurrenciesDialogState(currency.value.code)
+                dialogState.value = DialogState.SelectCurrenciesDialogState
             }
             is InitEvent.CloseDialog -> {
                 dialogState.value = DialogState.NoneDialogState
             }
+            is InitEvent.Next -> {
+                initNewAccount()
+                appPreferencesHelper.setLoginStatus(LoginStatus.None)
+                isMoveNext.value = true
+            }
+            is InitEvent.ChangeDefaultWalletName -> {
+                if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH)
+                    defaultWalletName.value = initEvent.newDefaultWalletName
+            }
         }
+        isNextEnable.value = (userName.value.isNotEmpty() && defaultWalletName.value.isNotEmpty() && defaultMoney.value.isDouble())
+    }
+
+    private fun initNewAccount() {
+        viewModelScope.launch {
+            appPreferencesHelper.setUserName(userName.value)
+            appPreferencesHelper.setDefaultCurrency(currency.value)
+        }
+    }
+
+    companion object {
+        private const val MAX_USER_NAME_LENGTH = 24
+        private const val MAX_MONEY_LENGTH = 16
+        private const val MAX_WALLET_NAME_LENGTH = 12
     }
 }

@@ -71,7 +71,7 @@ open class RegistrationViewModel @Inject constructor(
     fun onEvent(registrationEvent: RegistrationEvent) {
         when (registrationEvent) {
             is RegistrationEvent.SignIn -> {
-                authRepository.signIn(registrationEvent) {
+                authRepository.signIn(registrationEvent) {it,username->
                     if (checkInternetConnection()) {
                         if (it) {
                             updateLogInStatus(LoginStatus.None)
@@ -91,9 +91,10 @@ open class RegistrationViewModel @Inject constructor(
                 else if (password.value.isNotEmpty() && password.value != confirmPassword.value)
                     isPasswordConfirmError.value = true
                 else {
-                    authRepository.signUp(registrationEvent) {
+                    authRepository.signUp(registrationEvent) {it,username->
                         if (checkInternetConnection()) {
                             if (it) {
+                                appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
                                 isSignInError.value = true
@@ -107,9 +108,11 @@ open class RegistrationViewModel @Inject constructor(
             }
             is RegistrationEvent.SignInWithGoogle -> {
                 val signInIntent = googleSignInClient.signInIntent
-                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser->
-                    if (isNewUser)
+                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser,userName->
+                    if (isNewUser) {
+                        appPreferencesHelper.setUserName(userName)
                         updateLogInStatus(LoginStatus.Initing)
+                    }
                     else
                         updateLogInStatus(LoginStatus.None)
                 }, {

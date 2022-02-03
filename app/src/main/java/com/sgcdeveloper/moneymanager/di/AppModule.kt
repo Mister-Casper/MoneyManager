@@ -1,6 +1,9 @@
 package com.sgcdeveloper.moneymanager.di
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Room
+import com.sgcdeveloper.moneymanager.data.db.AppDatabase
 import com.sgcdeveloper.moneymanager.data.repository.AuthRepositoryImpl
 import com.sgcdeveloper.moneymanager.data.repository.CurrencyRepositoryImpl
 import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
@@ -10,6 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,4 +27,12 @@ class AppModule {
 
     @Provides
     fun provideCurrencyRepository(): CurrencyRepository = CurrencyRepositoryImpl()
+
+    @Provides
+    @Singleton
+    fun providesRoomDatabase(app: Application): AppDatabase {
+        return Room
+            .databaseBuilder(app, AppDatabase::class.java, "ApplicationBD")
+            .build()
+    }
 }

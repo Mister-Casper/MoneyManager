@@ -18,27 +18,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
 
 @Composable
-fun InitScreen(initViewModel: InitViewModel) {
+fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     val accountName = remember { initViewModel.userName }
     val money = remember { initViewModel.defaultMoney }
     val currency = remember { initViewModel.currency }
+    val defaultWalletName = remember { initViewModel.defaultWalletName }
     val dialogState = remember { initViewModel.dialogState }
 
-    if(dialogState.value is DialogState.SelectCurrenciesDialogState){
-        SelectCurrenciesDialog(initViewModel.currencies,initViewModel.currency.value,{
+    if (dialogState.value is DialogState.SelectCurrenciesDialogState) {
+        SelectCurrenciesDialog(initViewModel.currencies, initViewModel.currency.value, {
             initViewModel.onEvent(InitEvent.ChangeCurrency(it))
-        },{
+        }, {
             initViewModel.onEvent(InitEvent.CloseDialog)
         })
     }
+
+    if (initViewModel.isMoveNext.value)
+        navController.navigate(Screen.MoneyManagerScreen.route)
 
     Column(Modifier.fillMaxSize()) {
         Text(
@@ -65,7 +72,8 @@ fun InitScreen(initViewModel: InitViewModel) {
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-            singleLine = true
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
         Text(
@@ -100,6 +108,29 @@ fun InitScreen(initViewModel: InitViewModel) {
         )
 
         Text(
+            text = stringResource(id = R.string.choose_a_default_wallet_name),
+            fontSize = 14.sp,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 20.dp),
+            color = MaterialTheme.colors.secondary
+        )
+
+        TextField(
+            value = defaultWalletName.value,
+            onValueChange = {
+                initViewModel.onEvent(InitEvent.ChangeDefaultWalletName(it))
+            },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+        )
+
+        Text(
             text = stringResource(id = R.string.money_default),
             fontSize = 14.sp,
             modifier = Modifier
@@ -119,13 +150,12 @@ fun InitScreen(initViewModel: InitViewModel) {
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number,imeAction = ImeAction.Next)
         )
 
         Button(
-            onClick = {
-
-            },
+            onClick = { initViewModel.onEvent(InitEvent.Next) },
+            enabled = initViewModel.isNextEnable.value,
             modifier = Modifier
                 .padding(top = 16.dp, start = 32.dp, end = 32.dp)
                 .align(Alignment.CenterHorizontally)

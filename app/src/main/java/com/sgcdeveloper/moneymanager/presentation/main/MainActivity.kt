@@ -44,7 +44,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var authResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var googleInSigned: (isNewUser:Boolean) -> Unit
+    private lateinit var googleInSigned: (isNewUser:Boolean,userName:String) -> Unit
     private lateinit var googleInFailed: () -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                 animationSpec = tween(100)
                             )
                         }) {
-                            InitScreen(initViewModel)
+                            InitScreen(initViewModel,navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(
@@ -171,7 +171,7 @@ class MainActivity : ComponentActivity() {
                 FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            googleInSigned(task.result.additionalUserInfo!!.isNewUser)
+                            googleInSigned(task.result.additionalUserInfo!!.isNewUser,account.displayName!!)
                         }
                     }
             } catch (e: ApiException) {
