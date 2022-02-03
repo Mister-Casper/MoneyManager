@@ -3,22 +3,19 @@ package com.sgcdeveloper.moneymanager.data.repository
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import java.util.*
-import java.util.Currency.getAvailableCurrencies
 import java.util.Currency.getInstance
 import javax.inject.Inject
 
-
 class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
 
-    private val currencyLocales: MutableMap<java.util.Currency, Locale> = mutableMapOf()
+    private val currencyLocales: MutableMap<Locale, Currency> = mutableMapOf()
 
     init {
         for (locale in Locale.getAvailableLocales()) {
             try {
-                if (locale != null) {
-                    val currency = getInstance(locale)
-                    currencyLocales[currency] = locale
-                }
+                val currency = getUICurrency(getInstance(locale), locale)
+                if (!currencyLocales.values.map { it.code }.contains(currency.code))
+                    currencyLocales[locale] = currency
             } catch (e: Exception) {
                 // skip strange locale
             }
@@ -26,27 +23,18 @@ class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
     }
 
     override fun getCurrencies(): List<Currency> {
-        val currencies = mutableListOf<Currency>()
-        getAvailableCurrencies().forEach { currency ->
-            if (!currency.displayName.matches(Regex(".*\\d.*"))) {
-                currencies.add(
-                    Currency(
-                        currency.currencyCode,
-                        currency.currencyCode + " - " + currency.displayName + " (" + getSymbol(currency) + ")"
-                    )
-                )
-            }
-        }
-        currencies.sortBy { it.code }
-        return currencies
+        return currencyLocales.values.sortedBy { it.code }
     }
 
-    private fun getSymbol(currency: java.util.Currency): String {
-        val locale = if (currencyLocales.containsKey(currency))
-            currencyLocales[currency]
-        else
-            Locale.getDefault()
-        return currency.getSymbol(locale)
+    override fun getDefaultCurrency(): Currency {
+        return getUICurrency(getInstance(Locale.getDefault()), Locale.getDefault())
+    }
+
+    private fun getUICurrency(currency: java.util.Currency, locale: Locale): Currency {
+        return Currency(
+            currency.currencyCode,
+            String.format("%s - %s (%s)", currency.currencyCode, currency.displayName, currency.getSymbol(locale))
+        )
     }
 
 }

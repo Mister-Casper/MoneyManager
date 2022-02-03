@@ -18,7 +18,7 @@ open class InitViewModel @Inject constructor(
     val currencies = currencyRepository.getCurrencies()
 
     val userName = mutableStateOf("")
-    val currency = mutableStateOf(currencies[0])
+    val currency = mutableStateOf(currencyRepository.getDefaultCurrency())
     val defaultMoney = mutableStateOf("0.0")
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 

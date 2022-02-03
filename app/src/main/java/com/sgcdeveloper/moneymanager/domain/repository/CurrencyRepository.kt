@@ -4,4 +4,5 @@ import com.sgcdeveloper.moneymanager.domain.model.Currency
 
 interface CurrencyRepository {
     fun getCurrencies():List<Currency>
+    fun getDefaultCurrency():Currency
 }
