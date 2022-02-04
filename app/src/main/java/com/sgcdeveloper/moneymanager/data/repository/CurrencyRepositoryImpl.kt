@@ -31,9 +31,11 @@ class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
     }
 
     private fun getUICurrency(currency: java.util.Currency, locale: Locale): Currency {
+        val symbol = currency.getSymbol(locale)
         return Currency(
             currency.currencyCode,
-            String.format("%s - %s (%s)", currency.currencyCode, currency.displayName, currency.getSymbol(locale))
+            String.format("%s - %s (%s)", currency.currencyCode, currency.displayName, symbol),
+            symbol
         )
     }
 

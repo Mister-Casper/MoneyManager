@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
@@ -19,7 +21,8 @@ import javax.inject.Inject
 open class InitViewModel @Inject constructor(
     private val app: Application,
     private val currencyRepository: CurrencyRepository,
-    private val appPreferencesHelper: AppPreferencesHelper
+    private val appPreferencesHelper: AppPreferencesHelper,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
 
     val currencies = currencyRepository.getCurrencies()
@@ -31,7 +34,7 @@ open class InitViewModel @Inject constructor(
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     val isMoveNext = mutableStateOf(false)
-    val isNextEnable = mutableStateOf(true)
+    val isNextEnable = mutableStateOf(userName.value.isNotEmpty())
 
     fun onEvent(initEvent: InitEvent) {
         when (initEvent) {
@@ -41,11 +44,11 @@ open class InitViewModel @Inject constructor(
             }
             is InitEvent.ChangeDefaultMoney -> {
                 val newMoneyValue = initEvent.newDefaultMoney
-                if (newMoneyValue.isWillBeDouble() && newMoneyValue.length <= MAX_MONEY_LENGTH)
+                if ((newMoneyValue.isWillBeDouble() && newMoneyValue.length <= MAX_MONEY_LENGTH)||newMoneyValue.length <= defaultMoney.value.length)
                     defaultMoney.value = initEvent.newDefaultMoney
             }
             is InitEvent.ChangeUserName -> {
-                if (initEvent.newUserName.length <= MAX_USER_NAME_LENGTH)
+                if (initEvent.newUserName.length <= MAX_USER_NAME_LENGTH || initEvent.newUserName.length <= userName.value.length)
                     userName.value = initEvent.newUserName
             }
             is InitEvent.ShowChangeCurrencyDialog -> {
@@ -71,6 +74,8 @@ open class InitViewModel @Inject constructor(
         viewModelScope.launch {
             appPreferencesHelper.setUserName(userName.value)
             appPreferencesHelper.setDefaultCurrency(currency.value)
+            val firstWallet = WalletEntry(name = defaultWalletName.value, money = defaultMoney.value.toDouble(), currency = currency.value)
+            moneyManagerRepository.insertWallet(firstWallet)
         }
     }
 
