@@ -136,9 +136,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                     Text(
                         text = stringResource(id = R.string.login_here),
                         color = MaterialTheme.colors.primary,
-                        modifier = Modifier.clickable {
-                            navController.navigate(Screen.SignIn.route)
-                        }
+                        modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignIn) }
                     )
                 }
             }

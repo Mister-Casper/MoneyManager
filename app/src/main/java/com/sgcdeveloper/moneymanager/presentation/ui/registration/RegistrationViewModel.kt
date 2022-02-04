@@ -136,11 +136,12 @@ open class RegistrationViewModel @Inject constructor(
                 isPasswordConfirmError.value = false
             }
             is RegistrationEvent.MoveToSignIn -> {
+                clear()
                 navigationRoute.value = Screen.SignIn.route
             }
             is RegistrationEvent.MoveToSignUp -> {
-                navigationRoute.value = Screen.SignUp.route
                 clear()
+                navigationRoute.value = Screen.SignUp.route
             }
         }
     }
