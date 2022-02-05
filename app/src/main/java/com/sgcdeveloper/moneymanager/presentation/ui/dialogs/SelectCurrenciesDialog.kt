@@ -40,75 +40,72 @@ fun SelectCurrenciesDialog(
     onAdd: (currency: Currency) -> Unit,
     onDismiss: () -> Unit = {}
 ) {
-    val openDialog = remember { mutableStateOf(true) }
     val currencyItems = remember { currencies.toMutableList() }
 
-    if (openDialog.value) {
-        AlertDialog(
-            containerColor = MaterialTheme.colors.background,
-            onDismissRequest = onDismiss,
-            title = {
-                Row(Modifier.fillMaxWidth()) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .clickable { onDismiss() }
-                    )
-                    Text(
-                        text = stringResource(id = R.string.select_currency),
-                        color = MaterialTheme.colors.secondary,
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
-                    )
-                }
-            },
-            text = {
-                val state = rememberSearchState()
-                Column(Modifier.fillMaxWidth()) {
-                    SearchBar(
-                        query = state.query.value,
-                        onQueryChange = {
-                            state.query.value = it
-                            currencyItems.clear()
-                            currencyItems.addAll(
-                                currencies.filter { currency ->
-                                    val currencyName = currency.name.replace(" ", "")
-                                    val searchCurrencyName = it.text.replace(" ", "")
-                                    val isContains = currencyName.contains(searchCurrencyName, ignoreCase = true)
-                                    isContains
-                                }
-                            )
-                        },
-                        onSearchFocusChange = {
-                            state.focused.value = it
-                        },
-                        onClearQuery = {
-                            state.query.value = TextFieldValue("")
-                            currencyItems.clear()
-                            currencyItems.addAll(0, currencies)
-                        },
-                        onBack = {
-                            state.query.value = TextFieldValue("")
-                            currencyItems.clear()
-                            currencyItems.addAll(0, currencies)
-                        },
-                        searching = state.searching.value,
-                        focused = state.focused.value,
-                    )
+    AlertDialog(
+        containerColor = MaterialTheme.colors.background,
+        onDismissRequest = onDismiss,
+        title = {
+            Row(Modifier.fillMaxWidth()) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .clickable { onDismiss() }
+                )
+                Text(
+                    text = stringResource(id = R.string.select_currency),
+                    color = MaterialTheme.colors.secondary,
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 8.dp)
+                )
+            }
+        },
+        text = {
+            val state = rememberSearchState()
+            Column(Modifier.fillMaxWidth()) {
+                SearchBar(
+                    query = state.query.value,
+                    onQueryChange = {
+                        state.query.value = it
+                        currencyItems.clear()
+                        currencyItems.addAll(
+                            currencies.filter { currency ->
+                                val currencyName = currency.name.replace(" ", "")
+                                val searchCurrencyName = it.text.replace(" ", "")
+                                val isContains = currencyName.contains(searchCurrencyName, ignoreCase = true)
+                                isContains
+                            }
+                        )
+                    },
+                    onSearchFocusChange = {
+                        state.focused.value = it
+                    },
+                    onClearQuery = {
+                        state.query.value = TextFieldValue("")
+                        currencyItems.clear()
+                        currencyItems.addAll(0, currencies)
+                    },
+                    onBack = {
+                        state.query.value = TextFieldValue("")
+                        currencyItems.clear()
+                        currencyItems.addAll(0, currencies)
+                    },
+                    searching = state.searching.value,
+                    focused = state.focused.value,
+                )
 
-                    RadioGroup(currencyItems, defaultCurrency) {
-                        onAdd(it)
-                        openDialog.value = false
-                    }
+                RadioGroup(currencyItems, defaultCurrency) {
+                    onAdd(it)
+                    onDismiss()
                 }
-            },
-            confirmButton = {})
-    }
+            }
+        },
+        confirmButton = {})
 }
 
 @Composable
