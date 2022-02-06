@@ -40,4 +40,12 @@
     <string name="wallet_number">Wallet %1$d</string>
     <string name="choose_a_default_wallet_name">"Choose a name for your default wallet. "</string>
 
+    <string name="wallet">WALLET</string>
+    <string name="add_wallet">Add wallet</string>
+    <string name="save">SAVE</string>
+    <string name="wallet_name">Wallet\'s name</string>
+    <string name="init_amount">Initial Amount</string>
+    <string name="wallet_color">Wallet Color</string>
+    <string name="wallet_icon">Wallet Icon</string>
+
 </resources>

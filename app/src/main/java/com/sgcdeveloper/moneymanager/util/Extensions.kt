@@ -1,5 +1,7 @@
 package com.sgcdeveloper.moneymanager.util
 
+import com.google.gson.Gson
+
 
 fun String.isDouble(): Boolean {
     val maybeDouble = this.toDoubleOrNull()
@@ -15,4 +17,10 @@ fun String.isWillBeDouble(): Boolean {
         return true
     }
     return false
+}
+
+fun Gson.toSafeJson(src: Any?): String? {
+    return if (src == null) {
+        ""
+    } else toJson(src, src.javaClass)
 }

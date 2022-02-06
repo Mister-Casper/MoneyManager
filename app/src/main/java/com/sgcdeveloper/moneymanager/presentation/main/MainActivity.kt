@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
@@ -44,7 +45,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var authResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var googleInSigned: (isNewUser:Boolean,userName:String) -> Unit
+    private lateinit var googleInSigned: (isNewUser: Boolean, userName: String) -> Unit
     private lateinit var googleInFailed: () -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +59,7 @@ class MainActivity : ComponentActivity() {
             val transactionViewModel: TransactionViewModel by viewModels()
             val moneyManagerViewModel: MoneyManagerViewModel by viewModels()
             val registrationViewModel: RegistrationViewModel by viewModels()
+            val addWalletViewModel: AddWalletViewModel by viewModels()
             val navController = rememberAnimatedNavController()
 
             MoneyManagerTheme {
@@ -132,14 +134,15 @@ class MainActivity : ComponentActivity() {
                                 animationSpec = tween(100)
                             )
                         }) {
-                            InitScreen(initViewModel,navController)
+                            InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(
                                 moneyManagerViewModel,
                                 homeViewModel,
                                 transactionViewModel,
-                                statisticViewModel
+                                statisticViewModel,
+                                addWalletViewModel
                             )
                         }
                     }
@@ -171,7 +174,7 @@ class MainActivity : ComponentActivity() {
                 FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            googleInSigned(task.result.additionalUserInfo!!.isNewUser,account.displayName!!)
+                            googleInSigned(task.result.additionalUserInfo!!.isNewUser, account.displayName!!)
                         }
                     }
             } catch (e: ApiException) {

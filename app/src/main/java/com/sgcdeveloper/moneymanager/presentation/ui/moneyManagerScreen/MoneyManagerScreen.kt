@@ -9,7 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
+import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticScreen
@@ -22,7 +28,8 @@ fun MoneyManagerScreen(
     moneyManagerViewModel: MoneyManagerViewModel,
     homeViewModel: HomeViewModel,
     transactionViewModel: TransactionViewModel,
-    statisticViewModel: StatisticViewModel
+    statisticViewModel: StatisticViewModel,
+    addWalletViewModel: AddWalletViewModel
 ) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
@@ -33,7 +40,13 @@ fun MoneyManagerScreen(
     Scaffold(
         bottomBar = { SpookyAppBottomNavigation(navController, bottomNavigationItems) }
     ) {
-        MainScreenNavigationConfigurations(navController,transactionViewModel,homeViewModel,statisticViewModel)
+        MainScreenNavigationConfigurations(
+            navController,
+            transactionViewModel,
+            homeViewModel,
+            statisticViewModel,
+            addWalletViewModel
+        )
     }
 }
 
@@ -71,20 +84,27 @@ private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
     transactionViewModel: TransactionViewModel,
     homeViewModel: HomeViewModel,
-    statisticViewModel: StatisticViewModel
+    statisticViewModel: StatisticViewModel,
+    addWalletViewModel: AddWalletViewModel
 ) {
     NavHost(
         navController,
         startDestination = BottomMoneyManagerNavigationScreens.Transactions.route,
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
-            HomeScreen(homeViewModel)
+            HomeScreen(homeViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
             TransactionScreen(transactionViewModel)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             StatisticScreen(statisticViewModel)
+        }
+        composable(Screen.AddWallet(null).route + "{wallet}") { backStackEntry ->
+            val wallet =
+                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+            addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
+            AddWalletScreen(navController, addWalletViewModel)
         }
     }
 }

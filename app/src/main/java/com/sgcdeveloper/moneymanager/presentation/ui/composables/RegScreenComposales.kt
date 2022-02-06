@@ -88,7 +88,7 @@ fun ColumnScope.InputField(
     label: String,
     isError: Boolean,
     errorText: String,
-    focusManager: FocusManager,
+    focusManager: FocusManager?=null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions =  KeyboardOptions(imeAction = ImeAction.Next)
@@ -106,7 +106,7 @@ fun ColumnScope.InputField(
         colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
         keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(
-            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            onNext = { focusManager?.moveFocus(FocusDirection.Down) }
         ),
         trailingIcon = trailingIcon,
         visualTransformation = visualTransformation

@@ -63,7 +63,7 @@ open class InitViewModel @Inject constructor(
                 isMoveNext.value = true
             }
             is InitEvent.ChangeDefaultWalletName -> {
-                if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH)
+                if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH || initEvent.newDefaultWalletName.length <= defaultWalletName.value.length)
                     defaultWalletName.value = initEvent.newDefaultWalletName
             }
         }
@@ -80,8 +80,8 @@ open class InitViewModel @Inject constructor(
     }
 
     companion object {
-        private const val MAX_USER_NAME_LENGTH = 24
-        private const val MAX_MONEY_LENGTH = 16
-        private const val MAX_WALLET_NAME_LENGTH = 12
+        const val MAX_USER_NAME_LENGTH = 24
+        const val MAX_MONEY_LENGTH = 16
+        const val MAX_WALLET_NAME_LENGTH = 12
     }
 }

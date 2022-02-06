@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.data.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,7 +11,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 interface WalletDao {
 
     @Query("SELECT * FROM WalletEntry")
-    suspend fun getWallets(): List<WalletEntry>
+    fun getWallets(): LiveData<List<WalletEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWallet(walletEntry: WalletEntry):Long
