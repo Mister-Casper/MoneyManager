@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
@@ -26,7 +27,10 @@ fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit
     val selectedItem = remember { mutableStateOf(selected) }
 
     LazyVerticalGrid(
-        cells = GridCells.Adaptive(size)
+        cells = GridCells.Adaptive(size),
+        userScrollEnabled = false,
+        // Костыль чтобы не конфликтовали LazyColumn и LazyVerticalGrid
+        modifier = Modifier.heightIn(0.dp, 30000.dp)
     ) {
         items(wallet_icons.size) {
             val icon = wallet_icons[it]

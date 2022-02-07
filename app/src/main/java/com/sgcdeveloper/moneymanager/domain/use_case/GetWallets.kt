@@ -25,7 +25,7 @@ class GetWallets @Inject constructor(
                     wallet.money.toInt().toString()
                 else
                     wallet.money.toString()
-                if (money == "0.0")
+                if (money == "0.0" || money == "0")
                     money = ""
                 Wallet(
                     wallet.id,

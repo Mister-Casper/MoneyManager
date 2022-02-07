@@ -2,7 +2,6 @@ package com.sgcdeveloper.moneymanager.util
 
 import com.google.gson.Gson
 
-
 fun String.isDouble(): Boolean {
     val maybeDouble = this.toDoubleOrNull()
     return (maybeDouble != null)

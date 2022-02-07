@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -45,121 +46,125 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         }
     }
 
-    Column(
+    LazyColumn(
         Modifier
             .fillMaxSize()
             .padding(bottom = 60.dp, start = 12.dp, end = 12.dp, top = 4.dp)
     ) {
-        Row {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "",
-                tint = MaterialTheme.colors.secondary,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        addWalletViewModel.onEvent(WalletEvent.Clear)
+        item {
+            Column {
+                Row {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .clickable {
+                                addWalletViewModel.onEvent(WalletEvent.Clear)
+                                navController.popBackStack()
+                            }
+                    )
+                    Text(
+                        text = stringResource(id = R.string.add_wallet),
+                        color = MaterialTheme.colors.secondary,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp)
+                            .weight(1f)
+                    )
+                    Button(onClick = {
+                        addWalletViewModel.onEvent(WalletEvent.InsertWallet)
                         navController.popBackStack()
+                    }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.save),
+                            Modifier.align(Alignment.CenterVertically),
+                            color = MaterialTheme.colors.secondary
+                        )
                     }
-            )
-            Text(
-                text = stringResource(id = R.string.add_wallet),
-                color = MaterialTheme.colors.secondary,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 8.dp)
-                    .weight(1f)
-            )
-            Button(onClick = {
-                addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                navController.popBackStack()
-            }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
+                }
+                WalletCard(wallet = addWalletViewModel.wallet.value, onClick = {})
+                InputField(
+                    addWalletViewModel.walletName.value,
+                    { addWalletViewModel.onEvent(WalletEvent.ChangeWalletName(it)) },
+                    stringResource(id = R.string.wallet_name),
+                    false,
+                    ""
+                )
+                val source = remember { MutableInteractionSource() }
+
+                if (source.collectIsPressedAsState().value) {
+                    addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
+                }
+
+                TextField(
+                    value = addWalletViewModel.walletCurrency.value.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 8.dp, start = 20.dp, end = 20.dp)
+                        .fillMaxWidth(),
+                    colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
+                    singleLine = true,
+                    trailingIcon = {
+                        androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
+                    },
+                    interactionSource = source
+                )
+
                 Text(
-                    text = stringResource(id = R.string.save),
-                    Modifier.align(Alignment.CenterVertically),
+                    text = stringResource(id = R.string.init_amount),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 4.dp),
                     color = MaterialTheme.colors.secondary
                 )
+
+                TextField(
+                    value = addWalletViewModel.walletMoney.value,
+                    onValueChange = {
+                        addWalletViewModel.onEvent(WalletEvent.ChangeMoney(it))
+                    },
+                    placeholder = {
+                        Text(text = "0")
+                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 8.dp, start = 20.dp, end = 20.dp)
+                        .fillMaxWidth(),
+                    colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.wallet_color),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 4.dp),
+                    color = MaterialTheme.colors.secondary
+                )
+                ColorPicker(40.dp, addWalletViewModel.walletColor.value) {
+                    addWalletViewModel.onEvent(WalletEvent.ChangeColor(it))
+                }
+
+                Text(
+                    text = stringResource(id = R.string.wallet_icon),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 4.dp),
+                    color = MaterialTheme.colors.secondary
+                )
+                WalletIconPicker(40.dp, addWalletViewModel.walletIcon.value) {
+                    addWalletViewModel.onEvent(WalletEvent.ChangeIcon(it))
+                }
             }
-        }
-        WalletCard(wallet = addWalletViewModel.wallet.value, onClick = {})
-        InputField(
-            addWalletViewModel.walletName.value,
-            { addWalletViewModel.onEvent(WalletEvent.ChangeWalletName(it)) },
-            stringResource(id = R.string.wallet_name),
-            false,
-            ""
-        )
-        val source = remember { MutableInteractionSource() }
-
-        if (source.collectIsPressedAsState().value) {
-            addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
-        }
-
-        TextField(
-            value = addWalletViewModel.walletCurrency.value.name,
-            onValueChange = {},
-            readOnly = true,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp, start = 20.dp, end = 20.dp)
-                .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-            singleLine = true,
-            trailingIcon = {
-                androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
-            },
-            interactionSource = source
-        )
-
-        Text(
-            text = stringResource(id = R.string.init_amount),
-            fontSize = 14.sp,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 4.dp),
-            color = MaterialTheme.colors.secondary
-        )
-
-        TextField(
-            value = addWalletViewModel.walletMoney.value,
-            onValueChange = {
-                addWalletViewModel.onEvent(WalletEvent.ChangeMoney(it))
-            },
-            placeholder = {
-                Text(text = "0")
-            },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp, start = 20.dp, end = 20.dp)
-                .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-        )
-
-        Text(
-            text = stringResource(id = R.string.wallet_color),
-            fontSize = 14.sp,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 4.dp),
-            color = MaterialTheme.colors.secondary
-        )
-        ColorPicker(40.dp, addWalletViewModel.walletColor.value) {
-            addWalletViewModel.onEvent(WalletEvent.ChangeColor(it))
-        }
-
-        Text(
-            text = stringResource(id = R.string.wallet_icon),
-            fontSize = 14.sp,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 4.dp),
-            color = MaterialTheme.colors.secondary
-        )
-        WalletIconPicker(40.dp, addWalletViewModel.walletIcon.value) {
-            addWalletViewModel.onEvent(WalletEvent.ChangeIcon(it))
         }
     }
 }

@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
@@ -22,7 +23,10 @@ fun ColorPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
     val selectedItem = remember { mutableStateOf(selected) }
 
     LazyVerticalGrid(
-        cells = GridCells.Adaptive(size)
+        cells = GridCells.Adaptive(size),
+        userScrollEnabled = false,
+        // Костыль чтобы не конфликтовали LazyColumn и LazyVerticalGrid
+        modifier = Modifier.heightIn(0.dp, 30000.dp)
     ) {
         items(wallet_colors.size) {
             val color = wallet_colors[it]
