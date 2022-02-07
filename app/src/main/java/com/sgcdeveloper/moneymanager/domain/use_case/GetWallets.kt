@@ -22,7 +22,7 @@ class GetWallets @Inject constructor(
             it.map { wallet ->
                 val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
                 var money = if (wallet.money.rem(1) == 0.0)
-                    wallet.money.toInt().toString()
+                    wallet.money.toLong().toString()
                 else
                     wallet.money.toString()
                 if (money == "0.0" || money == "0")
