@@ -97,10 +97,13 @@ open class AddWalletViewModel @Inject constructor(
                     walletsUseCases.insertWallet(wallet.value)
                 }
             }
-            is WalletEvent.ShowDeleteWalletDialog ->{
-                dialogState.value = DialogState.DeleteWalletDialog(wallet.value)
+            is WalletEvent.ShowDeleteWalletDialog -> {
+                if (wallet.value.isDefault) {
+                    dialogState.value = DialogState.InformDialog(app.getString(R.string.cant_delete_default_wallet))
+                } else
+                    dialogState.value = DialogState.DeleteWalletDialog
             }
-            is WalletEvent.DeleteWallet ->{
+            is WalletEvent.DeleteWallet -> {
                 dialogState.value = DialogState.NoneDialogState
                 viewModelScope.launch {
                     walletsUseCases.deleteWallet(wallet.value.walletId)

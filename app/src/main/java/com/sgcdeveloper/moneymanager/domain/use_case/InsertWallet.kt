@@ -15,6 +15,7 @@ class InsertWallet @Inject constructor(
         return moneyManagerRepository.insertWallet(
             WalletEntry(
                 id = wallet.walletId,
+                isDefault = wallet.isDefault,
                 name = wallet.name,
                 money = wallet.money.toDoubleOrNull() ?: 0.0,
                 currency = wallet.currency,

@@ -9,6 +9,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 @Entity
 class WalletEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val isDefault:Boolean,
     val name: String,
     val money: Double,
     val currency: Currency,

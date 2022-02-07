@@ -9,6 +9,7 @@ import java.text.NumberFormat
 
 open class Wallet(
     val walletId: Long = 0,
+    val isDefault: Boolean = false,
     val name: String = "",
     val money: String = "",
     val formattedMoney: String = "",
@@ -18,18 +19,20 @@ open class Wallet(
 ) {
     fun copy(
         walletId: Long = this.walletId,
+        isDefault: Boolean = this.isDefault,
         name: String = this.name,
         money: String = this.money,
         formattedMoney: String = this.formattedMoney,
         color: Int = this.color,
         icon: Int = this.icon,
         currency: Currency = this.currency
-    ) = Wallet(walletId, name, money, formattedMoney, color, icon, currency)
+    ) = Wallet(walletId, isDefault, name, money, formattedMoney, color, icon, currency)
 }
 
 class AddNewWallet(currency: Currency) :
     Wallet(
         0,
+        false,
         "",
         "",
         NumberFormat.getCurrencyInstance(getLocalFromISO(currency.code)!!).format(0),

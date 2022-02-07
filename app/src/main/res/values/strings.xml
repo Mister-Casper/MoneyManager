@@ -51,5 +51,6 @@
     <string name="are_u_sure_delete_wallet">Are you sure you want to delete this wallet? All transactions will be deleted too</string>
     <string name="delete">DELETE</string>
     <string name="cancel">CANCEL</string>
+    <string name="cant_delete_default_wallet">"You cannot delete the default wallet "</string>
 
 </resources>

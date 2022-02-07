@@ -54,6 +54,10 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         }, {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
+    }else if (dialog.value is DialogState.InformDialog){
+        DeleteWalletDialog((dialog.value as DialogState.InformDialog).information) {
+            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
+        }
     }
 
     LazyColumn(

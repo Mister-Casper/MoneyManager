@@ -74,6 +74,7 @@ open class InitViewModel @Inject constructor(
             appPreferencesHelper.setUserName(userName.value)
             appPreferencesHelper.setDefaultCurrency(currency.value)
             val firstWallet = WalletEntry(
+                isDefault = true,
                 name = defaultWalletName.value,
                 money = defaultMoney.value.toDoubleOrNull() ?: 0.0,
                 currency = currency.value

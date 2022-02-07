@@ -29,6 +29,7 @@ class GetWallets @Inject constructor(
                     money = ""
                 Wallet(
                     wallet.id,
+                    wallet.isDefault,
                     wallet.name,
                     money,
                     formatter.format(wallet.money),
