@@ -150,6 +150,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
+            placeholder = { Text(text = "0")},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number,imeAction = ImeAction.Next)
         )
 

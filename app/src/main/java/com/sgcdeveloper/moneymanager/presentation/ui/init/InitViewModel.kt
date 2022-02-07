@@ -11,7 +11,6 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
-import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,7 +28,7 @@ open class InitViewModel @Inject constructor(
 
     val userName = mutableStateOf(appPreferencesHelper.getUserNAme())
     val currency = mutableStateOf(currencyRepository.getDefaultCurrency())
-    val defaultMoney = mutableStateOf("0.0")
+    val defaultMoney = mutableStateOf("")
     val defaultWalletName = mutableStateOf(app.getString(R.string.wallet_number, 1))
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
@@ -44,7 +43,7 @@ open class InitViewModel @Inject constructor(
             }
             is InitEvent.ChangeDefaultMoney -> {
                 val newMoneyValue = initEvent.newDefaultMoney
-                if ((newMoneyValue.isWillBeDouble() && newMoneyValue.length <= MAX_MONEY_LENGTH)||newMoneyValue.length <= defaultMoney.value.length)
+                if ((newMoneyValue.isWillBeDouble() && newMoneyValue.length <= MAX_MONEY_LENGTH) || newMoneyValue.length <= defaultMoney.value.length)
                     defaultMoney.value = initEvent.newDefaultMoney
             }
             is InitEvent.ChangeUserName -> {
@@ -67,14 +66,18 @@ open class InitViewModel @Inject constructor(
                     defaultWalletName.value = initEvent.newDefaultWalletName
             }
         }
-        isNextEnable.value = (userName.value.isNotEmpty() && defaultWalletName.value.isNotEmpty() && defaultMoney.value.isDouble())
+        isNextEnable.value = (userName.value.isNotEmpty() && defaultWalletName.value.isNotEmpty())
     }
 
     private fun initNewAccount() {
         viewModelScope.launch {
             appPreferencesHelper.setUserName(userName.value)
             appPreferencesHelper.setDefaultCurrency(currency.value)
-            val firstWallet = WalletEntry(name = defaultWalletName.value, money = defaultMoney.value.toDouble(), currency = currency.value)
+            val firstWallet = WalletEntry(
+                name = defaultWalletName.value,
+                money = defaultMoney.value.toDoubleOrNull() ?: 0.0,
+                currency = currency.value
+            )
             moneyManagerRepository.insertWallet(firstWallet)
         }
     }
