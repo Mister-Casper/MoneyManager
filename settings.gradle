@@ -7,5 +7,5 @@ dependencyResolutionManagement {
         maven { url "https://maven.xyz.com" }
     }
 }
-rootProject.name = "Workout Tracker Gym Log"
+rootProject.name = "Money Manager"
 include ':app'
