@@ -48,4 +48,8 @@
     <string name="wallet_color">Wallet Color</string>
     <string name="wallet_icon">Wallet Icon</string>
 
+    <string name="are_u_sure_delete_wallet">Are you sure you want to delete this wallet? All transactions will be deleted too</string>
+    <string name="delete">DELETE</string>
+    <string name="cancel">CANCEL</string>
+
 </resources>

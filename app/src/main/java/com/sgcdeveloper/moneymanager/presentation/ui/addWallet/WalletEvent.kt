@@ -8,11 +8,12 @@ sealed class WalletEvent {
     class ChangeWalletName(val name: String) : WalletEvent()
     class ChangeCurrency(val currency: Currency) : WalletEvent()
     class ChangeMoney(val money: String) : WalletEvent()
-    class ChangeColor(val color:Int) : WalletEvent()
-    class ChangeIcon(val icon:Int) : WalletEvent()
+    class ChangeColor(val color: Int) : WalletEvent()
+    class ChangeIcon(val icon: Int) : WalletEvent()
 
+    object ShowDeleteWalletDialog : WalletEvent()
     object ShowChangeCurrencyDialog : WalletEvent()
     object CloseDialog : WalletEvent()
-    object Clear : WalletEvent()
     object InsertWallet : WalletEvent()
+    object DeleteWallet : WalletEvent()
 }

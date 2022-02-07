@@ -40,6 +40,8 @@ open class AddWalletViewModel @Inject constructor(
 
     val currencies = currencyRepository.getCurrencies()
 
+    var isEditingMode = mutableStateOf(false)
+
     init {
         formatMoney(walletMoney.value)
     }
@@ -54,6 +56,7 @@ open class AddWalletViewModel @Inject constructor(
                 walletColor.value = wallet.color
                 walletIcon.value = wallet.icon
                 this.wallet.value = wallet
+                isEditingMode.value = (wallet.walletId != 0L)
             }
             is WalletEvent.ChangeWalletName -> {
                 if (walletEvent.name.length <= InitViewModel.MAX_WALLET_NAME_LENGTH || walletEvent.name.length <= walletName.value.length) {
@@ -88,18 +91,19 @@ open class AddWalletViewModel @Inject constructor(
                 walletIcon.value = walletEvent.icon
                 this.wallet.value = this.wallet.value.copy(icon = wallet_icons[walletEvent.icon])
             }
-            is WalletEvent.Clear -> {
-                walletName.value = ""
-                walletCurrency.value = appPreferencesHelper.getDefaultCurrency()
-                walletMoney.value = ""
-                walletColor.value = 0
-                walletIcon.value = R.drawable.wallet_icon_1
-                wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value)
-            }
             is WalletEvent.InsertWallet -> {
                 viewModelScope.launch {
                     wallet.value = wallet.value.copy(money = walletMoney.value)
                     walletsUseCases.insertWallet(wallet.value)
+                }
+            }
+            is WalletEvent.ShowDeleteWalletDialog ->{
+                dialogState.value = DialogState.DeleteWalletDialog(wallet.value)
+            }
+            is WalletEvent.DeleteWallet ->{
+                dialogState.value = DialogState.NoneDialogState
+                viewModelScope.launch {
+                    walletsUseCases.deleteWallet(wallet.value.walletId)
                 }
             }
         }

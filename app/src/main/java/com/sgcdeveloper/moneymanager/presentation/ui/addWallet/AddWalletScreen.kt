@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -23,10 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletIconPicker
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
 
@@ -44,6 +47,13 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             }) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
+    } else if (dialog.value is DialogState.DeleteWalletDialog) {
+        DeleteWalletDialog(addWalletViewModel.wallet.value, {
+            addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
+            navController.popBackStack()
+        }, {
+            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
+        })
     }
 
     LazyColumn(
@@ -61,7 +71,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .clickable {
-                                addWalletViewModel.onEvent(WalletEvent.Clear)
                                 navController.popBackStack()
                             }
                     )
@@ -74,6 +83,20 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                             .padding(start = 8.dp)
                             .weight(1f)
                     )
+                    if (addWalletViewModel.isEditingMode.value) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.delete_icon),
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.secondary,
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(end = 4.dp)
+                                .size(48.dp)
+                                .clickable {
+                                    addWalletViewModel.onEvent(WalletEvent.ShowDeleteWalletDialog)
+                                }
+                        )
+                    }
                     Button(onClick = {
                         addWalletViewModel.onEvent(WalletEvent.InsertWallet)
                         navController.popBackStack()
@@ -81,7 +104,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         Text(
                             text = stringResource(id = R.string.save),
                             Modifier.align(Alignment.CenterVertically),
-                            color = MaterialTheme.colors.secondary
+                            color = if (addWalletViewModel.walletName.value.isNotEmpty()) white else MaterialTheme.colors.secondary
                         )
                     }
                 }

@@ -25,7 +25,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
-fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit) {
+fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit = {}) {
     Card(
         modifier = Modifier
             .size(120.dp)
