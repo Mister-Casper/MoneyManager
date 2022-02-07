@@ -21,7 +21,7 @@ class GetWallets @Inject constructor(
         return Transformations.map(moneyManagerRepository.getWallets()) {
             it.map { wallet ->
                 val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
-                var money = if (wallet.money.rem(10) == 0.0)
+                var money = if (wallet.money.rem(1) == 0.0)
                     wallet.money.toInt().toString()
                 else
                     wallet.money.toString()
