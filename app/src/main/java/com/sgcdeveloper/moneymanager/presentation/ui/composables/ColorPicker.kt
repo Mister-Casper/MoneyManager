@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_colors
@@ -26,7 +27,7 @@ fun ColorPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
         items(wallet_colors.size) {
             val color = wallet_colors[it]
             Box(modifier = Modifier.padding(2.dp)) {
-                if (it == selectedItem.value) {
+                if (wallet_colors[it].toArgb() == selectedItem.value) {
                     Box(
                         modifier = Modifier
                             .background(color)
@@ -39,8 +40,8 @@ fun ColorPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
                             .background(color)
                             .size(size)
                             .clickable {
-                                nSelected(it)
-                                selectedItem.value = it
+                                nSelected(wallet_colors[it].toArgb())
+                                selectedItem.value = wallet_colors[it].toArgb()
                             }
                     )
             }

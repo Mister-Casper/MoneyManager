@@ -1,21 +1,39 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
 import androidx.compose.ui.graphics.toArgb
+import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getLocalFromISO
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.theme.wallet_colors
+import java.text.NumberFormat
 
 open class Wallet(
+    val walletId: Long = 0,
     val name: String = "",
-    val money: String = "0",
+    val money: String = "",
+    val formattedMoney: String = "",
     val color: Int = blue.toArgb(),
     val icon: Int,
     val currency: Currency
 ) {
     fun copy(
-        name: String = this.name, money: String = this.money, color: Int = this.color,
+        walletId: Long = this.walletId,
+        name: String = this.name,
+        money: String = this.money,
+        formattedMoney: String = this.formattedMoney,
+        color: Int = this.color,
         icon: Int = this.icon,
         currency: Currency = this.currency
-    ) = Wallet(name, money, color, icon, currency)
+    ) = Wallet(walletId, name, money, formattedMoney, color, icon, currency)
 }
 
 class AddNewWallet(currency: Currency) :
-    Wallet("", "", 0, 0, currency)
+    Wallet(
+        0,
+        "",
+        "",
+        NumberFormat.getCurrencyInstance(getLocalFromISO(currency.code)!!).format(0),
+        wallet_colors[0].toArgb(),
+        R.drawable.wallet_icon_1,
+        currency
+    )

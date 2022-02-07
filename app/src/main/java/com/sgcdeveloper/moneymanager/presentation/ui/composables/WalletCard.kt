@@ -56,7 +56,7 @@ fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit) {
                     tint = white
                 )
                 AutoSizeText( text = wallet.name, suggestedFontSizes = listOf(20.sp,18.sp,16.sp,14.sp,12.sp,10.sp,8.sp,6.sp,4.sp),color = white)
-                AutoSizeText(text = wallet.money, suggestedFontSizes = listOf(22.sp,20.sp,18.sp,16.sp,14.sp,12.sp,10.sp,8.sp,6.sp,4.sp),color = white)
+                AutoSizeText(text = wallet.formattedMoney, suggestedFontSizes = listOf(22.sp,20.sp,18.sp,16.sp,14.sp,12.sp,10.sp,8.sp,6.sp,4.sp),color = white)
             }
         }
     }

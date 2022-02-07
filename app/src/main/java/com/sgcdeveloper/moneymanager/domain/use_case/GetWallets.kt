@@ -17,11 +17,25 @@ class GetWallets @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
     private val currencyRepository: CurrencyRepository
 ) {
-    suspend operator fun invoke(): LiveData<List<Wallet>> {
+    operator fun invoke(): LiveData<List<Wallet>> {
         return Transformations.map(moneyManagerRepository.getWallets()) {
-            it.map {
-                val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(it.currency.code)!!)
-                Wallet(it.name, formatter.format(it.money), it.color, getDrawable(it.icon), it.currency)
+            it.map { wallet ->
+                val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
+                var money = if (wallet.money.rem(10) == 0.0)
+                    wallet.money.toInt().toString()
+                else
+                    wallet.money.toString()
+                if (money == "0.0")
+                    money = ""
+                Wallet(
+                    wallet.id,
+                    wallet.name,
+                    money,
+                    formatter.format(wallet.money),
+                    wallet.color,
+                    getDrawable(wallet.icon),
+                    wallet.currency
+                )
             }.plus(AddNewWallet(currencyRepository.getDefaultCurrency()))
         }
     }

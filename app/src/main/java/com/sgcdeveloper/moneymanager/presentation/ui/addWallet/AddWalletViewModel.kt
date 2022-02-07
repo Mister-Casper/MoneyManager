@@ -31,7 +31,7 @@ open class AddWalletViewModel @Inject constructor(
     val walletName = mutableStateOf("")
     val walletCurrency = mutableStateOf(appPreferencesHelper.getDefaultCurrency())
     val walletMoney = mutableStateOf("")
-    val walletColor = mutableStateOf(0)
+    val walletColor = mutableStateOf(wallet_colors[0].toArgb())
     val walletIcon = mutableStateOf(R.drawable.wallet_icon_1)
 
     val wallet = mutableStateOf(Wallet(icon = walletIcon.value, currency = walletCurrency.value))
@@ -50,6 +50,10 @@ open class AddWalletViewModel @Inject constructor(
                 val wallet = walletEvent.wallet
                 walletName.value = wallet.name
                 walletCurrency.value = wallet.currency
+                walletMoney.value = wallet.money
+                walletColor.value = wallet.color
+                walletIcon.value = wallet.icon
+                this.wallet.value = wallet
             }
             is WalletEvent.ChangeWalletName -> {
                 if (walletEvent.name.length <= InitViewModel.MAX_WALLET_NAME_LENGTH || walletEvent.name.length <= walletName.value.length) {
@@ -78,7 +82,7 @@ open class AddWalletViewModel @Inject constructor(
             }
             is WalletEvent.ChangeColor -> {
                 walletColor.value = walletEvent.color
-                this.wallet.value = this.wallet.value.copy(color = wallet_colors[walletEvent.color].toArgb())
+                this.wallet.value = this.wallet.value.copy(color = walletEvent.color)
             }
             is WalletEvent.ChangeIcon -> {
                 walletIcon.value = walletEvent.icon
@@ -92,20 +96,20 @@ open class AddWalletViewModel @Inject constructor(
                 walletIcon.value = R.drawable.wallet_icon_1
                 wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value)
             }
-            is WalletEvent.InsertWallet->{
+            is WalletEvent.InsertWallet -> {
                 viewModelScope.launch {
-                    wallet.value  = wallet.value.copy(money = walletMoney.value)
+                    wallet.value = wallet.value.copy(money = walletMoney.value)
                     walletsUseCases.insertWallet(wallet.value)
                 }
             }
         }
     }
 
-    private fun formatMoney(money:String){
+    private fun formatMoney(money: String) {
         val formatter =
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(walletCurrency.value.code)!!)
         this.wallet.value =
-            this.wallet.value.copy(money = formatter.format(money.toDoubleOrNull() ?: 0))
+            this.wallet.value.copy(formattedMoney = formatter.format(money.toDoubleOrNull() ?: 0))
     }
 
 }
