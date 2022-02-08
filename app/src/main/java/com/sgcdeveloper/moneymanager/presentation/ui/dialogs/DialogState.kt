@@ -6,4 +6,5 @@ sealed class DialogState {
     object SelectCurrenciesDialogState : DialogState()
     object NoneDialogState : DialogState()
     object DeleteWalletDialog : DialogState()
+    object DatePickerDialog : DialogState()
 }
