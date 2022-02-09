@@ -59,7 +59,7 @@ fun WalletPickerDialog(
             }
         },
         text = {
-            CategorySelector(wallets, defaultWallet) {
+            WalletSelector(wallets, defaultWallet) {
                 onAdd(it)
                 onDismiss()
             }
@@ -68,7 +68,7 @@ fun WalletPickerDialog(
 }
 
 @Composable
-private fun CategorySelector(
+private fun WalletSelector(
     wallets: List<Wallet>? = null,
     defaultWallet: Wallet? = null,
     onAdd: (wallet: Wallet) -> Unit,
