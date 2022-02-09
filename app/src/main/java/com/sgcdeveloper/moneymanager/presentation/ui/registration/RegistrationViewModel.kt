@@ -47,6 +47,7 @@ open class RegistrationViewModel @Inject constructor(
     val isLoginError = mutableStateOf(false)
     val isPasswordError = mutableStateOf(false)
     val isPasswordConfirmError = mutableStateOf(false)
+    val showLoadingDialog = mutableStateOf(false)
 
     val navigationRoute = mutableStateOf("")
 
@@ -73,6 +74,7 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignIn -> {
                 authRepository.signIn(registrationEvent) {it,username->
                     if (checkInternetConnection()) {
+                        showLoadingDialog.value = true
                         if (it) {
                             updateLogInStatus(LoginStatus.None)
                         } else {
@@ -94,6 +96,7 @@ open class RegistrationViewModel @Inject constructor(
                     authRepository.signUp(registrationEvent) {it,username->
                         if (checkInternetConnection()) {
                             if (it) {
+                                showLoadingDialog.value = true
                                 appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
@@ -147,6 +150,7 @@ open class RegistrationViewModel @Inject constructor(
     }
 
     private fun clear() {
+        showLoadingDialog.value = false
         isSignInError.value = false
         isInternetConnection.value = true
         name.value = ""
