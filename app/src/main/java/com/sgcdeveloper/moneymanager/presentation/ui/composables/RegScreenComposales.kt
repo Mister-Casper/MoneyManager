@@ -1,8 +1,10 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -25,10 +27,32 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
-
+@Composable
+fun DummyProgress(isShowLoadingDialog: Boolean) {
+    if (isShowLoadingDialog){
+        Dialog(
+            onDismissRequest = { },
+            DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(MaterialTheme.colors.background, shape = RoundedCornerShape(8.dp))
+            ) {
+                Column {
+                    CircularProgressIndicator(modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp))
+                    Text(text = "Loading...", Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp))
+                }
+            }
+        }
+    }
+}
 @Composable
 fun SignInError(isError: Boolean) {
     if (isError) {
