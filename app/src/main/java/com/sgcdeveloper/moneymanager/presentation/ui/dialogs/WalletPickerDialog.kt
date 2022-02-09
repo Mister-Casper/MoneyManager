@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.AutoSizeText
 
 @Composable
 fun WalletPickerDialog(
@@ -92,7 +93,7 @@ private fun CategorySelector(
                     ) {
                         Card(
                             modifier = Modifier
-                                .size(48.dp)
+                                .size(64.dp)
                                 .padding(4.dp)
                                 .align(Alignment.CenterVertically),
                             shape = RoundedCornerShape(8.dp),
@@ -103,19 +104,24 @@ private fun CategorySelector(
                                     contentDescription = "",
                                     Modifier
                                         .align(Alignment.Center)
-                                        .size(32.dp),
+                                        .size(48.dp),
                                     tint = white
                                 )
                             }
                         }
-                        Text(
-                            text = item.name,
-                            color = MaterialTheme.colors.secondary,
-                            modifier = Modifier
-                                .padding(start = 12.dp)
-                                .weight(1f),
-                            fontSize = 18.sp
-                        )
+                        Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                            AutoSizeText(
+                                text = item.name,
+                                color = MaterialTheme.colors.secondary,
+                                suggestedFontSizes = listOf(18.sp,16.sp,14.sp)
+                            )
+
+                            AutoSizeText(
+                                text = item.formattedMoney,
+                                color = MaterialTheme.colors.secondary,
+                                suggestedFontSizes = listOf(16.sp,14.sp,12.sp),
+                            )
+                        }
                         RadioButton(
                             selected = (item == selectedOption.value),
                             onClick = null
