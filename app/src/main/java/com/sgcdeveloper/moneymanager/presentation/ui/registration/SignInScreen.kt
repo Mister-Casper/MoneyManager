@@ -31,7 +31,7 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
     val isShowLoadingDialog = remember { registrationViewModel.showLoadingDialog }
 
     val focusManager = LocalFocusManager.current
-    DummyProgress(isShowLoadingDialog.value)
+    LoadingDialog(isShowLoadingDialog.value)
     Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Text(

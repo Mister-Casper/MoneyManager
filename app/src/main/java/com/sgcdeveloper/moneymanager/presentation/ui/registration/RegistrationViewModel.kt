@@ -74,10 +74,11 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignIn -> {
                 authRepository.signIn(registrationEvent) {it,username->
                     if (checkInternetConnection()) {
-                        showLoadingDialog.value = true
                         if (it) {
+                            showLoadingDialog.value = true
                             updateLogInStatus(LoginStatus.None)
                         } else {
+                            showLoadingDialog.value = false
                             isSignInError.value = true
                         }
                     }
@@ -100,6 +101,7 @@ open class RegistrationViewModel @Inject constructor(
                                 appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
+                                showLoadingDialog.value = false
                                 isSignInError.value = true
                             }
                         }
@@ -119,8 +121,10 @@ open class RegistrationViewModel @Inject constructor(
                     else
                         updateLogInStatus(LoginStatus.None)
                 }, {
-                    isSignInError.value = true
+                    isSignInError.value = false
+                    showLoadingDialog.value = true
                 })
+                showLoadingDialog.value = true
             }
             is RegistrationEvent.ChangeName -> {
                 name.value = registrationEvent.newName
