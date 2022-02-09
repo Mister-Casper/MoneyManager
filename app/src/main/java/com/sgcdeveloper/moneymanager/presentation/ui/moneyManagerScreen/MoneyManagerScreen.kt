@@ -36,8 +36,6 @@ fun MoneyManagerScreen(
     addWalletViewModel: AddWalletViewModel,
     transactionsViewModel: TransactionsViewModel
 ) {
-    addWalletViewModel.init()
-
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomMoneyManagerNavigationScreens.Home,
