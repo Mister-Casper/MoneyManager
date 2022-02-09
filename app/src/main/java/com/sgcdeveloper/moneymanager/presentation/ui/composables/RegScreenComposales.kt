@@ -33,27 +33,6 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 @Composable
-fun DummyProgress(isShowLoadingDialog: Boolean) {
-    if (isShowLoadingDialog){
-        Dialog(
-            onDismissRequest = { },
-            DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(MaterialTheme.colors.background, shape = RoundedCornerShape(8.dp))
-            ) {
-                Column {
-                    CircularProgressIndicator(modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp))
-                    Text(text = "Loading...", Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp))
-                }
-            }
-        }
-    }
-}
-@Composable
 fun SignInError(isError: Boolean) {
     if (isError) {
         Text(
