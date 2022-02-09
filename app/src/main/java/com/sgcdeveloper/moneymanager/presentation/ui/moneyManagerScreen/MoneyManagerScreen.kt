@@ -23,6 +23,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 
 @Composable
 fun MoneyManagerScreen(
@@ -30,8 +32,11 @@ fun MoneyManagerScreen(
     homeViewModel: HomeViewModel,
     addTransactionViewModel: AddTransactionViewModel,
     statisticViewModel: StatisticViewModel,
-    addWalletViewModel: AddWalletViewModel
+    addWalletViewModel: AddWalletViewModel,
+    transactionsViewModel: TransactionsViewModel
 ) {
+    addWalletViewModel.init()
+
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomMoneyManagerNavigationScreens.Home,
@@ -46,7 +51,8 @@ fun MoneyManagerScreen(
             addTransactionViewModel,
             homeViewModel,
             statisticViewModel,
-            addWalletViewModel
+            addWalletViewModel,
+            transactionsViewModel
         )
     }
 }
@@ -86,7 +92,8 @@ private fun MainScreenNavigationConfigurations(
     addTransactionViewModel: AddTransactionViewModel,
     homeViewModel: HomeViewModel,
     statisticViewModel: StatisticViewModel,
-    addWalletViewModel: AddWalletViewModel
+    addWalletViewModel: AddWalletViewModel,
+    transactionsViewModel: TransactionsViewModel
 ) {
     NavHost(
         navController,
@@ -96,7 +103,7 @@ private fun MainScreenNavigationConfigurations(
             HomeScreen(homeViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
-            AddTransactionScreen (addTransactionViewModel, navController)
+            TransactionsScreen (transactionsViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             StatisticScreen(statisticViewModel)

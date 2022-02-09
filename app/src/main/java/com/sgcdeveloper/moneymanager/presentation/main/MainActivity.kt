@@ -38,6 +38,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationVi
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
             val homeViewModel: HomeViewModel by viewModels()
             val statisticViewModel: StatisticViewModel by viewModels()
             val addTransactionViewModel: AddTransactionViewModel by viewModels()
+            val transactionsViewModel: TransactionsViewModel by viewModels()
             val moneyManagerViewModel: MoneyManagerViewModel by viewModels()
             val registrationViewModel: RegistrationViewModel by viewModels()
             val addWalletViewModel: AddWalletViewModel by viewModels()
@@ -142,7 +144,8 @@ class MainActivity : ComponentActivity() {
                                 homeViewModel,
                                 addTransactionViewModel,
                                 statisticViewModel,
-                                addWalletViewModel
+                                addWalletViewModel,
+                                transactionsViewModel
                             )
                         }
                     }

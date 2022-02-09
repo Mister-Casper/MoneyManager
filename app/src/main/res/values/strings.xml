@@ -91,4 +91,6 @@
     <string name="from_wallet">From wallet</string>
     <string name="to_wallet">To wallet</string>
 
+    <string name="balance">Balance : %1$s</string>
+
 </resources>

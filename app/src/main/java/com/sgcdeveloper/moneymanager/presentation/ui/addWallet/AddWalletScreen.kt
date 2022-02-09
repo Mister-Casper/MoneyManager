@@ -48,7 +48,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
-        DeleteWalletDialog(addWalletViewModel.wallet.value, {
+        DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
             navController.popBackStack()
         }, {
@@ -112,7 +112,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         )
                     }
                 }
-                WalletCard(wallet = addWalletViewModel.wallet.value, onClick = {})
+                WalletCard(wallet = addWalletViewModel.wallet.value!!, onClick = {})
                 InputField(
                     addWalletViewModel.walletName.value,
                     { addWalletViewModel.onEvent(WalletEvent.ChangeWalletName(it)) },

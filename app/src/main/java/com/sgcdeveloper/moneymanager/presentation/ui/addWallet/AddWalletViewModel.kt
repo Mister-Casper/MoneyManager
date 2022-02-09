@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -34,7 +35,7 @@ open class AddWalletViewModel @Inject constructor(
     val walletColor = mutableStateOf(wallet_colors[0].toArgb())
     val walletIcon = mutableStateOf(R.drawable.wallet_icon_1)
 
-    val wallet = mutableStateOf(Wallet(icon = walletIcon.value, currency = walletCurrency.value))
+    val wallet = MutableLiveData<Wallet>()
 
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
@@ -42,7 +43,8 @@ open class AddWalletViewModel @Inject constructor(
 
     var isEditingMode = mutableStateOf(false)
 
-    init {
+    fun init() {
+        wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value)
         formatMoney(walletMoney.value)
     }
 
@@ -61,7 +63,7 @@ open class AddWalletViewModel @Inject constructor(
             is WalletEvent.ChangeWalletName -> {
                 if (walletEvent.name.length <= InitViewModel.MAX_WALLET_NAME_LENGTH || walletEvent.name.length <= walletName.value.length) {
                     walletName.value = walletEvent.name
-                    this.wallet.value = this.wallet.value.copy(name = walletEvent.name)
+                    this.wallet.value = this.wallet.value!!.copy(name = walletEvent.name)
                 }
             }
             is WalletEvent.ShowChangeCurrencyDialog -> {
@@ -69,7 +71,7 @@ open class AddWalletViewModel @Inject constructor(
             }
             is WalletEvent.ChangeCurrency -> {
                 walletCurrency.value = walletEvent.currency
-                this.wallet.value = this.wallet.value.copy(currency = walletEvent.currency)
+                this.wallet.value = this.wallet.value!!.copy(currency = walletEvent.currency)
                 dialogState.value = DialogState.NoneDialogState
                 formatMoney(walletMoney.value)
             }
@@ -85,20 +87,20 @@ open class AddWalletViewModel @Inject constructor(
             }
             is WalletEvent.ChangeColor -> {
                 walletColor.value = walletEvent.color
-                this.wallet.value = this.wallet.value.copy(color = walletEvent.color)
+                this.wallet.value = this.wallet.value!!.copy(color = walletEvent.color)
             }
             is WalletEvent.ChangeIcon -> {
                 walletIcon.value = walletEvent.icon
-                this.wallet.value = this.wallet.value.copy(icon = wallet_icons[walletEvent.icon])
+                this.wallet.value = this.wallet.value!!.copy(icon = wallet_icons[walletEvent.icon])
             }
             is WalletEvent.InsertWallet -> {
                 viewModelScope.launch {
-                    wallet.value = wallet.value.copy(money = walletMoney.value)
-                    walletsUseCases.insertWallet(wallet.value)
+                    wallet.value = wallet.value!!.copy(money = walletMoney.value)
+                    walletsUseCases.insertWallet(wallet.value!!)
                 }
             }
             is WalletEvent.ShowDeleteWalletDialog -> {
-                if (wallet.value.isDefault) {
+                if (wallet.value!!.isDefault) {
                     dialogState.value = DialogState.InformDialog(app.getString(R.string.cant_delete_default_wallet))
                 } else
                     dialogState.value = DialogState.DeleteWalletDialog
@@ -106,7 +108,7 @@ open class AddWalletViewModel @Inject constructor(
             is WalletEvent.DeleteWallet -> {
                 dialogState.value = DialogState.NoneDialogState
                 viewModelScope.launch {
-                    walletsUseCases.deleteWallet(wallet.value.walletId)
+                    walletsUseCases.deleteWallet(wallet.value!!.walletId)
                 }
             }
         }
@@ -116,7 +118,7 @@ open class AddWalletViewModel @Inject constructor(
         val formatter =
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(walletCurrency.value.code)!!)
         this.wallet.value =
-            this.wallet.value.copy(formattedMoney = formatter.format(money.toDoubleOrNull() ?: 0))
+            this.wallet.value!!.copy(formattedMoney = formatter.format(money.toDoubleOrNull() ?: 0))
     }
 
 }
