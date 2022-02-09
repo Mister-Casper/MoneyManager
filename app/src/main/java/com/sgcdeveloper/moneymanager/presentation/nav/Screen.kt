@@ -10,4 +10,5 @@ sealed class Screen(val route: String) {
     object Init : Screen("Init")
     object MoneyManagerScreen : Screen("Home")
     class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + Gson().toSafeJson(wallet))
+    class AddTransaction(wallet: Wallet? = null) : Screen("AddTransaction/" + Gson().toSafeJson(wallet))
 }

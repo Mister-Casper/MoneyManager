@@ -15,23 +15,30 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit) {
-    val selDate = remember { mutableStateOf(LocalDate.now()) }
+fun DatePicker(
+    defaultDate: Date,
+    onDateSelected: (LocalDate) -> Unit,
+    onDismissRequest: () -> Unit,
+    isDarkTHeme: Boolean = true
+) {
+    val selDate = remember { mutableStateOf(defaultDate.getAsLocalDate()) }
 
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        modifier = Modifier.size(400.dp,600.dp),
+        modifier = Modifier.size(400.dp, 600.dp),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         text = {
             Column(
@@ -69,9 +76,10 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                     Spacer(modifier = Modifier.size(16.dp))
                 }
 
-                CustomCalendarView(onDateSelected = {
-                    selDate.value = it
-                })
+                CustomCalendarView(defaultDate, onDateSelected = {
+                    onDateSelected(it)
+                    onDismissRequest()
+                },isDarkTHeme)
 
                 Spacer(modifier = Modifier.size(8.dp))
 
@@ -84,20 +92,7 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                         onClick = onDismissRequest
                     ) {
                         Text(
-                            text = "Cancel",
-                            style = MaterialTheme.typography.button,
-                            color = MaterialTheme.colors.secondary
-                        )
-                    }
-
-                    TextButton(
-                        onClick = {
-                            onDateSelected(selDate.value)
-                            onDismissRequest()
-                        }
-                    ) {
-                        Text(
-                            text = "OK",
+                            text = stringResource(id = R.string.cancel),
                             style = MaterialTheme.typography.button,
                             color = MaterialTheme.colors.secondary
                         )
@@ -109,17 +104,17 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
 }
 
 @Composable
-fun CustomCalendarView(onDateSelected: (LocalDate) -> Unit) {
-    // Adds view to Compose
+fun CustomCalendarView(defaultDate: Date, onDateSelected: (LocalDate) -> Unit, isDarkTHeme: Boolean) {
     AndroidView(
         modifier = Modifier.wrapContentSize(),
         factory = { context ->
-            CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+            if (isDarkTHeme)
+                CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+            else
+                CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom_Light))
         },
         update = { view ->
-            //    view.minDate = // contraints
-            //       view.maxDate = // contraints
-
+            view.date = defaultDate.epochMillis
             view.setOnDateChangeListener { _, year, month, dayOfMonth ->
                 onDateSelected(
                     LocalDate

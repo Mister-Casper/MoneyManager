@@ -1,12 +1,6 @@
 package com.sgcdeveloper.moneymanager.domain.repository
 
-import androidx.lifecycle.LiveData
-import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
+import com.sgcdeveloper.moneymanager.data.db.dao.TransactionDao
+import com.sgcdeveloper.moneymanager.data.db.dao.WalletDao
 
-interface MoneyManagerRepository {
-
-    fun getWallets(): LiveData<List<WalletEntry>>
-    suspend fun insertWallet(walletEntry: WalletEntry): Long
-    suspend fun removeWallet(id: Long)
-
-}
+interface MoneyManagerRepository :WalletDao,TransactionDao

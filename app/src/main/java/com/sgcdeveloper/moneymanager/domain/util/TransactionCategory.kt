@@ -9,6 +9,8 @@ sealed class TransactionCategory (){
     abstract val icon:Int
     abstract val description:Int
 
+    class None(override val color: Int = 0, override val icon: Int = 0, override val description: Int = R.string.none) : TransactionCategory()
+
     sealed class ExpenseCategory(override val color: Int, override val icon: Int, override val description: Int) :
         TransactionCategory() {
         object Bills : ExpenseCategory(wallet_color_1.toArgb(), R.drawable.bills_icon, R.string.bills)

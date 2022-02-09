@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
@@ -19,25 +20,36 @@ class GetWallets @Inject constructor(
 ) {
     operator fun invoke(): LiveData<List<Wallet>> {
         return Transformations.map(moneyManagerRepository.getWallets()) {
-            it.map { wallet ->
-                val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
-                var money = if (wallet.money.rem(1) == 0.0)
-                    wallet.money.toLong().toString()
-                else
-                    wallet.money.toString()
-                if (money == "0.0" || money == "0")
-                    money = ""
-                Wallet(
-                    wallet.id,
-                    wallet.isDefault,
-                    wallet.name,
-                    money,
-                    formatter.format(wallet.money),
-                    wallet.color,
-                    getDrawable(wallet.icon),
-                    wallet.currency
-                )
-            }.plus(AddNewWallet(currencyRepository.getDefaultCurrency()))
+            transformWallets(it)
+        }
+    }
+
+    fun getUIWallets(): LiveData<List<Wallet>> {
+        return Transformations.map(moneyManagerRepository.getWallets()) {
+            transformWallets(it).plus(AddNewWallet(currencyRepository.getDefaultCurrency()))
+        }
+    }
+
+
+    private fun transformWallets(wallets: List<WalletEntry>): List<Wallet> {
+        return wallets.map { wallet ->
+            val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
+            var money = if (wallet.money.rem(1) == 0.0)
+                wallet.money.toLong().toString()
+            else
+                wallet.money.toString()
+            if (money == "0.0" || money == "0")
+                money = ""
+            Wallet(
+                wallet.id,
+                wallet.isDefault,
+                wallet.name,
+                money,
+                formatter.format(wallet.money),
+                wallet.color,
+                getDrawable(wallet.icon),
+                wallet.currency
+            )
         }
     }
 

@@ -30,7 +30,13 @@
     <style name="Theme.MoneyManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="CalenderViewCustom" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorAccent">@color/blue</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/black</item>
+    </style>
+
+    <style name="CalenderViewCustom_Light" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorAccent">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSurface">@color/black</item>
     </style>

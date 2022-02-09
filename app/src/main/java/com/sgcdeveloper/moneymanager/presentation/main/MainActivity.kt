@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
@@ -37,7 +38,6 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationVi
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.transactionScreen.TransactionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
             val initViewModel: InitViewModel by viewModels()
             val homeViewModel: HomeViewModel by viewModels()
             val statisticViewModel: StatisticViewModel by viewModels()
-            val transactionViewModel: TransactionViewModel by viewModels()
+            val addTransactionViewModel: AddTransactionViewModel by viewModels()
             val moneyManagerViewModel: MoneyManagerViewModel by viewModels()
             val registrationViewModel: RegistrationViewModel by viewModels()
             val addWalletViewModel: AddWalletViewModel by viewModels()
@@ -140,7 +140,7 @@ class MainActivity : ComponentActivity() {
                             MoneyManagerScreen(
                                 moneyManagerViewModel,
                                 homeViewModel,
-                                transactionViewModel,
+                                addTransactionViewModel,
                                 statisticViewModel,
                                 addWalletViewModel
                             )
