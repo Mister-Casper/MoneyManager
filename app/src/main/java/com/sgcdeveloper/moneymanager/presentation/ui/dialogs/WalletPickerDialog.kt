@@ -5,29 +5,29 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.AutoSizeText
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WalletPickerDialog(
     wallets: List<Wallet>? = null,
@@ -38,6 +38,11 @@ fun WalletPickerDialog(
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(0.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .customDialogModifier(CustomDialogPosition.BOTTOM),
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
@@ -64,7 +69,26 @@ fun WalletPickerDialog(
                 onDismiss()
             }
         },
-        confirmButton = {})
+        confirmButton = {}, properties = DialogProperties(usePlatformDefaultWidth = false)
+    )
+}
+
+enum class CustomDialogPosition {
+    BOTTOM, TOP
+}
+
+fun Modifier.customDialogModifier(pos: CustomDialogPosition) = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    layout(constraints.maxWidth, constraints.maxHeight) {
+        when (pos) {
+            CustomDialogPosition.BOTTOM -> {
+                placeable.place(0, constraints.maxHeight - placeable.height, 10f)
+            }
+            CustomDialogPosition.TOP -> {
+                placeable.place(0, 0, 10f)
+            }
+        }
+    }
 }
 
 @Composable
@@ -109,17 +133,21 @@ private fun WalletSelector(
                                 )
                             }
                         }
-                        Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                        Column(
+                            Modifier
+                                .padding(start = 12.dp)
+                                .weight(1f)
+                        ) {
                             AutoSizeText(
                                 text = item.name,
                                 color = MaterialTheme.colors.secondary,
-                                suggestedFontSizes = listOf(18.sp,16.sp,14.sp)
+                                suggestedFontSizes = listOf(18.sp, 16.sp, 14.sp, 2.sp)
                             )
 
                             AutoSizeText(
                                 text = item.formattedMoney,
                                 color = MaterialTheme.colors.secondary,
-                                suggestedFontSizes = listOf(16.sp,14.sp,12.sp),
+                                suggestedFontSizes = listOf(16.sp, 14.sp, 12.sp, 2.sp),
                             )
                         }
                         RadioButton(
