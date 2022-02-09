@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,6 +55,9 @@ fun MoneyManagerScreen(
             addWalletViewModel,
             transactionsViewModel
         )
+    }
+    BackHandler {
+        // Ignore
     }
 }
 
