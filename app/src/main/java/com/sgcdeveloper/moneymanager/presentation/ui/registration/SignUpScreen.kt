@@ -37,12 +37,13 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
     val isLoginError = remember { registrationViewModel.isLoginError }
     val isPasswordError = remember { registrationViewModel.isPasswordError }
     val isPasswordConfirmError = remember { registrationViewModel.isPasswordConfirmError }
+    val isShowLoadingDialog = remember { registrationViewModel.showLoadingDialog }
 
     val isError = remember { registrationViewModel.isSignInError }
     val isConnectInternet = remember { registrationViewModel.isInternetConnection }
 
     val focusManager = LocalFocusManager.current
-
+    DummyProgress(isShowLoadingDialog.value)
     Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Text(

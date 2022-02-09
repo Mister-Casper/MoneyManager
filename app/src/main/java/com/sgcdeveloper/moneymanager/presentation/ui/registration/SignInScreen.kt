@@ -28,9 +28,10 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
 
     val isError = remember { registrationViewModel.isSignInError }
     val isConnectInternet = remember { registrationViewModel.isInternetConnection }
+    val isShowLoadingDialog = remember { registrationViewModel.showLoadingDialog }
 
     val focusManager = LocalFocusManager.current
-
+    DummyProgress(isShowLoadingDialog.value)
     Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Text(
