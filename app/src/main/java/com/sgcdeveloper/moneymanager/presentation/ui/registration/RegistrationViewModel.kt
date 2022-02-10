@@ -72,10 +72,10 @@ open class RegistrationViewModel @Inject constructor(
     fun onEvent(registrationEvent: RegistrationEvent) {
         when (registrationEvent) {
             is RegistrationEvent.SignIn -> {
+                showLoadingDialog.value = true
                 authRepository.signIn(registrationEvent) {it,username->
                     if (checkInternetConnection()) {
                         if (it) {
-                            showLoadingDialog.value = true
                             updateLogInStatus(LoginStatus.None)
                         } else {
                             showLoadingDialog.value = false
@@ -94,10 +94,10 @@ open class RegistrationViewModel @Inject constructor(
                 else if (password.value.isNotEmpty() && password.value != confirmPassword.value)
                     isPasswordConfirmError.value = true
                 else {
+                    showLoadingDialog.value = true
                     authRepository.signUp(registrationEvent) {it,username->
                         if (checkInternetConnection()) {
                             if (it) {
-                                showLoadingDialog.value = true
                                 appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
