@@ -43,6 +43,18 @@ data class Date(val epochMillis: Long) {
         return formatter.format(Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("UTC")))
     }
 
+    fun getDay(): String {
+        return getAsLocalDate().dayOfMonth.toString()
+    }
+
+    fun getDayName(): String {
+        return getAsLocalDate().dayOfWeek.name
+    }
+
+    fun getMonth():String{
+        return getAsLocalDate().month.name + " " + getAsLocalDate().year.toString()
+    }
+
     fun toDateString(formatStyle: FormatStyle): String {
         val f =
             DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(Locale.getDefault())

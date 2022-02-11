@@ -35,8 +35,8 @@ open class AddTransactionViewModel @Inject constructor(
     val transactionDate = mutableStateOf(Date(LocalDate.now()))
     val transactionAmount = mutableStateOf("")
     val transactionDescription = mutableStateOf("")
-    val transactionIncomeCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None())
-    val transactionExpenseCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None())
+    val transactionIncomeCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
+    val transactionExpenseCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
     val transactionFromWallet = MutableLiveData<Wallet>()
     val transactionToWallet = MutableLiveData<Wallet>()
 
@@ -112,6 +112,8 @@ open class AddTransactionViewModel @Inject constructor(
                     transactionFromWallet.value = addTransactionEvent.wallet
             }
             is AddTransactionEvent.InsertTransaction -> {
+                val category =
+                    if (currentScreen.value == TransactionScreen.Expense) transactionExpenseCategory.value else transactionIncomeCategory.value
                 viewModelScope.launch {
                     walletsUseCases.insertTransaction(
                         currentScreen.value.transactionType,
@@ -119,7 +121,8 @@ open class AddTransactionViewModel @Inject constructor(
                         transactionToWallet.value,
                         transactionDescription.value,
                         transactionAmount.value,
-                        transactionDate.value
+                        transactionDate.value,
+                        category
                     )
                 }
             }

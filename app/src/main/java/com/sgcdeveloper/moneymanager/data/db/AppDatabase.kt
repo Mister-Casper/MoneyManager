@@ -9,12 +9,13 @@ package com.sgcdeveloper.moneymanager.data.db
  import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
  import com.sgcdeveloper.moneymanager.data.db.util.CurrencyConverter
  import com.sgcdeveloper.moneymanager.data.db.util.DateConverter
+ import com.sgcdeveloper.moneymanager.data.db.util.TransactionCategoryConverter
 
 @Database(
     entities = [WalletEntry::class, TransactionEntry::class],
     version = 1
 )
-@TypeConverters(CurrencyConverter::class, DateConverter::class)
+@TypeConverters(CurrencyConverter::class, DateConverter::class, TransactionCategoryConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun walletDao(): WalletDao
     abstract fun transactionDao(): TransactionDao

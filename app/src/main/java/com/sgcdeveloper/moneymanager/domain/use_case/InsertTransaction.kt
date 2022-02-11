@@ -4,6 +4,7 @@ import android.content.Context
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 import javax.inject.Inject
@@ -19,6 +20,7 @@ class InsertTransaction @Inject constructor(
         description: String,
         amount: String,
         date: Date,
+        category: TransactionCategory
     ): Long {
         var toWalletId = 0L
         if(toWallet != null)
@@ -30,7 +32,8 @@ class InsertTransaction @Inject constructor(
                 description = description,
                 transactionType = transactionType,
                 fromWalletId = fromWallet.walletId,
-                toWalletId = toWalletId
+                toWalletId = toWalletId,
+                category = category
             )
         )
     }

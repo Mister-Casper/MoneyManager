@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.data.db.entry
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 
@@ -13,5 +14,6 @@ class TransactionEntry(
     val description: String,
     val transactionType: TransactionType,
     val fromWalletId: Long,
-    val toWalletId: Long = 0
+    val toWalletId: Long = 0,
+    val category:TransactionCategory
 )

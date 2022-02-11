@@ -3,7 +3,7 @@ package com.sgcdeveloper.moneymanager.domain.model
 import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getLocalFromISO
-import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_colors
 import java.text.NumberFormat
 
@@ -13,7 +13,7 @@ open class Wallet(
     val name: String = "",
     val money: String = "",
     val formattedMoney: String = "",
-    val color: Int = blue.toArgb(),
+    val color: Int = wallet_color_1.toArgb(),
     val icon: Int,
     val currency: Currency
 ) {

@@ -20,8 +20,8 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         appDatabase.walletDao().removeWallet(id)
     }
 
-    override fun getTransactions(): LiveData<List<TransactionEntry>> {
-        return appDatabase.transactionDao().getTransactions()
+    override fun getTransactions(walletId: Long): LiveData<List<TransactionEntry>> {
+        return appDatabase.transactionDao().getTransactions(walletId)
     }
 
     override suspend fun insertTransaction(transaction: TransactionEntry): Long {

@@ -108,7 +108,7 @@ fun CustomCalendarView(defaultDate: Date, onDateSelected: (LocalDate) -> Unit, i
     AndroidView(
         modifier = Modifier.wrapContentSize(),
         factory = { context ->
-            if (isDarkTHeme)
+            if (!isDarkTHeme)
                 CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
             else
                 CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom_Light))

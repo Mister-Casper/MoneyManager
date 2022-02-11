@@ -10,8 +10,8 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 @Dao
 interface TransactionDao {
 
-    @Query("SELECT * FROM TransactionEntry")
-    fun getTransactions(): LiveData<List<TransactionEntry>>
+    @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId")
+    fun getTransactions(walletId:Long): LiveData<List<TransactionEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: TransactionEntry):Long

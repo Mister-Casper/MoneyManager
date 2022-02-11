@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,8 +33,7 @@ fun WalletDashboard(wallets: List<Wallet>, onClick: (wallet: Wallet) -> Unit) {
             Text(
                 text = stringResource(id = R.string.wallet),
                 fontSize = 20.sp,
-                modifier = Modifier.padding(start = 12.dp),
-                color = MaterialTheme.colors.secondary
+                modifier = Modifier.padding(start = 12.dp)
             )
             LazyVerticalGrid(
                 cells = GridCells.Adaptive(120.dp),

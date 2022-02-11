@@ -1,18 +1,16 @@
 package com.sgcdeveloper.moneymanager.domain.util
 
 import androidx.compose.ui.graphics.toArgb
+import com.google.gson.annotations.Expose
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.*
 
-sealed class TransactionCategory (){
-    abstract val color:Int
-    abstract val icon:Int
-    abstract val description:Int
+open class TransactionCategory(@Expose open val color: Int, @Expose open val icon: Int, @Expose open val description: Int) {
 
-    class None(override val color: Int = 0, override val icon: Int = 0, override val description: Int = R.string.none) : TransactionCategory()
+    object None : TransactionCategory(0, 0, R.string.none)
 
     sealed class ExpenseCategory(override val color: Int, override val icon: Int, override val description: Int) :
-        TransactionCategory() {
+        TransactionCategory(color, icon, description) {
         object Bills : ExpenseCategory(wallet_color_1.toArgb(), R.drawable.bills_icon, R.string.bills)
         object Clothes : ExpenseCategory(wallet_color_2.toArgb(), R.drawable.clothes_icon, R.string.clothes)
         object Education : ExpenseCategory(wallet_color_3.toArgb(), R.drawable.education_icon, R.string.education)
@@ -52,7 +50,8 @@ sealed class TransactionCategory (){
         }
     }
 
-    sealed class IncomeCategory(override val color: Int, override val icon: Int, override val description: Int) : TransactionCategory() {
+    sealed class IncomeCategory(override val color: Int, override val icon: Int, override val description: Int) :
+        TransactionCategory(color, icon, description) {
         object Award : IncomeCategory(wallet_color_1.toArgb(), R.drawable.sport_icon, R.string.award)
         object Bonus : IncomeCategory(wallet_color_2.toArgb(), R.drawable.bonus_icon, R.string.bonus)
         object Dividend : IncomeCategory(wallet_color_3.toArgb(), R.drawable.dividend_icon, R.string.dividend)

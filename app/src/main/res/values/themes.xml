@@ -38,6 +38,7 @@
     <style name="CalenderViewCustom_Light" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
         <item name="colorAccent">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorSurface">@color/black</item>
     </style>
 </resources>
