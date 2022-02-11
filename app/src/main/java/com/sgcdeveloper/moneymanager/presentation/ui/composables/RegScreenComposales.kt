@@ -1,10 +1,8 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -27,8 +25,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
@@ -185,7 +181,7 @@ fun SignInGoogleButton(
                 )
                 .align(Alignment.Center),
             border = BorderStroke(width = 1.dp, color = Color.LightGray),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colors.background
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

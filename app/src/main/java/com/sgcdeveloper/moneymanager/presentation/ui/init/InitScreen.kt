@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
+import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
 
@@ -162,6 +163,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)
         ) {
             Text(text = stringResource(id = R.string.next), color = Color.White)
         }

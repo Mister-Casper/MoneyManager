@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -76,6 +77,7 @@ private fun SearchHint(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colors.background)
             .then(modifier)
 
     ) {
@@ -117,7 +119,7 @@ fun SearchTextField(
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             Box(
                 contentAlignment = Alignment.CenterStart,
-                modifier = modifier
+                modifier = modifier.background(MaterialTheme.colors.background)
             ) {
 
                 if (query.text.isEmpty()) {

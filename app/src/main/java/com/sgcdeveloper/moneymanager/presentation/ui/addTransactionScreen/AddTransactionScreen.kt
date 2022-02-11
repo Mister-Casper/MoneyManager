@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DatePicker
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
@@ -92,7 +93,8 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             Button(onClick = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
                 navController.popBackStack()
-            }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value) {
+            }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
+            colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)) {
                 Text(
                     text = stringResource(id = R.string.save),
                     Modifier.align(Alignment.CenterVertically),
