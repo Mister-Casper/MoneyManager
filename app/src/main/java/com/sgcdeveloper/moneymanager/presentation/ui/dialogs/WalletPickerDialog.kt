@@ -151,7 +151,7 @@ private fun WalletSelector(
                             )
                         }
                         RadioButton(
-                            selected = (item == selectedOption.value),
+                            selected = (item.walletId == selectedOption.value?.walletId),
                             onClick = null
                         )
                     }
