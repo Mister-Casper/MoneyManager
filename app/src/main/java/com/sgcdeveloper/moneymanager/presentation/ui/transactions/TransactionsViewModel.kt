@@ -34,6 +34,7 @@ open class TransactionsViewModel @Inject constructor(
                     defaultWallet.value = it[0]
                     transactionItems = walletsUseCases.getTransactionItems(it[0])
                 }
+                wallets.removeObserver {  }
             }
         }
     }
@@ -48,6 +49,7 @@ open class TransactionsViewModel @Inject constructor(
             }
             is TransactionEvent.ChangeWallet -> {
                 defaultWallet.value = transactionEvent.wallet
+                transactionItems = walletsUseCases.getTransactionItems(transactionEvent.wallet)
             }
         }
     }

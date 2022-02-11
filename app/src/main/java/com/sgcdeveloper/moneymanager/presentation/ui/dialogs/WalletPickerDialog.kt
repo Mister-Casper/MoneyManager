@@ -123,7 +123,7 @@ private fun WalletSelector(
                             shape = RoundedCornerShape(8.dp),
                         ) {
                             Box(modifier = Modifier.background(Color(item.color))) {
-                                androidx.compose.material.Icon(
+                                Icon(
                                     painter = painterResource(id = item.icon),
                                     contentDescription = "",
                                     Modifier

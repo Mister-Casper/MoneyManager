@@ -1,9 +1,11 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.transactions
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -12,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -125,18 +128,57 @@ fun TransactionHeader(header:BaseTransactionItem.TransactionHeader){
             .fillMaxWidth()
             .padding(top = 24.dp),
     ) {
-        Row(Modifier.fillMaxWidth().padding(6.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp)) {
             Text(text = header.dayNum, fontSize = 42.sp, modifier = Modifier.align(Alignment.CenterVertically), fontWeight = FontWeight.Bold, color = white)
-            Column(Modifier.weight(1f).padding(start = 8.dp).align(Alignment.CenterVertically)) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp)
+                    .align(Alignment.CenterVertically)) {
                 Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
                 Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Thin, color = white)
             }
             Text(text = header.money,Modifier.align(Alignment.CenterVertically), color = white)
         }
     }
+    Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
 }
 
 @Composable
 fun TransactionItem(item:BaseTransactionItem.TransactionItem){
-
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(Modifier.fillMaxWidth().padding(6.dp)) {
+            Card(
+                modifier = Modifier
+                    .size(48.dp)
+                    .align(Alignment.CenterVertically),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Box(modifier = Modifier.background(Color(item.color))) {
+                    Icon(
+                        painter = painterResource(id = item.icon),
+                        contentDescription = "",
+                        Modifier
+                            .align(Alignment.Center)
+                            .size(40.dp),
+                        tint = white
+                    )
+                }
+            }
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(start = 16.dp)
+                    .align(Alignment.CenterVertically)) {
+                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Thin, color = white)
+                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
+            }
+            Text(text = item.money, modifier = Modifier.align(Alignment.CenterVertically), color = Color(item.moneyColor))
+        }
+    }
 }

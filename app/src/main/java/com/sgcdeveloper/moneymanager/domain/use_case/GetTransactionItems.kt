@@ -9,8 +9,8 @@ import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
-import com.sgcdeveloper.moneymanager.presentation.theme.light_blue
 import com.sgcdeveloper.moneymanager.presentation.theme.red
+import com.sgcdeveloper.moneymanager.presentation.theme.white
 import java.text.NumberFormat
 import javax.inject.Inject
 
@@ -20,11 +20,14 @@ class GetTransactionItems @Inject constructor(
 ) {
     operator fun invoke(wallet: Wallet): LiveData<List<BaseTransactionItem>> {
         return Transformations.map(moneyManagerRepository.getTransactions(wallet.walletId)) {
-            convertTransactionsToItems(wallet,it)
+            convertTransactionsToItems(wallet, it.sortedByDescending { it.date.epochMillis })
         }
     }
 
-    private fun convertTransactionsToItems(wallet: Wallet, transactions: List<TransactionEntry>) :List<BaseTransactionItem>{
+    private fun convertTransactionsToItems(
+        wallet: Wallet,
+        transactions: List<TransactionEntry>
+    ): List<BaseTransactionItem> {
         val items = mutableListOf<BaseTransactionItem>()
         transactions.groupBy { it.date.toDateString() }.values.forEach { oneDayTransactions ->
             val date = oneDayTransactions.first().date
@@ -37,23 +40,24 @@ class GetTransactionItems @Inject constructor(
                 )
             )
             oneDayTransactions.forEach { transaction ->
-                val moneyColor = if(transaction.value >= 0) light_blue else red
+                val moneyColor = if (transaction.transactionType == TransactionType.Expense) red else white
                 items.add(
                     BaseTransactionItem.TransactionItem(
                         transaction.category.color,
                         transaction.category.icon,
                         transaction.description,
                         context.getString(transaction.category.description),
-                        getFormattedMoney(wallet,transaction.value),
+                        getFormattedMoney(wallet, transaction.value),
                         moneyColor.toArgb()
-                    ))
+                    )
+                )
             }
         }
         return items
     }
 
     private fun getTransactionsMoney(wallet: Wallet, transactions: List<TransactionEntry>): String {
-        return getFormattedMoney(wallet ,transactions.sumOf {
+        return getFormattedMoney(wallet, transactions.sumOf {
             when (it.transactionType) {
                 TransactionType.Income -> it.value
                 TransactionType.Expense -> -it.value
@@ -67,7 +71,7 @@ class GetTransactionItems @Inject constructor(
         })
     }
 
-    private fun getFormattedMoney(wallet: Wallet,money:Double):String{
+    private fun getFormattedMoney(wallet: Wallet, money: Double): String {
         val formatter =
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
         return formatter.format(money)
