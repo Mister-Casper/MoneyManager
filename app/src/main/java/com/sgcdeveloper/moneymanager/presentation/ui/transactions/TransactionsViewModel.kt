@@ -34,7 +34,6 @@ open class TransactionsViewModel @Inject constructor(
                     defaultWallet.value = it[0]
                     loadTransactions()
                 }
-                wallets.removeObserver {  }
             }
         }
     }
