@@ -149,7 +149,7 @@ open class AddTransactionViewModel @Inject constructor(
             return false
         return when (currentScreen.value) {
             TransactionScreen.Transfer -> {
-                (transactionToWallet.value != null && transactionToWallet.value != transactionFromWallet.value)
+                (transactionToWallet.value != null && transactionToWallet.value?.walletId != transactionFromWallet.value?.walletId)
             }
             TransactionScreen.Income -> {
                 (transactionIncomeCategory.value.icon != 0)
