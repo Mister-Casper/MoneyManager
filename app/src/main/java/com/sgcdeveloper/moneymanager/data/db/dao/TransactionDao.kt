@@ -13,6 +13,9 @@ interface TransactionDao {
     @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
     fun getTransactions(walletId:Long): LiveData<List<TransactionEntry>>
 
+    @Query("SELECT * FROM TransactionEntry WHERE id == :id")
+    suspend fun getTransaction(id: Long):TransactionEntry
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(transaction: TransactionEntry):Long
 

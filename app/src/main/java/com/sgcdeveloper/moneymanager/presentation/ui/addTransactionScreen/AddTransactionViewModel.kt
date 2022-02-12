@@ -10,12 +10,14 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_DESCRIPTION_SIZE
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_MONEY_LENGTH
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
+import com.sgcdeveloper.moneymanager.util.toMoneyString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -45,6 +47,7 @@ open class AddTransactionViewModel @Inject constructor(
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     var isTransactionFromWallet = true
+    var transactionId = 0L
 
     init {
         viewModelScope.launch {
@@ -54,6 +57,35 @@ open class AddTransactionViewModel @Inject constructor(
 
     fun onEvent(addTransactionEvent: AddTransactionEvent) {
         when (addTransactionEvent) {
+            is AddTransactionEvent.SetExistTransaction -> {
+                if(transactionId == 0L) {
+                    val transaction = addTransactionEvent.transaction
+                    transactionId = transaction.id
+                    currentScreen.value =
+                        TransactionScreen.values().find { it.transactionType == transaction.transactionType }!!
+                    currentScreenName.value = when (currentScreen.value) {
+                        TransactionScreen.Expense ->
+                            app.getString(R.string.expense)
+                        TransactionScreen.Income ->
+                            app.getString(R.string.income)
+                        else -> app.getString(R.string.transfer)
+                    }
+                    transactionDate.value = transaction.date
+                    transactionAmount.value = transaction.value.toMoneyString()
+                    transactionDescription.value = transaction.description
+                    if (transaction.transactionType == TransactionType.Income) {
+                        transactionIncomeCategory.value = transaction.category
+                    } else if (transaction.transactionType == TransactionType.Expense) {
+                        transactionExpenseCategory.value = transaction.category
+                    }
+                    viewModelScope.launch {
+                        transactionFromWallet.value = walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
+                        if (transaction.transactionType == TransactionType.Transfer)
+                            transactionToWallet.value = walletsUseCases.getWallets.getWallet(transaction.toWalletId)
+                        isTransactionCanBeSaved.value = checkIsCanBeSaved()
+                    }
+                }
+            }
             is AddTransactionEvent.SetDefaultWallet -> {
                 transactionFromWallet.value = addTransactionEvent.wallet
             }
@@ -120,6 +152,7 @@ open class AddTransactionViewModel @Inject constructor(
                     }
                 viewModelScope.launch {
                     walletsUseCases.insertTransaction(
+                        transactionId,
                         currentScreen.value.transactionType,
                         transactionFromWallet.value!!,
                         transactionToWallet.value,
@@ -160,7 +193,7 @@ open class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    private fun clear() {
+    fun clear() {
         currentScreen.value = TransactionScreen.Expense
         currentScreenName.value = app.getString(R.string.expense)
         transactionDate.value = Date(LocalDateTime.now())
@@ -173,5 +206,6 @@ open class AddTransactionViewModel @Inject constructor(
         isTransactionCanBeSaved.value = false
         dialogState.value = DialogState.NoneDialogState
         isTransactionFromWallet = true
+        transactionId = 0L
     }
 }

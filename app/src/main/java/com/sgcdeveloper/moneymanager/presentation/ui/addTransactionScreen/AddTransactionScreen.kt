@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -79,7 +80,10 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                 tint = MaterialTheme.colors.secondary,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .clickable { navController.popBackStack() }
+                    .clickable {
+                        navController.popBackStack()
+                        addTransactionViewModel.clear()
+                    }
             )
             Text(
                 text = currentScreenName.value,
@@ -90,14 +94,16 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     .padding(start = 8.dp)
                     .weight(1f)
             )
-            Button(onClick = {
-                navController.previousBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("wallet_id", addTransactionViewModel.transactionFromWallet.value!!.walletId)
-                addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
-                navController.popBackStack()
-            }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
-            colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)) {
+            Button(
+                onClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("wallet_id", addTransactionViewModel.transactionFromWallet.value!!.walletId)
+                    navController.popBackStack()
+                    addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
+                }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
+                colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)
+            ) {
                 Text(
                     text = stringResource(id = R.string.save),
                     Modifier.align(Alignment.CenterVertically),
@@ -136,6 +142,11 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                 AddTransferScreen(addTransactionViewModel)
             }
         }
+    }
+
+    BackHandler {
+        navController.popBackStack()
+        addTransactionViewModel.clear()
     }
 }
 

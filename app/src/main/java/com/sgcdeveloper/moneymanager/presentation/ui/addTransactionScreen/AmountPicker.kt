@@ -18,7 +18,7 @@ import com.sgcdeveloper.moneymanager.R
 @Composable
 fun AmountPicker(addTransactionViewModel:AddTransactionViewModel) {
     var symbol = "$"
-    if(addTransactionViewModel.transactionFromWallet.value != null)
+    if(addTransactionViewModel.transactionFromWallet.value?.currency != null)
         symbol = addTransactionViewModel.transactionFromWallet.value!!.currency.symbol
 
     Row(Modifier.fillMaxWidth().padding(top = 12.dp)) {

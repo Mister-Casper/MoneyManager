@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -105,7 +106,7 @@ private fun MainScreenNavigationConfigurations(
             HomeScreen(homeViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
-            TransactionsScreen (transactionsViewModel, navController)
+            TransactionsScreen(transactionsViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             StatisticScreen(statisticViewModel)
@@ -113,14 +114,29 @@ private fun MainScreenNavigationConfigurations(
         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
             val wallet =
                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+
             addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
             AddTransactionScreen(addTransactionViewModel, navController)
+        }
+
+        composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
+            val transaction =
+                Gson().fromJson(backStackEntry.arguments?.getString("transaction"), TransactionEntry::class.java)
+
+            if (transaction != null)
+                addTransactionViewModel.onEvent(AddTransactionEvent.SetExistTransaction(transaction))
+            AddTransactionScreen(addTransactionViewModel, navController)
+
+            backStackEntry.arguments?.putString("transaction", "")
         }
         composable(Screen.AddWallet(null).route + "{wallet}") { backStackEntry ->
             val wallet =
                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
-            addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
+            if (wallet != null)
+                addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
             AddWalletScreen(navController, addWalletViewModel)
+
+            backStackEntry.arguments?.putString("wallet", "")
         }
     }
 }

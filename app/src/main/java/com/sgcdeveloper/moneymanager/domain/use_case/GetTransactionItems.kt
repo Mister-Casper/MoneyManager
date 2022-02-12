@@ -51,6 +51,7 @@ class GetTransactionItems @Inject constructor(
 
                 items.add(
                     BaseTransactionItem.TransactionItem(
+                        transaction,
                         transaction.category.color,
                         transaction.category.icon,
                         transaction.description,

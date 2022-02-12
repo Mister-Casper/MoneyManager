@@ -9,6 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.util.toMoneyString
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -30,27 +31,29 @@ class GetWallets @Inject constructor(
         }
     }
 
+    suspend fun getWallet(id: Long): Wallet {
+        return transformWallet(moneyManagerRepository.getWallet(id))
+    }
 
     private fun transformWallets(wallets: List<WalletEntry>): List<Wallet> {
-        return wallets.map { wallet ->
-            val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
-            var money = if (wallet.money.rem(1) == 0.0)
-                wallet.money.toLong().toString()
-            else
-                wallet.money.toString()
-            if (money == "0.0" || money == "0")
-                money = ""
-            Wallet(
-                wallet.id,
-                wallet.isDefault,
-                wallet.name,
-                money,
-                formatter.format(wallet.money),
-                wallet.color,
-                getDrawable(wallet.icon),
-                wallet.currency
-            )
-        }
+        return wallets.map { wallet -> transformWallet(wallet) }
+    }
+
+    private fun transformWallet(wallet: WalletEntry): Wallet {
+        val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
+        var money = wallet.money.toMoneyString()
+        if (money == "0.0" || money == "0")
+            money = ""
+        return Wallet(
+            wallet.id,
+            wallet.isDefault,
+            wallet.name,
+            money,
+            formatter.format(wallet.money),
+            wallet.color,
+            getDrawable(wallet.icon),
+            wallet.currency
+        )
     }
 
     private fun getDrawable(name: String): Int {

@@ -13,9 +13,11 @@ import javax.inject.Inject
 class InsertTransaction @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val insertWallet: InsertWallet
+    private val insertWallet: InsertWallet,
+    private val getWallets: GetWallets
 ) {
     suspend operator fun invoke(
+        transactionId: Long,
         transactionType: TransactionType,
         fromWallet: Wallet,
         toWallet: Wallet? = null,
@@ -25,13 +27,16 @@ class InsertTransaction @Inject constructor(
         category: TransactionCategory
     ): Long {
         var toWalletId = 0L
-        if (toWallet != null)
+        if (toWallet != null && transactionType == TransactionType.Transfer)
             toWalletId = toWallet.walletId
+        if (transactionId != 0L)
+            cancelTransaction(transactionId)
 
-        updateWalletMoney(transactionType, amount.toDouble(), fromWallet, toWallet)
+        updateWalletMoney(transactionType, amount.toDouble(), fromWallet.walletId, toWallet?.walletId)
 
         return moneyManagerRepository.insertTransaction(
             TransactionEntry(
+                id = transactionId,
                 date = date,
                 value = amount.toDouble(),
                 description = description,
@@ -46,9 +51,10 @@ class InsertTransaction @Inject constructor(
     private suspend fun updateWalletMoney(
         transactionType: TransactionType,
         amount: Double,
-        fromWallet: Wallet,
-        toWallet: Wallet?
+        fromWalletId: Long,
+        toWalletId: Long?
     ) {
+        val fromWallet = getWallets.getWallet(fromWalletId)
         when (transactionType) {
             TransactionType.Expense -> {
                 insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
@@ -57,9 +63,17 @@ class InsertTransaction @Inject constructor(
                 insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString()))
             }
             TransactionType.Transfer -> {
+                val toWallet = getWallets.getWallet(toWalletId!!)
                 insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
-                insertWallet(toWallet!!.copy(money = (toWallet.money.toSafeDouble() + amount).toString()))
+                insertWallet(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount).toString()))
             }
         }
+    }
+
+    private suspend fun cancelTransaction(transactionId: Long) {
+        val transaction = moneyManagerRepository.getTransaction(transactionId)
+        updateWalletMoney(
+            transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId
+        )
     }
 }

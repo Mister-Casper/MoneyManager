@@ -30,3 +30,10 @@ fun String.toSafeDouble():Double{
     else
         this.toDouble()
 }
+
+fun Double.toMoneyString():String{
+    return if (this.rem(1) == 0.0)
+        this.toLong().toString()
+    else
+        this.toString()
+}

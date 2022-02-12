@@ -96,14 +96,12 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     )
                 }
             }
-            transactions.value?.let {
-                items(transactions.value!!.size) {
-                    val transactionItem = transactions.value!![it]
-                    if (transactionItem is BaseTransactionItem.TransactionHeader) {
-                        TransactionHeader(transactionItem)
-                    } else if (transactionItem is BaseTransactionItem.TransactionItem) {
-                        TransactionItem(transactionItem)
-                    }
+            items(transactions.value.size) {
+                val transactionItem = transactions.value[it]
+                if (transactionItem is BaseTransactionItem.TransactionHeader) {
+                    TransactionHeader(transactionItem)
+                } else if (transactionItem is BaseTransactionItem.TransactionItem) {
+                    TransactionItem(transactionItem, navController)
                 }
             }
             item {
@@ -165,9 +163,11 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
 }
 
 @Composable
-fun TransactionItem(item: BaseTransactionItem.TransactionItem) {
+fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: NavController) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { navController.navigate(Screen.EditTransaction(transaction = item.transactionEntry).route) }
     ) {
         Row(
             Modifier
