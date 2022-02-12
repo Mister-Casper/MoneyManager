@@ -152,10 +152,10 @@ open class AddTransactionViewModel @Inject constructor(
                 (transactionToWallet.value != null && transactionToWallet.value?.walletId != transactionFromWallet.value?.walletId)
             }
             TransactionScreen.Income -> {
-                (transactionIncomeCategory.value.icon != 0)
+                (transactionIncomeCategory.value != TransactionCategory.None)
             }
             TransactionScreen.Expense -> {
-                (transactionExpenseCategory.value.icon != 0)
+                (transactionExpenseCategory.value != TransactionCategory.None)
             }
         }
     }
