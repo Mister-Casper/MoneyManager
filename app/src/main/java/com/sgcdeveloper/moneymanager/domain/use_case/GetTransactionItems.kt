@@ -89,21 +89,4 @@ class GetTransactionItems @Inject constructor(
        } else
             context.getString(transactionEntry.category.description)
     }
-
-    /*
-        private fun getTransactionDescription(
-        walletFromId: Long,
-        walletToId: Long,
-        transactionEntry: TransactionEntry
-    ): LiveData<String> {
-        return if (transactionEntry.category == TransactionCategory.None) {
-            Transformations.switchMap(moneyManagerRepository.getWallet(walletFromId)) { name1 ->
-                Transformations.map(moneyManagerRepository.getWallet(walletToId)) { name2 ->
-                    name1.name + " -> " + name2.name
-                }
-            }
-        } else
-            context.getString(transactionEntry.category.description)
-    }
-     */
 }
