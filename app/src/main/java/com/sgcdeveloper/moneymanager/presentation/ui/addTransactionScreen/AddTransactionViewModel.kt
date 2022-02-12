@@ -19,6 +19,7 @@ import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -125,6 +126,7 @@ open class AddTransactionViewModel @Inject constructor(
                         category
                     )
                 }
+                clear()
             }
         }
         isTransactionCanBeSaved.value = checkIsCanBeSaved()
@@ -153,5 +155,20 @@ open class AddTransactionViewModel @Inject constructor(
                 (transactionExpenseCategory.value.icon != 0)
             }
         }
+    }
+
+    private fun clear(){
+        currentScreen.value = TransactionScreen.Expense
+        currentScreenName.value = app.getString(R.string.expense)
+        transactionDate.value = Date(LocalDateTime.now())
+        transactionAmount.value = ""
+        transactionDescription.value = ""
+        transactionExpenseCategory.value = TransactionCategory.None
+        transactionIncomeCategory.value = TransactionCategory.None
+        transactionFromWallet.value = null
+        transactionToWallet.value = null
+        isTransactionCanBeSaved.value = false
+        dialogState.value = DialogState.NoneDialogState
+        isTransactionFromWallet = true
     }
 }
