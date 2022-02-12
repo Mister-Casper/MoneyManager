@@ -18,7 +18,6 @@ import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -33,7 +32,7 @@ open class AddTransactionViewModel @Inject constructor(
     val currentScreen = mutableStateOf(TransactionScreen.Expense)
     val currentScreenName = mutableStateOf(app.getString(R.string.expense))
 
-    val transactionDate = mutableStateOf(Date(LocalDate.now()))
+    val transactionDate = mutableStateOf(Date(LocalDateTime.now()))
     val transactionAmount = mutableStateOf("")
     val transactionDescription = mutableStateOf("")
     val transactionIncomeCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)

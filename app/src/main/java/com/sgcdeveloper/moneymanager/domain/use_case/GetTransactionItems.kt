@@ -11,6 +11,7 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import kotlinx.coroutines.runBlocking
 import java.text.NumberFormat
 import javax.inject.Inject
 
@@ -41,12 +42,13 @@ class GetTransactionItems @Inject constructor(
             )
             oneDayTransactions.forEach { transaction ->
                 val moneyColor = if (transaction.transactionType == TransactionType.Expense) red else white
+
                 items.add(
                     BaseTransactionItem.TransactionItem(
                         transaction.category.color,
                         transaction.category.icon,
                         transaction.description,
-                        context.getString(transaction.category.description),
+                        getTransactionDescription(transaction.fromWalletId, transaction.toWalletId, transaction),
                         getFormattedMoney(wallet, transaction.value),
                         moneyColor.toArgb()
                     )
@@ -76,4 +78,32 @@ class GetTransactionItems @Inject constructor(
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
         return formatter.format(money)
     }
+
+    private fun getTransactionDescription(
+        walletFromId: Long,
+        walletToId: Long,
+        transactionEntry: TransactionEntry
+    ): String = runBlocking {
+        if (transactionEntry.transactionType == TransactionType.Transfer) {
+            moneyManagerRepository.getWallet(walletFromId).name + " -> " + moneyManagerRepository.getWallet(walletToId).name
+       } else
+            context.getString(transactionEntry.category.description)
+    }
+
+    /*
+        private fun getTransactionDescription(
+        walletFromId: Long,
+        walletToId: Long,
+        transactionEntry: TransactionEntry
+    ): LiveData<String> {
+        return if (transactionEntry.category == TransactionCategory.None) {
+            Transformations.switchMap(moneyManagerRepository.getWallet(walletFromId)) { name1 ->
+                Transformations.map(moneyManagerRepository.getWallet(walletToId)) { name2 ->
+                    name1.name + " -> " + name2.name
+                }
+            }
+        } else
+            context.getString(transactionEntry.category.description)
+    }
+     */
 }

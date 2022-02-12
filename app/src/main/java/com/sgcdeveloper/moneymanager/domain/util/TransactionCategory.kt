@@ -7,7 +7,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.*
 
 open class TransactionCategory(@Expose open val color: Int, @Expose open val icon: Int, @Expose open val description: Int) {
 
-    object None : TransactionCategory(0, 0, R.string.none)
+    object None : TransactionCategory(wallet_color_17.toArgb(), R.drawable.transfer_icon, R.string.none)
 
     sealed class ExpenseCategory(override val color: Int, override val icon: Int, override val description: Int) :
         TransactionCategory(color, icon, description) {

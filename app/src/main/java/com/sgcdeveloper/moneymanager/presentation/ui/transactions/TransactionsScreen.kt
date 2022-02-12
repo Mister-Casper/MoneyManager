@@ -43,7 +43,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         })
     }
 
-    CheckDataFromAddTransactionScreen(navController,transactionsViewModel)
+    CheckDataFromAddTransactionScreen(navController, transactionsViewModel)
 
     Box(
         modifier = Modifier
@@ -53,7 +53,12 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         LazyColumn(Modifier.padding(12.dp)) {
             item {
                 Column(Modifier.fillMaxSize()) {
-                    Row(Modifier.clickable { transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog) }) {
+                    Row(Modifier.clickable {
+                        transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("wallet_id",-1L)
+                    }) {
                         wallet.value?.let {
                             Text(
                                 text = wallet.value!!.name,
@@ -95,9 +100,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             transactions.value?.let {
                 items(transactions.value!!.size) {
                     val transactionItem = transactions.value!![it]
-                    if(transactionItem is BaseTransactionItem.TransactionHeader){
+                    if (transactionItem is BaseTransactionItem.TransactionHeader) {
                         TransactionHeader(transactionItem)
-                    }else if(transactionItem is BaseTransactionItem.TransactionItem){
+                    } else if (transactionItem is BaseTransactionItem.TransactionItem) {
                         TransactionItem(transactionItem)
                     }
                 }
@@ -124,7 +129,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
 }
 
 @Composable
-fun TransactionHeader(header:BaseTransactionItem.TransactionHeader){
+fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -133,28 +138,39 @@ fun TransactionHeader(header:BaseTransactionItem.TransactionHeader){
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(6.dp)) {
-            Text(text = header.dayNum, fontSize = 42.sp, modifier = Modifier.align(Alignment.CenterVertically), fontWeight = FontWeight.Bold, color = white)
+                .padding(6.dp)
+        ) {
+            Text(
+                text = header.dayNum,
+                fontSize = 42.sp,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Bold,
+                color = white
+            )
             Column(
                 Modifier
                     .weight(1f)
                     .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)) {
+                    .align(Alignment.CenterVertically)
+            ) {
                 Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
                 Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Thin, color = white)
             }
-            Text(text = header.money,Modifier.align(Alignment.CenterVertically), color = white)
+            Text(text = header.money, Modifier.align(Alignment.CenterVertically), color = white)
         }
     }
     Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
 }
 
 @Composable
-fun TransactionItem(item:BaseTransactionItem.TransactionItem){
+fun TransactionItem(item: BaseTransactionItem.TransactionItem) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(Modifier.fillMaxWidth().padding(6.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp)) {
             Card(
                 modifier = Modifier
                     .size(48.dp)
@@ -176,22 +192,29 @@ fun TransactionItem(item:BaseTransactionItem.TransactionItem){
                 Modifier
                     .weight(1f)
                     .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)) {
+                    .align(Alignment.CenterVertically)
+            ) {
                 Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Thin, color = white)
                 Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
             }
-            Text(text = item.money, modifier = Modifier.align(Alignment.CenterVertically), color = Color(item.moneyColor))
+            Text(
+                text = item.money,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                color = Color(item.moneyColor)
+            )
         }
     }
 }
 
 @Composable
-fun CheckDataFromAddTransactionScreen(navController: NavController,transactionsViewModel: TransactionsViewModel){
+fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TransactionsViewModel) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
-        ?.getLiveData<Long>("wallet_id")?.observeAsState()
+        ?.get<Long>("wallet_id")
 
-    secondScreenResult?.value?.let {
-        transactionsViewModel.onEvent(TransactionEvent.ChangeWalletById(it))
+    secondScreenResult?.let {
+        if(secondScreenResult != -1L) {
+            transactionsViewModel.onEvent(TransactionEvent.ChangeWalletById(it))
+        }
     }
 }

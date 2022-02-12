@@ -23,3 +23,10 @@ fun Gson.toSafeJson(src: Any?): String? {
         ""
     } else toJson(src, src.javaClass)
 }
+
+fun String.toSafeDouble():Double{
+    return if(this == "")
+        0.0
+    else
+        this.toDouble()
+}

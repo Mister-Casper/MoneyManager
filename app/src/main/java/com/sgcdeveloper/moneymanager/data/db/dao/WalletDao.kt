@@ -13,6 +13,9 @@ interface WalletDao {
     @Query("SELECT * FROM WalletEntry")
     fun getWallets(): LiveData<List<WalletEntry>>
 
+    @Query("SELECT * FROM WalletEntry WHERE id == :id")
+    suspend fun getWallet(id:Long): WalletEntry
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWallet(walletEntry: WalletEntry):Long
 

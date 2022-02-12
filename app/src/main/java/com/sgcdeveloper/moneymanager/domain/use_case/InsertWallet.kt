@@ -11,7 +11,9 @@ class InsertWallet @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository,
 ) {
-    suspend operator fun invoke(wallet: Wallet): Long {
+    suspend operator fun invoke(wallet: Wallet?): Long {
+        if(wallet == null)
+            return 0
         return moneyManagerRepository.insertWallet(
             WalletEntry(
                 id = wallet.walletId,
