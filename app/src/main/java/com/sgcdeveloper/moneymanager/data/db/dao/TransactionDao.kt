@@ -10,7 +10,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 @Dao
 interface TransactionDao {
 
-    @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId")
+    @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
     fun getTransactions(walletId:Long): LiveData<List<TransactionEntry>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
