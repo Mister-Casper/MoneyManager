@@ -48,9 +48,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 60.dp)
+            .padding(bottom = 50.dp)
     ) {
-        LazyColumn(Modifier.padding(12.dp).padding(bottom = 64.dp)) {
+        LazyColumn(Modifier.padding(12.dp)) {
             item {
                 Column(Modifier.fillMaxSize()) {
                     Row(Modifier.clickable {
@@ -106,6 +106,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         TransactionItem(transactionItem)
                     }
                 }
+            }
+            item {
+                Spacer(modifier = Modifier.padding(bottom = 55.dp))
             }
         }
 
