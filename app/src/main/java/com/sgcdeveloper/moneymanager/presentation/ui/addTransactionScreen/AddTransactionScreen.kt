@@ -15,6 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,10 +24,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DatePicker
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectTransactionCategoryDialog
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
 
 @Composable
 fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navController: NavController) {
@@ -58,6 +56,14 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             }) {
             addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
         }
+    } else if (dialog.value is DialogState.DeleteTransactionDialog) {
+        DeleteWalletDialog(null, {
+            addTransactionViewModel.onEvent(AddTransactionEvent.DeleteTransaction)
+            navController.popBackStack()
+            addTransactionViewModel.clear()
+        }, {
+            addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
+        }, R.string.are_u_sure_delete_transaction)
     }
 
     when (addTransactionViewModel.currentScreen.value) {
@@ -94,6 +100,20 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     .padding(start = 8.dp)
                     .weight(1f)
             )
+            if (addTransactionViewModel.transactionId != 0L) {
+                Icon(
+                    painter = painterResource(id = R.drawable.delete_icon),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 4.dp)
+                        .size(48.dp)
+                        .clickable {
+                            addTransactionViewModel.onEvent(AddTransactionEvent.ShowDeleteTransactionDialog)
+                        }
+                )
+            }
             Button(
                 onClick = {
                     navController.previousBackStackEntry

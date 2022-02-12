@@ -48,6 +48,18 @@ class InsertTransaction @Inject constructor(
         )
     }
 
+    suspend fun deleteTransaction(transactionId: Long){
+        cancelTransaction(transactionId)
+        moneyManagerRepository.removeTransaction(transactionId)
+    }
+
+   private suspend fun cancelTransaction(transactionId: Long) {
+        val transaction = moneyManagerRepository.getTransaction(transactionId)
+        updateWalletMoney(
+            transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId
+        )
+    }
+
     private suspend fun updateWalletMoney(
         transactionType: TransactionType,
         amount: Double,
@@ -68,12 +80,5 @@ class InsertTransaction @Inject constructor(
                 insertWallet(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount).toString()))
             }
         }
-    }
-
-    private suspend fun cancelTransaction(transactionId: Long) {
-        val transaction = moneyManagerRepository.getTransaction(transactionId)
-        updateWalletMoney(
-            transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId
-        )
     }
 }

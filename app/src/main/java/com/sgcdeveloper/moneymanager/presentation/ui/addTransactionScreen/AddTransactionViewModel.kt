@@ -58,7 +58,7 @@ open class AddTransactionViewModel @Inject constructor(
     fun onEvent(addTransactionEvent: AddTransactionEvent) {
         when (addTransactionEvent) {
             is AddTransactionEvent.SetExistTransaction -> {
-                if(transactionId == 0L) {
+                if (transactionId == 0L) {
                     val transaction = addTransactionEvent.transaction
                     transactionId = transaction.id
                     currentScreen.value =
@@ -163,6 +163,15 @@ open class AddTransactionViewModel @Inject constructor(
                     )
                 }
                 clear()
+            }
+            is AddTransactionEvent.ShowDeleteTransactionDialog -> {
+                dialogState.value = DialogState.DeleteTransactionDialog
+            }
+            is AddTransactionEvent.DeleteTransaction -> {
+                dialogState.value = DialogState.NoneDialogState
+                viewModelScope.launch {
+                    walletsUseCases.insertTransaction.deleteTransaction(transactionId)
+                }
             }
         }
         isTransactionCanBeSaved.value = checkIsCanBeSaved()
