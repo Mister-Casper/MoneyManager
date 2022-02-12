@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +30,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
-    val wallet = transactionsViewModel.defaultWallet.observeAsState()
-    val transactions = transactionsViewModel.transactionItems.observeAsState()
+    val wallet = remember { transactionsViewModel.defaultWallet }
+    val transactions = remember { transactionsViewModel.transactionItems }
     val dialog = remember { transactionsViewModel.dialog }
 
     if (dialog.value is DialogState.WalletPickerDialog) {

@@ -21,7 +21,7 @@ open class TransactionsViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases
 ) : AndroidViewModel(app) {
     lateinit var wallets: LiveData<List<Wallet>>
-    var transactionItems: LiveData<List<BaseTransactionItem>> = MutableLiveData(Collections.emptyList())
+    var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val defaultWallet = MutableLiveData<Wallet>()
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
@@ -30,7 +30,7 @@ open class TransactionsViewModel @Inject constructor(
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets()
             wallets.observeForever {
-                if (it.isNotEmpty()) {
+                if (it.isNotEmpty() && defaultWallet.value == null) {
                     defaultWallet.value = it[0]
                     loadTransactions()
                 }
@@ -58,7 +58,10 @@ open class TransactionsViewModel @Inject constructor(
     }
 
     private fun loadTransactions(){
-        transactionItems = walletsUseCases.getTransactionItems(defaultWallet.value!!)
+        walletsUseCases.getTransactionItems(defaultWallet.value!!).observeForever {
+            transactionItems.value = it
+            walletsUseCases.getTransactionItems(defaultWallet.value!!).removeObserver {  }
+        }
     }
 
 }
