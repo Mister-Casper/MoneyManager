@@ -113,7 +113,11 @@ open class AddTransactionViewModel @Inject constructor(
             }
             is AddTransactionEvent.InsertTransaction -> {
                 val category =
-                    if (currentScreen.value == TransactionScreen.Expense) transactionExpenseCategory.value else transactionIncomeCategory.value
+                    when (currentScreen.value) {
+                        TransactionScreen.Expense -> transactionExpenseCategory.value
+                        TransactionScreen.Income -> transactionIncomeCategory.value
+                        else -> TransactionCategory.None
+                    }
                 viewModelScope.launch {
                     walletsUseCases.insertTransaction(
                         currentScreen.value.transactionType,
@@ -156,7 +160,7 @@ open class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    private fun clear(){
+    private fun clear() {
         currentScreen.value = TransactionScreen.Expense
         currentScreenName.value = app.getString(R.string.expense)
         transactionDate.value = Date(LocalDateTime.now())

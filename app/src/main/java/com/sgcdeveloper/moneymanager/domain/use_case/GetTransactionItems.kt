@@ -41,7 +41,13 @@ class GetTransactionItems @Inject constructor(
                 )
             )
             oneDayTransactions.forEach { transaction ->
-                val moneyColor = if (transaction.transactionType == TransactionType.Expense) red else white
+                val moneyColor =
+                    if (transaction.transactionType == TransactionType.Expense) red else if (transaction.transactionType == TransactionType.Income) white else {
+                        if (transaction.fromWalletId == wallet.walletId)
+                            red
+                        else
+                            white
+                    }
 
                 items.add(
                     BaseTransactionItem.TransactionItem(
@@ -86,7 +92,7 @@ class GetTransactionItems @Inject constructor(
     ): String = runBlocking {
         if (transactionEntry.transactionType == TransactionType.Transfer) {
             moneyManagerRepository.getWallet(walletFromId).name + " -> " + moneyManagerRepository.getWallet(walletToId).name
-       } else
+        } else
             context.getString(transactionEntry.category.description)
     }
 }

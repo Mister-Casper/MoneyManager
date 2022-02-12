@@ -50,14 +50,14 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             .fillMaxSize()
             .padding(bottom = 60.dp)
     ) {
-        LazyColumn(Modifier.padding(12.dp)) {
+        LazyColumn(Modifier.padding(12.dp).padding(bottom = 64.dp)) {
             item {
                 Column(Modifier.fillMaxSize()) {
                     Row(Modifier.clickable {
                         transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
                         navController.currentBackStackEntry
                             ?.savedStateHandle
-                            ?.set("wallet_id",-1L)
+                            ?.set("wallet_id", -1L)
                     }) {
                         wallet.value?.let {
                             Text(
@@ -170,7 +170,8 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(6.dp)) {
+                .padding(6.dp)
+        ) {
             Card(
                 modifier = Modifier
                     .size(48.dp)
@@ -213,7 +214,7 @@ fun CheckDataFromAddTransactionScreen(navController: NavController, transactions
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
-        if(secondScreenResult != -1L) {
+        if (secondScreenResult != -1L) {
             transactionsViewModel.onEvent(TransactionEvent.ChangeWalletById(it))
         }
     }
