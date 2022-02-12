@@ -91,6 +91,9 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     .weight(1f)
             )
             Button(onClick = {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("wallet_id", addTransactionViewModel.transactionFromWallet.value!!.walletId)
                 addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
                 navController.popBackStack()
             }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,

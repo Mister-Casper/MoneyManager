@@ -43,6 +43,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         })
     }
 
+    CheckDataFromAddTransactionScreen(navController,transactionsViewModel)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -180,5 +182,16 @@ fun TransactionItem(item:BaseTransactionItem.TransactionItem){
             }
             Text(text = item.money, modifier = Modifier.align(Alignment.CenterVertically), color = Color(item.moneyColor))
         }
+    }
+}
+
+@Composable
+fun CheckDataFromAddTransactionScreen(navController: NavController,transactionsViewModel: TransactionsViewModel){
+    val secondScreenResult = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<Long>("wallet_id")?.observeAsState()
+
+    secondScreenResult?.value?.let {
+        transactionsViewModel.onEvent(TransactionEvent.ChangeWalletById(it))
     }
 }

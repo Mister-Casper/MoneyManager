@@ -32,7 +32,7 @@ open class TransactionsViewModel @Inject constructor(
             wallets.observeForever {
                 if (it.isNotEmpty()) {
                     defaultWallet.value = it[0]
-                    transactionItems = walletsUseCases.getTransactionItems(it[0])
+                    loadTransactions()
                 }
                 wallets.removeObserver {  }
             }
@@ -49,9 +49,17 @@ open class TransactionsViewModel @Inject constructor(
             }
             is TransactionEvent.ChangeWallet -> {
                 defaultWallet.value = transactionEvent.wallet
-                transactionItems = walletsUseCases.getTransactionItems(transactionEvent.wallet)
+                loadTransactions()
+            }
+            is TransactionEvent.ChangeWalletById ->{
+                defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
+                loadTransactions()
             }
         }
+    }
+
+    private fun loadTransactions(){
+        transactionItems = walletsUseCases.getTransactionItems(defaultWallet.value!!)
     }
 
 }
