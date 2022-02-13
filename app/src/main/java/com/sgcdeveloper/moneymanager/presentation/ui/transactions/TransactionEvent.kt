@@ -6,7 +6,6 @@ sealed class TransactionEvent {
     class ChangeWallet(val wallet: Wallet) : TransactionEvent()
     class ChangeWalletById(val walletId: Long) : TransactionEvent()
 
-    object AddTransaction : TransactionEvent()
     object ShowWalletPickerDialog : TransactionEvent()
     object CloseDialog : TransactionEvent()
 }

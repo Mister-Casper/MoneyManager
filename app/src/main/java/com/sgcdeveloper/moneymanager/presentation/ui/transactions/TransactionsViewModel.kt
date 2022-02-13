@@ -23,6 +23,7 @@ open class TransactionsViewModel @Inject constructor(
     lateinit var wallets: LiveData<List<Wallet>>
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val defaultWallet = MutableLiveData<Wallet>()
+    val isEmpty = mutableStateOf(false)
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
@@ -50,17 +51,18 @@ open class TransactionsViewModel @Inject constructor(
                 defaultWallet.value = transactionEvent.wallet
                 loadTransactions()
             }
-            is TransactionEvent.ChangeWalletById ->{
+            is TransactionEvent.ChangeWalletById -> {
                 defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
                 loadTransactions()
             }
         }
     }
 
-    private fun loadTransactions(){
+    private fun loadTransactions() {
         walletsUseCases.getTransactionItems(defaultWallet.value!!).observeForever {
+            isEmpty.value = it.isEmpty()
             transactionItems.value = it
-            walletsUseCases.getTransactionItems(defaultWallet.value!!).removeObserver {  }
+            walletsUseCases.getTransactionItems(defaultWallet.value!!).removeObserver { }
         }
     }
 

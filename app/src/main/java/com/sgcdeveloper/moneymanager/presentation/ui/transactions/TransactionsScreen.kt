@@ -23,6 +23,7 @@ import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
+import com.sgcdeveloper.moneymanager.presentation.theme.Typography
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
@@ -106,6 +107,29 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             }
             item {
                 Spacer(modifier = Modifier.padding(bottom = 55.dp))
+            }
+        }
+
+        if(transactionsViewModel.isEmpty.value) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(Modifier.align(Alignment.Center)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.empty_icon),
+                        contentDescription = "",
+                        Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.no_transactions),
+                        style = Typography.h5,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.tap_to_add_transaction),
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
             }
         }
 
