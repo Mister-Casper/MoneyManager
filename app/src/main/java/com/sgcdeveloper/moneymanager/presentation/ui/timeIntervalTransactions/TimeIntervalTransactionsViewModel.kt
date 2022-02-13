@@ -88,7 +88,8 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
     }
 
     fun clear() {
-
+        timeInterval.value = TimeInterval.Daily()
+        dialog.value = DialogState.NoneDialogState
     }
 
 }

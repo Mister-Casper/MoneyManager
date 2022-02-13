@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -60,8 +61,8 @@ fun TimeIntervalTransactionsScreen(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .clickable {
-                            navController.popBackStack()
                             transactionsViewModel.clear()
+                            navController.popBackStack()
                         }
                 )
                 Text(
@@ -238,6 +239,11 @@ fun TimeIntervalTransactionsScreen(
                 modifier = Modifier.size(1000.dp)
             )
         }
+    }
+
+    BackHandler {
+        transactionsViewModel.clear()
+        navController.popBackStack()
     }
 }
 
