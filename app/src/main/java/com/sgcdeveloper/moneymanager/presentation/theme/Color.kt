@@ -3,7 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 val blue = Color(0xff1a7cc7)
-val white = Color(0xFFdbdbdb)
+val white = Color(0xffffffff)
 val black = Color(0xFF000000)
 val gray = Color(0xffb5b5b5)
 val light_blue = Color(0xff1e88e5)

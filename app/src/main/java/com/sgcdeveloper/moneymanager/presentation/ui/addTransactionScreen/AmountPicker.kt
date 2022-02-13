@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,16 +18,21 @@ import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 
 @Composable
-fun AmountPicker(addTransactionViewModel:AddTransactionViewModel) {
+fun AmountPicker(addTransactionViewModel: AddTransactionViewModel) {
     var symbol = "$"
-    if(addTransactionViewModel.transactionFromWallet.value?.currency != null)
+    if (addTransactionViewModel.transactionFromWallet.value?.currency != null)
         symbol = addTransactionViewModel.transactionFromWallet.value!!.currency.symbol
 
-    Row(Modifier.fillMaxWidth().padding(top = 12.dp)) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+    ) {
         Text(
-            text = stringResource(id = R.string.amount,  symbol),
+            text = stringResource(id = R.string.amount, symbol),
             fontSize = 22.sp,
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically),
+            color = MaterialTheme.colors.secondary
         )
         TextField(
             value = addTransactionViewModel.transactionAmount.value,
@@ -34,7 +41,8 @@ fun AmountPicker(addTransactionViewModel:AddTransactionViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterVertically),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary)
         )
     }
 }

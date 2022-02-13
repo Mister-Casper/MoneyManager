@@ -16,4 +16,7 @@ sealed class Screen(val route: String) {
 
     class EditTransaction(transaction: TransactionEntry?=null) :
         Screen("EditTransaction/" + Gson().toSafeJson(transaction))
+
+    class TimeIntervalTransactions(wallet: Wallet?=null) :
+        Screen("TimeIntervalTransactions/" + Gson().toSafeJson(wallet))
 }

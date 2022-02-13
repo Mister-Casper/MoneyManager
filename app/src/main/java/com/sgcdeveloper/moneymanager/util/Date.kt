@@ -22,14 +22,30 @@ data class Date(val epochMillis: Long) {
         return Instant.ofEpochMilli(epochMillis).atZone(ZoneId.systemDefault())
     }
 
-    override fun toString(): String {
+    fun toShortString(): String {
         val f =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withLocale(Locale.getDefault())
         return f.format(getZoneDateTime())
     }
 
+    override fun toString(): String {
+        val f =
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.getDefault())
+        return f.format(getZoneDateTime())
+    }
+
     fun toDateString(): String {
         val f = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
+        return f.format(getZoneDateTime())
+    }
+
+    fun toWeekString(): String {
+        val f = DateTimeFormatter.ofPattern("MMM dd").withLocale(Locale.getDefault())
+        return f.format(getZoneDateTime())
+    }
+
+    fun toMonthString(): String {
+        val f = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.getDefault())
         return f.format(getZoneDateTime())
     }
 

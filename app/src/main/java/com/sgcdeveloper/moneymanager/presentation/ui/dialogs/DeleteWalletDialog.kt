@@ -15,12 +15,17 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
 
 @Composable
-fun DeleteWalletDialog(wallet: Wallet?=null, onDelete: () -> Unit, onCancel: () -> Unit,titleId:Int = R.string.are_u_sure_delete_wallet) {
+fun DeleteWalletDialog(
+    wallet: Wallet? = null,
+    onDelete: () -> Unit,
+    onCancel: () -> Unit,
+    titleId: Int = R.string.are_u_sure_delete_wallet
+) {
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,
         title = {
-            Text(text = stringResource(id = titleId))
+            Text(text = stringResource(id = titleId), color = MaterialTheme.colors.secondary)
         },
         text = {
             wallet?.let {

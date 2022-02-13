@@ -8,6 +8,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeInterval
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -23,6 +24,12 @@ class GetTransactionItems @Inject constructor(
         return Transformations.map(moneyManagerRepository.getTransactions(wallet.walletId)) {
             convertTransactionsToItems(wallet, it.sortedByDescending { it.date.epochMillis })
         }
+    }
+
+    suspend fun getTimeIntervalTransactions(wallet: Wallet, timeInterval: TimeInterval): List<BaseTransactionItem> {
+        val transactions =
+            moneyManagerRepository.getWalletTransactions(wallet.walletId).filter { timeInterval.isInInterval(it.date) }
+        return convertTransactionsToItems(wallet, transactions.sortedByDescending { it.date.epochMillis })
     }
 
     private fun convertTransactionsToItems(
@@ -56,6 +63,7 @@ class GetTransactionItems @Inject constructor(
                         transaction.category.icon,
                         transaction.description,
                         getTransactionDescription(transaction.fromWalletId, transaction.toWalletId, transaction),
+                        transaction.value,
                         getFormattedMoney(wallet, transaction.value),
                         moneyColor.toArgb()
                     )

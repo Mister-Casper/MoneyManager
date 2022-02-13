@@ -38,6 +38,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationVi
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -59,6 +60,7 @@ class MainActivity : ComponentActivity() {
             val statisticViewModel: StatisticViewModel by viewModels()
             val addTransactionViewModel: AddTransactionViewModel by viewModels()
             val transactionsViewModel: TransactionsViewModel by viewModels()
+            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
             val moneyManagerViewModel: MoneyManagerViewModel by viewModels()
             val registrationViewModel: RegistrationViewModel by viewModels()
             val addWalletViewModel: AddWalletViewModel by viewModels()
@@ -145,7 +147,8 @@ class MainActivity : ComponentActivity() {
                                 addTransactionViewModel,
                                 statisticViewModel,
                                 addWalletViewModel,
-                                transactionsViewModel
+                                transactionsViewModel,
+                                timeIntervalTransactionsViewModel
                             )
                         }
                     }

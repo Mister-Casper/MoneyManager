@@ -53,24 +53,45 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         LazyColumn(Modifier.padding(12.dp)) {
             item {
                 Column(Modifier.fillMaxSize()) {
-                    Row(Modifier.clickable {
-                        transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("wallet_id", -1L)
-                    }) {
-                        wallet.value?.let {
-                            Text(
-                                text = wallet.value!!.name,
-                                fontSize = 22.sp,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
-                            Icon(
-                                imageVector = Icons.Filled.KeyboardArrowDown,
-                                "",
-                                Modifier.align(Alignment.CenterVertically)
-                            )
+                    Row {
+                        Row(Modifier.weight(1f)) {
+                            Row(Modifier.clickable {
+                                transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
+                                navController.currentBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set("wallet_id", -1L)
+                            }) {
+                                wallet.value?.let {
+                                    Text(
+                                        text = wallet.value!!.name,
+                                        fontSize = 22.sp,
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        color = MaterialTheme.colors.secondary
+                                    )
+                                }
+                                Icon(
+                                    imageVector = Icons.Filled.KeyboardArrowDown,
+                                    "",
+                                    Modifier.align(Alignment.CenterVertically),
+                                    tint = MaterialTheme.colors.secondary
+                                )
+                            }
                         }
+                        Icon(
+                            painter = painterResource(id = R.drawable.list_icon),
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.secondary,
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .size(32.dp)
+                                .clickable {
+                                    navController.navigate(
+                                        Screen.TimeIntervalTransactions(
+                                            transactionsViewModel.defaultWallet.value!!
+                                        ).route
+                                    )
+                                }
+                        )
                     }
                     Row(Modifier.padding(top = 4.dp)) {
                         Icon(
@@ -78,7 +99,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             contentDescription = "",
                             Modifier
                                 .size(32.dp)
-                                .align(Alignment.CenterVertically)
+                                .align(Alignment.CenterVertically),
+                            tint = MaterialTheme.colors.secondary
                         )
                         wallet.value?.let {
                             Text(
@@ -86,7 +108,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                                 Modifier
                                     .align(Alignment.CenterVertically)
                                     .padding(start = 8.dp),
-                                fontSize = 18.sp
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colors.secondary
                             )
                         }
                     }
@@ -110,24 +133,27 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             }
         }
 
-        if(transactionsViewModel.isEmpty.value) {
+        if (transactionsViewModel.isEmpty.value) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(Modifier.align(Alignment.Center)) {
                     Icon(
                         painter = painterResource(id = R.drawable.empty_icon),
                         contentDescription = "",
-                        Modifier.align(Alignment.CenterHorizontally)
+                        Modifier.align(Alignment.CenterHorizontally),
+                        tint = MaterialTheme.colors.secondary
                     )
                     Text(
                         text = stringResource(id = R.string.no_transactions),
                         style = Typography.h5,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colors.secondary
                     )
                     Text(
                         text = stringResource(id = R.string.tap_to_add_transaction),
                         fontWeight = FontWeight.Thin,
                         fontSize = 14.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }

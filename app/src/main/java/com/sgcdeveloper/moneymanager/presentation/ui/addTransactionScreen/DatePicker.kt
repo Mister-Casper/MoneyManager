@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 
 @Composable
-fun DatePicker(addTransactionViewModel:AddTransactionViewModel) {
+fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
     Row(Modifier.fillMaxWidth()) {
         Text(
             text = stringResource(
@@ -24,7 +25,8 @@ fun DatePicker(addTransactionViewModel:AddTransactionViewModel) {
                 addTransactionViewModel.transactionDate.value.toDateString()
             ), fontSize = 22.sp, modifier = Modifier
                 .weight(1f)
-                .align(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically),
+            color = MaterialTheme.colors.secondary
         )
         Icon(
             painter = painterResource(id = R.drawable.edit_calendar_icon),

@@ -25,6 +25,9 @@ import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 
@@ -35,7 +38,8 @@ fun MoneyManagerScreen(
     addTransactionViewModel: AddTransactionViewModel,
     statisticViewModel: StatisticViewModel,
     addWalletViewModel: AddWalletViewModel,
-    transactionsViewModel: TransactionsViewModel
+    transactionsViewModel: TransactionsViewModel,
+    timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel
 ) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
@@ -52,7 +56,8 @@ fun MoneyManagerScreen(
             homeViewModel,
             statisticViewModel,
             addWalletViewModel,
-            transactionsViewModel
+            transactionsViewModel,
+            timeIntervalTransactionsViewModel
         )
     }
     BackHandler {
@@ -96,7 +101,8 @@ private fun MainScreenNavigationConfigurations(
     homeViewModel: HomeViewModel,
     statisticViewModel: StatisticViewModel,
     addWalletViewModel: AddWalletViewModel,
-    transactionsViewModel: TransactionsViewModel
+    transactionsViewModel: TransactionsViewModel,
+    timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel
 ) {
     NavHost(
         navController,
@@ -137,6 +143,14 @@ private fun MainScreenNavigationConfigurations(
             AddWalletScreen(navController, addWalletViewModel)
 
             backStackEntry.arguments?.putString("wallet", "")
+        }
+
+        composable(Screen.TimeIntervalTransactions(null).route + "{wallet}") { backStackEntry ->
+            val wallet =
+                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+
+            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
+            TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel,navController)
         }
     }
 }

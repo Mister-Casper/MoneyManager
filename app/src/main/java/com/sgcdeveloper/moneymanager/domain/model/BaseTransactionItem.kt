@@ -12,6 +12,7 @@ sealed class BaseTransactionItem {
         val icon: Int,
         val description: String,
         val category: String,
+        val moneyValue: Double,
         val money: String,
         val moneyColor: Int
     ) : BaseTransactionItem()
