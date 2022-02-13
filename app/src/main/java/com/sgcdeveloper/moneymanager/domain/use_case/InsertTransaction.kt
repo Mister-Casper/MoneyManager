@@ -53,7 +53,7 @@ class InsertTransaction @Inject constructor(
         moneyManagerRepository.removeTransaction(transactionId)
     }
 
-   private suspend fun cancelTransaction(transactionId: Long) {
+    suspend fun cancelTransaction(transactionId: Long) {
         val transaction = moneyManagerRepository.getTransaction(transactionId)
         updateWalletMoney(
             transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId

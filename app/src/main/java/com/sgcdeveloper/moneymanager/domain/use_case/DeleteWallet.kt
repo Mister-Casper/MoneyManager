@@ -5,8 +5,12 @@ import javax.inject.Inject
 
 class DeleteWallet @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
+    private val insertTransaction:InsertTransaction
 ) {
     suspend operator fun invoke(walletId: Long) {
+        val transactions = moneyManagerRepository.getWalletTransactions(walletId)
+        transactions.forEach{transaction ->  insertTransaction.cancelTransaction(transaction.id)}
+        moneyManagerRepository.removeWalletTransactions(walletId)
         moneyManagerRepository.removeWallet(walletId)
     }
 }

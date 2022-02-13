@@ -13,6 +13,9 @@ interface TransactionDao {
     @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
     fun getTransactions(walletId:Long): LiveData<List<TransactionEntry>>
 
+    @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
+    suspend fun getWalletTransactions(walletId:Long): List<TransactionEntry>
+
     @Query("SELECT * FROM TransactionEntry WHERE id == :id")
     suspend fun getTransaction(id: Long):TransactionEntry
 
@@ -21,4 +24,7 @@ interface TransactionDao {
 
     @Query("DELETE FROM TransactionEntry WHERE id = :id")
     suspend fun removeTransaction(id: Long)
+
+    @Query("DELETE FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
+    suspend fun removeWalletTransactions(walletId:Long)
 }

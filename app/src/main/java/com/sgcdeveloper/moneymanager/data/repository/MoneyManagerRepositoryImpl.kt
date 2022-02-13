@@ -28,6 +28,10 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         return appDatabase.transactionDao().getTransactions(walletId)
     }
 
+    override suspend fun getWalletTransactions(walletId: Long): List<TransactionEntry> {
+        return appDatabase.transactionDao().getWalletTransactions(walletId)
+    }
+
     override suspend fun getTransaction(id: Long): TransactionEntry {
         return appDatabase.transactionDao().getTransaction(id)
     }
@@ -38,5 +42,9 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun removeTransaction(id: Long) {
         appDatabase.transactionDao().removeTransaction(id)
+    }
+
+    override suspend fun removeWalletTransactions(walletId: Long) {
+        appDatabase.transactionDao().removeWalletTransactions(walletId)
     }
 }
