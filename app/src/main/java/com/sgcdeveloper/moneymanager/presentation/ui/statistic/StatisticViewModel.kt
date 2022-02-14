@@ -1,4 +1,4 @@
-package com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions
+package com.sgcdeveloper.moneymanager.presentation.ui.statistic
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
@@ -19,11 +19,11 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-open class TimeIntervalTransactionsViewModel @Inject constructor(
+open class StatisticViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases
 ) : AndroidViewModel(app) {
-    var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.DailyController())
+    var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val defaultWallet = MutableLiveData<Wallet>()
@@ -35,28 +35,36 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
-    fun onEvent(transactionEvent: TimeIntervalTransactionEvent) {
+    init {
+        viewModelScope.launch {
+            walletsUseCases.getWallets().observeForever {
+                if (it.isNotEmpty() && defaultWallet.value == null) {
+                    defaultWallet.value = it[0]
+                    loadTransactions()
+                }
+            }
+        }
+    }
+
+    fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
-            is TimeIntervalTransactionEvent.ChangeTimeInterval -> {
+            is StatisticEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
+                description.value = timeInterval.value.getDescription()
                 loadTransactions()
             }
-            is TimeIntervalTransactionEvent.SetDefaultWallet -> {
-                defaultWallet.value = transactionEvent.wallet
-                loadTransactions()
-            }
-            is TimeIntervalTransactionEvent.MoveBack -> {
+            is StatisticEvent.MoveBack -> {
                 timeInterval.value.moveBack()
                 loadTransactions()
             }
-            is TimeIntervalTransactionEvent.MoveNext -> {
+            is StatisticEvent.MoveNext -> {
                 timeInterval.value.moveNext()
                 loadTransactions()
             }
-            is TimeIntervalTransactionEvent.ShowSelectTimeIntervalDialog -> {
+            is StatisticEvent.ShowSelectTimeIntervalDialog -> {
                 dialog.value = DialogState.SelectTimeIntervalDialog(timeInterval.value)
             }
-            TimeIntervalTransactionEvent.CloseDialog -> {
+            StatisticEvent.CloseDialog -> {
                 dialog.value = DialogState.NoneDialogState
             }
         }

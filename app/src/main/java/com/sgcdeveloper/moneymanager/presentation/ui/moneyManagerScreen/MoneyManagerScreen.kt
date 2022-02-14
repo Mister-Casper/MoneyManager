@@ -23,13 +23,14 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
+import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 
 @Composable
 fun MoneyManagerScreen(
@@ -115,7 +116,7 @@ private fun MainScreenNavigationConfigurations(
             TransactionsScreen(transactionsViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
-            StatisticScreen(statisticViewModel)
+            StatisticScreen(statisticViewModel, navController)
         }
         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
             val wallet =
@@ -146,11 +147,19 @@ private fun MainScreenNavigationConfigurations(
         }
 
         composable(Screen.TimeIntervalTransactions(null).route + "{wallet}") { backStackEntry ->
-            val wallet =
-                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
-
+            val walletJson = backStackEntry.arguments?.getString("wallet")
+            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
             timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
-            TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel,navController)
+            if (TimeInternalSingleton.timeIntervalController != null) {
+                timeIntervalTransactionsViewModel.onEvent(
+                    TimeIntervalTransactionEvent.ChangeTimeInterval(
+                        TimeInternalSingleton.timeIntervalController!!
+                    )
+                )
+                TimeInternalSingleton.timeIntervalController = null
+            }
+
+            TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
         }
     }
 }

@@ -37,7 +37,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyMan
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.statisticScreen.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint

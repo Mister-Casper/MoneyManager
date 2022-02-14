@@ -24,13 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeInterval
+import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimeIntervalPickerDialog(
-    defaultTimeInterval: TimeInterval,
-    onAdd: (timeInterval: TimeInterval) -> Unit = {},
+    defaultTimeIntervalController: TimeIntervalController,
+    onAdd: (timeIntervalController: TimeIntervalController) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     AlertDialog(
@@ -62,7 +62,7 @@ fun TimeIntervalPickerDialog(
             }
         },
         text = {
-            TimeIntervalSelector(defaultTimeInterval) {
+            TimeIntervalSelector(defaultTimeIntervalController) {
                 onAdd(it)
                 onDismiss()
             }
@@ -73,13 +73,13 @@ fun TimeIntervalPickerDialog(
 
 @Composable
 private fun TimeIntervalSelector(
-    defaultTimeInterval: TimeInterval,
-    onAdd: (timeInterval: TimeInterval) -> Unit = {},
+    defaultTimeIntervalController: TimeIntervalController,
+    onAdd: (timeIntervalController: TimeIntervalController) -> Unit = {},
 ) {
     val selectedOption = remember {
-        mutableStateOf(defaultTimeInterval)
+        mutableStateOf(defaultTimeIntervalController)
     }
-    val intervals = TimeInterval.getItems(LocalContext.current)
+    val intervals = TimeIntervalController.getItems(LocalContext.current)
 
     Column(Modifier.fillMaxWidth()) {
         LazyColumn {
@@ -114,7 +114,8 @@ private fun TimeIntervalSelector(
                         )
                         RadioButton(
                             selected = (item.icon == selectedOption.value.icon),
-                            onClick = null
+                            onClick = null,
+                            Modifier.align(Alignment.CenterVertically)
                         )
                     }
                 }

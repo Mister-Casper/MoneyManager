@@ -5,14 +5,14 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
 
-sealed class TimeInterval(val icon: Int, val name: Int) {
+sealed class TimeIntervalController(val icon: Int, val name: Int) {
     abstract fun moveBack()
     abstract fun moveNext()
     abstract fun isCanMove(): Boolean
     abstract fun getDescription(): String
     abstract fun isInInterval(intervalDate: Date): Boolean
 
-    class Daily(private var date: Date = Date(LocalDate.now())) : TimeInterval(R.drawable.daily_icon, R.string.daily) {
+    class DailyController(private var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.daily_icon, R.string.daily) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusDays(1))
         }
@@ -34,8 +34,8 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
         }
     }
 
-    class Weekly(private var startDay: Date = Date(LocalDate.now())) :
-        TimeInterval(R.drawable.weekly_icon, R.string.weekly) {
+    class WeeklyController(private var startDay: Date = Date(LocalDate.now())) :
+        TimeIntervalController(R.drawable.weekly_icon, R.string.weekly) {
         private var endDay: Date = Date(startDay.getAsLocalDate().plusDays(7))
 
         override fun moveBack() {
@@ -63,7 +63,7 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
         }
     }
 
-    class Monthly(var date: Date = Date(LocalDate.now())) : TimeInterval(R.drawable.monthly_icon, R.string.monthly) {
+    class MonthlyController(var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.monthly_icon, R.string.monthly) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusMonths(1))
         }
@@ -88,8 +88,8 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
         }
     }
 
-    class Quarterly(private var startDay: Date = Date(LocalDate.now())) :
-        TimeInterval(R.drawable.quarterly_icon, R.string.quarterly) {
+    class QuarterlyController(private var startDay: Date = Date(LocalDate.now())) :
+        TimeIntervalController(R.drawable.quarterly_icon, R.string.quarterly) {
         private var endDay: Date = Date(startDay.getAsLocalDate().plusMonths(3))
 
         override fun moveBack() {
@@ -117,7 +117,7 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
         }
     }
 
-    class Yearly(var date: Date = Date(LocalDate.now())) : TimeInterval(R.drawable.yearly_icon, R.string.yearly) {
+    class YearlyController(var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.yearly_icon, R.string.yearly) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusYears(1))
         }
@@ -139,7 +139,7 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
         }
     }
 
-    class All(private val allString: String) : TimeInterval(R.drawable.infinity_icon, R.string.all) {
+    class AllController(private val allString: String) : TimeIntervalController(R.drawable.infinity_icon, R.string.all) {
         override fun moveBack() {}
         override fun moveNext() {}
 
@@ -157,8 +157,8 @@ sealed class TimeInterval(val icon: Int, val name: Int) {
     }
 
     companion object {
-        fun getItems(context: Context): List<TimeInterval> {
-            return listOf(Daily(), Weekly(), Monthly(), Quarterly(), Yearly(), All(context.getString(R.string.all)))
+        fun getItems(context: Context): List<TimeIntervalController> {
+            return listOf(DailyController(), WeeklyController(), MonthlyController(), QuarterlyController(), YearlyController(), AllController(context.getString(R.string.all)))
         }
     }
 
