@@ -1,6 +1,9 @@
 package com.sgcdeveloper.moneymanager.util
 
 import com.google.gson.Gson
+import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
+import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 
 fun String.isDouble(): Boolean {
     val maybeDouble = this.toDoubleOrNull()
@@ -36,4 +39,22 @@ fun Double.toMoneyString():String{
         this.toLong().toString()
     else
         this.toString()
+}
+
+fun List<BaseTransactionItem>.getIncome(wallet:Wallet):Double{
+    var incomeMoney = this.filterIsInstance<BaseTransactionItem.TransactionItem>()
+        .filter { it.transactionEntry.transactionType == TransactionType.Income }.sumOf { it.moneyValue }
+    incomeMoney += this.filterIsInstance<BaseTransactionItem.TransactionItem>()
+        .filter { it.transactionEntry.transactionType == TransactionType.Transfer }
+        .filter { it.transactionEntry.toWalletId == wallet.walletId }.sumOf { it.moneyValue }
+    return incomeMoney
+}
+
+fun List<BaseTransactionItem>.getExpense(wallet:Wallet):Double{
+    var expenseMoney = this.filterIsInstance<BaseTransactionItem.TransactionItem>()
+        .filter { it.transactionEntry.transactionType == TransactionType.Expense }.sumOf { it.moneyValue } * -1
+    expenseMoney -= this.filterIsInstance<BaseTransactionItem.TransactionItem>()
+        .filter { it.transactionEntry.transactionType == TransactionType.Transfer }
+        .filter { it.transactionEntry.fromWalletId == wallet.walletId }.sumOf { it.moneyValue }
+    return expenseMoney
 }

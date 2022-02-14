@@ -11,8 +11,9 @@ import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
-import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.getExpense
+import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -90,10 +91,9 @@ open class StatisticViewModel @Inject constructor(
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(defaultWallet.value!!, timeInterval.value)
             isEmpty.value = transactionItems.value.isEmpty()
-            val incomeMoney = transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                .filter { it.transactionEntry.transactionType == TransactionType.Income }.sumOf { it.moneyValue }
-            val expenseMoney = transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                .filter { it.transactionEntry.transactionType == TransactionType.Expense }.sumOf { it.moneyValue } * -1
+            
+            val incomeMoney = transactionItems.value.getIncome(defaultWallet.value!!)
+            val expenseMoney = transactionItems.value.getExpense(defaultWallet.value!!)
             val totalMoney = incomeMoney + expenseMoney
 
             income.value = getFormattedMoney(incomeMoney)
