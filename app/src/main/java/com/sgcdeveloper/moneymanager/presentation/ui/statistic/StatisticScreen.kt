@@ -1,23 +1,19 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.statistic
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
@@ -34,6 +29,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 
 @Composable
@@ -41,7 +37,7 @@ fun StatisticScreen(
     statisticViewModel: StatisticViewModel,
     navController: NavController
 ) {
-    val transactions = remember { statisticViewModel.transactionItems }
+    val wallet = remember { statisticViewModel.defaultWallet }
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -50,41 +46,52 @@ fun StatisticScreen(
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
         })
+    } else if (dialog.value is DialogState.WalletPickerDialog) {
+        WalletPickerDialog(statisticViewModel.wallets.value, statisticViewModel.defaultWallet.value, {
+            statisticViewModel.onEvent(StatisticEvent.SetWallet(it))
+        }, {
+            statisticViewModel.onEvent(StatisticEvent.CloseDialog)
+        })
     }
+
+    CheckDataFromAddTransactionScreen(navController, statisticViewModel)
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 50.dp)
     ) {
-        Column(Modifier.fillMaxSize()) {
-            Row(Modifier.padding(top = 4.dp)) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            statisticViewModel.clear()
-                            navController.popBackStack()
-                        }
-                )
-                Text(
-                    text = stringResource(id = R.string.transactions),
+        Column(Modifier.fillMaxSize().padding(12.dp)) {
+            Box(Modifier.fillMaxWidth()) {
+                Row(
                     Modifier
-                        .padding(start = 12.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colors.secondary
-                )
+                        .clickable {
+                            statisticViewModel.onEvent(StatisticEvent.ShowWalletPickerDialog)
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("wallet_id", -1L)
+                        }) {
+                    wallet.value?.let {
+                        Text(
+                            text = wallet.value!!.name,
+                            fontSize = 22.sp,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            color = MaterialTheme.colors.secondary
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            "",
+                            Modifier.align(Alignment.CenterVertically),
+                            tint = MaterialTheme.colors.secondary
+                        )
+                    }
+                }
                 Icon(
                     painter = painterResource(id = R.drawable.edit_calendar_icon),
                     contentDescription = "",
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
-                        .align(Alignment.CenterVertically)
+                        .align(Alignment.CenterEnd)
                         .size(32.dp)
                         .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
                 )
@@ -191,7 +198,8 @@ fun StatisticScreen(
                             Box(modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    TimeInternalSingleton.timeIntervalController = statisticViewModel.timeInterval.value
+                                    TimeInternalSingleton.timeIntervalController =
+                                        statisticViewModel.timeInterval.value
                                     navController.navigate(
                                         Screen.TimeIntervalTransactions(statisticViewModel.defaultWallet.value).route
                                     )
@@ -244,90 +252,20 @@ fun StatisticScreen(
             )
         }
     }
-
-    BackHandler {
-        statisticViewModel.clear()
-        navController.popBackStack()
-    }
 }
 
 @Composable
-fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp),
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
-        ) {
-            Text(
-                text = header.dayNum,
-                fontSize = 42.sp,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.Bold,
-                color = white
-            )
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Thin, color = white)
-            }
-            Text(text = header.money, Modifier.align(Alignment.CenterVertically), color = white)
-        }
-    }
-    Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
-}
+fun CheckDataFromAddTransactionScreen(
+    navController: NavController,
+    statisticViewModel: StatisticViewModel
+) {
+    val secondScreenResult = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<Long>("wallet_id")
 
-@Composable
-fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: NavController) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { navController.navigate(Screen.EditTransaction(transaction = item.transactionEntry).route) }
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
-        ) {
-            Card(
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.CenterVertically),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Box(modifier = Modifier.background(Color(item.color))) {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = "",
-                        Modifier
-                            .align(Alignment.Center)
-                            .size(40.dp),
-                        tint = white
-                    )
-                }
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
-            }
-            Text(
-                text = item.money,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                color = Color(item.moneyColor)
-            )
+    secondScreenResult?.let {
+        if (secondScreenResult != -1L) {
+            statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
         }
     }
 }

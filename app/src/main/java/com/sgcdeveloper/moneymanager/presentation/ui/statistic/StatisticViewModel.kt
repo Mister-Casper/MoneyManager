@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.statistic
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
@@ -23,6 +24,7 @@ open class StatisticViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases
 ) : AndroidViewModel(app) {
+    lateinit var wallets: LiveData<List<Wallet>>
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
@@ -37,7 +39,8 @@ open class StatisticViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            walletsUseCases.getWallets().observeForever {
+            wallets = walletsUseCases.getWallets()
+            wallets.observeForever {
                 if (it.isNotEmpty() && defaultWallet.value == null) {
                     defaultWallet.value = it[0]
                     loadTransactions()
@@ -48,6 +51,13 @@ open class StatisticViewModel @Inject constructor(
 
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
+            is StatisticEvent.ChangeWalletById -> {
+                defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
+                loadTransactions()
+            }
+            is StatisticEvent.ShowWalletPickerDialog ->{
+                dialog.value = DialogState.WalletPickerDialog(defaultWallet.value)
+            }
             is StatisticEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
                 description.value = timeInterval.value.getDescription()
@@ -66,6 +76,10 @@ open class StatisticViewModel @Inject constructor(
             }
             StatisticEvent.CloseDialog -> {
                 dialog.value = DialogState.NoneDialogState
+            }
+            is StatisticEvent.SetWallet -> {
+                defaultWallet.value = transactionEvent.wallet
+                loadTransactions()
             }
         }
     }
