@@ -86,7 +86,7 @@
     <string name="amount">Amount %1$s</string>
     <string name="description">Description</string>
     <string name="category">Category : </string>
-    <string name="none" />
+    <string name="transfers">Transfers</string>
     <string name="wallet_selector">Wallet</string>
     <string name="select_wallet">Select Wallet</string>
     <string name="from_wallet">From wallet</string>
@@ -108,5 +108,7 @@
     <string name="yearly">Yearly</string>
 
     <string name="show_more">Show more</string>
+    <string name="expense_structure">Expense Structure</string>
+    <string name="none" />
 
 </resources>

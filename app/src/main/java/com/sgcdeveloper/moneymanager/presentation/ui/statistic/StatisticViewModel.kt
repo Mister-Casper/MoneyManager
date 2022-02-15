@@ -6,7 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
+import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
@@ -38,6 +40,14 @@ open class StatisticViewModel @Inject constructor(
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
+    var expenseStruct = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
+    var expenseEntries = mutableStateOf<List<PieEntry>>(Collections.emptyList())
+    val expenseColors = mutableStateOf<List<Int>>(Collections.emptyList())
+
+    var incomeStruct = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
+    var incomeEntries = mutableStateOf<List<PieEntry>>(Collections.emptyList())
+    val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
+
     init {
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets()
@@ -45,6 +55,9 @@ open class StatisticViewModel @Inject constructor(
                 if (it.isNotEmpty() && defaultWallet.value == null) {
                     defaultWallet.value = it[0]
                     loadTransactions()
+                    walletsUseCases.getTransactionItems(it[0]).observeForever {
+                        loadTransactions()
+                    }
                 }
             }
         }
@@ -56,7 +69,7 @@ open class StatisticViewModel @Inject constructor(
                 defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
                 loadTransactions()
             }
-            is StatisticEvent.ShowWalletPickerDialog ->{
+            is StatisticEvent.ShowWalletPickerDialog -> {
                 dialog.value = DialogState.WalletPickerDialog(defaultWallet.value)
             }
             is StatisticEvent.ChangeTimeInterval -> {
@@ -89,9 +102,12 @@ open class StatisticViewModel @Inject constructor(
         viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
-                walletsUseCases.getTransactionItems.getTimeIntervalTransactions(defaultWallet.value!!, timeInterval.value)
+                walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
+                    defaultWallet.value!!,
+                    timeInterval.value
+                )
             isEmpty.value = transactionItems.value.isEmpty()
-            
+
             val incomeMoney = transactionItems.value.getIncome(defaultWallet.value!!)
             val expenseMoney = transactionItems.value.getExpense(defaultWallet.value!!)
             val totalMoney = incomeMoney + expenseMoney
@@ -99,6 +115,18 @@ open class StatisticViewModel @Inject constructor(
             income.value = getFormattedMoney(incomeMoney)
             expense.value = getFormattedMoney(expenseMoney)
             total.value = getFormattedMoney(totalMoney)
+
+            expenseStruct.value =
+                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
+                    .map { it.transactionEntry }, defaultWallet.value!!)
+            expenseColors.value = expenseStruct.value.map { it.color }
+            expenseEntries.value = expenseStruct.value.map { it.pieEntry }
+
+            incomeStruct.value =
+                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
+                    .map { it.transactionEntry }, defaultWallet.value!!)
+            incomeColors.value = incomeStruct.value.map { it.color }
+            incomeEntries.value = incomeStruct.value.map { it.pieEntry }
         }
     }
 
@@ -106,11 +134,6 @@ open class StatisticViewModel @Inject constructor(
         val formatter =
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(defaultWallet.value!!.currency.code)!!)
         return formatter.format(money)
-    }
-
-    fun clear() {
-        timeInterval.value = TimeIntervalController.DailyController()
-        dialog.value = DialogState.NoneDialogState
     }
 
 }

@@ -14,13 +14,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -31,6 +38,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
+
 
 @Composable
 fun StatisticScreen(
@@ -61,7 +69,11 @@ fun StatisticScreen(
             .fillMaxSize()
             .padding(bottom = 50.dp)
     ) {
-        Column(Modifier.fillMaxSize().padding(12.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
             Box(Modifier.fillMaxWidth()) {
                 Row(
                     Modifier
@@ -231,6 +243,168 @@ fun StatisticScreen(
                     }
                 }
 
+                item {
+                    val textColor = MaterialTheme.colors.secondary
+                    Card(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(6.dp)
+                            .padding(top = 12.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(top = 12.dp, start = 18.dp)) {
+                            Text(
+                                text = stringResource(id = R.string.expense_structure), fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = white
+                            )
+                            AndroidView(factory = { ctx ->
+                                PieChart (ctx).apply {
+                                    val dataSet = PieDataSet(statisticViewModel.expenseEntries.value, "")
+                                    dataSet.colors = statisticViewModel.expenseColors.value
+                                    dataSet.valueTextColor = white.toArgb()
+                                    dataSet.valueTextSize = 14f
+                                    dataSet.valueFormatter = formatter
+                                    val data = PieData(dataSet)
+                                    this.setDrawEntryLabels(false)
+                                    this.data = data
+                                    this.invalidate()
+                                    this.holeRadius = 75.0F
+                                    this.description.isEnabled = false
+                                    this.setHoleColor(Color.Transparent.toArgb())
+                                    this.legend.textColor = textColor.toArgb()
+                                    this.legend.textSize = 14f
+                                    this.legend.isWordWrapEnabled = true
+                                }
+                            }, modifier = Modifier
+                                .size(300.dp)
+                                .fillMaxWidth(), update = {
+                                val dataSet = PieDataSet(statisticViewModel.expenseEntries.value, "")
+                                dataSet.colors = statisticViewModel.expenseColors.value
+                                dataSet.valueTextColor = white.toArgb()
+                                dataSet.valueTextSize = 14f
+                                dataSet.valueFormatter = formatter
+                                val data = PieData(dataSet)
+                                it.data = data
+                                it.invalidate()
+                            })
+                            Divider(
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .fillMaxSize()
+                            )
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                }) {
+                                Row(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 8.dp, bottom = 8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.show_more),
+                                        fontWeight = FontWeight.Thin,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .align(Alignment.CenterVertically),
+                                        color = white,
+                                        fontSize = 20.sp
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.KeyboardArrowRight,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .size(32.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                item {
+                    val textColor = MaterialTheme.colors.secondary
+                    Card(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(6.dp)
+                            .padding(top = 12.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(top = 12.dp, start = 18.dp)) {
+                            Text(
+                                text = stringResource(id = R.string.expense_structure), fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = white
+                            )
+                            AndroidView(factory = { ctx ->
+                                PieChart (ctx).apply {
+                                    val dataSet = PieDataSet(statisticViewModel.incomeEntries.value, "")
+                                    dataSet.colors = statisticViewModel.incomeColors.value
+                                    dataSet.valueTextColor = white.toArgb()
+                                    dataSet.valueTextSize = 14f
+                                    dataSet.valueFormatter = formatter
+                                    val data = PieData(dataSet)
+                                    this.setDrawEntryLabels(false)
+                                    this.data = data
+                                    this.invalidate()
+                                    this.holeRadius = 75.0F
+                                    this.description.isEnabled = false
+                                    this.setHoleColor(Color.Transparent.toArgb())
+                                    this.legend.textColor = textColor.toArgb()
+                                    this.legend.textSize = 14f
+                                    this.legend.isWordWrapEnabled = true
+                                }
+                            }, modifier = Modifier
+                                .size(300.dp)
+                                .fillMaxWidth(), update = {
+                                val dataSet = PieDataSet(statisticViewModel.incomeEntries.value, "")
+                                dataSet.colors = statisticViewModel.incomeColors.value
+                                dataSet.valueTextColor = white.toArgb()
+                                dataSet.valueTextSize = 14f
+                                dataSet.valueFormatter = formatter
+                                val data = PieData(dataSet)
+                                it.data = data
+                                it.invalidate()
+                            })
+                            Divider(
+                                modifier = Modifier
+                                    .padding(top = 4.dp)
+                                    .fillMaxSize()
+                            )
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+
+                                }) {
+                                Row(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 8.dp, bottom = 8.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.show_more),
+                                        fontWeight = FontWeight.Thin,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .align(Alignment.CenterVertically),
+                                        color = white,
+                                        fontSize = 20.sp
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Filled.KeyboardArrowRight,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .size(32.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
                 item { Spacer(modifier = Modifier.padding(bottom = 55.dp)) }
             }
         }
@@ -267,5 +441,43 @@ fun CheckDataFromAddTransactionScreen(
         if (secondScreenResult != -1L) {
             statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
         }
+    }
+}
+
+var formatter: ValueFormatter = object : ValueFormatter() {
+    override fun getFormattedValue(value: Float): String {
+        return value.toInt().toString()
+    }
+
+    override fun getPieLabel(value: Float, pieEntry: PieEntry?): String {
+        return value.toInt().toString()
+    }
+
+    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+        return ""
+    }
+
+    override fun getBarLabel(barEntry: BarEntry?): String {
+        return ""
+    }
+
+    override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry?): String {
+        return ""
+    }
+
+    override fun getBubbleLabel(bubbleEntry: BubbleEntry?): String {
+        return ""
+    }
+
+    override fun getCandleLabel(candleEntry: CandleEntry?): String {
+        return ""
+    }
+
+    override fun getPointLabel(entry: Entry?): String {
+        return ""
+    }
+
+    override fun getRadarLabel(radarEntry: RadarEntry?): String {
+        return ""
     }
 }

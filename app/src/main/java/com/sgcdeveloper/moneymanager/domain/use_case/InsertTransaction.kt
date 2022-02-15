@@ -31,6 +31,10 @@ class InsertTransaction @Inject constructor(
             toWalletId = toWallet.walletId
         if (transactionId != 0L)
             cancelTransaction(transactionId)
+        val newCategory = if (category == TransactionCategory.None)
+            TransactionCategory.Transfers
+        else
+            category
 
         updateWalletMoney(transactionType, amount.toDouble(), fromWallet.walletId, toWallet?.walletId)
 
@@ -43,12 +47,12 @@ class InsertTransaction @Inject constructor(
                 transactionType = transactionType,
                 fromWalletId = fromWallet.walletId,
                 toWalletId = toWalletId,
-                category = category
+                category = newCategory
             )
         )
     }
 
-    suspend fun deleteTransaction(transactionId: Long){
+    suspend fun deleteTransaction(transactionId: Long) {
         cancelTransaction(transactionId)
         moneyManagerRepository.removeTransaction(transactionId)
     }

@@ -9,6 +9,8 @@ open class TransactionCategory(@Expose open val color: Int, @Expose open val ico
 
     object None : TransactionCategory(wallet_color_17.toArgb(), R.drawable.transfer_icon, R.string.none)
 
+    object Transfers : TransactionCategory(wallet_color_17.toArgb(), R.drawable.transfer_icon, R.string.transfers)
+
     sealed class ExpenseCategory(override val color: Int, override val icon: Int, override val description: Int) :
         TransactionCategory(color, icon, description) {
         object Bills : ExpenseCategory(wallet_color_1.toArgb(), R.drawable.bills_icon, R.string.bills)

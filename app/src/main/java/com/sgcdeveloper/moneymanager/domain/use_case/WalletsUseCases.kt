@@ -7,5 +7,6 @@ class WalletsUseCases @Inject constructor(
     val insertWallet: InsertWallet,
     val deleteWallet: DeleteWallet,
     val insertTransaction: InsertTransaction,
-    val getTransactionItems: GetTransactionItems
+    val getTransactionItems: GetTransactionItems,
+    val getCategoriesStatistic: GetCategoriesStatistic
 )

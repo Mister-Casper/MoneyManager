@@ -88,10 +88,12 @@ class GetTransactionItems @Inject constructor(
         })
     }
 
-    private fun getFormattedMoney(wallet: Wallet, money: Double): String {
-        val formatter =
-            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
-        return formatter.format(money)
+    companion object {
+        fun getFormattedMoney(wallet: Wallet, money: Double): String {
+            val formatter =
+                NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
+            return formatter.format(money)
+        }
     }
 
     private fun getTransactionDescription(

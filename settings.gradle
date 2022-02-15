@@ -5,6 +5,7 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven { url "https://maven.xyz.com" }
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "Money Manager"
