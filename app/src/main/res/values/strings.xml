@@ -109,6 +109,9 @@
 
     <string name="show_more">Show more</string>
     <string name="expense_structure">Expense Structure</string>
+    <string name="income_structure">Income Structure</string>
+
     <string name="none" />
+    
 
 </resources>

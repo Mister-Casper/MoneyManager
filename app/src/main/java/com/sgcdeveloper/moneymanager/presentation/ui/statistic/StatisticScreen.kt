@@ -240,11 +240,11 @@ fun StatisticScreen(
                 }
 
                 item {
-                    StatisticPieChart(statisticViewModel.expenseEntries.value,statisticViewModel.expenseColors.value)
+                    StatisticPieChart(stringResource(id = R.string.expense_structure),statisticViewModel.expenseEntries.value,statisticViewModel.expenseColors.value)
                 }
 
                 item {
-                    StatisticPieChart(statisticViewModel.incomeEntries.value,statisticViewModel.incomeColors.value)
+                    StatisticPieChart(stringResource(id = R.string.income_structure),statisticViewModel.incomeEntries.value,statisticViewModel.incomeColors.value)
                 }
 
                 item { Spacer(modifier = Modifier.padding(bottom = 55.dp)) }

@@ -24,7 +24,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.formatter
 
 @Composable
-fun StatisticPieChart(entries:List<PieEntry>,colors:List<Int>) {
+fun StatisticPieChart(header:String,entries:List<PieEntry>,colors:List<Int>) {
     val textColor = MaterialTheme.colors.secondary
     Card(
         Modifier
@@ -34,7 +34,7 @@ fun StatisticPieChart(entries:List<PieEntry>,colors:List<Int>) {
     ) {
         Column(modifier = Modifier.padding(top = 12.dp, start = 18.dp)) {
             Text(
-                text = stringResource(id = R.string.expense_structure), fontWeight = FontWeight.Bold,
+                text = header, fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = white
             )
