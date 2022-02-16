@@ -137,7 +137,7 @@ private fun CategorySelector(
                         fontSize = 18.sp
                     )
                     RadioButton(
-                        selected = (item == selectedOption.value),
+                        selected = (item.description == selectedOption.value?.description),
                         onClick = null
                     )
                 }
