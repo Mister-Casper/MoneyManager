@@ -6,8 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowLeft
-import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -17,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,11 +23,11 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
-import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.StatisticPieChart
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.TimeIntervalControllerView
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
@@ -106,32 +103,11 @@ fun StatisticScreen(
                 )
             }
             Row(Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowLeft,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveBack) }
-                )
-                Text(
-                    text = statisticViewModel.description.value,
-                    Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    textAlign = TextAlign.Center,
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colors.secondary
-                )
-                Icon(
-                    imageVector = Icons.Filled.ArrowRight,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveNext) }
+                TimeIntervalControllerView(
+                    { statisticViewModel.onEvent(StatisticEvent.MoveBack) },
+                    { statisticViewModel.onEvent(StatisticEvent.MoveNext) },
+                    statisticViewModel.timeInterval.value.isCanMove(),
+                    statisticViewModel.description.value
                 )
             }
             LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {

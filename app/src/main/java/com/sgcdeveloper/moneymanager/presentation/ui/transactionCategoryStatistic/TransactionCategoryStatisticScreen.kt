@@ -8,8 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowLeft
-import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,11 +25,11 @@ import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
-import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.transactionNavigationButton
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.StatisticPieChart
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.TimeIntervalControllerView
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticEvent
@@ -102,32 +100,11 @@ fun TransactionCategoryStatisticScreen(
                 )
             }
             Row(Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowLeft,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveBack) }
-                )
-                Text(
-                    text = statisticViewModel.description.value,
-                    Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    textAlign = TextAlign.Center,
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colors.secondary
-                )
-                Icon(
-                    imageVector = Icons.Filled.ArrowRight,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveNext) }
+                TimeIntervalControllerView(
+                    { statisticViewModel.onEvent(StatisticEvent.MoveBack) },
+                    { statisticViewModel.onEvent(StatisticEvent.MoveNext) },
+                    statisticViewModel.timeInterval.value.isCanMove(),
+                    statisticViewModel.description.value
                 )
             }
             Row(Modifier.fillMaxWidth()) {
