@@ -50,114 +50,113 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             .fillMaxSize()
             .padding(bottom = 50.dp)
     ) {
-        LazyColumn(Modifier.padding(12.dp)) {
-            item {
-                Column(Modifier.fillMaxSize()) {
-                    Row {
-                        Row(Modifier.weight(1f)) {
-                            Row(Modifier.clickable {
-                                transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
-                                navController.currentBackStackEntry
-                                    ?.savedStateHandle
-                                    ?.set("wallet_id", -1L)
-                            }) {
-                                wallet.value?.let {
-                                    Text(
-                                        text = wallet.value!!.name,
-                                        fontSize = 22.sp,
-                                        modifier = Modifier.align(Alignment.CenterVertically),
-                                        color = MaterialTheme.colors.secondary
-                                    )
-                                }
-                                Icon(
-                                    imageVector = Icons.Filled.KeyboardArrowDown,
-                                    "",
-                                    Modifier.align(Alignment.CenterVertically),
-                                    tint = MaterialTheme.colors.secondary
-                                )
-                            }
-                        }
-                        Icon(
-                            painter = painterResource(id = R.drawable.list_icon),
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.secondary,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(32.dp)
-                                .clickable {
-                                    navController.navigate(
-                                        Screen.TimeIntervalTransactions(
-                                            transactionsViewModel.defaultWallet.value!!
-                                        ).route
-                                    )
-                                }
-                        )
-                    }
-                    Row(Modifier.padding(top = 4.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.balance_icon),
-                            contentDescription = "",
-                            Modifier
-                                .size(32.dp)
-                                .align(Alignment.CenterVertically),
-                            tint = MaterialTheme.colors.secondary
-                        )
+        Column(Modifier.fillMaxSize()) {
+            Row {
+                Row(Modifier.weight(1f)) {
+                    Row(Modifier.clickable {
+                        transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("wallet_id", -1L)
+                    }) {
                         wallet.value?.let {
                             Text(
-                                text = stringResource(id = R.string.balance, wallet.value!!.formattedMoney),
-                                Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(start = 8.dp),
-                                fontSize = 18.sp,
+                                text = wallet.value!!.name,
+                                fontSize = 22.sp,
+                                modifier = Modifier.align(Alignment.CenterVertically),
                                 color = MaterialTheme.colors.secondary
                             )
                         }
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            "",
+                            Modifier.align(Alignment.CenterVertically),
+                            tint = MaterialTheme.colors.secondary
+                        )
                     }
-                    Divider(
-                        color = MaterialTheme.colors.secondary,
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(top = 16.dp)
+                }
+                Icon(
+                    painter = painterResource(id = R.drawable.list_icon),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(32.dp)
+                        .clickable {
+                            navController.navigate(
+                                Screen.TimeIntervalTransactions(
+                                    transactionsViewModel.defaultWallet.value!!
+                                ).route
+                            )
+                        }
+                )
+            }
+            Row(Modifier.padding(top = 4.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.balance_icon),
+                    contentDescription = "",
+                    Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterVertically),
+                    tint = MaterialTheme.colors.secondary
+                )
+                wallet.value?.let {
+                    Text(
+                        text = stringResource(id = R.string.balance, wallet.value!!.formattedMoney),
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp),
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }
-            items(transactions.value.size) {
-                val transactionItem = transactions.value[it]
-                if (transactionItem is BaseTransactionItem.TransactionHeader) {
-                    TransactionHeader(transactionItem)
-                } else if (transactionItem is BaseTransactionItem.TransactionItem) {
-                    TransactionItem(transactionItem, navController)
+            Divider(
+                color = MaterialTheme.colors.secondary,
+                thickness = 1.dp,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            LazyColumn(Modifier.padding(12.dp)) {
+                items(transactions.value.size) {
+                    val transactionItem = transactions.value[it]
+                    if (transactionItem is BaseTransactionItem.TransactionHeader) {
+                        TransactionHeader(transactionItem)
+                    } else if (transactionItem is BaseTransactionItem.TransactionItem) {
+                        TransactionItem(transactionItem, navController)
+                    }
+                }
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 55.dp))
                 }
             }
-            item {
-                Spacer(modifier = Modifier.padding(bottom = 55.dp))
+
+            if (transactionsViewModel.isEmpty.value) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(Modifier.align(Alignment.Center)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.empty_icon),
+                            contentDescription = "",
+                            Modifier.align(Alignment.CenterHorizontally),
+                            tint = MaterialTheme.colors.secondary
+                        )
+                        Text(
+                            text = stringResource(id = R.string.no_transactions),
+                            style = Typography.h5,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = MaterialTheme.colors.secondary
+                        )
+                        Text(
+                            text = stringResource(id = R.string.tap_to_add_transaction),
+                            fontWeight = FontWeight.Thin,
+                            fontSize = 14.sp,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = MaterialTheme.colors.secondary
+                        )
+                    }
+                }
             }
         }
 
-        if (transactionsViewModel.isEmpty.value) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(Modifier.align(Alignment.Center)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.empty_icon),
-                        contentDescription = "",
-                        Modifier.align(Alignment.CenterHorizontally),
-                        tint = MaterialTheme.colors.secondary
-                    )
-                    Text(
-                        text = stringResource(id = R.string.no_transactions),
-                        style = Typography.h5,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
-                    )
-                    Text(
-                        text = stringResource(id = R.string.tap_to_add_transaction),
-                        fontWeight = FontWeight.Thin,
-                        fontSize = 14.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
-                    )
-                }
-            }
-        }
 
         OutlinedButton(
             onClick = { navController.navigate(Screen.AddTransaction(transactionsViewModel.defaultWallet.value).route) },
