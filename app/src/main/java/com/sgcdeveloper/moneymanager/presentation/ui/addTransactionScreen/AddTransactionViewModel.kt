@@ -87,7 +87,8 @@ open class AddTransactionViewModel @Inject constructor(
                 }
             }
             is AddTransactionEvent.SetDefaultWallet -> {
-                transactionFromWallet.value = addTransactionEvent.wallet
+                if (transactionFromWallet.value == null)
+                    transactionFromWallet.value = addTransactionEvent.wallet
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
                 currentScreen.value = addTransactionEvent.transactionScreen
