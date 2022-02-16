@@ -3,6 +3,8 @@ package com.sgcdeveloper.moneymanager.presentation.nav
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.util.toSafeJson
 
 sealed class Screen(val route: String) {
@@ -19,4 +21,10 @@ sealed class Screen(val route: String) {
 
     class TimeIntervalTransactions(wallet: Wallet? = null) :
         Screen("TimeIntervalTransactions/" + Gson().toSafeJson(wallet))
+
+    class TransactionCategoryTransactions(wallet: Wallet? = null, category: TransactionCategory? = null) :
+        Screen("TransactionCategoryTransactions/" + Gson().toSafeJson(category) + "/" + Gson().toSafeJson(wallet))
+
+    class TransactionCategoryStatisticScreen(defaultScreen: TransactionScreen? = null) :
+        Screen("TransactionCategoryStatisticScreen/" + Gson().toSafeJson(defaultScreen))
 }

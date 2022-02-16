@@ -1,12 +1,10 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +27,8 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.*
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionHeader
+import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionItem
 
 @Composable
 fun TimeIntervalTransactionsScreen(
@@ -66,7 +65,7 @@ fun TimeIntervalTransactionsScreen(
                         }
                 )
                 Text(
-                    text = stringResource(id = R.string.transactions),
+                    text = transactionsViewModel.title.value,
                     Modifier
                         .padding(start = 12.dp)
                         .weight(1f)
@@ -185,9 +184,9 @@ fun TimeIntervalTransactionsScreen(
                 items(transactions.value.size) {
                     val transactionItem = transactions.value[it]
                     if (transactionItem is BaseTransactionItem.TransactionHeader) {
-                        com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionHeader(transactionItem)
+                        TransactionHeader(transactionItem)
                     } else if (transactionItem is BaseTransactionItem.TransactionItem) {
-                        com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionItem(
+                        TransactionItem(
                             transactionItem,
                             navController
                         )
@@ -244,86 +243,5 @@ fun TimeIntervalTransactionsScreen(
     BackHandler {
         transactionsViewModel.clear()
         navController.popBackStack()
-    }
-}
-
-@Composable
-fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp),
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
-        ) {
-            Text(
-                text = header.dayNum,
-                fontSize = 42.sp,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.Bold,
-                color = white
-            )
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Thin, color = white)
-            }
-            Text(text = header.money, Modifier.align(Alignment.CenterVertically), color = white)
-        }
-    }
-    Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
-}
-
-@Composable
-fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: NavController) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { navController.navigate(Screen.EditTransaction(transaction = item.transactionEntry).route) }
-    ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
-        ) {
-            Card(
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.CenterVertically),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Box(modifier = Modifier.background(Color(item.color))) {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = "",
-                        Modifier
-                            .align(Alignment.Center)
-                            .size(40.dp),
-                        tint = white
-                    )
-                }
-            }
-            Column(
-                Modifier
-                    .weight(1f)
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
-            }
-            Text(
-                text = item.money,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                color = Color(item.moneyColor)
-            )
-        }
     }
 }

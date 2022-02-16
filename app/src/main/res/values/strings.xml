@@ -112,6 +112,8 @@
     <string name="income_structure">Income Structure</string>
 
     <string name="none" />
-    
+    <string name="structure">Structure</string>
+    <string name="one_transaction">1 transaction</string>
+    <string name="transactions_count">%1$d transactions</string>
 
 </resources>

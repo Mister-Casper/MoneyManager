@@ -2,7 +2,10 @@ package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -24,12 +27,11 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.formatter
 
 @Composable
-fun StatisticPieChart(header:String,entries:List<PieEntry>,colors:List<Int>) {
-    val textColor = MaterialTheme.colors.secondary
+fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, showMore:()->Unit, isNeedShowMore:Boolean = true) {
+    val textColor = white
     Card(
         Modifier
             .fillMaxSize()
-            .padding(6.dp)
             .padding(top = 12.dp)
     ) {
         Column(modifier = Modifier.padding(top = 12.dp, start = 18.dp)) {
@@ -57,7 +59,7 @@ fun StatisticPieChart(header:String,entries:List<PieEntry>,colors:List<Int>) {
                     this.legend.isWordWrapEnabled = true
                 }
             }, modifier = Modifier
-                .size(300.dp)
+                .height(300.dp)
                 .fillMaxWidth(), update = {
                 val dataSet = PieDataSet(entries, "")
                 dataSet.colors = colors
@@ -73,32 +75,33 @@ fun StatisticPieChart(header:String,entries:List<PieEntry>,colors:List<Int>) {
                     .padding(top = 4.dp)
                     .fillMaxSize()
             )
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-
-                }) {
-                Row(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(top = 8.dp, bottom = 8.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.show_more),
-                        fontWeight = FontWeight.Thin,
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically),
-                        color = white,
-                        fontSize = 20.sp
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(32.dp)
-                    )
+            if(isNeedShowMore) {
+                Box(modifier = Modifier
+                    .fillMaxWidth().clickable {
+                        showMore()
+                    }) {
+                    Row(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(top = 8.dp, bottom = 8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.show_more),
+                            fontWeight = FontWeight.Thin,
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
+                            color = white,
+                            fontSize = 20.sp
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .size(32.dp)
+                        )
+                    }
                 }
             }
         }

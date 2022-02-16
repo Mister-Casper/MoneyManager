@@ -13,11 +13,13 @@ import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
@@ -28,6 +30,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.transactionCategoryStatistic.TransactionCategoryStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
@@ -160,6 +163,38 @@ private fun MainScreenNavigationConfigurations(
             }
 
             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
+        }
+
+        composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
+            TransactionCategoryStatisticScreen(
+                statisticViewModel,
+                navController,
+                Gson().fromJson(backStackEntry.arguments?.getString("screen"), TransactionScreen::class.java)
+            )
+        }
+
+        composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
+            val category =
+                Gson().fromJson(backStackEntry.arguments?.getString("category"), TransactionCategory::class.java)
+
+            val walletJson = backStackEntry.arguments?.getString("wallet")
+            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
+
+            if (TimeInternalSingleton.timeIntervalController != null) {
+                timeIntervalTransactionsViewModel.onEvent(
+                    TimeIntervalTransactionEvent.ChangeTimeInterval(
+                        TimeInternalSingleton.timeIntervalController!!
+                    )
+                )
+                TimeInternalSingleton.timeIntervalController = null
+            }
+
+            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(category))
+            TimeIntervalTransactionsScreen(
+                timeIntervalTransactionsViewModel,
+                navController
+            )
         }
     }
 }

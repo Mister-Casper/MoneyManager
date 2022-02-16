@@ -29,6 +29,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.StatisticPieChart
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
@@ -240,11 +241,25 @@ fun StatisticScreen(
                 }
 
                 item {
-                    StatisticPieChart(stringResource(id = R.string.expense_structure),statisticViewModel.expenseEntries.value,statisticViewModel.expenseColors.value)
+                    StatisticPieChart(
+                        stringResource(id = R.string.expense_structure),
+                        statisticViewModel.expenseEntries.value,
+                        statisticViewModel.expenseColors.value,
+                        {
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Expense).route)
+                        }
+                    )
                 }
 
                 item {
-                    StatisticPieChart(stringResource(id = R.string.income_structure),statisticViewModel.incomeEntries.value,statisticViewModel.incomeColors.value)
+                    StatisticPieChart(
+                        stringResource(id = R.string.income_structure),
+                        statisticViewModel.incomeEntries.value,
+                        statisticViewModel.incomeColors.value,
+                        {
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Income).route)
+                        }
+                    )
                 }
 
                 item { Spacer(modifier = Modifier.padding(bottom = 55.dp)) }

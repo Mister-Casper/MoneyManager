@@ -9,6 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -26,9 +27,14 @@ class GetTransactionItems @Inject constructor(
         }
     }
 
-    suspend fun getTimeIntervalTransactions(wallet: Wallet, timeIntervalController: TimeIntervalController): List<BaseTransactionItem> {
+    suspend fun getTimeIntervalTransactions(
+        wallet: Wallet,
+        timeIntervalController: TimeIntervalController,
+        transactionCategory: TransactionCategory?=null
+    ): List<BaseTransactionItem> {
         val transactions =
-            moneyManagerRepository.getWalletTransactions(wallet.walletId).filter { timeIntervalController.isInInterval(it.date) }
+            moneyManagerRepository.getWalletTransactions(wallet.walletId)
+                .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.description == transactionCategory.description) }
         return convertTransactionsToItems(wallet, transactions.sortedByDescending { it.date.epochMillis })
     }
 

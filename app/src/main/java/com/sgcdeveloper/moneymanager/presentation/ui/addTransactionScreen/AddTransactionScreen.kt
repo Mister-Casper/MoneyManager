@@ -133,19 +133,19 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
         }
         Row(Modifier.fillMaxWidth()) {
             transactionNavigationButton(
-                addTransactionViewModel,
+                { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeAddTransactionScreen(it)) },
                 currentTransactionScreen.value,
                 TransactionScreen.Income,
                 stringResource(id = R.string.income)
             )
             transactionNavigationButton(
-                addTransactionViewModel,
+                { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeAddTransactionScreen(it)) },
                 currentTransactionScreen.value,
                 TransactionScreen.Expense,
                 stringResource(id = R.string.expense)
             )
             transactionNavigationButton(
-                addTransactionViewModel,
+                { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeAddTransactionScreen(it)) },
                 currentTransactionScreen.value,
                 TransactionScreen.Transfer,
                 stringResource(id = R.string.transfer)
@@ -173,7 +173,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
 
 @Composable
 fun RowScope.transactionNavigationButton(
-    addTransactionViewModel: AddTransactionViewModel,
+    onClick: (targetScreen: TransactionScreen) -> Unit,
     currentTransactionScreen: TransactionScreen,
     targetScreen: TransactionScreen,
     text: String
@@ -183,9 +183,7 @@ fun RowScope.transactionNavigationButton(
             backgroundColor = if (currentTransactionScreen == targetScreen) blue else MaterialTheme.colors.background,
             contentColor = if (currentTransactionScreen == targetScreen) white else MaterialTheme.colors.secondary
         ),
-        onClick = {
-            addTransactionViewModel.onEvent(AddTransactionEvent.ChangeAddTransactionScreen(targetScreen))
-        }, modifier = Modifier.weight(1f)
+        onClick = { onClick(targetScreen) }, modifier = Modifier.weight(1f)
     ) {
         Text(text = text)
     }

@@ -117,14 +117,12 @@ open class StatisticViewModel @Inject constructor(
             total.value = getFormattedMoney(totalMoney)
 
             expenseStruct.value =
-                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                    .map { it.transactionEntry }, defaultWallet.value!!)
+                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(), defaultWallet.value!!)
             expenseColors.value = expenseStruct.value.map { it.color }
             expenseEntries.value = expenseStruct.value.map { it.pieEntry }
 
             incomeStruct.value =
-                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                    .map { it.transactionEntry }, defaultWallet.value!!)
+                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(), defaultWallet.value!!)
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
         }

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
+import kotlin.math.roundToInt
 
 fun String.isDouble(): Boolean {
     val maybeDouble = this.toDoubleOrNull()
@@ -27,21 +28,21 @@ fun Gson.toSafeJson(src: Any?): String? {
     } else toJson(src, src.javaClass)
 }
 
-fun String.toSafeDouble():Double{
-    return if(this == "")
+fun String.toSafeDouble(): Double {
+    return if (this == "")
         0.0
     else
         this.toDouble()
 }
 
-fun Double.toMoneyString():String{
+fun Double.toMoneyString(): String {
     return if (this.rem(1) == 0.0)
         this.toLong().toString()
     else
         this.toString()
 }
 
-fun List<BaseTransactionItem>.getIncome(wallet:Wallet):Double{
+fun List<BaseTransactionItem>.getIncome(wallet: Wallet): Double {
     var incomeMoney = this.filterIsInstance<BaseTransactionItem.TransactionItem>()
         .filter { it.transactionEntry.transactionType == TransactionType.Income }.sumOf { it.moneyValue }
     incomeMoney += this.filterIsInstance<BaseTransactionItem.TransactionItem>()
@@ -50,11 +51,15 @@ fun List<BaseTransactionItem>.getIncome(wallet:Wallet):Double{
     return incomeMoney
 }
 
-fun List<BaseTransactionItem>.getExpense(wallet:Wallet):Double{
+fun List<BaseTransactionItem>.getExpense(wallet: Wallet): Double {
     var expenseMoney = this.filterIsInstance<BaseTransactionItem.TransactionItem>()
         .filter { it.transactionEntry.transactionType == TransactionType.Expense }.sumOf { it.moneyValue } * -1
     expenseMoney -= this.filterIsInstance<BaseTransactionItem.TransactionItem>()
         .filter { it.transactionEntry.transactionType == TransactionType.Transfer }
         .filter { it.transactionEntry.fromWalletId == wallet.walletId }.sumOf { it.moneyValue }
     return expenseMoney
+}
+
+fun Double.toRoundString(): String {
+    return ((this * 100.0).roundToInt() / 100.0).toString()
 }
