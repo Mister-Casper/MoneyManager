@@ -47,6 +47,11 @@ fun TimeIntervalTransactionsScreen(
         })
     }
 
+    CheckDataFromAddTransactionScreen(
+        navController,
+        transactionsViewModel
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -223,5 +228,18 @@ fun TimeIntervalTransactionsScreen(
     BackHandler {
         transactionsViewModel.clear()
         navController.popBackStack()
+    }
+}
+
+@Composable
+fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TimeIntervalTransactionsViewModel) {
+    val secondScreenResult = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.get<Long>("wallet_id")
+
+    secondScreenResult?.let {
+        if (secondScreenResult != -1L) {
+            transactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWalletId(it))
+        }
     }
 }
