@@ -65,8 +65,13 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter -> {
-                transactionCategoryFilter.value = transactionEvent.category
-                title.value = app.getString(transactionEvent.category.description)
+                if(!(transactionEvent.category is TransactionCategory.All)) {
+                    transactionCategoryFilter.value = transactionEvent.category
+                    title.value = app.getString(transactionEvent.category.description)
+                }else{
+                    transactionCategoryFilter.value = null
+                    title.value = app.getString(R.string.transactions)
+                }
             }
         }
     }

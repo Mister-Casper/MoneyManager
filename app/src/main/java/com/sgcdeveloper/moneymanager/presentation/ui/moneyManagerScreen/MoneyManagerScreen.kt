@@ -183,6 +183,7 @@ private fun MainScreenNavigationConfigurations(
                 )
                 TimeInternalSingleton.timeIntervalController = null
             }
+            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(TransactionCategory.All))
 
             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
         }
