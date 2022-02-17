@@ -118,7 +118,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 thickness = 1.dp,
                 modifier = Modifier.padding(top = 16.dp)
             )
-            LazyColumn(Modifier.padding(12.dp)) {
+            LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
                 items(transactions.value.size) {
                     val transactionItem = transactions.value[it]
                     if (transactionItem is BaseTransactionItem.TransactionHeader) {
