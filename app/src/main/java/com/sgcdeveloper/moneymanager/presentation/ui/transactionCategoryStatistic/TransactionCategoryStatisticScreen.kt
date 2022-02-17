@@ -35,6 +35,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerD
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 
 @Composable
@@ -44,7 +45,7 @@ fun TransactionCategoryStatisticScreen(
     defaultScreen: TransactionScreen
 ) {
     val currentScreen = rememberSaveable { mutableStateOf(defaultScreen) }
-    val wallet = remember { statisticViewModel.defaultWallet }
+    val wallet = remember { WalletSingleton.wallet }
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -173,7 +174,7 @@ fun TransactionCategoryItem(
                 TimeInternalSingleton.timeIntervalController = statisticViewModel.timeInterval.value
                 navController.navigate(
                     Screen.TransactionCategoryTransactions(
-                        statisticViewModel.defaultWallet.value,
+                        WalletSingleton.wallet.value,
                         item.categoryEntry
                     ).route
                 )

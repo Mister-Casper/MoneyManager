@@ -29,15 +29,16 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
-    val wallet = remember { transactionsViewModel.defaultWallet }.observeAsState()
+    val wallet = remember { WalletSingleton.wallet }.observeAsState()
     val transactions = remember { transactionsViewModel.transactionItems }
     val dialog = remember { transactionsViewModel.dialog }
 
     if (dialog.value is DialogState.WalletPickerDialog) {
-        WalletPickerDialog(transactionsViewModel.wallets.value, transactionsViewModel.defaultWallet.value, {
+        WalletPickerDialog(transactionsViewModel.wallets.value, wallet.value, {
             transactionsViewModel.onEvent(TransactionEvent.ChangeWallet(it))
         }, {
             transactionsViewModel.onEvent(TransactionEvent.CloseDialog)
@@ -61,9 +62,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             ?.savedStateHandle
                             ?.set("wallet_id", -1L)
                     }) {
-                        transactionsViewModel.defaultWallet.value?.let {
+                        WalletSingleton.wallet.value?.let {
                             Text(
-                                text = wallet.value!!.name,
+                                text = WalletSingleton.wallet.value!!.name,
                                 fontSize = 22.sp,
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 color = MaterialTheme.colors.secondary
@@ -87,7 +88,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         .clickable {
                             navController.navigate(
                                 Screen.TimeIntervalTransactions(
-                                    transactionsViewModel.defaultWallet.value!!
+                                    wallet.value
                                 ).route
                             )
                         }
@@ -160,7 +161,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(transactionsViewModel.defaultWallet.value).route) },
+            onClick = { navController.navigate(Screen.AddTransaction(wallet.value).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)

@@ -4,12 +4,12 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
@@ -22,21 +22,21 @@ open class TransactionsViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
     var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
-    val defaultWallet = MutableLiveData<Wallet>()
     val isEmpty = mutableStateOf(false)
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     init {
         wallets.observeForever {
-            if (it.isNotEmpty() && defaultWallet.value == null) {
-                val savedWallet = appPreferencesHelper.getDefaultWalletId()
-                if (savedWallet == -1L) {
-                    defaultWallet.value = it[0]
-                } else {
-                    defaultWallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
+            val savedWallet = appPreferencesHelper.getDefaultWalletId()
+            if (WalletSingleton.wallet.value == null) {
+                if (savedWallet != -1L) {
+                    WalletSingleton.wallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
+                    loadTransactions()
+                } else if (it.isNotEmpty() && WalletSingleton.wallet == null) {
+                    WalletSingleton.wallet.value = it[0]
+                    loadTransactions()
                 }
-                loadTransactions()
             }
         }
     }
@@ -44,18 +44,18 @@ open class TransactionsViewModel @Inject constructor(
     fun onEvent(transactionEvent: TransactionEvent) {
         when (transactionEvent) {
             is TransactionEvent.ShowWalletPickerDialog -> {
-                dialog.value = DialogState.WalletPickerDialog(defaultWallet.value)
+                dialog.value = DialogState.WalletPickerDialog(WalletSingleton.wallet.value)
             }
             is TransactionEvent.CloseDialog -> {
                 dialog.value = DialogState.NoneDialogState
             }
             is TransactionEvent.ChangeWallet -> {
-                defaultWallet.value = transactionEvent.wallet
+                WalletSingleton.wallet.value = transactionEvent.wallet
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
             is TransactionEvent.ChangeWalletById -> {
-                defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
+                WalletSingleton.wallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
@@ -63,10 +63,10 @@ open class TransactionsViewModel @Inject constructor(
     }
 
     private fun loadTransactions() {
-        walletsUseCases.getTransactionItems(defaultWallet.value!!).observeForever {
+        walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).observeForever {
             isEmpty.value = it.isEmpty()
             transactionItems.value = it
-            walletsUseCases.getTransactionItems(defaultWallet.value!!).removeObserver { }
+            walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).removeObserver { }
         }
     }
 

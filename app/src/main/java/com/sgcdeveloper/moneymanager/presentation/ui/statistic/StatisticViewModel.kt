@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -15,6 +14,7 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,6 @@ open class StatisticViewModel @Inject constructor(
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
-    val defaultWallet = MutableLiveData<Wallet>()
     val isEmpty = mutableStateOf(false)
     val description = mutableStateOf(timeInterval.value.getDescription())
     val income = mutableStateOf("")
@@ -52,27 +51,27 @@ open class StatisticViewModel @Inject constructor(
 
     init {
         wallets.observeForever {
-            if (it.isNotEmpty() && defaultWallet.value == null) {
-                val savedWallet = appPreferencesHelper.getDefaultWalletId()
-                if (savedWallet == -1L) {
-                    defaultWallet.value = it[0]
-                } else {
-                    defaultWallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
+            val savedWallet = appPreferencesHelper.getDefaultWalletId()
+            if (WalletSingleton.wallet.value == null) {
+                if (savedWallet != -1L) {
+                    WalletSingleton.wallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
+                } else if (it.isNotEmpty() && WalletSingleton.wallet == null) {
+                    WalletSingleton.wallet.value = it[0]
                 }
-                loadTransactions()
             }
+            loadTransactions()
         }
     }
 
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
             is StatisticEvent.ChangeWalletById -> {
-                defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
+                WalletSingleton.wallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
             is StatisticEvent.ShowWalletPickerDialog -> {
-                dialog.value = DialogState.WalletPickerDialog(defaultWallet.value)
+                dialog.value = DialogState.WalletPickerDialog(WalletSingleton.wallet.value)
             }
             is StatisticEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
@@ -94,7 +93,7 @@ open class StatisticViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is StatisticEvent.SetWallet -> {
-                defaultWallet.value = transactionEvent.wallet
+                WalletSingleton.wallet.value = transactionEvent.wallet
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
@@ -106,13 +105,13 @@ open class StatisticViewModel @Inject constructor(
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
-                    defaultWallet.value!!,
+                    WalletSingleton.wallet.value!!,
                     timeInterval.value
                 )
             isEmpty.value = transactionItems.value.isEmpty()
 
-            val incomeMoney = transactionItems.value.getIncome(defaultWallet.value!!)
-            val expenseMoney = transactionItems.value.getExpense(defaultWallet.value!!)
+            val incomeMoney = transactionItems.value.getIncome(WalletSingleton.wallet.value!!)
+            val expenseMoney = transactionItems.value.getExpense(WalletSingleton.wallet.value!!)
             val totalMoney = incomeMoney + expenseMoney
 
             income.value = getFormattedMoney(incomeMoney)
@@ -122,7 +121,7 @@ open class StatisticViewModel @Inject constructor(
             expenseStruct.value =
                 walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    defaultWallet.value!!
+                    WalletSingleton.wallet.value!!
                 )
             expenseColors.value = expenseStruct.value.map { it.color }
             expenseEntries.value = expenseStruct.value.map { it.pieEntry }
@@ -130,7 +129,7 @@ open class StatisticViewModel @Inject constructor(
             incomeStruct.value =
                 walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    defaultWallet.value!!
+                    WalletSingleton.wallet.value!!
                 )
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
@@ -139,7 +138,7 @@ open class StatisticViewModel @Inject constructor(
 
     private fun getFormattedMoney(money: Double): String {
         val formatter =
-            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(defaultWallet.value!!.currency.code)!!)
+            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(WalletSingleton.wallet.value!!.currency.code)!!)
         return formatter.format(money)
     }
 
