@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieEntry
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -25,9 +26,10 @@ import javax.inject.Inject
 @HiltViewModel
 open class StatisticViewModel @Inject constructor(
     private val app: Application,
-    private val walletsUseCases: WalletsUseCases
+    private val walletsUseCases: WalletsUseCases,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
-    lateinit var wallets: LiveData<List<Wallet>>
+    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
@@ -49,16 +51,15 @@ open class StatisticViewModel @Inject constructor(
     val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
 
     init {
-        viewModelScope.launch {
-            wallets = walletsUseCases.getWallets()
-            wallets.observeForever {
-                if (it.isNotEmpty() && defaultWallet.value == null) {
+        wallets.observeForever {
+            if (it.isNotEmpty() && defaultWallet.value == null) {
+                val savedWallet = appPreferencesHelper.getDefaultWalletId()
+                if (savedWallet == -1L) {
                     defaultWallet.value = it[0]
-                    loadTransactions()
-                    walletsUseCases.getTransactionItems(it[0]).observeForever {
-                        loadTransactions()
-                    }
+                } else {
+                    defaultWallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
                 }
+                loadTransactions()
             }
         }
     }
@@ -68,6 +69,7 @@ open class StatisticViewModel @Inject constructor(
             is StatisticEvent.ChangeWalletById -> {
                 defaultWallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
                 loadTransactions()
+                appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
             is StatisticEvent.ShowWalletPickerDialog -> {
                 dialog.value = DialogState.WalletPickerDialog(defaultWallet.value)
@@ -94,6 +96,7 @@ open class StatisticViewModel @Inject constructor(
             is StatisticEvent.SetWallet -> {
                 defaultWallet.value = transactionEvent.wallet
                 loadTransactions()
+                appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
         }
     }
@@ -117,12 +120,18 @@ open class StatisticViewModel @Inject constructor(
             total.value = getFormattedMoney(totalMoney)
 
             expenseStruct.value =
-                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(), defaultWallet.value!!)
+                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
+                    transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                    defaultWallet.value!!
+                )
             expenseColors.value = expenseStruct.value.map { it.color }
             expenseEntries.value = expenseStruct.value.map { it.pieEntry }
 
             incomeStruct.value =
-                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(), defaultWallet.value!!)
+                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
+                    transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                    defaultWallet.value!!
+                )
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
         }

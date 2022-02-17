@@ -36,9 +36,18 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putString(DEFAULT_CURRENCY, json).apply()
     }
 
+    fun getDefaultWalletId():Long{
+        return prefs.getLong(DEFAULT_WALLET_ID,-1L)
+    }
+
+    fun setDefaultWalletId(walletId:Long){
+        prefs.edit().putLong(DEFAULT_WALLET_ID,walletId).apply()
+    }
+
     companion object {
         private const val LOGIN_STATUS = "LOGIN_STATUS"
         private const val USER_NAME = "USER_NAME"
         private const val DEFAULT_CURRENCY = "DEFAULT_CURRENCY"
+        private const val DEFAULT_WALLET_ID = "WALLET_ID"
     }
 }
