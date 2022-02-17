@@ -1,9 +1,12 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.viewModels
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,6 +18,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.presentation.main.MainActivity
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
@@ -37,15 +41,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsVi
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 
 @Composable
-fun MoneyManagerScreen(
-    moneyManagerViewModel: MoneyManagerViewModel,
-    homeViewModel: HomeViewModel,
-    addTransactionViewModel: AddTransactionViewModel,
-    statisticViewModel: StatisticViewModel,
-    addWalletViewModel: AddWalletViewModel,
-    transactionsViewModel: TransactionsViewModel,
-    timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel
-) {
+fun MoneyManagerScreen() {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomMoneyManagerNavigationScreens.Home,
@@ -56,13 +52,7 @@ fun MoneyManagerScreen(
         bottomBar = { SpookyAppBottomNavigation(navController, bottomNavigationItems) }
     ) {
         MainScreenNavigationConfigurations(
-            navController,
-            addTransactionViewModel,
-            homeViewModel,
-            statisticViewModel,
-            addWalletViewModel,
-            transactionsViewModel,
-            timeIntervalTransactionsViewModel
+            navController
         )
     }
     BackHandler {
@@ -99,30 +89,33 @@ fun SpookyAppBottomNavigation(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun MainScreenNavigationConfigurations(
-    navController: NavHostController,
-    addTransactionViewModel: AddTransactionViewModel,
-    homeViewModel: HomeViewModel,
-    statisticViewModel: StatisticViewModel,
-    addWalletViewModel: AddWalletViewModel,
-    transactionsViewModel: TransactionsViewModel,
-    timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel
+    navController: NavHostController
 ) {
     NavHost(
         navController,
         startDestination = BottomMoneyManagerNavigationScreens.Transactions.route,
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
+            val homeViewModel: HomeViewModel by (LocalContext.current as MainActivity).viewModels()
+
             HomeScreen(homeViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
+            val transactionsViewModel: TransactionsViewModel by (LocalContext.current as MainActivity).viewModels()
+
             TransactionsScreen(transactionsViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
+            val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
+
             StatisticScreen(statisticViewModel, navController)
         }
         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
+            val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
+
             val wallet =
                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
 
@@ -131,6 +124,8 @@ private fun MainScreenNavigationConfigurations(
         }
 
         composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
+            val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
+
             val transaction =
                 Gson().fromJson(backStackEntry.arguments?.getString("transaction"), TransactionEntry::class.java)
 
@@ -141,6 +136,8 @@ private fun MainScreenNavigationConfigurations(
             backStackEntry.arguments?.putString("transaction", "")
         }
         composable(Screen.AddWallet(null).route + "{wallet}") { backStackEntry ->
+            val addWalletViewModel: AddWalletViewModel by (LocalContext.current as MainActivity).viewModels()
+
             val wallet =
                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
             if (wallet != null)
@@ -151,28 +148,30 @@ private fun MainScreenNavigationConfigurations(
         }
 
         composable(Screen.TimeIntervalTransactions(null).route + "{wallet}") { backStackEntry ->
+            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by (LocalContext.current as MainActivity).viewModels()
+
             val walletJson = backStackEntry.arguments?.getString("wallet")
             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
             timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
             if (TimeInternalSingleton.timeIntervalController != null) {
                 val it = TimeInternalSingleton.timeIntervalController!!
-                val timeInterval = when(it){
-                    is TimeIntervalController.DailyController ->{
+                val timeInterval = when (it) {
+                    is TimeIntervalController.DailyController -> {
                         TimeIntervalController.DailyController(it.date)
                     }
-                    is TimeIntervalController.WeeklyController ->{
-                        TimeIntervalController.WeeklyController(it.startDay,it.endDay)
+                    is TimeIntervalController.WeeklyController -> {
+                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
                     }
-                    is TimeIntervalController.MonthlyController ->{
+                    is TimeIntervalController.MonthlyController -> {
                         TimeIntervalController.MonthlyController(it.date)
                     }
-                    is TimeIntervalController.QuarterlyController ->{
-                        TimeIntervalController.QuarterlyController(it.startDay,it.endDay)
+                    is TimeIntervalController.QuarterlyController -> {
+                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
                     }
-                    is TimeIntervalController.YearlyController ->{
+                    is TimeIntervalController.YearlyController -> {
                         TimeIntervalController.QuarterlyController(it.date)
                     }
-                    is TimeIntervalController.AllController ->{
+                    is TimeIntervalController.AllController -> {
                         TimeIntervalController.AllController(it.allString)
                     }
                 }
@@ -183,12 +182,18 @@ private fun MainScreenNavigationConfigurations(
                 )
                 TimeInternalSingleton.timeIntervalController = null
             }
-            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(TransactionCategory.All))
+            timeIntervalTransactionsViewModel.onEvent(
+                TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
+                    TransactionCategory.All
+                )
+            )
 
             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
         }
 
         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
+            val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
+
             TransactionCategoryStatisticScreen(
                 statisticViewModel,
                 navController,
@@ -197,6 +202,8 @@ private fun MainScreenNavigationConfigurations(
         }
 
         composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
+            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by (LocalContext.current as MainActivity).viewModels()
+
             val category =
                 Gson().fromJson(backStackEntry.arguments?.getString("category"), TransactionCategory::class.java)
 
@@ -206,23 +213,23 @@ private fun MainScreenNavigationConfigurations(
 
             if (TimeInternalSingleton.timeIntervalController != null) {
                 val it = TimeInternalSingleton.timeIntervalController!!
-                val timeInterval = when(it){
-                    is TimeIntervalController.DailyController ->{
+                val timeInterval = when (it) {
+                    is TimeIntervalController.DailyController -> {
                         TimeIntervalController.DailyController(it.date)
                     }
-                    is TimeIntervalController.WeeklyController ->{
-                        TimeIntervalController.WeeklyController(it.startDay,it.endDay)
+                    is TimeIntervalController.WeeklyController -> {
+                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
                     }
-                    is TimeIntervalController.MonthlyController ->{
+                    is TimeIntervalController.MonthlyController -> {
                         TimeIntervalController.MonthlyController(it.date)
                     }
-                    is TimeIntervalController.QuarterlyController ->{
-                        TimeIntervalController.QuarterlyController(it.startDay,it.endDay)
+                    is TimeIntervalController.QuarterlyController -> {
+                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
                     }
-                    is TimeIntervalController.YearlyController ->{
+                    is TimeIntervalController.YearlyController -> {
                         TimeIntervalController.QuarterlyController(it.date)
                     }
-                    is TimeIntervalController.AllController ->{
+                    is TimeIntervalController.AllController -> {
                         TimeIntervalController.AllController(it.allString)
                     }
                 }
@@ -233,7 +240,11 @@ private fun MainScreenNavigationConfigurations(
                 )
                 TimeInternalSingleton.timeIntervalController = null
             }
-            timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(category))
+            timeIntervalTransactionsViewModel.onEvent(
+                TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
+                    category
+                )
+            )
             TimeIntervalTransactionsScreen(
                 timeIntervalTransactionsViewModel,
                 navController

@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
-    val wallet = remember { transactionsViewModel.defaultWallet }
+    val wallet = remember { transactionsViewModel.defaultWallet }.observeAsState()
     val transactions = remember { transactionsViewModel.transactionItems }
     val dialog = remember { transactionsViewModel.dialog }
 
@@ -59,7 +60,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             ?.savedStateHandle
                             ?.set("wallet_id", -1L)
                     }) {
-                        wallet.value?.let {
+                        transactionsViewModel.defaultWallet.value?.let {
                             Text(
                                 text = wallet.value!!.name,
                                 fontSize = 22.sp,
@@ -129,34 +130,33 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     Spacer(modifier = Modifier.padding(bottom = 55.dp))
                 }
             }
+        }
 
-            if (transactionsViewModel.isEmpty.value) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Column(Modifier.align(Alignment.Center)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.empty_icon),
-                            contentDescription = "",
-                            Modifier.align(Alignment.CenterHorizontally),
-                            tint = MaterialTheme.colors.secondary
-                        )
-                        Text(
-                            text = stringResource(id = R.string.no_transactions),
-                            style = Typography.h5,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            color = MaterialTheme.colors.secondary
-                        )
-                        Text(
-                            text = stringResource(id = R.string.tap_to_add_transaction),
-                            fontWeight = FontWeight.Thin,
-                            fontSize = 14.sp,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            color = MaterialTheme.colors.secondary
-                        )
-                    }
+        if (transactionsViewModel.isEmpty.value) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(Modifier.align(Alignment.Center)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.empty_icon),
+                        contentDescription = "",
+                        Modifier.align(Alignment.CenterHorizontally),
+                        tint = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        text = stringResource(id = R.string.no_transactions),
+                        style = Typography.h5,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        text = stringResource(id = R.string.tap_to_add_transaction),
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        color = MaterialTheme.colors.secondary
+                    )
                 }
             }
         }
-
 
         OutlinedButton(
             onClick = { navController.navigate(Screen.AddTransaction(transactionsViewModel.defaultWallet.value).route) },

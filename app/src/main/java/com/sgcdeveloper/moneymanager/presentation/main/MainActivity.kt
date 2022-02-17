@@ -27,19 +27,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
-import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
@@ -55,15 +48,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         setContent {
-            val initViewModel: InitViewModel by viewModels()
-            val homeViewModel: HomeViewModel by viewModels()
-            val statisticViewModel: StatisticViewModel by viewModels()
-            val addTransactionViewModel: AddTransactionViewModel by viewModels()
-            val transactionsViewModel: TransactionsViewModel by viewModels()
-            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
-            val moneyManagerViewModel: MoneyManagerViewModel by viewModels()
-            val registrationViewModel: RegistrationViewModel by viewModels()
-            val addWalletViewModel: AddWalletViewModel by viewModels()
             val navController = rememberAnimatedNavController()
 
             MoneyManagerTheme {
@@ -74,6 +58,8 @@ class MainActivity : ComponentActivity() {
                     this.window.statusBarColor = MaterialTheme.colors.primaryVariant.toArgb()
 
                     AnimatedNavHost(navController = navController, startDestination = Screen.SignIn.route) {
+                        val registrationViewModel: RegistrationViewModel by viewModels()
+
                         composable(
                             Screen.SignIn.route,
                             enterTransition = {
@@ -138,21 +124,15 @@ class MainActivity : ComponentActivity() {
                                 animationSpec = tween(100)
                             )
                         }) {
+                            val initViewModel: InitViewModel by viewModels()
                             InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
-                            MoneyManagerScreen(
-                                moneyManagerViewModel,
-                                homeViewModel,
-                                addTransactionViewModel,
-                                statisticViewModel,
-                                addWalletViewModel,
-                                transactionsViewModel,
-                                timeIntervalTransactionsViewModel
-                            )
+                            MoneyManagerScreen()
                         }
                     }
 
+                    val registrationViewModel: RegistrationViewModel by viewModels()
                     if (registrationViewModel.navigationRoute.value.isNotEmpty()) {
                         navController.navigate(registrationViewModel.navigationRoute.value)
                         registrationViewModel.navigationRoute.value = ""
