@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -154,9 +155,30 @@ private fun MainScreenNavigationConfigurations(
             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
             timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
             if (TimeInternalSingleton.timeIntervalController != null) {
+                val it = TimeInternalSingleton.timeIntervalController!!
+                val timeInterval = when(it){
+                    is TimeIntervalController.DailyController ->{
+                        TimeIntervalController.DailyController(it.date)
+                    }
+                    is TimeIntervalController.WeeklyController ->{
+                        TimeIntervalController.WeeklyController(it.startDay,it.endDay)
+                    }
+                    is TimeIntervalController.MonthlyController ->{
+                        TimeIntervalController.MonthlyController(it.date)
+                    }
+                    is TimeIntervalController.QuarterlyController ->{
+                        TimeIntervalController.QuarterlyController(it.startDay,it.endDay)
+                    }
+                    is TimeIntervalController.YearlyController ->{
+                        TimeIntervalController.QuarterlyController(it.date)
+                    }
+                    is TimeIntervalController.AllController ->{
+                        TimeIntervalController.AllController(it.allString)
+                    }
+                }
                 timeIntervalTransactionsViewModel.onEvent(
                     TimeIntervalTransactionEvent.ChangeTimeInterval(
-                        TimeInternalSingleton.timeIntervalController!!
+                        timeInterval
                     )
                 )
                 TimeInternalSingleton.timeIntervalController = null
@@ -182,14 +204,34 @@ private fun MainScreenNavigationConfigurations(
             timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWallet(wallet))
 
             if (TimeInternalSingleton.timeIntervalController != null) {
+                val it = TimeInternalSingleton.timeIntervalController!!
+                val timeInterval = when(it){
+                    is TimeIntervalController.DailyController ->{
+                        TimeIntervalController.DailyController(it.date)
+                    }
+                    is TimeIntervalController.WeeklyController ->{
+                        TimeIntervalController.WeeklyController(it.startDay,it.endDay)
+                    }
+                    is TimeIntervalController.MonthlyController ->{
+                        TimeIntervalController.MonthlyController(it.date)
+                    }
+                    is TimeIntervalController.QuarterlyController ->{
+                        TimeIntervalController.QuarterlyController(it.startDay,it.endDay)
+                    }
+                    is TimeIntervalController.YearlyController ->{
+                        TimeIntervalController.QuarterlyController(it.date)
+                    }
+                    is TimeIntervalController.AllController ->{
+                        TimeIntervalController.AllController(it.allString)
+                    }
+                }
                 timeIntervalTransactionsViewModel.onEvent(
                     TimeIntervalTransactionEvent.ChangeTimeInterval(
-                        TimeInternalSingleton.timeIntervalController!!
+                        timeInterval
                     )
                 )
                 TimeInternalSingleton.timeIntervalController = null
             }
-
             timeIntervalTransactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(category))
             TimeIntervalTransactionsScreen(
                 timeIntervalTransactionsViewModel,
