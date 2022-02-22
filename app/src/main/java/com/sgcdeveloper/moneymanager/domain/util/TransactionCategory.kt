@@ -15,7 +15,7 @@ open class TransactionCategory(
 
     object Transfers : TransactionCategory(1, wallet_color_17.toArgb(), R.drawable.transfer_icon, R.string.transfers)
 
-    object All : TransactionCategory(24, wallet_color_18.toArgb(),R.drawable.transfer_icon,R.string.all)
+    object All : TransactionCategory(24, wallet_color_18.toArgb(), R.drawable.transfer_icon, R.string.all)
 
     sealed class ExpenseCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
         TransactionCategory(_id, _color, _icon, _description) {
@@ -77,6 +77,10 @@ open class TransactionCategory(
     }
 
     companion object {
+        fun getById(id: Int): TransactionCategory {
+            return getItems().find { it.id == id }!!
+        }
+
         fun getItems(): List<TransactionCategory> {
             return listOf(
                 None,

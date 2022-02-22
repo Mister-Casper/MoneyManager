@@ -33,7 +33,7 @@ open class TransactionsViewModel @Inject constructor(
                 if (savedWallet != -1L) {
                     WalletSingleton.wallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
                     loadTransactions()
-                } else if (it.isNotEmpty() && WalletSingleton.wallet == null) {
+                } else if (it.isNotEmpty()) {
                     WalletSingleton.wallet.value = it[0]
                     loadTransactions()
                 }

@@ -44,10 +44,19 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putLong(DEFAULT_WALLET_ID,walletId).apply()
     }
 
+    fun getLastSyncTime(): Long {
+        return prefs.getLong(LAST_SYNC_TIME,0L)
+    }
+
+    fun setLastSyncTime(time: Long) {
+        prefs.edit().putLong(LAST_SYNC_TIME,time).apply()
+    }
+
     companion object {
-        private const val LOGIN_STATUS = "LOGIN_STATUS"
-        private const val USER_NAME = "USER_NAME"
-        private const val DEFAULT_CURRENCY = "DEFAULT_CURRENCY"
-        private const val DEFAULT_WALLET_ID = "WALLET_ID"
+        const val LOGIN_STATUS = "LOGIN_STATUS"
+        const val USER_NAME = "USER_NAME"
+        const val DEFAULT_CURRENCY = "DEFAULT_CURRENCY"
+        const val DEFAULT_WALLET_ID = "WALLET_ID"
+        const val LAST_SYNC_TIME = "LAST_SYNC_TIME"
     }
 }

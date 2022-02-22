@@ -11,6 +11,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ open class InitViewModel @Inject constructor(
     private val app: Application,
     private val currencyRepository: CurrencyRepository,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val syncHelper: SyncHelper
 ) : AndroidViewModel(app) {
 
     val currencies = currencyRepository.getCurrencies()
@@ -60,6 +62,7 @@ open class InitViewModel @Inject constructor(
                 initNewAccount()
                 appPreferencesHelper.setLoginStatus(LoginStatus.None)
                 isMoveNext.value = true
+                syncHelper.syncServerData()
             }
             is InitEvent.ChangeDefaultWalletName -> {
                 if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH || initEvent.newDefaultWalletName.length <= defaultWalletName.value.length)

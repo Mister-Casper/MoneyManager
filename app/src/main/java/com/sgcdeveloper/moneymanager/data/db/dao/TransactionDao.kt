@@ -10,6 +10,12 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 @Dao
 interface TransactionDao {
 
+    @Query("SELECT * FROM TransactionEntry")
+    fun getTransactionsOnce(): List<TransactionEntry>
+
+    @Query("SELECT * FROM TransactionEntry")
+    fun getTransactions(): LiveData<List<TransactionEntry>>
+
     @Query("SELECT * FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
     fun getTransactions(walletId:Long): LiveData<List<TransactionEntry>>
 
@@ -27,4 +33,10 @@ interface TransactionDao {
 
     @Query("DELETE FROM TransactionEntry WHERE fromWalletId == :walletId OR toWalletId == :walletId")
     suspend fun removeWalletTransactions(walletId:Long)
+
+    @Query("DELETE FROM TransactionEntry")
+    suspend fun deleteAllTransactions()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTransactions(transactions: List<TransactionEntry>)
 }

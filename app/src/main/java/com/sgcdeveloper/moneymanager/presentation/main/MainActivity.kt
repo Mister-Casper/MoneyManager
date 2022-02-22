@@ -33,7 +33,9 @@ import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyMan
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
+import com.sgcdeveloper.moneymanager.util.SyncHelper
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -43,9 +45,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var googleInSigned: (isNewUser: Boolean, userName: String) -> Unit
     private lateinit var googleInFailed: () -> Unit
 
+    @Inject
+    lateinit var syncHelper: SyncHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initGoogleAuthListener()
         super.onCreate(savedInstanceState)
+        syncHelper.syncLocalData()
         FirebaseApp.initializeApp(this)
         setContent {
             val navController = rememberAnimatedNavController()
