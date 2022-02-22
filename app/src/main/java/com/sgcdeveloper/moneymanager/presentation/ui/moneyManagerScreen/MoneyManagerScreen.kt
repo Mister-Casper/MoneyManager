@@ -104,12 +104,10 @@ private fun MainScreenNavigationConfigurations(
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
             val transactionsViewModel: TransactionsViewModel by (LocalContext.current as MainActivity).viewModels()
-            transactionsViewModel.loadTransactions()
             TransactionsScreen(transactionsViewModel, navController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
-            statisticViewModel.loadTransactions()
             StatisticScreen(statisticViewModel, navController)
         }
         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
@@ -192,7 +190,6 @@ private fun MainScreenNavigationConfigurations(
 
         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
             val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
-            statisticViewModel.loadTransactions()
             TransactionCategoryStatisticScreen(
                 statisticViewModel,
                 navController,

@@ -14,6 +14,7 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.WalletChangerListener
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
@@ -50,13 +51,18 @@ open class StatisticViewModel @Inject constructor(
     val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
 
     init {
+        WalletSingleton.addObserver(object : WalletChangerListener {
+            override fun walletChanged() {
+                loadTransactions()
+            }
+        })
         wallets.observeForever {
             val savedWallet = appPreferencesHelper.getDefaultWalletId()
             if (WalletSingleton.wallet.value == null) {
                 if (savedWallet != -1L) {
-                    WalletSingleton.wallet.value = it.find { wallet -> wallet.walletId == savedWallet }!!
-                } else if (it.isNotEmpty() && WalletSingleton.wallet == null) {
-                    WalletSingleton.wallet.value = it[0]
+                    WalletSingleton.setWallet(it.find { wallet -> wallet.walletId == savedWallet }!!)
+                } else if (it.isNotEmpty()) {
+                    WalletSingleton.setWallet(it[0])
                 }
             }
             loadTransactions()
@@ -66,7 +72,7 @@ open class StatisticViewModel @Inject constructor(
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
             is StatisticEvent.ChangeWalletById -> {
-                WalletSingleton.wallet.value = wallets.value!!.find { it.walletId == transactionEvent.walletId }
+                WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
@@ -93,14 +99,14 @@ open class StatisticViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is StatisticEvent.SetWallet -> {
-                WalletSingleton.wallet.value = transactionEvent.wallet
+                WalletSingleton.setWallet(transactionEvent.wallet)
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
         }
     }
 
-    fun loadTransactions() {
+    private fun loadTransactions() {
         viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
