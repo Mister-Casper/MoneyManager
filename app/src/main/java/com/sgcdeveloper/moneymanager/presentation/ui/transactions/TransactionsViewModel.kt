@@ -62,11 +62,13 @@ open class TransactionsViewModel @Inject constructor(
         }
     }
 
-    private fun loadTransactions() {
-        walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).observeForever {
-            isEmpty.value = it.isEmpty()
-            transactionItems.value = it
-            walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).removeObserver { }
+    fun loadTransactions() {
+        if(WalletSingleton.wallet.value != null ) {
+            walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).observeForever {
+                isEmpty.value = it.isEmpty()
+                transactionItems.value = it
+                walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).removeObserver { }
+            }
         }
     }
 
