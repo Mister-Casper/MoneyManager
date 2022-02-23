@@ -49,7 +49,7 @@ fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, s
                     dataSet.valueFormatter = formatter
                     val data = PieData(dataSet)
                     this.setDrawEntryLabels(false)
-                    this.data = data
+                    this.data = if (entries.isNotEmpty()) data else null
                     this.invalidate()
                     this.holeRadius = 75.0F
                     this.description.isEnabled = false
@@ -67,7 +67,7 @@ fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, s
                 dataSet.valueTextSize = 14f
                 dataSet.valueFormatter = formatter
                 val data = PieData(dataSet)
-                it.data = data
+                it.data = if (entries.isNotEmpty()) data else null
                 it.invalidate()
             })
             Divider(
