@@ -18,6 +18,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.presentation.main.DarkThemeViewModel
 import com.sgcdeveloper.moneymanager.presentation.main.MainActivity
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -30,6 +31,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.SettingsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
@@ -109,6 +111,10 @@ private fun MainScreenNavigationConfigurations(
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
             StatisticScreen(statisticViewModel, navController)
+        }
+        composable(Screen.Settings.route) {
+            val darkThemeViewModel: DarkThemeViewModel by (LocalContext.current as MainActivity).viewModels()
+            SettingsScreen(navController, darkThemeViewModel)
         }
         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
             val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -55,14 +54,13 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         setContent {
             val navController = rememberAnimatedNavController()
+            val darkThemeViewModel: DarkThemeViewModel by viewModels()
 
-            MoneyManagerTheme {
+            MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
                 Surface(
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.padding(top = LocalContext.current.pxToDp(getStatusBarHeight()).dp)
                 ) {
-                    this.window.statusBarColor = MaterialTheme.colors.primaryVariant.toArgb()
-
                     AnimatedNavHost(navController = navController, startDestination = Screen.SignIn.route) {
                         val registrationViewModel: RegistrationViewModel by viewModels()
 

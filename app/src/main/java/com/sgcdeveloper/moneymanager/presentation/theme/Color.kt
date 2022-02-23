@@ -7,7 +7,7 @@ val white = Color(0xffffffff)
 val black = Color(0xFF000000)
 val gray = Color(0xffb5b5b5)
 val light_blue = Color(0xff1e88e5)
-val red = Color(0xffc41c00)
+val red = Color(0xffff4d4d)
 
 val wallet_color_1 = light_blue
 val wallet_color_2 = Color(0xff005cb2)

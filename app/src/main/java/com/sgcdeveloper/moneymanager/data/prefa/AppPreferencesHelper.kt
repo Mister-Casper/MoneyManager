@@ -26,6 +26,14 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putString(USER_NAME,userName).apply()
     }
 
+    fun getIsDarkTheme():Boolean{
+        return prefs.getBoolean(IS_DARK_THEME,false)
+    }
+
+    fun setIsDarkTheme(isDark:Boolean){
+        prefs.edit().putBoolean(IS_DARK_THEME,isDark).apply()
+    }
+
     fun getDefaultCurrency():Currency{
         val json = prefs.getString(DEFAULT_CURRENCY, null)
         return Gson().fromJson(json, Currency::class.java)
@@ -58,5 +66,6 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val DEFAULT_CURRENCY = "DEFAULT_CURRENCY"
         const val DEFAULT_WALLET_ID = "WALLET_ID"
         const val LAST_SYNC_TIME = "LAST_SYNC_TIME"
+        const val IS_DARK_THEME = "IS_DARK_THEME"
     }
 }
