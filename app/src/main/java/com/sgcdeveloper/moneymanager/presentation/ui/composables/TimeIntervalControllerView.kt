@@ -23,7 +23,8 @@ fun RowScope.TimeIntervalControllerView (onLeftClick:()->Unit,onRightClick:()->U
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .size(48.dp)
+                .size(48.dp),
+            tint = MaterialTheme.colors.primary
         )
     }
     Text(
@@ -41,7 +42,8 @@ fun RowScope.TimeIntervalControllerView (onLeftClick:()->Unit,onRightClick:()->U
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterVertically)
-                .size(48.dp)
+                .size(48.dp),
+            tint = MaterialTheme.colors.primary
         )
     }
 }

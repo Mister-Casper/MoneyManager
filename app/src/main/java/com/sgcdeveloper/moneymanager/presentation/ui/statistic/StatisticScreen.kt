@@ -64,11 +64,11 @@ fun StatisticScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 50.dp)
+            .padding(12.dp)
     ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(12.dp)
         ) {
             Box(Modifier.fillMaxWidth()) {
                 Row(
@@ -94,15 +94,25 @@ fun StatisticScreen(
                         )
                     }
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.edit_calendar_icon),
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(32.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
-                )
+                Row(Modifier.align(Alignment.CenterEnd)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit_calendar_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
+                    )
+                    Spacer(modifier = Modifier.padding(start = 12.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { navController.navigate(Screen.Settings.route) }
+                    )
+                }
             }
             Row(Modifier.fillMaxWidth()) {
                 TimeIntervalControllerView(
@@ -240,7 +250,7 @@ fun StatisticScreen(
                     )
                 }
 
-                item { Spacer(modifier = Modifier.padding(bottom = 55.dp)) }
+                item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
             }
         }
 

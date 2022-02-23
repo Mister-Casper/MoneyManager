@@ -40,24 +40,26 @@ fun RepeatingButton(
     delayDecayFactor: Float = .20f,
     content: @Composable RowScope.() -> Unit
 ) {
-    Button(
-        modifier = modifier.repeatingClickable(
-            interactionSource = interactionSource,
+    if(enabled) {
+        Button(
+            modifier = modifier.repeatingClickable(
+                interactionSource = interactionSource,
+                enabled = enabled,
+                maxDelayMillis = maxDelayMillis,
+                minDelayMillis = minDelayMillis,
+                delayDecayFactor = delayDecayFactor
+            ) { onClick() },
+            onClick = onClick,
             enabled = enabled,
-            maxDelayMillis = maxDelayMillis,
-            minDelayMillis = minDelayMillis,
-            delayDecayFactor = delayDecayFactor
-        ) { onClick() },
-        onClick = onClick,
-        enabled = enabled,
-        interactionSource = interactionSource,
-        elevation = elevation,
-        shape = shape,
-        border = border,
-        colors = colors,
-        contentPadding = contentPadding,
-        content = content
-    )
+            interactionSource = interactionSource,
+            elevation = elevation,
+            shape = shape,
+            border = border,
+            colors = colors,
+            contentPadding = contentPadding,
+            content = content
+        )
+    }
 }
 
 

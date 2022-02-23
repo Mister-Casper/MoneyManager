@@ -116,4 +116,6 @@
     <string name="one_transaction">1 transaction</string>
     <string name="transactions_count">%1$d transactions</string>
 
+    <string name="dashboard">Dashboard</string>
+
 </resources>

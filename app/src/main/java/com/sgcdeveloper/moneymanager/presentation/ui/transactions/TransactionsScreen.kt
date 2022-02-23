@@ -54,45 +54,58 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             .padding(12.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
-            Row {
-                Row(Modifier.weight(1f)) {
-                    Row(Modifier.clickable {
-                        transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("wallet_id", -1L)
-                    }) {
-                        WalletSingleton.wallet.value?.let {
-                            Text(
-                                text = WalletSingleton.wallet.value!!.name,
-                                fontSize = 22.sp,
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                color = MaterialTheme.colors.secondary
-                            )
-                        }
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            "",
-                            Modifier.align(Alignment.CenterVertically),
-                            tint = MaterialTheme.colors.secondary
+            Box(Modifier.fillMaxWidth()) {
+                Row(
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("wallet_id", -1L)
+                        }) {
+                    WalletSingleton.wallet.value?.let {
+                        Text(
+                            text = WalletSingleton.wallet.value!!.name,
+                            fontSize = 22.sp,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            color = MaterialTheme.colors.secondary
                         )
                     }
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        "",
+                        Modifier.align(Alignment.CenterVertically),
+                        tint = MaterialTheme.colors.secondary
+                    )
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.list_icon),
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(32.dp)
-                        .clickable {
-                            navController.navigate(
-                                Screen.TimeIntervalTransactions(
-                                    wallet.value
-                                ).route
-                            )
-                        }
-                )
+                Row(Modifier.align(Alignment.CenterEnd)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.list_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
+                            .clickable {
+                                navController.navigate(
+                                    Screen.TimeIntervalTransactions(
+                                        wallet.value
+                                    ).route
+                                )
+                            }
+                    )
+                    Spacer(modifier = Modifier.padding(start = 12.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
+                            .clickable { navController.navigate(Screen.Settings.route) }
+                    )
+                }
             }
             Row(Modifier.padding(top = 4.dp)) {
                 Icon(

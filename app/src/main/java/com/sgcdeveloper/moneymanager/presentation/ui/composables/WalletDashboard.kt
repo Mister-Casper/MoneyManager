@@ -23,8 +23,8 @@ import com.sgcdeveloper.moneymanager.domain.model.Wallet
 fun WalletDashboard(wallets: List<Wallet>, onClick: (wallet: Wallet) -> Unit) {
     Card(
         Modifier
-            .fillMaxWidth()
-            .padding(8.dp), shape = RoundedCornerShape(12.dp)
+            .padding(top = 6.dp)
+            .fillMaxWidth(), shape = RoundedCornerShape(12.dp)
     ) {
         Column(
             modifier = Modifier
