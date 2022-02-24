@@ -14,7 +14,7 @@ open class DarkThemeViewModel @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
 ) : AndroidViewModel(app) {
 
-    val isDarkTheme = mutableStateOf(false)
+    val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
 
     fun setIsDark(isDark:Boolean){
         isDarkTheme.value = isDark
