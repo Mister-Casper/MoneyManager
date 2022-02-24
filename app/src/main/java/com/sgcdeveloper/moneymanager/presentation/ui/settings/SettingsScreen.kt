@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.main.DarkThemeViewModel
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
@@ -26,9 +27,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeVi
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(bottom = 60.dp)
-            .padding(12.dp)
-    ) {
+            .padding(12.dp)) {
         Row(Modifier.padding(top = 4.dp)) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
@@ -49,7 +48,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeVi
                     .padding(start = 4.dp)
             )
         }
-        MenuItem {
+        MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
             Text(
                 text = stringResource(id = R.string.account),
                 Modifier.align(Alignment.CenterStart),
@@ -80,9 +79,9 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeVi
 }
 
 @Composable
-fun MenuItem(context: @Composable BoxScope.() -> Unit) {
+fun MenuItem(modifier: Modifier = Modifier, context: @Composable BoxScope.() -> Unit) {
     Card(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(6.dp)
             .padding(top = 6.dp, bottom = 6.dp)

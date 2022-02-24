@@ -81,10 +81,10 @@ open class RegistrationViewModel @Inject constructor(
                             if (it) {
                                 updateLogInStatus(LoginStatus.None)
                             } else {
-                                showLoadingDialog.value = false
                                 isSignInError.value = true
                             }
                         }
+                        showLoadingDialog.value = false
                     }
                 }
             }
@@ -105,9 +105,9 @@ open class RegistrationViewModel @Inject constructor(
                                 appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
-                                showLoadingDialog.value = false
                                 isSignInError.value = true
                             }
+                            showLoadingDialog.value = false
                         }
                     }
                 }
@@ -124,6 +124,7 @@ open class RegistrationViewModel @Inject constructor(
                             updateLogInStatus(LoginStatus.Initing)
                         } else
                             updateLogInStatus(LoginStatus.None)
+                        showLoadingDialog.value = false
                     }
                 }, {
                     isSignInError.value = false

@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,6 +32,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettings
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettingsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.settings.SettingsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
@@ -43,7 +46,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsVi
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 
 @Composable
-fun MoneyManagerScreen() {
+fun MoneyManagerScreen(globalNavController: NavHostController) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomMoneyManagerNavigationScreens.Home,
@@ -53,9 +56,7 @@ fun MoneyManagerScreen() {
     Scaffold(
         bottomBar = { SpookyAppBottomNavigation(navController, bottomNavigationItems) }
     ) {
-        MainScreenNavigationConfigurations(
-            navController
-        )
+        MainScreenNavigationConfigurations(navController, globalNavController)
     }
     BackHandler {
         // Ignore
@@ -94,7 +95,8 @@ fun SpookyAppBottomNavigation(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun MainScreenNavigationConfigurations(
-    navController: NavHostController
+    navController: NavHostController,
+    globalNavController: NavController
 ) {
     NavHost(
         navController,
@@ -111,6 +113,10 @@ private fun MainScreenNavigationConfigurations(
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
             val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
             StatisticScreen(statisticViewModel, navController)
+        }
+        composable(Screen.AccountSettings.route) {
+            val accountSettingsViewModel: AccountSettingsViewModel by (LocalContext.current as MainActivity).viewModels()
+            AccountSettings(globalNavController, accountSettingsViewModel)
         }
         composable(Screen.Settings.route) {
             val darkThemeViewModel: DarkThemeViewModel by (LocalContext.current as MainActivity).viewModels()

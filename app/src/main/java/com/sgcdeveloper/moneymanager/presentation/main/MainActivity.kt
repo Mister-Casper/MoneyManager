@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
                             InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
-                            MoneyManagerScreen()
+                            MoneyManagerScreen(navController)
                         }
                     }
 
