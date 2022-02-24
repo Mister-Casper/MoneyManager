@@ -229,7 +229,7 @@ private fun MainScreenNavigationConfigurations(
                         TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
                     }
                     is TimeIntervalController.YearlyController -> {
-                        TimeIntervalController.QuarterlyController(it.date)
+                        TimeIntervalController.YearlyController(it.date)
                     }
                     is TimeIntervalController.AllController -> {
                         TimeIntervalController.AllController(it.allString)
