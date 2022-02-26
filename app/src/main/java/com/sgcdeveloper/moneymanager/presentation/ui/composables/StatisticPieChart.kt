@@ -28,7 +28,6 @@ import com.sgcdeveloper.moneymanager.presentation.ui.statistic.formatter
 
 @Composable
 fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, showMore:()->Unit, isNeedShowMore:Boolean = true) {
-    val textColor = white
     Card(
         Modifier
             .fillMaxSize()
@@ -54,12 +53,12 @@ fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, s
                     this.holeRadius = 75.0F
                     this.description.isEnabled = false
                     this.setHoleColor(Color.Transparent.toArgb())
-                    this.legend.textColor = textColor.toArgb()
-                    this.legend.textSize = 14f
                     this.legend.isWordWrapEnabled = true
+                    this.legend.textColor = white.toArgb()
+                    this.legend.textSize = 12f
                 }
             }, modifier = Modifier
-                .height(300.dp)
+                .height(350.dp)
                 .fillMaxWidth(), update = {
                 val dataSet = PieDataSet(entries, "")
                 dataSet.colors = colors
