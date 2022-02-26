@@ -63,7 +63,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(bottom = 60.dp, start = 12.dp, end = 12.dp, top = 4.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         item {
             Column {

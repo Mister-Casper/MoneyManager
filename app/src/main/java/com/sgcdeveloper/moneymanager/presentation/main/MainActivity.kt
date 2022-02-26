@@ -24,15 +24,36 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.gson.Gson
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettings
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettingsViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.SettingsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.transactionCategoryStatistic.TransactionCategoryStatisticScreen
 import com.sgcdeveloper.moneymanager.util.SyncHelper
+import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -133,6 +154,162 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(navController)
+                        }
+                        composable(Screen.AccountSettings.route) {
+                            val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
+                            AccountSettings(navController, accountSettingsViewModel)
+                        }
+                        composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
+                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+
+                            val wallet =
+                                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+
+                            addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
+                            AddTransactionScreen(addTransactionViewModel, navController)
+                        }
+                        composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
+                            val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
+
+                            val transaction =
+                                Gson().fromJson(
+                                    backStackEntry.arguments?.getString("transaction"),
+                                    TransactionEntry::class.java
+                                )
+
+                            if (transaction != null)
+                                addTransactionViewModel.onEvent(AddTransactionEvent.SetExistTransaction(transaction))
+                            AddTransactionScreen(addTransactionViewModel, navController)
+
+                            backStackEntry.arguments?.putString("transaction", "")
+                        }
+                        composable(Screen.AddWallet(null).route + "{wallet}") { backStackEntry ->
+                            val addWalletViewModel: AddWalletViewModel by viewModels()
+
+                            val wallet =
+                                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+                            if (wallet != null)
+                                addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
+                            AddWalletScreen(navController, addWalletViewModel)
+
+                            backStackEntry.arguments?.putString("wallet", "")
+                        }
+                        composable(Screen.TimeIntervalTransactions(null).route + "{wallet}") { backStackEntry ->
+                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
+
+                            val walletJson = backStackEntry.arguments?.getString("wallet")
+                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            timeIntervalTransactionsViewModel.onEvent(
+                                TimeIntervalTransactionEvent.SetDefaultWallet(
+                                    wallet
+                                )
+                            )
+                            if (TimeInternalSingleton.timeIntervalController != null) {
+                                val it = TimeInternalSingleton.timeIntervalController!!
+                                val timeInterval = when (it) {
+                                    is TimeIntervalController.DailyController -> {
+                                        TimeIntervalController.DailyController(it.date)
+                                    }
+                                    is TimeIntervalController.WeeklyController -> {
+                                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
+                                    }
+                                    is TimeIntervalController.MonthlyController -> {
+                                        TimeIntervalController.MonthlyController(it.date)
+                                    }
+                                    is TimeIntervalController.QuarterlyController -> {
+                                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
+                                    }
+                                    is TimeIntervalController.YearlyController -> {
+                                        TimeIntervalController.QuarterlyController(it.date)
+                                    }
+                                    is TimeIntervalController.AllController -> {
+                                        TimeIntervalController.AllController(it.allString)
+                                    }
+                                }
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.ChangeTimeInterval(
+                                        timeInterval
+                                    )
+                                )
+                                TimeInternalSingleton.timeIntervalController = null
+                            }
+                            timeIntervalTransactionsViewModel.onEvent(
+                                TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
+                                    TransactionCategory.All
+                                )
+                            )
+
+                            TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
+                        }
+                        composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
+                            val statisticViewModel: StatisticViewModel by viewModels()
+                            TransactionCategoryStatisticScreen(
+                                statisticViewModel,
+                                navController,
+                                Gson().fromJson(
+                                    backStackEntry.arguments?.getString("screen"),
+                                    TransactionScreen::class.java
+                                )
+                            )
+                        }
+                        composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
+                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
+
+                            val category =
+                                Gson().fromJson(
+                                    backStackEntry.arguments?.getString("category"),
+                                    TransactionCategory::class.java
+                                )
+
+                            val walletJson = backStackEntry.arguments?.getString("wallet")
+                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            timeIntervalTransactionsViewModel.onEvent(
+                                TimeIntervalTransactionEvent.SetDefaultWallet(
+                                    wallet
+                                )
+                            )
+
+                            if (TimeInternalSingleton.timeIntervalController != null) {
+                                val it = TimeInternalSingleton.timeIntervalController!!
+                                val timeInterval = when (it) {
+                                    is TimeIntervalController.DailyController -> {
+                                        TimeIntervalController.DailyController(it.date)
+                                    }
+                                    is TimeIntervalController.WeeklyController -> {
+                                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
+                                    }
+                                    is TimeIntervalController.MonthlyController -> {
+                                        TimeIntervalController.MonthlyController(it.date)
+                                    }
+                                    is TimeIntervalController.QuarterlyController -> {
+                                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
+                                    }
+                                    is TimeIntervalController.YearlyController -> {
+                                        TimeIntervalController.YearlyController(it.date)
+                                    }
+                                    is TimeIntervalController.AllController -> {
+                                        TimeIntervalController.AllController(it.allString)
+                                    }
+                                }
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.ChangeTimeInterval(
+                                        timeInterval
+                                    )
+                                )
+                                TimeInternalSingleton.timeIntervalController = null
+                            }
+                            timeIntervalTransactionsViewModel.onEvent(
+                                TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
+                                    category
+                                )
+                            )
+                            TimeIntervalTransactionsScreen(
+                                timeIntervalTransactionsViewModel,
+                                navController
+                            )
+                        }
+                        composable(Screen.Settings.route) {
+                            SettingsScreen(navController, darkThemeViewModel)
                         }
                     }
 

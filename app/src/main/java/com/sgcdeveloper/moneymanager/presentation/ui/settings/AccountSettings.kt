@@ -29,7 +29,10 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
     val user = FirebaseAuth.getInstance().currentUser
     val url = user!!.photoUrl!!.toString()
 
-    Column(Modifier.fillMaxSize().padding(12.dp)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Row(Modifier.padding(top = 4.dp)) {
             androidx.compose.material.Icon(
                 imageVector = Icons.Filled.ArrowBack,

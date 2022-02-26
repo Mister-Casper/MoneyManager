@@ -26,8 +26,8 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeViewModel) {
     Column(
         Modifier
-            .fillMaxWidth()
-            .padding(12.dp)) {
+            .fillMaxSize()
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Row(Modifier.padding(top = 4.dp)) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,

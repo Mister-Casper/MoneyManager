@@ -86,7 +86,7 @@ fun StatisticPieChart(header:String, entries:List<PieEntry>, colors:List<Int>, s
                     ) {
                         Text(
                             text = stringResource(id = R.string.show_more),
-                            fontWeight = FontWeight.Thin,
+                            fontWeight = FontWeight.Medium,
                             modifier = Modifier
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),

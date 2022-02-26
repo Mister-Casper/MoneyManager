@@ -26,7 +26,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     LazyColumn(
         Modifier
             .padding(bottom = 60.dp)
-            .padding(12.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         item {
             Box(modifier = Modifier.fillMaxWidth()) {

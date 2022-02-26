@@ -51,7 +51,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 50.dp)
-            .padding(12.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
             Box(Modifier.fillMaxWidth()) {

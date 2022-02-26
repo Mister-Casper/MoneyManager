@@ -45,7 +45,6 @@ fun TransactionCategoryStatisticScreen(
     defaultScreen: TransactionScreen
 ) {
     val currentScreen = rememberSaveable { mutableStateOf(defaultScreen) }
-    val wallet = remember { WalletSingleton.wallet }
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -61,8 +60,7 @@ fun TransactionCategoryStatisticScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .padding(12.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(
             Modifier
@@ -210,7 +208,7 @@ fun TransactionCategoryItem(
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(text = item.category, fontSize = 16.sp, color = white)
-                    Text(text = item.percent, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
+                    Text(text = item.percent, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
                 }
             }
             Column(modifier = Modifier.align(Alignment.CenterEnd)) {

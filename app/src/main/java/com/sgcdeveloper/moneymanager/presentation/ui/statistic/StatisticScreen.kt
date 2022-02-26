@@ -64,7 +64,7 @@ fun StatisticScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 50.dp)
-            .padding(12.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(
             Modifier
@@ -149,7 +149,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.income),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -165,7 +165,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.expense),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -178,7 +178,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.total),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -208,7 +208,7 @@ fun StatisticScreen(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.show_more),
-                                        fontWeight = FontWeight.Thin,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier
                                             .weight(1f)
                                             .align(Alignment.CenterVertically),

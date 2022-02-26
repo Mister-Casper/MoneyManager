@@ -55,11 +55,10 @@ fun TimeIntervalTransactionsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .padding(12.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
-            Row(Modifier.padding(top = 4.dp)) {
+            Row{
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "",
@@ -125,7 +124,7 @@ fun TimeIntervalTransactionsScreen(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.income),
-                                        fontWeight = FontWeight.Thin,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier.weight(1f),
                                         color = white
                                     )
@@ -141,7 +140,7 @@ fun TimeIntervalTransactionsScreen(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.expense),
-                                        fontWeight = FontWeight.Thin,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier.weight(1f),
                                         color = white
                                     )
@@ -154,7 +153,7 @@ fun TimeIntervalTransactionsScreen(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.total),
-                                        fontWeight = FontWeight.Thin,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier.weight(1f),
                                         color = white
                                     )
@@ -199,7 +198,7 @@ fun TimeIntervalTransactionsScreen(
                     )
                     Text(
                         text = stringResource(id = R.string.tap_to_add_transaction),
-                        fontWeight = FontWeight.Thin,
+                        fontWeight = FontWeight.Medium,
                         fontSize = 14.sp,
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         color = MaterialTheme.colors.secondary

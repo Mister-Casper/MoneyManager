@@ -32,7 +32,7 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
 
     val focusManager = LocalFocusManager.current
     LoadingDialog(isShowLoadingDialog.value)
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Column(Modifier.fillMaxSize()) {
             Text(
                 text = stringResource(id = R.string.sign_up_to_save),

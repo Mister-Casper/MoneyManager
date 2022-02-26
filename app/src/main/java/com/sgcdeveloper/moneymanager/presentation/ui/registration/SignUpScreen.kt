@@ -44,7 +44,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
 
     val focusManager = LocalFocusManager.current
     LoadingDialog(isShowLoadingDialog.value)
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Column(Modifier.fillMaxSize()) {
             Text(
                 text = stringResource(id = R.string.lets_get_started),
