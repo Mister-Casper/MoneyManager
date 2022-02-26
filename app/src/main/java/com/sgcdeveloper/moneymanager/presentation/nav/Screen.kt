@@ -29,4 +29,9 @@ sealed class Screen(val route: String) {
 
     class TransactionCategoryStatisticScreen(defaultScreen: TransactionScreen? = null) :
         Screen("TransactionCategoryStatisticScreen/" + Gson().toSafeJson(defaultScreen))
+
+    class TransactionCategoryForWalletStatisticScreen(wallet: Wallet? = null) :
+        Screen("TransactionCategoryForWalletStatisticScreen/" + Gson().toSafeJson(wallet))
+
+    class WalletScreen(wallet: Wallet?) : Screen("WalletScreen/" + Gson().toSafeJson(wallet))
 }

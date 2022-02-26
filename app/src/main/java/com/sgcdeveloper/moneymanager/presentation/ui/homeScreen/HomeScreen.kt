@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletDashboard
 
@@ -51,7 +52,11 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
         item {
             if (wallets.value != null)
                 WalletDashboard(wallets.value!!) {
-                    navController.navigate(Screen.AddWallet(it).route)
+                    if(it is AddNewWallet){
+                        navController.navigate(Screen.AddWallet(it).route)
+                    }else{
+                        navController.navigate(Screen.WalletScreen(it).route)
+                    }
                 }
         }
     }

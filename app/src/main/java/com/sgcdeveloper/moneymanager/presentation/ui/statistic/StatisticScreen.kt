@@ -41,7 +41,7 @@ fun StatisticScreen(
     statisticViewModel: StatisticViewModel,
     navController: NavController
 ) {
-    val wallet = remember { WalletSingleton.wallet }.observeAsState()
+    val wallet = remember { statisticViewModel.wallet }.observeAsState()
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -234,7 +234,7 @@ fun StatisticScreen(
                         statisticViewModel.expenseEntries.value,
                         statisticViewModel.expenseColors.value,
                         {
-                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Expense).route)
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Expense).route)
                         }
                     )
                 }
@@ -245,7 +245,7 @@ fun StatisticScreen(
                         statisticViewModel.incomeEntries.value,
                         statisticViewModel.incomeColors.value,
                         {
-                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Income).route)
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Income).route)
                         }
                     )
                 }

@@ -35,10 +35,10 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
         ) { return@getCategoriesStatistic it.transactionEntry.transactionType == TransactionType.Income || (it.transactionEntry.transactionType == TransactionType.Transfer && it.transactionEntry.toWalletId == wallet.walletId) }
     }
 
-    private suspend fun getCategoriesStatistic(
+    suspend fun getCategoriesStatistic(
         wallet: Wallet,
         transaction: List<BaseTransactionItem.TransactionItem>,
-        filter: (it: BaseTransactionItem.TransactionItem) -> Boolean
+        filter: (it: BaseTransactionItem.TransactionItem) -> Boolean = {true}
     ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
         val categories = mutableListOf<CategoryStatistic>()
 

@@ -47,11 +47,15 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettings
 import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettingsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.settings.SettingsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactionCategoryStatistic.TransactionCategoryStatisticScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import dagger.hilt.android.AndroidEntryPoint
@@ -252,6 +256,17 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         }
+                        composable(Screen.TransactionCategoryForWalletStatisticScreen(null).route + "{wallet}"){backStackEntry->
+                            val statisticViewModel: StatisticViewModel by viewModels()
+                            val walletJson = backStackEntry.arguments?.getString("wallet")
+                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            statisticViewModel.onEvent(StatisticEvent.SetWallet(wallet))
+                            TransactionCategoryStatisticScreen(
+                                statisticViewModel,
+                                navController,
+                                TransactionScreen.Expense
+                            )
+                        }
                         composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
                             val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
 
@@ -310,6 +325,13 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.Settings.route) {
                             SettingsScreen(navController, darkThemeViewModel)
+                        }
+                        composable(Screen.WalletScreen(null).route + "{wallet}"){backStackEntry->
+                            val walletViewModel:WalletViewModel by viewModels()
+                            val walletJson = backStackEntry.arguments?.getString("wallet")
+                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            walletViewModel.onEvent(ShowWalletEvent.SetShowWallet(wallet))
+                            WalletScreen(walletViewModel, navController)
                         }
                     }
 

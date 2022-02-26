@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -30,6 +31,8 @@ open class StatisticViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
+    var wallet: MutableLiveData<Wallet> = MutableLiveData(WalletSingleton.wallet.value)
+
     var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
@@ -99,7 +102,7 @@ open class StatisticViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is StatisticEvent.SetWallet -> {
-                WalletSingleton.setWallet(transactionEvent.wallet)
+                wallet.value = transactionEvent.wallet
                 loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
@@ -111,13 +114,13 @@ open class StatisticViewModel @Inject constructor(
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
-                    WalletSingleton.wallet.value!!,
+                    wallet.value!!,
                     timeInterval.value
                 )
             isEmpty.value = transactionItems.value.isEmpty()
 
-            val incomeMoney = transactionItems.value.getIncome(WalletSingleton.wallet.value!!)
-            val expenseMoney = transactionItems.value.getExpense(WalletSingleton.wallet.value!!)
+            val incomeMoney = transactionItems.value.getIncome(wallet.value!!)
+            val expenseMoney = transactionItems.value.getExpense(wallet.value!!)
             val totalMoney = incomeMoney + expenseMoney
 
             income.value = getFormattedMoney(incomeMoney)
@@ -127,7 +130,7 @@ open class StatisticViewModel @Inject constructor(
             expenseStruct.value =
                 walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    WalletSingleton.wallet.value!!
+                    wallet.value!!
                 )
             expenseColors.value = expenseStruct.value.map { it.color }
             expenseEntries.value = expenseStruct.value.map { it.pieEntry }
@@ -135,7 +138,7 @@ open class StatisticViewModel @Inject constructor(
             incomeStruct.value =
                 walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    WalletSingleton.wallet.value!!
+                    wallet.value!!
                 )
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
