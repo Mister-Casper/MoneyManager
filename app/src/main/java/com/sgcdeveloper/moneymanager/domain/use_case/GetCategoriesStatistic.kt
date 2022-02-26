@@ -75,7 +75,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
             it.percent = (it.sum / maxSum * 100).toRoundString() + " %"
         }
 
-        return@async categories
+        return@async categories.sortedByDescending { it.sum }
     }.await()
 
 }
