@@ -129,5 +129,6 @@
     <string name="dark_mode">Dark mode</string>
     <string name="account_settings">Account</string>
     <string name="sign_out">Sign Out</string>
+    <string name="select_time_interval">Select Time INterval</string>
 
 </resources>

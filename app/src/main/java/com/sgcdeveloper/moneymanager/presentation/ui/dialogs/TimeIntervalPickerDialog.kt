@@ -52,7 +52,7 @@ fun TimeIntervalPickerDialog(
                         .clickable { onDismiss() }
                 )
                 Text(
-                    text = stringResource(id = R.string.select_wallet),
+                    text = stringResource(id = R.string.select_time_interval),
                     color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
