@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -12,6 +13,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -57,24 +59,19 @@ open class TransactionsViewModel @Inject constructor(
             }
             is TransactionEvent.ChangeWallet -> {
                 WalletSingleton.setWallet(transactionEvent.wallet)
-                loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
             is TransactionEvent.ChangeWalletById -> {
                 WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
-                loadTransactions()
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
         }
     }
 
     private fun loadTransactions() {
-        if (WalletSingleton.wallet.value != null) {
-            walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).observeForever {
-                isEmpty.value = it.isEmpty()
-                transactionItems.value = it
-                walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!).removeObserver { }
-            }
+        viewModelScope.launch {
+            transactionItems.value = walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!)
+            isEmpty.value = transactionItems.value.isEmpty()
         }
     }
 }

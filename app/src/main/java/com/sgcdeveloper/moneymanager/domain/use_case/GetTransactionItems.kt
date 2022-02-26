@@ -2,8 +2,6 @@ package com.sgcdeveloper.moneymanager.domain.use_case
 
 import android.content.Context
 import androidx.compose.ui.graphics.toArgb
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -13,7 +11,9 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import java.text.NumberFormat
 import javax.inject.Inject
 
@@ -21,27 +21,36 @@ class GetTransactionItems @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository
 ) {
-    operator fun invoke(wallet: Wallet): LiveData<List<BaseTransactionItem>> {
-        return Transformations.map(moneyManagerRepository.getTransactions(wallet.walletId)) {
-            convertTransactionsToItems(wallet, it.sortedByDescending { it.date.epochMillis })
-        }
-    }
+    suspend operator fun invoke(wallet: Wallet): List<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
+        return@async convertTransactionsToItems(
+            wallet,
+            moneyManagerRepository.getWalletTransactions(wallet.walletId).sortedByDescending { it.date.epochMillis })
+    }.await()
 
     suspend fun getTimeIntervalTransactions(
         wallet: Wallet,
         timeIntervalController: TimeIntervalController,
-        transactionCategory: TransactionCategory?=null
-    ): List<BaseTransactionItem> {
-        val transactions =
-            moneyManagerRepository.getWalletTransactions(wallet.walletId)
-                .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.description == transactionCategory.description) }
-        return convertTransactionsToItems(wallet, transactions.sortedByDescending { it.date.epochMillis })
-    }
+        transactionCategory: TransactionCategory? = null
+    ): List<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
+        return@async convertTransactionsToItems(
+            wallet,
+            getWalletTransactions(wallet, timeIntervalController, transactionCategory)
+        )
+    }.await()
 
-    private fun convertTransactionsToItems(
+    private suspend fun getWalletTransactions(
+        wallet: Wallet, timeIntervalController: TimeIntervalController,
+        transactionCategory: TransactionCategory? = null
+    ): List<TransactionEntry> = CoroutineScope(Dispatchers.IO).async {
+        return@async moneyManagerRepository.getWalletTransactions(wallet.walletId)
+            .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.description == transactionCategory.description) }
+            .sortedByDescending { it.date.epochMillis }
+    }.await()
+
+    private suspend fun convertTransactionsToItems(
         wallet: Wallet,
         transactions: List<TransactionEntry>
-    ): List<BaseTransactionItem> {
+    ): MutableList<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
         val items = mutableListOf<BaseTransactionItem>()
         transactions.groupBy { it.date.toDateString() }.values.forEach { oneDayTransactions ->
             val date = oneDayTransactions.first().date
@@ -68,7 +77,11 @@ class GetTransactionItems @Inject constructor(
                         transaction.category.color,
                         transaction.category.icon,
                         transaction.description,
-                        getTransactionDescription(transaction.fromWalletId, transaction.toWalletId, transaction),
+                        getTransactionDescription(
+                            transaction.fromWalletId,
+                            transaction.toWalletId,
+                            transaction
+                        ),
                         transaction.value,
                         getFormattedMoney(wallet, transaction.value),
                         moneyColor.toArgb()
@@ -76,40 +89,41 @@ class GetTransactionItems @Inject constructor(
                 )
             }
         }
-        return items
-    }
+        return@async items
+    }.await()
 
-    private fun getTransactionsMoney(wallet: Wallet, transactions: List<TransactionEntry>): String {
-        return getFormattedMoney(wallet, transactions.sumOf {
-            when (it.transactionType) {
-                TransactionType.Income -> it.value
-                TransactionType.Expense -> -it.value
-                else -> {
-                    if (wallet.walletId == it.fromWalletId)
-                        -it.value
-                    else
-                        it.value
+    private suspend fun getTransactionsMoney(wallet: Wallet, transactions: List<TransactionEntry>): String =
+        CoroutineScope(Dispatchers.IO).async {
+            return@async getFormattedMoney(wallet, transactions.sumOf {
+                when (it.transactionType) {
+                    TransactionType.Income -> it.value
+                    TransactionType.Expense -> -it.value
+                    else -> {
+                        if (wallet.walletId == it.fromWalletId)
+                            -it.value
+                        else
+                            it.value
+                    }
                 }
-            }
-        })
-    }
+            })
+        }.await()
 
     companion object {
-        fun getFormattedMoney(wallet: Wallet, money: Double): String {
+        suspend fun getFormattedMoney(wallet: Wallet, money: Double): String = CoroutineScope(Dispatchers.IO).async {
             val formatter =
                 NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
-            return formatter.format(money)
-        }
+            return@async formatter.format(money)
+        }.await()
     }
 
-    private fun getTransactionDescription(
+    private suspend fun getTransactionDescription(
         walletFromId: Long,
         walletToId: Long,
         transactionEntry: TransactionEntry
-    ): String = runBlocking {
-        if (transactionEntry.transactionType == TransactionType.Transfer) {
+    ): String = CoroutineScope(Dispatchers.IO).async {
+        return@async if (transactionEntry.transactionType == TransactionType.Transfer) {
             moneyManagerRepository.getWallet(walletFromId).name + " -> " + moneyManagerRepository.getWallet(walletToId).name
         } else
             context.getString(transactionEntry.category.description)
-    }
+    }.await()
 }

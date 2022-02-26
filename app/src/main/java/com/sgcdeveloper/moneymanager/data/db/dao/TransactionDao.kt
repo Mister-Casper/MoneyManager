@@ -11,7 +11,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 interface TransactionDao {
 
     @Query("SELECT * FROM TransactionEntry")
-    fun getTransactionsOnce(): List<TransactionEntry>
+    suspend fun getTransactionsOnce(): List<TransactionEntry>
 
     @Query("SELECT * FROM TransactionEntry")
     fun getTransactions(): LiveData<List<TransactionEntry>>

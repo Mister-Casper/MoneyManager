@@ -125,7 +125,7 @@ class SyncHelper @Inject constructor(
         return list
     }
 
-    private fun getTransactions(): List<MutableMap<String, Any>> {
+    private suspend fun getTransactions(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
         moneyManagerRepository.getTransactionsOnce().forEach { transaction ->
             list.add(transaction.toObject())

@@ -36,7 +36,7 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         appDatabase.walletDao().insertWallets(wallets)
     }
 
-    override fun getTransactionsOnce(): List<TransactionEntry> {
+    override suspend fun getTransactionsOnce(): List<TransactionEntry> {
         return appDatabase.transactionDao().getTransactionsOnce()
     }
 
