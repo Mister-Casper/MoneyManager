@@ -43,7 +43,7 @@ class GetTransactionItems @Inject constructor(
         transactionCategory: TransactionCategory? = null
     ): List<TransactionEntry> = CoroutineScope(Dispatchers.IO).async {
         return@async moneyManagerRepository.getWalletTransactions(wallet.walletId)
-            .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.description == transactionCategory.description) }
+            .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.id == transactionCategory.id) }
             .sortedByDescending { it.date.epochMillis }
     }.await()
 
