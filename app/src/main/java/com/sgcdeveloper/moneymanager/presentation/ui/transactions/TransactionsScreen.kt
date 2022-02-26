@@ -217,8 +217,8 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Thin, color = white)
+                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = white)
             }
             Text(text = header.money, Modifier.align(Alignment.CenterVertically), color = white)
         }
@@ -261,8 +261,8 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Thin, color = white)
-                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Thin, color = white)
+                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = white)
+                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
             }
             Text(
                 text = item.money,
