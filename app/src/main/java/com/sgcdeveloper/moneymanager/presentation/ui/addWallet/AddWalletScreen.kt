@@ -76,7 +76,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .clickable {
-                                navController.popBackStack()
+                                navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
                             }
                     )
                     Text(
@@ -104,7 +104,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     }
                     Button(onClick = {
                         addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                        navController.popBackStack()
+                        navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
                     }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.save),

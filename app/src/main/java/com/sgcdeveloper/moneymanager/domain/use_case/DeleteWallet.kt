@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.domain.use_case
 
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.util.SyncHelper
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import javax.inject.Inject
 
 class DeleteWallet @Inject constructor(
@@ -14,6 +15,8 @@ class DeleteWallet @Inject constructor(
         transactions.forEach{transaction ->  insertTransaction.cancelTransaction(transaction.id)}
         moneyManagerRepository.removeWalletTransactions(walletId)
         moneyManagerRepository.removeWallet(walletId)
+        if(WalletSingleton.wallet.value?.walletId == walletId)
+            WalletSingleton.wallet.value = null
         syncHelper.syncServerData()
     }
 }

@@ -36,10 +36,11 @@ open class TransactionsViewModel @Inject constructor(
             }
         })
         wallets.observeForever {
-            val savedWallet = appPreferencesHelper.getDefaultWalletId()
+            val savedWalletId = appPreferencesHelper.getDefaultWalletId()
             if (WalletSingleton.wallet.value == null) {
-                if (savedWallet != -1L) {
-                    WalletSingleton.setWallet(it.find { wallet -> wallet.walletId == savedWallet }!!)
+                val savedWallet = it.find { wallet -> wallet.walletId == savedWalletId }
+                if (savedWalletId != -1L && savedWallet != null) {
+                    WalletSingleton.setWallet(savedWallet)
                     loadTransactions()
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[0])
