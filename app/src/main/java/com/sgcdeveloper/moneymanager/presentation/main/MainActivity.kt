@@ -330,8 +330,10 @@ class MainActivity : ComponentActivity() {
                             val walletViewModel: WalletViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            walletViewModel.onEvent(ShowWalletEvent.SetShowWallet(wallet))
+                            if (wallet != null)
+                                walletViewModel.onEvent(ShowWalletEvent.SetShowWallet(wallet))
                             WalletScreen(walletViewModel, navController)
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                     }
 

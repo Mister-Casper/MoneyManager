@@ -7,6 +7,7 @@ import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getCurrencyFormatter
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
@@ -14,7 +15,6 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import java.text.NumberFormat
 import javax.inject.Inject
 
 class GetTransactionItems @Inject constructor(
@@ -51,6 +51,7 @@ class GetTransactionItems @Inject constructor(
         wallet: Wallet,
         transactions: List<TransactionEntry>
     ): MutableList<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
+        val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.name }
         val items = mutableListOf<BaseTransactionItem>()
         transactions.groupBy { it.date.toDateString() }.values.forEach { oneDayTransactions ->
             val date = oneDayTransactions.first().date
@@ -59,7 +60,7 @@ class GetTransactionItems @Inject constructor(
                     date.getDay(),
                     date.getDayName(),
                     date.getMonth(),
-                    getTransactionsMoney(wallet, oneDayTransactions)
+                    getTransactionsMoney(wallet, oneDayTransactions),
                 )
             )
             oneDayTransactions.forEach { transaction ->
@@ -80,7 +81,8 @@ class GetTransactionItems @Inject constructor(
                         getTransactionDescription(
                             transaction.fromWalletId,
                             transaction.toWalletId,
-                            transaction
+                            transaction,
+                            wallets
                         ),
                         transaction.value,
                         getFormattedMoney(wallet, transaction.value),
@@ -110,8 +112,7 @@ class GetTransactionItems @Inject constructor(
 
     companion object {
         suspend fun getFormattedMoney(wallet: Wallet, money: Double): String = CoroutineScope(Dispatchers.IO).async {
-            val formatter =
-                NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(wallet.currency.code)!!)
+            val formatter = getCurrencyFormatter(GetWallets.getLocalFromISO(wallet.currency.code)!!)
             return@async formatter.format(money)
         }.await()
     }
@@ -119,10 +120,11 @@ class GetTransactionItems @Inject constructor(
     private suspend fun getTransactionDescription(
         walletFromId: Long,
         walletToId: Long,
-        transactionEntry: TransactionEntry
+        transactionEntry: TransactionEntry,
+        wallets: Map<Long, String>
     ): String = CoroutineScope(Dispatchers.IO).async {
         return@async if (transactionEntry.transactionType == TransactionType.Transfer) {
-            moneyManagerRepository.getWallet(walletFromId).name + " -> " + moneyManagerRepository.getWallet(walletToId).name
+            wallets[walletFromId] + " -> " + wallets[walletToId]
         } else
             context.getString(transactionEntry.category.description)
     }.await()

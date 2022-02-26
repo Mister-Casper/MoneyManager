@@ -16,6 +16,10 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         return appDatabase.walletDao().getWallets()
     }
 
+    override suspend fun getAsyncWallets(): List<WalletEntry> {
+        return appDatabase.walletDao().getAsyncWallets()
+    }
+
     override suspend fun getWallet(id: Long): WalletEntry {
         return appDatabase.walletDao().getWallet(id)
     }

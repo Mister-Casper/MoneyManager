@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.util
 
+import android.annotation.SuppressLint
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -35,8 +36,7 @@ data class Date(val epochMillis: Long) {
     }
 
     fun toDateString(): String {
-        val f = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
-        return f.format(getZoneDateTime())
+        return dateStringFormatter.format(getZoneDateTime())
     }
 
     fun toWeekString(): String {
@@ -94,4 +94,8 @@ data class Date(val epochMillis: Long) {
         return Date(epochMillis / date.epochMillis)
     }
 
+    companion object{
+        @SuppressLint("ConstantLocale")
+        private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
+    }
 }

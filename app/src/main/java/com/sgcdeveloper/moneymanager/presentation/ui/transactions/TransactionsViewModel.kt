@@ -30,24 +30,22 @@ open class TransactionsViewModel @Inject constructor(
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     init {
-        WalletSingleton.addObserver(object : WalletChangerListener {
-            override fun walletChanged() {
-                loadTransactions()
-            }
-        })
         wallets.observeForever {
             val savedWalletId = appPreferencesHelper.getDefaultWalletId()
             if (WalletSingleton.wallet.value == null) {
                 val savedWallet = it.find { wallet -> wallet.walletId == savedWalletId }
                 if (savedWalletId != -1L && savedWallet != null) {
                     WalletSingleton.setWallet(savedWallet)
-                    loadTransactions()
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[0])
-                    loadTransactions()
                 }
             }
         }
+        WalletSingleton.addObserver(object : WalletChangerListener {
+            override fun walletChanged() {
+                loadTransactions()
+            }
+        })
     }
 
     fun onEvent(transactionEvent: TransactionEvent) {
