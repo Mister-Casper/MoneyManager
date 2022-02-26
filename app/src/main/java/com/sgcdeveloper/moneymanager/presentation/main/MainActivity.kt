@@ -256,7 +256,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         }
-                        composable(Screen.TransactionCategoryForWalletStatisticScreen(null).route + "{wallet}"){backStackEntry->
+                        composable(Screen.TransactionCategoryForWalletStatisticScreen(null).route + "{wallet}") { backStackEntry ->
                             val statisticViewModel: StatisticViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
@@ -326,8 +326,8 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Settings.route) {
                             SettingsScreen(navController, darkThemeViewModel)
                         }
-                        composable(Screen.WalletScreen(null).route + "{wallet}"){backStackEntry->
-                            val walletViewModel:WalletViewModel by viewModels()
+                        composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
+                            val walletViewModel: WalletViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
                             walletViewModel.onEvent(ShowWalletEvent.SetShowWallet(wallet))
@@ -364,8 +364,12 @@ class MainActivity : ComponentActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             googleInSigned(task.result.additionalUserInfo!!.isNewUser, account.displayName!!)
+                        } else {
+                            googleInFailed()
                         }
-                    }
+                    }.addOnCanceledListener(googleInFailed)
+                    .addOnFailureListener { googleInFailed() }
+
             } catch (e: ApiException) {
             }
         }

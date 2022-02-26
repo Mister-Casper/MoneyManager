@@ -76,13 +76,13 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignIn -> {
                 showLoadingDialog.value = true
                 authRepository.signIn(registrationEvent) { it, username ->
+                    if (!it) {
+                        isSignInError.value = true
+                        showLoadingDialog.value = false
+                    }
                     syncHelper.syncLocalData(true) {
                         if (checkInternetConnection()) {
-                            if (it) {
-                                updateLogInStatus(LoginStatus.None)
-                            } else {
-                                isSignInError.value = true
-                            }
+                            updateLogInStatus(LoginStatus.None)
                         }
                         showLoadingDialog.value = false
                     }
@@ -118,6 +118,7 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignInWithGoogle -> {
                 val signInIntent = googleSignInClient.signInIntent
                 _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser, userName ->
+                    showLoadingDialog.value = true
                     syncHelper.syncLocalData(true) {
                         if (it) {
                             appPreferencesHelper.setUserName(userName)
@@ -127,10 +128,9 @@ open class RegistrationViewModel @Inject constructor(
                         showLoadingDialog.value = false
                     }
                 }, {
-                    isSignInError.value = false
-                    showLoadingDialog.value = true
+                    isSignInError.value = true
+                    showLoadingDialog.value = false
                 })
-                showLoadingDialog.value = true
             }
             is RegistrationEvent.ChangeName -> {
                 name.value = registrationEvent.newName
