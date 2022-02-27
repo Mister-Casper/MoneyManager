@@ -29,30 +29,41 @@ class SyncHelper @Inject constructor(
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
         val db = FirebaseFirestore.getInstance()
         val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val docRef: DocumentReference = db.collection("users").document(user.uid)
-            docRef.get().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val document = task.result
-                    if (document.exists()) {
-                        val lastUpdate =
-                            document.data?.getOrDefault(AppPreferencesHelper.LAST_SYNC_TIME, -1000) as Long
-                        if (lastUpdate > appPreferencesHelper.getLastSyncTime() || isAnyway) {
-                            if (loadSyncData(document)) {
-                                isNewUser(true)
-                            } else
-                                isNewUser(false)
+            if (user != null) {
+                val docRef: DocumentReference = db.collection("users").document(user.uid)
+                docRef.get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val document = task.result
+                        if (document.exists()) {
+                            val lastUpdate =
+                                document.data?.getOrDefault(AppPreferencesHelper.LAST_SYNC_TIME, -1000) as Long
+                            if (lastUpdate > appPreferencesHelper.getLastSyncTime() || isAnyway) {
+                                if (loadSyncData(document)) {
+                                    isNewUser(true)
+                                } else
+                                    isNewUser(false)
+                            }
+                        } else {
+                            isNewUser(true)
                         }
-                    } else {
-                        isNewUser(true)
                     }
                 }
-            }
         }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun loadSyncData(userDocument: DocumentSnapshot): Boolean {
+        val wallets = userDocument.get("wallets") as List<MutableMap<String, Any>>
+        val transactions = userDocument.get("transactions") as List<MutableMap<String, Any>>
+        GlobalScope.launch {
+            moneyManagerRepository.deleteAllWallets()
+            moneyManagerRepository.deleteAllTransactions()
+
+            moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
+            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
+
+            WalletSingleton.postWallet(WalletSingleton.wallet.value?.copy())
+        }
         val lastSyncTIme = userDocument.getLong(AppPreferencesHelper.LAST_SYNC_TIME)
         if (lastSyncTIme != null)
             appPreferencesHelper.setLastSyncTime(lastSyncTIme)
@@ -71,15 +82,6 @@ class SyncHelper @Inject constructor(
         if (walletId != null)
             appPreferencesHelper.setDefaultWalletId(walletId)
 
-        val wallets = userDocument.get("wallets") as List<MutableMap<String, Any>>
-        val transactions = userDocument.get("transactions") as List<MutableMap<String, Any>>
-        GlobalScope.launch {
-            moneyManagerRepository.deleteAllWallets()
-            moneyManagerRepository.deleteAllTransactions()
-
-            moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
-            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
-        }
         return false
     }
 

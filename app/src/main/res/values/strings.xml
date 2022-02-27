@@ -135,7 +135,7 @@
     <string name="change_password">CHANGE PASSWORD</string>
     <string name="delete_passwrod">DELETE PASSWORD</string>
 
-    <string name="cash_wallet">Наличные</string>
+    <string name="cash_wallet">Cash</string>
 
     <string name="leave_feedback_description">"If you have any ideas for improving the app, we'd love to hear your opinion"</string>
     <string name="leave_feedback">Leave feedback</string>

@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +29,10 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
-import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
-    val wallet = remember { WalletSingleton.wallet }.observeAsState()
+    val wallet = remember { transactionsViewModel.wallet }
     val transactions = remember { transactionsViewModel.transactionItems }
     val dialog = remember { transactionsViewModel.dialog }
 
@@ -65,9 +63,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    WalletSingleton.wallet.value?.let {
+                    wallet.value?.let {
                         Text(
-                            text = WalletSingleton.wallet.value!!.name,
+                            text = wallet.value!!.name,
                             fontSize = 22.sp,
                             modifier = Modifier.align(Alignment.CenterVertically),
                             color = MaterialTheme.colors.secondary

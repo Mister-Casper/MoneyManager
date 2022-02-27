@@ -55,7 +55,8 @@ open class StatisticViewModel @Inject constructor(
 
     init {
         WalletSingleton.addObserver(object : WalletChangerListener {
-            override fun walletChanged() {
+            override fun walletChanged(newWallet: Wallet?) {
+                wallet.value = newWallet
                 loadTransactions()
             }
         })
@@ -76,9 +77,11 @@ open class StatisticViewModel @Inject constructor(
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
             is StatisticEvent.ChangeWalletById -> {
-                WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
-                loadTransactions()
-                appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
+                if(wallets.value != null) {
+                    WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
+                    loadTransactions()
+                    appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
+                }
             }
             is StatisticEvent.ShowWalletPickerDialog -> {
                 dialog.value = DialogState.WalletPickerDialog(WalletSingleton.wallet.value)

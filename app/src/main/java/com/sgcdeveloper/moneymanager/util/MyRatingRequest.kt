@@ -129,14 +129,15 @@ class MyRatingRequest {
         }
 
         fun register(): Builder {
-            initRunnable()
             if (settings.getBoolean("isLaterEnable", false) && todayDate.equals(
                     settings.getString("later_date", ""),
                     ignoreCase = true
                 )
             ) {
+                initRunnable()
                 dismissHandler.postDelayed(dialogRunnable!!, delayTime)
             } else if (settings.getBoolean("isFirstTime", true)) {
+                initRunnable()
                 dismissHandler.postDelayed(dialogRunnable!!, delayTime)
                 val editor = settings.edit()
                 editor.putBoolean("isFirstTime", false)
@@ -160,10 +161,6 @@ class MyRatingRequest {
                     val uri =
                         Uri.parse("https://play.google.com/store/apps/details?id=" + context.packageName)
                     val intent = Intent(Intent.ACTION_VIEW, uri)
-                    val editor = settings.edit()
-                    editor.putBoolean("isLaterEnable", true)
-                    editor.putString("later_date", getNextDate(1))
-                    editor.commit()
                     context.startActivity(intent)
                     ratingDialog.dismiss()
                     listener!!.onAgreeButtonClick()
@@ -187,7 +184,7 @@ class MyRatingRequest {
         }
 
         companion object {
-            private var delayTime: Long = 1000
+            private var delayTime: Long = 1000 * 120
             private var scheduleAfter = 5
             var dismissHandler = Handler()
             var dialogRunnable: Runnable? = null

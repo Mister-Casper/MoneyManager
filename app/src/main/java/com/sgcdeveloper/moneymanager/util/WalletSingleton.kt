@@ -12,14 +12,21 @@ object WalletSingleton {
 
     var wallet: MutableLiveData<Wallet> = MutableLiveData()
 
-    fun setWallet(value:Wallet) {
+    fun setWallet(value:Wallet?) {
         wallet.value = value
         observers.forEach{
-            it.walletChanged()
+            it.walletChanged(value)
+        }
+    }
+
+    fun postWallet(value:Wallet?) {
+        wallet.postValue(value)
+        observers.forEach{
+            it.walletChanged(value)
         }
     }
 }
 
 interface WalletChangerListener{
-    fun walletChanged()
+    fun walletChanged(newWallet:Wallet?=null)
 }

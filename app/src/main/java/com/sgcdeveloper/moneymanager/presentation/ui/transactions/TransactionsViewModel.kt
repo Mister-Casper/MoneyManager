@@ -23,6 +23,8 @@ open class TransactionsViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
+    val wallet = mutableStateOf(WalletSingleton.wallet.value)
+
     var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val isEmpty = mutableStateOf(false)
@@ -44,8 +46,11 @@ open class TransactionsViewModel @Inject constructor(
             }
         }
         WalletSingleton.addObserver(object : WalletChangerListener {
-            override fun walletChanged() {
-                loadTransactions()
+            override fun walletChanged(newWallet: Wallet?) {
+                if(newWallet != null) {
+                    wallet.value = newWallet
+                    loadTransactions()
+                }
             }
         })
     }
