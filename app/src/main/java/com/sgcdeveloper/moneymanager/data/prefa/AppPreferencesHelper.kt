@@ -26,6 +26,14 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putString(USER_NAME,userName).apply()
     }
 
+    fun getUserPassword():Boolean{
+        return prefs.getBoolean(USER_PASSWORD,false)
+    }
+
+    fun setUserPassword(password:Boolean){
+        prefs.edit().putBoolean(USER_PASSWORD,password).apply()
+    }
+
     fun getIsDarkTheme():Boolean{
         return prefs.getBoolean(IS_DARK_THEME,false)
     }
@@ -67,5 +75,6 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val DEFAULT_WALLET_ID = "WALLET_ID"
         const val LAST_SYNC_TIME = "LAST_SYNC_TIME"
         const val IS_DARK_THEME = "IS_DARK_THEME"
+        const val USER_PASSWORD = "USER_PASSWORD"
     }
 }

@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.presentation.main.DarkThemeViewModel
+import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
-fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeViewModel) {
+fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
     Column(
         Modifier
             .fillMaxSize()
@@ -73,6 +73,20 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: DarkThemeVi
                 modifier = Modifier.align(Alignment.CenterEnd),
                 checked = darkThemeViewModel.isDarkTheme.value,
                 onCheckedChange = { darkThemeViewModel.setIsDark(it) }
+            )
+        }
+        MenuItem(Modifier.clickable { navController.navigate(Screen.PasswordSettings.route) }) {
+            Text(
+                text = stringResource(id = R.string.password_settings),
+                Modifier.align(Alignment.CenterStart),
+                color = white,
+                fontSize = 20.sp
+            )
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowRight,
+                contentDescription = "",
+                tint = MaterialTheme.colors.secondary,
+                modifier = Modifier.align(Alignment.CenterEnd)
             )
         }
     }

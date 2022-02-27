@@ -9,14 +9,16 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-open class DarkThemeViewModel @Inject constructor(
+open class MainViewModel
+@Inject constructor(
     private val app: Application,
     private val appPreferencesHelper: AppPreferencesHelper,
 ) : AndroidViewModel(app) {
 
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
+    val isNeedPin = appPreferencesHelper.getUserPassword()
 
-    fun setIsDark(isDark:Boolean){
+    fun setIsDark(isDark: Boolean) {
         isDarkTheme.value = isDark
         appPreferencesHelper.setIsDarkTheme(isDark)
     }

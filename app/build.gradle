@@ -119,5 +119,6 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:1.4.0")
 
+    implementation 'com.amirarcane.lock-screen:lockscreen:2.0.0'
 
 }

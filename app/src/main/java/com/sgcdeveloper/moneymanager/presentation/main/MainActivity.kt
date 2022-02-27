@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.CancellationSignal
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -16,6 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -26,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -44,15 +48,14 @@ import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyMan
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettings
-import com.sgcdeveloper.moneymanager.presentation.ui.settings.AccountSettingsViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.settings.SettingsScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.settings.*
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions.TimeIntervalTransactionsViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactionCategoryStatistic.TransactionCategoryStatisticScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.util.MyEnterPinActivity
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
@@ -60,6 +63,7 @@ import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -73,13 +77,20 @@ class MainActivity : ComponentActivity() {
     lateinit var syncHelper: SyncHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        if(AppPreferencesHelper(this, DefaultSettings()).getUserPassword()) {
+            val intent = MyEnterPinActivity.getIntent(this, false)
+            startActivityForResult(intent, REQUEST_CODE)
+        }
+
         initGoogleAuthListener()
         super.onCreate(savedInstanceState)
         syncHelper.syncLocalData()
         FirebaseApp.initializeApp(this)
         setContent {
+            val darkThemeViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
             val navController = rememberAnimatedNavController()
-            val darkThemeViewModel: DarkThemeViewModel by viewModels()
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
                 Surface(
@@ -335,6 +346,10 @@ class MainActivity : ComponentActivity() {
                             WalletScreen(walletViewModel, navController)
                             backStackEntry.arguments?.putString("wallet", "")
                         }
+                        composable(Screen.PasswordSettings.route) {
+                            val passwordSettingsViewModel: PasswordSettingsViewModel by viewModels()
+                            PasswordSettings(navController, passwordSettingsViewModel)
+                        }
                     }
 
                     val registrationViewModel: RegistrationViewModel by viewModels()
@@ -351,6 +366,22 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    companion object {
+        private val REQUEST_CODE = 123
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE -> if (resultCode == MyEnterPinActivity.RESULT_BACK_PRESSED) {
+                finishAffinity()
+            }else{
+                val cancellationSignal = CancellationSignal()
+                cancellationSignal.cancel();
             }
         }
     }
