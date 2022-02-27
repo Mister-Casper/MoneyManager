@@ -137,4 +137,16 @@
 
     <string name="cash_wallet">Наличные</string>
 
+    <string name="leave_feedback_description">"If you have any ideas for improving the app, we'd love to hear your opinion"</string>
+    <string name="leave_feedback">Leave feedback</string>
+    <string name="other_projects">Other projects (Ad)</string>
+    <string name="other_projects_description">We will be glad if you have a look at our other projects</string>
+    <string name="share_app">Share this app</string>
+    <string name="check_this_app">Hey Check out this Great app: %1$s</string>
+
+    <string name="sure">Sure!</string>
+    <string name="later">Later</string>
+    <string name="alredy_done">Already done</string>
+    <string name="get_feedback">"Are you enjoying our app?\n Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
+
 </resources>

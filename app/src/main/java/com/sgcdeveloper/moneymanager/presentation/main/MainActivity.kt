@@ -30,6 +30,7 @@ import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
+import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -59,6 +60,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.util.MyEnterPinActivity
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
+import com.sgcdeveloper.moneymanager.util.MyRatingRequest
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import dagger.hilt.android.AndroidEntryPoint
@@ -94,6 +96,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberAnimatedNavController()
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
+                if (pref.getLoginStatus() == LoginStatus.None)
+                    askReview()
                 Surface(
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.padding(top = LocalContext.current.pxToDp(getStatusBarHeight()).dp)
@@ -422,4 +426,21 @@ class MainActivity : ComponentActivity() {
         return (px / resources.displayMetrics.density).toInt()
     }
 
+    private fun askReview() {
+        MyRatingRequest.with(this)
+            .scheduleAfter(3)
+            .agreeButtonText(getString(com.sgcdeveloper.moneymanager.R.string.sure))
+            .laterButtonSeletor(com.sgcdeveloper.moneymanager.R.color.gray)
+            .laterButtonText(getString(com.sgcdeveloper.moneymanager.R.string.later))
+            .doneButtonText(getString(com.sgcdeveloper.moneymanager.R.string.alredy_done))
+            .backgroundResource(com.sgcdeveloper.moneymanager.R.color.black)
+            .message(getString(com.sgcdeveloper.moneymanager.R.string.get_feedback))
+            .listener(object : MyRatingRequest.ClickListener {
+                override fun onAgreeButtonClick() {}
+                override fun onDoneButtonClick() {}
+                override fun onLaterButtonClick() {}
+            })
+            .register()
+
+    }
 }

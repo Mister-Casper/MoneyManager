@@ -137,4 +137,16 @@
 
     <string name="cash_wallet">Наличные</string>
 
+    <string name="leave_feedback_description">Если у вас есть идеи по улучшению приложения, мы хотели бы услышать ваше мнение</string>
+    <string name="leave_feedback"> Оставить отзыв </string>
+    <string name="other_projects"> Другие проекты (Ad) </string>
+    <string name="other_projects_description"> Мы будем рады, если вы ознакомитесь с другими нашими проектами </string>
+    <string name="share_app">Поделитесь этим приложением</string>
+    <string name="check_this_app">Привет, взгляни на это отличное приложение: %1$s</string>
+
+    <string name="sure">Конечно!</string>
+    <string name="later">Позже</string>
+    <string name="alredy_done">Уже сделано</string>
+    <string name="get_feedback">"Вам нравится наше приложение?\n Пожалуйста, оставьте отзыв, если вы хотите поддержать нас или вам нужны новые функции, я добавлю их в следующем обновлении.\n"</string>
+
 </resources>
