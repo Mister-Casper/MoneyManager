@@ -20,5 +20,6 @@ open class AccountSettingsViewModel @Inject constructor(
     fun signOut(){
         syncHelper.syncServerData(true)
         appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
+        appPreferencesHelper.setUserPassword(false)
     }
 }

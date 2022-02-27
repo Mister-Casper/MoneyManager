@@ -1,0 +1,140 @@
+<resources>
+    <string name="app_name">Финансовый менеджер</string>
+
+    <string name="home">Кошелек</string>
+    <string name="statistic">Статистика</string>
+    <string name="transaction">Транзакция</string>
+
+    <string name="loading">Загрузка…</string>
+    <string name="sign_up_to_save">Зарегистрируйтесь, чтобы сохранить ваши данные</string>
+    <string name="sign_up">Войти</string>
+    <string name="log_in">Зарегестрироваться</string>
+    <string name="comtimue">Continue without creating an account</string>
+    <string name="or">ИЛИ</string>
+    <string name="dont_have_account">Нет аккаунта?</string>
+    <string name="have_account">Есть аккаунт?</string>
+    <string name="login_here">Войти здесь</string>
+    <string name="lets_get_started">Давайте начнем!</string>
+    <string name="create_an_account">Создайте учетную запись, чтобы иметь все функции</string>
+    <string name="create_account">Создать</string>
+    <string name="email_address">Email адрес</string>
+    <string name="password">Пароль</string>
+    <string name="cant_login">Ваша попытка входа не удалась. Пожалуйста, попробуйте еще раз.</string>
+    <string name="username">Имя пользователя</string>
+    <string name="short_login">Логин слишком короткий</string>
+    <string name="email_isnt_valid">Email адрес некоректный</string>
+    <string name="password_short">Пароль слишком короткий</string>
+    <string name="confirm_password">Подтвердите пароль</string>
+    <string name="passwords_bot_matches">Пароли не совпадают</string>
+    <string name="sign_in_with_google">Войти с Google</string>
+    <string name="add_account">Добавить аккаунт</string>
+    <string name="choose_a_name">Выберите название для вашего аккаунта.</string>
+    <string name="choose_a_default_currency">Выберите валюту по умолчанию для вашего аккаунта.</string>
+    <string name="money_default">Сколько денег в этом кошельке?</string>
+    <string name="next">Далее</string>
+    <string name="check_internet">Проверьте подключение к интернету.</string>
+    <string name="login_is_too_shirt">Имя пользователя слишком короткое.</string>
+
+    <string name="search">Поиск…</string>
+    <string name="select_currency">Выберите валюту</string>
+
+    <string name="wallet_number">Кошелек %1$d</string>
+    <string name="choose_a_default_wallet_name">Выберите имя для вашего кошелька по умолчанию.</string>
+
+    <string name="wallet">Кошелек</string>
+    <string name="add_wallet">Добавить кошелек</string>
+    <string name="save">Сохранить</string>
+    <string name="wallet_name">Название кошелька</string>
+    <string name="init_amount">Начальная сумма</string>
+    <string name="wallet_color">Цвет кошелька</string>
+    <string name="wallet_icon">Иконка кошелька</string>
+
+    <string name="are_u_sure_delete_wallet">Вы уверены, что хотите удалить этот кошелек? Все транзакции также будут удалены.</string>
+    <string name="delete">Удалить</string>
+    <string name="cancel">Отмена</string>
+    <string name="cant_delete_default_wallet">Вы не можете удалить кошелек по умолчанию</string>
+
+    <string name="income">Доход</string>
+    <string name="expense">Расход</string>
+    <string name="transfer">Перевод</string>
+
+    <string name="bills">Счета</string>
+    <string name="clothes">Одежда</string>
+    <string name="donation">Пожертвования</string>
+    <string name="education">Образование</string>
+    <string name="entertainment">Развелечения</string>
+    <string name="sport">Спорт</string>
+    <string name="food">Еда</string>
+    <string name="gifts">Подарки</string>
+    <string name="health">Здоровье</string>
+    <string name="insurance">Страховка</string>
+    <string name="household">Семья</string>
+    <string name="furniture">Мебель</string>
+    <string name="pet">Питомцы</string>
+    <string name="aelf_improvement">Саморазвитие</string>
+    <string name="shopping">Покупки</string>
+    <string name="transport">Транспорт</string>
+    <string name="tax">Налоги</string>
+    <string name="travel">Путишествия</string>
+    <string name="others">Другое</string>
+
+    <string name="award">Награда</string>
+    <string name="bonus">Бонус</string>
+    <string name="dividend">Дивиденды</string>
+    <string name="investment">Инвестиции</string>
+    <string name="lottery">Лотерея</string>
+    <string name="salary">Зарплата</string>
+    <string name="tips">Чаевые</string>
+
+    <string name="select_category">Выберите категорию</string>
+    <string name="date">Дата : %1$s</string>
+    <string name="amount">Сумма %1$s</string>
+    <string name="description">Описание</string>
+    <string name="category">Категория : </string>
+    <string name="transfers">Переводы</string>
+    <string name="wallet_selector">Кошелек</string>
+    <string name="select_wallet">Выберите кошелек</string>
+    <string name="from_wallet">Из кошелька</string>
+    <string name="to_wallet">В кошелек</string>
+
+    <string name="balance">Баланс : %1$s</string>
+
+    <string name="are_u_sure_delete_transaction">Вы уверены, что хотите удалить эту транзакцию?</string>
+    <string name="no_transactions">Нет транзакций</string>
+    <string name="tap_to_add_transaction">Нажмите кнопку +, чтобы добавить первую транзакцию.</string>
+    <string name="transactions">Транзакции</string>
+    <string name="overview">Обзор</string>
+    <string name="total">Всего</string>
+    <string name="all">Всё время</string>
+    <string name="daily">Ежедневно</string>
+    <string name="weekly">Еженедельно</string>
+    <string name="monthly">Ежемесячно</string>
+    <string name="quarterly">Ежеквартально</string>
+    <string name="yearly">Ежегодно</string>
+
+    <string name="show_more">Показать больше</string>
+    <string name="expense_structure">Структура расходов</string>
+    <string name="income_structure">Структура дохода</string>
+
+    <string name="none" />
+    <string name="structure">Структура</string>
+    <string name="one_transaction">1 транзакция</string>
+    <string name="transactions_count">транзакций: %1$d</string>
+
+    <string name="dashboard">Панель управления</string>
+
+    <string name="settings">Настройки</string>
+    <string name="account">Учетная запись</string>
+    <string name="dark_mode">Темная тема</string>
+    <string name="account_settings">Учетная запись</string>
+    <string name="sign_out">Выйти</string>
+    <string name="select_time_interval">Выберите промежуток времени</string>
+
+    <string name="password_settings">Настройки пароля</string>
+    <string name="choose_password">Установить пароль</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="delete_passwrod">Удалить пароль</string>
+
+    <string name="cash_wallet">Наличные</string>
+
+</resources>

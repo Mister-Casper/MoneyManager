@@ -28,90 +28,93 @@ import com.sgcdeveloper.moneymanager.presentation.theme.red
 @Composable
 fun AccountSettings(navController: NavController, accountSettingsViewModel: AccountSettingsViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
-    val url = user!!.photoUrl?.toString()
+    val url = user?.photoUrl?.toString()
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
-        Row(Modifier.padding(top = 4.dp)) {
-            androidx.compose.material.Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "",
-                tint = MaterialTheme.colors.secondary,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        navController.popBackStack()
-                    }
-            )
-            Text(
-                text = stringResource(id = R.string.account_settings),
-                color = MaterialTheme.colors.secondary,
-                fontSize = 22.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 4.dp)
-            )
-        }
-        Row(
+    if (user != null) {
+        Column(
             Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .height(80.dp)
+                .fillMaxSize()
+                .padding(start = 4.dp, top = 4.dp, end = 4.dp)
         ) {
-            Box(modifier = Modifier.weight(1f)) {
-                if(url != null) {
-                    Icon(
-                        painter = rememberImagePainter(
-                            data = url,
-                            builder = {
-                                transformations(CircleCropTransformation())
-                            },
-                        ),
-                        tint = Color.Unspecified,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize(),
+            Row(Modifier.padding(top = 4.dp)) {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                )
+                Text(
+                    text = stringResource(id = R.string.account_settings),
+                    color = MaterialTheme.colors.secondary,
+                    fontSize = 22.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 4.dp)
+                )
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .height(80.dp)
+            ) {
+                Box(modifier = Modifier.weight(1f)) {
+                    if (url != null) {
+                        Icon(
+                            painter = rememberImagePainter(
+                                data = url,
+                                builder = {
+                                    transformations(CircleCropTransformation())
+                                },
+                            ),
+                            tint = Color.Unspecified,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize(),
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.user_icon),
+                            tint = MaterialTheme.colors.secondary,
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .fillMaxSize(),
+                        )
+                    }
+                }
+                Column(
+                    Modifier
+                        .weight(2f)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = user?.email!!,
+                        color = MaterialTheme.colors.secondary,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                }else{
-                    Icon(
-                        painter = painterResource(R.drawable.user_icon),
-                        tint = MaterialTheme.colors.secondary,
-                        contentDescription = "",
+                    Text(
+                        text = accountSettingsViewModel.userName,
+                        color = MaterialTheme.colors.secondary,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.sign_out),
+                        color = red,
+                        fontSize = 18.sp,
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxSize(),
+                            .clickable {
+                                navController.navigate(Screen.SignIn.route)
+                                accountSettingsViewModel.signOut()
+                            }
+                            .align(Alignment.CenterHorizontally)
                     )
                 }
-            }
-            Column(
-                Modifier
-                    .weight(2f)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(
-                    text = user.email!!,
-                    color = MaterialTheme.colors.secondary,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = accountSettingsViewModel.userName,
-                    color = MaterialTheme.colors.secondary,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Text(
-                    text = stringResource(id = R.string.sign_out),
-                    color = red,
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .clickable {
-                            accountSettingsViewModel.signOut()
-                            navController.navigate(Screen.SignIn.route)
-                        }
-                        .align(Alignment.CenterHorizontally)
-                )
             }
         }
     }

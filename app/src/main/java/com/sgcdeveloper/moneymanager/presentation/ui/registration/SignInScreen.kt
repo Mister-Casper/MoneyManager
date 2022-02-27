@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
@@ -40,7 +41,8 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 16.dp),
                 fontSize = 18.sp,
-                color = MaterialTheme.colors.secondary
+                color = MaterialTheme.colors.secondary,
+                textAlign = TextAlign.Center
             )
 
             InputField(
@@ -94,7 +96,7 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                 }
             }
         }
-        Text(
+     /*   Text(
             text = stringResource(id = R.string.comtimue),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -102,6 +104,6 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                 .padding(bottom = 32.dp),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp
-        )
+        )*/
     }
 }

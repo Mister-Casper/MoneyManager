@@ -142,7 +142,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                 }
             }
         }
-        Text(
+     /*   Text(
             text = stringResource(id = R.string.comtimue),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -150,7 +150,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                 .padding(bottom = 32.dp),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp
-        )
+        )*/
     }
     BackHandler(enabled = true) {
         navController.navigate(Screen.SignUp.route)

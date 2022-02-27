@@ -31,7 +31,7 @@ open class InitViewModel @Inject constructor(
     val userName = mutableStateOf(appPreferencesHelper.getUserNAme())
     val currency = mutableStateOf(currencyRepository.getDefaultCurrency())
     val defaultMoney = mutableStateOf("")
-    val defaultWalletName = mutableStateOf(app.getString(R.string.wallet_number, 1))
+    val defaultWalletName = mutableStateOf(app.getString(R.string.cash_wallet))
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     val isMoveNext = mutableStateOf(false)

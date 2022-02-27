@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">MoneyManager</string>
+    <string name="app_name">Money Manager</string>
 
     <string name="home">Home</string>
     <string name="statistic">Statistic</string>
     <string name="transaction">Trasaction</string>
 
-    <string name="loading">Loading!</string>
+    <string name="loading">Loading…</string>
     <string name="sign_up_to_save">Sign up to save your information</string>
     <string name="sign_up">SIGN IN</string>
     <string name="log_in">Sign up</string>
@@ -68,7 +68,6 @@
     <string name="gifts">Gifts</string>
     <string name="health">Health</string>
     <string name="insurance">Insurance</string>
-    <string name="medicare">Medicare</string>
     <string name="household">Household</string>
     <string name="furniture">Furniture</string>
     <string name="pet">Pet</string>
@@ -135,5 +134,7 @@
     <string name="choose_password">CHOOSE PASSWORD</string>
     <string name="change_password">CHANGE PASSWORD</string>
     <string name="delete_passwrod">DELETE PASSWORD</string>
+
+    <string name="cash_wallet">Наличные</string>
 
 </resources>

@@ -77,11 +77,12 @@ class MainActivity : ComponentActivity() {
     lateinit var syncHelper: SyncHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        if(AppPreferencesHelper(this, DefaultSettings()).getUserPassword()) {
+        val pref = AppPreferencesHelper(this, DefaultSettings())
+        if (pref.getUserPassword()) {
             val intent = MyEnterPinActivity.getIntent(this, false)
             startActivityForResult(intent, REQUEST_CODE)
         }
+        pref.setIsOld(true)
 
         initGoogleAuthListener()
         super.onCreate(savedInstanceState)
@@ -379,7 +380,7 @@ class MainActivity : ComponentActivity() {
         when (requestCode) {
             REQUEST_CODE -> if (resultCode == MyEnterPinActivity.RESULT_BACK_PRESSED) {
                 finishAffinity()
-            }else{
+            } else {
                 val cancellationSignal = CancellationSignal()
                 cancellationSignal.cancel();
             }
