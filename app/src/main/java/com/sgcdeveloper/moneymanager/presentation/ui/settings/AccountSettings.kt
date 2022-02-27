@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.red
 @Composable
 fun AccountSettings(navController: NavController, accountSettingsViewModel: AccountSettingsViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
-    val url = user!!.photoUrl!!.toString()
+    val url = user!!.photoUrl?.toString()
 
     Column(
         Modifier
@@ -60,19 +61,30 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                 .height(80.dp)
         ) {
             Box(modifier = Modifier.weight(1f)) {
-                Icon(
-                    painter = rememberImagePainter(
-                        data = url,
-                        builder = {
-                            transformations(CircleCropTransformation())
-                        }
-                    ),
-                    tint = Color.Unspecified,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxSize(),
-                )
+                if(url != null) {
+                    Icon(
+                        painter = rememberImagePainter(
+                            data = url,
+                            builder = {
+                                transformations(CircleCropTransformation())
+                            },
+                        ),
+                        tint = Color.Unspecified,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize(),
+                    )
+                }else{
+                    Icon(
+                        painter = painterResource(R.drawable.user_icon),
+                        tint = MaterialTheme.colors.secondary,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxSize(),
+                    )
+                }
             }
             Column(
                 Modifier
