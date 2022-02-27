@@ -39,6 +39,8 @@ open class TransactionsViewModel @Inject constructor(
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[0])
                 }
+            }else{
+                loadTransactions()
             }
         }
         WalletSingleton.addObserver(object : WalletChangerListener {
