@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -26,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 open class AddTransactionViewModel @Inject constructor(
     private val app: Application,
-    private val walletsUseCases: WalletsUseCases
+    private val walletsUseCases: WalletsUseCases,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     lateinit var wallets: LiveData<List<Wallet>>
@@ -48,6 +50,8 @@ open class AddTransactionViewModel @Inject constructor(
 
     var isTransactionFromWallet = true
     var transactionId = 0L
+
+    val isDarkTheme = appPreferencesHelper.getIsDarkTheme()
 
     init {
         viewModelScope.launch {
