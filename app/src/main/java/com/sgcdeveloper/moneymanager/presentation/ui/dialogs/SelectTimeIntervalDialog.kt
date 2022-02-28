@@ -58,11 +58,11 @@ fun SelectTimeIntervalDialog(
             containerColor = MaterialTheme.colors.background,
             onDismissRequest = { isShow = false },
             title = {
-                Text(stringResource(id = R.string.select_date))
+                Text(stringResource(id = R.string.select_date), color = MaterialTheme.colors.secondary)
             },
             text = {
                 Column(Modifier.padding(top = 8.dp)) {
-                    Text(text = stringResource(id = R.string.start))
+                    Text(text = stringResource(id = R.string.start), color = MaterialTheme.colors.secondary)
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -71,7 +71,12 @@ fun SelectTimeIntervalDialog(
                                 isFirst = true
                                 isShowDialog = true
                             }) {
-                        Text(text = firstDate.toDayMonthString(), Modifier.weight(1f), fontWeight = FontWeight.Thin)
+                        Text(
+                            text = firstDate.toDayMonthString(),
+                            Modifier.weight(1f),
+                            fontWeight = FontWeight.Thin,
+                            color = MaterialTheme.colors.secondary
+                        )
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowDown,
                             contentDescription = "",
@@ -81,7 +86,11 @@ fun SelectTimeIntervalDialog(
                         )
                     }
                     Divider()
-                    Text(text = stringResource(id = R.string.end), Modifier.padding(top = 8.dp))
+                    Text(
+                        text = stringResource(id = R.string.end),
+                        Modifier.padding(top = 8.dp),
+                        color = MaterialTheme.colors.secondary
+                    )
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -90,7 +99,12 @@ fun SelectTimeIntervalDialog(
                                 isFirst = false
                                 isShowDialog = true
                             }) {
-                        Text(text = secondDate.toDayMonthString(), Modifier.weight(1f), fontWeight = FontWeight.Thin)
+                        Text(
+                            text = secondDate.toDayMonthString(),
+                            Modifier.weight(1f),
+                            fontWeight = FontWeight.Thin,
+                            color = MaterialTheme.colors.secondary
+                        )
                         Icon(
                             imageVector = Icons.Filled.KeyboardArrowDown,
                             contentDescription = "",
