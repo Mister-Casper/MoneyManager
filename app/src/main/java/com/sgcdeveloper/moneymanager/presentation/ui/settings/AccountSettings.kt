@@ -21,7 +21,6 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 
 @OptIn(ExperimentalCoilApi::class)
@@ -109,7 +108,6 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                         fontSize = 18.sp,
                         modifier = Modifier
                             .clickable {
-                                navController.navigate(Screen.SignIn.route)
                                 accountSettingsViewModel.signOut()
                             }
                             .align(Alignment.CenterHorizontally)

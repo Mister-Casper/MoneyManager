@@ -74,6 +74,9 @@ open class InitViewModel @Inject constructor(
 
     private fun initNewAccount() {
         viewModelScope.launch {
+            moneyManagerRepository.deleteAllWallets()
+            moneyManagerRepository.deleteAllTransactions()
+
             appPreferencesHelper.setUserName(userName.value)
             appPreferencesHelper.setDefaultCurrency(currency.value)
             val firstWallet = WalletEntry(

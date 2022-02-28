@@ -128,4 +128,5 @@ dependencies {
 
     implementation 'com.iamhabib:rating-request:1.0.1'
 
+    implementation 'com.jakewharton:process-phoenix:2.1.2'
 }

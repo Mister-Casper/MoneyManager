@@ -17,6 +17,7 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -61,8 +62,6 @@ class SyncHelper @Inject constructor(
 
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
             moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
-
-            WalletSingleton.postWallet(WalletSingleton.wallet.value?.copy())
         }
         val lastSyncTIme = userDocument.getLong(AppPreferencesHelper.LAST_SYNC_TIME)
         if (lastSyncTIme != null)
@@ -85,14 +84,14 @@ class SyncHelper @Inject constructor(
         return false
     }
 
-    fun syncServerData(isSignOut: Boolean = false) {
+    fun syncServerData(isSignOut: Boolean = false,onFinish:()->Unit = {}) {
         val db = FirebaseFirestore.getInstance()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val docRef: DocumentReference = db.collection("users").document(user.uid)
             val time = Date(LocalDateTime.now()).epochMillis
 
-            GlobalScope.launch {
+            runBlocking {
                 appPreferencesHelper.setLastSyncTime(time)
                 val settingsData = hashMapOf(
                     AppPreferencesHelper.LAST_SYNC_TIME to time,
@@ -104,6 +103,7 @@ class SyncHelper @Inject constructor(
                     "transactions" to getTransactions()
                 )
                 docRef.set(settingsData)
+                    .addOnCompleteListener{onFinish()}
 
                 if (isSignOut) {
                     val auth = FirebaseAuth.getInstance()
