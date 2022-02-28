@@ -51,7 +51,7 @@ open class AddTransactionViewModel @Inject constructor(
     var isTransactionFromWallet = true
     var transactionId = 0L
 
-    val isDarkTheme = appPreferencesHelper.getIsDarkTheme()
+    fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
     init {
         viewModelScope.launch {

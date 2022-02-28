@@ -49,7 +49,7 @@ fun StatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        })
+        },statisticViewModel.isDarkTheme())
     } else if (dialog.value is DialogState.WalletPickerDialog) {
         WalletPickerDialog(statisticViewModel.wallets.value, wallet.value, {
             statisticViewModel.onEvent(StatisticEvent.SetWallet(it))

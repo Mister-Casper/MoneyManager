@@ -171,9 +171,32 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
                 MonthlyController(),
                 QuarterlyController(),
                 YearlyController(),
-                AllController(context.getString(R.string.all))
+                AllController(context.getString(R.string.all)),
+                CustomController
             )
         }
     }
 
+    object CustomController:TimeIntervalController(R.drawable.edit_calendar_icon,R.string.custom){
+        lateinit var startDate:Date
+        lateinit var endDate:Date
+
+        override fun moveBack() {}
+
+        override fun moveNext() {}
+
+        override fun isCanMove(): Boolean {
+            return false
+        }
+
+        override fun getDescription(): String {
+            return startDate.toWeekString() + " - " + endDate.toWeekString()
+        }
+
+        override fun isInInterval(intervalDate: Date): Boolean {
+            return (startDate.toDateString() == intervalDate.toDateString()
+                    || endDate.toDateString() == intervalDate.toDateString() ||
+                    (intervalDate.epochMillis <= endDate.epochMillis && intervalDate.epochMillis >= startDate.epochMillis))
+        }
+    }
 }

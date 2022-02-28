@@ -11,9 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,14 +23,37 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.util.Date
+import java.time.LocalDate
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TimeIntervalPickerDialog(
     defaultTimeIntervalController: TimeIntervalController,
     onAdd: (timeIntervalController: TimeIntervalController) -> Unit = {},
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
+    isDarkTheme:Boolean
 ) {
+    var isShowCreateCustomDialog by remember { mutableStateOf(false) }
+    if(isShowCreateCustomDialog){
+        val defaultStartDate = if(defaultTimeIntervalController is TimeIntervalController.CustomController){
+            defaultTimeIntervalController.startDate
+        }else
+            Date(LocalDate.now())
+
+        val defaultEndDate = if(defaultTimeIntervalController is TimeIntervalController.CustomController){
+            defaultTimeIntervalController.endDate
+        }else
+            Date(LocalDate.now().plusDays(7))
+
+        SelectTimeIntervalDialog(defaultStartDate,defaultEndDate,{start,end->
+            val timeController = TimeIntervalController.CustomController
+            timeController.startDate = start
+            timeController.endDate = end
+            onAdd(timeController)
+            onDismiss()
+        },isDarkTheme)
+    }
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
@@ -62,9 +83,11 @@ fun TimeIntervalPickerDialog(
             }
         },
         text = {
-            TimeIntervalSelector(defaultTimeIntervalController) {
+            TimeIntervalSelector(defaultTimeIntervalController, {
                 onAdd(it)
                 onDismiss()
+            }) {
+                isShowCreateCustomDialog = true
             }
         },
         confirmButton = {}, properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -75,6 +98,7 @@ fun TimeIntervalPickerDialog(
 private fun TimeIntervalSelector(
     defaultTimeIntervalController: TimeIntervalController,
     onAdd: (timeIntervalController: TimeIntervalController) -> Unit = {},
+    onCreateCustom: () -> Unit = {}
 ) {
     val selectedOption = remember {
         mutableStateOf(defaultTimeIntervalController)
@@ -89,6 +113,10 @@ private fun TimeIntervalSelector(
                     Modifier
                         .padding(4.dp)
                         .clickable {
+                            if (item is TimeIntervalController.CustomController) {
+                                onCreateCustom()
+                                return@clickable
+                            }
                             selectedOption.value = item
                             onAdd(item)
                         },

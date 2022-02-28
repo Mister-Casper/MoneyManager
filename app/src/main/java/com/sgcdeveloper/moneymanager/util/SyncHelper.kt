@@ -119,9 +119,9 @@ class SyncHelper @Inject constructor(
         }
     }
 
-    private fun getWallets(): List<MutableMap<String, Any>> {
+    private suspend fun getWallets(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
-        moneyManagerRepository.getWalletsOnce().forEach { wallet ->
+        moneyManagerRepository.getAsyncWallets().forEach { wallet ->
             list.add(wallet.toObject())
         }
         return list

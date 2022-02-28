@@ -49,6 +49,11 @@ data class Date(val epochMillis: Long) {
         return f.format(getZoneDateTime())
     }
 
+    fun toDayMonthString(): String {
+        val f = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
+        return f.format(getZoneDateTime())
+    }
+
     fun toShortTimeString(): String {
         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("mm:ss")
         return formatter.format(Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("UTC")))

@@ -53,6 +53,8 @@ open class StatisticViewModel @Inject constructor(
     var incomeEntries = mutableStateOf<List<PieEntry>>(Collections.emptyList())
     val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
 
+    fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
+
     init {
         WalletSingleton.addObserver(object : WalletChangerListener {
             override fun walletChanged(newWallet: Wallet?) {

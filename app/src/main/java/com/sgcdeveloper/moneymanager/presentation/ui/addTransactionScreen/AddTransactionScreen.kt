@@ -39,7 +39,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             onDateSelected = { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionDate(it)) },
             onDismissRequest = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
-            }, addTransactionViewModel.isDarkTheme
+            }, addTransactionViewModel.isDarkTheme()
         )
     } else if (dialog.value is DialogState.CategoryPickerDialog) {
         SelectTransactionCategoryDialog(isIncome = addTransactionViewModel.currentScreen.value == TransactionScreen.Income,

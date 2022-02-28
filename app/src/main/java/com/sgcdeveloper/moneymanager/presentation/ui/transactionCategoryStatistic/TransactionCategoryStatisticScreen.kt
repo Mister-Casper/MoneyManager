@@ -52,7 +52,7 @@ fun TransactionCategoryStatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        })
+        },statisticViewModel.isDarkTheme())
     }
 
     CheckDataFromAddTransactionScreen(navController, statisticViewModel)

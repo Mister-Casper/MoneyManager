@@ -108,7 +108,7 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                         fontSize = 18.sp,
                         modifier = Modifier
                             .clickable {
-                                accountSettingsViewModel.signOut()
+                                accountSettingsViewModel.signOut(navController)
                             }
                             .align(Alignment.CenterHorizontally)
                     )

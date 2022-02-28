@@ -111,6 +111,7 @@
     <string name="monthly">Monthly</string>
     <string name="quarterly">Quarterly</string>
     <string name="yearly">Yearly</string>
+    <string name="custom">Custom</string>
 
     <string name="show_more">Show more</string>
     <string name="expense_structure">Expense Structure</string>
@@ -148,5 +149,11 @@
     <string name="later">Later</string>
     <string name="alredy_done">Already done</string>
     <string name="get_feedback">"Are you enjoying our app?\n Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
+
+    <string name="select_date">Select date</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+
+    <string name="done">DONE</string>
 
 </resources>

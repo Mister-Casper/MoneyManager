@@ -245,6 +245,12 @@ class MainActivity : ComponentActivity() {
                                     is TimeIntervalController.AllController -> {
                                         TimeIntervalController.AllController(it.allString)
                                     }
+                                    is TimeIntervalController.CustomController -> {
+                                        val controller = TimeIntervalController.CustomController
+                                        controller.startDate = it.startDate
+                                        controller.endDate = it.endDate
+                                        controller
+                                    }
                                 }
                                 timeIntervalTransactionsViewModel.onEvent(
                                     TimeIntervalTransactionEvent.ChangeTimeInterval(
@@ -320,6 +326,12 @@ class MainActivity : ComponentActivity() {
                                     }
                                     is TimeIntervalController.AllController -> {
                                         TimeIntervalController.AllController(it.allString)
+                                    }
+                                    is TimeIntervalController.CustomController -> {
+                                        val controller = TimeIntervalController.CustomController
+                                        controller.startDate = it.startDate
+                                        controller.endDate = it.endDate
+                                        controller
                                     }
                                 }
                                 timeIntervalTransactionsViewModel.onEvent(
