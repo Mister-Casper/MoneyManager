@@ -111,6 +111,7 @@
     <string name="monthly">Ежемесячно</string>
     <string name="quarterly">Ежеквартально</string>
     <string name="yearly">Ежегодно</string>
+    <string name="custom">Пользовательский</string>
 
     <string name="show_more">Показать больше</string>
     <string name="expense_structure">Структура расходов</string>
@@ -148,5 +149,12 @@
     <string name="later">Позже</string>
     <string name="alredy_done">Уже сделано</string>
     <string name="get_feedback">"Вам нравится наше приложение?\n Пожалуйста, оставьте отзыв, если вы хотите поддержать нас или вам нужны новые функции, я добавлю их в следующем обновлении.\n"</string>
+
+    <string name="select_date">Выберите дату</string>
+    <string name="start">Начало</string>
+    <string name="end">Конец</string>
+
+    <string name="done">готово</string>
+    <string name="add_new_wallet">Добавить кошелек</string>
 
 </resources>
