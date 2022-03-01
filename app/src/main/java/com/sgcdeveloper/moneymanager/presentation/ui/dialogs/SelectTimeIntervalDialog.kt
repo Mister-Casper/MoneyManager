@@ -25,6 +25,7 @@ import com.sgcdeveloper.moneymanager.util.Date
 
 @Composable
 fun SelectTimeIntervalDialog(
+    onDismiss: () -> Unit,
     defaultStart: Date,
     defaultEnd: Date,
     onResult: (startDate: Date, endDate: Date) -> Unit,
@@ -33,7 +34,6 @@ fun SelectTimeIntervalDialog(
     var isShowDialog by remember { mutableStateOf(false) }
     var isFirst by remember { mutableStateOf(true) }
 
-    var isShow by remember { mutableStateOf(true) }
     var firstDate by remember { mutableStateOf(defaultStart) }
     var secondDate by remember { mutableStateOf(defaultEnd) }
 
@@ -53,81 +53,79 @@ fun SelectTimeIntervalDialog(
         )
     }
 
-    if (isShow) {
-        AlertDialog(
-            containerColor = MaterialTheme.colors.background,
-            onDismissRequest = { isShow = false },
-            title = {
-                Text(stringResource(id = R.string.select_date), color = MaterialTheme.colors.secondary)
-            },
-            text = {
-                Column(Modifier.padding(top = 8.dp)) {
-                    Text(text = stringResource(id = R.string.start), color = MaterialTheme.colors.secondary)
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .clickable {
-                                isFirst = true
-                                isShowDialog = true
-                            }) {
-                        Text(
-                            text = firstDate.toDayMonthString(),
-                            Modifier.weight(1f),
-                            fontWeight = FontWeight.Thin,
-                            color = MaterialTheme.colors.secondary
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.secondary,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                        )
-                    }
-                    Divider()
+    AlertDialog(
+        containerColor = MaterialTheme.colors.background,
+        onDismissRequest = onDismiss,
+        title = {
+            Text(stringResource(id = R.string.select_date), color = MaterialTheme.colors.secondary)
+        },
+        text = {
+            Column(Modifier.padding(top = 8.dp)) {
+                Text(text = stringResource(id = R.string.start), color = MaterialTheme.colors.secondary)
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .clickable {
+                            isFirst = true
+                            isShowDialog = true
+                        }) {
                     Text(
-                        text = stringResource(id = R.string.end),
-                        Modifier.padding(top = 8.dp),
+                        text = firstDate.toDayMonthString(),
+                        Modifier.weight(1f),
+                        fontWeight = FontWeight.Thin,
                         color = MaterialTheme.colors.secondary
                     )
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp)
-                            .clickable {
-                                isFirst = false
-                                isShowDialog = true
-                            }) {
-                        Text(
-                            text = secondDate.toDayMonthString(),
-                            Modifier.weight(1f),
-                            fontWeight = FontWeight.Thin,
-                            color = MaterialTheme.colors.secondary
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.secondary,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                        )
-                    }
-                    Divider()
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                    )
                 }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    onResult(firstDate, secondDate)
-                    isShow = false
-                }) {
-                    Text(text = stringResource(id = R.string.done), color = white)
+                Divider()
+                Text(
+                    text = stringResource(id = R.string.end),
+                    Modifier.padding(top = 8.dp),
+                    color = MaterialTheme.colors.secondary
+                )
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .clickable {
+                            isFirst = false
+                            isShowDialog = true
+                        }) {
+                    Text(
+                        text = secondDate.toDayMonthString(),
+                        Modifier.weight(1f),
+                        fontWeight = FontWeight.Thin,
+                        color = MaterialTheme.colors.secondary
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                    )
                 }
-            },
-            dismissButton = {
-                Button(onClick = { isShow = false }) {
-                    Text(text = stringResource(id = R.string.cancel), color = white)
-                }
-            })
-    }
+                Divider()
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onResult(firstDate, secondDate)
+            }) {
+                Text(text = stringResource(id = R.string.done), color = white)
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.cancel), color = white)
+            }
+        })
+
 }

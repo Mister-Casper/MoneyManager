@@ -46,7 +46,7 @@ fun TimeIntervalPickerDialog(
         }else
             Date(LocalDate.now().plusDays(7))
 
-        SelectTimeIntervalDialog(defaultStartDate,defaultEndDate,{start,end->
+        SelectTimeIntervalDialog({isShowCreateCustomDialog = false},defaultStartDate,defaultEndDate,{start,end->
             val timeController = TimeIntervalController.CustomController
             timeController.startDate = start
             timeController.endDate = end
