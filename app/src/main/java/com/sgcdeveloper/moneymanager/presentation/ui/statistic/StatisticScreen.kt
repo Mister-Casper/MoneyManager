@@ -55,6 +55,8 @@ fun StatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.SetWallet(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
+        }, {
+            navController.navigate(Screen.AddWallet(it).route)
         })
     }
 

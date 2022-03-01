@@ -33,7 +33,7 @@ open class StatisticViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
     var wallet: MutableLiveData<Wallet> = MutableLiveData(WalletSingleton.wallet.value)
 
-    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
+    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getUIWallets()
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
 
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())

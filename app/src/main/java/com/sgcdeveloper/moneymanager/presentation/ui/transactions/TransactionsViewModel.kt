@@ -25,7 +25,7 @@ open class TransactionsViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
     val wallet = mutableStateOf(WalletSingleton.wallet.value)
 
-    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets()
+    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getUIWallets()
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val isEmpty = mutableStateOf(false)
 

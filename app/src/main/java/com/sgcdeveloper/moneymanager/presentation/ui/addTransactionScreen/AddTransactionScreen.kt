@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -54,9 +55,11 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             (dialog.value as DialogState.WalletPickerDialog).wallet,
             {
                 addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionWallet(it))
-            }) {
-            addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
-        }
+            }, {
+                addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
+            }, {
+                navController.navigate(Screen.AddWallet(it).route)
+            })
     } else if (dialog.value is DialogState.DeleteTransactionDialog) {
         DeleteWalletDialog(null, {
             addTransactionViewModel.onEvent(AddTransactionEvent.DeleteTransaction)

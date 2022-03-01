@@ -155,5 +155,6 @@
     <string name="end">End</string>
 
     <string name="done">DONE</string>
+    <string name="add_new_wallet">Add Wallet</string>
 
 </resources>

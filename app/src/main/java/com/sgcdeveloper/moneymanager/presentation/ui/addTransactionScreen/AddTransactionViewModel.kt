@@ -55,7 +55,7 @@ open class AddTransactionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            wallets = walletsUseCases.getWallets()
+            wallets = walletsUseCases.getWallets.getUIWallets()
         }
     }
 

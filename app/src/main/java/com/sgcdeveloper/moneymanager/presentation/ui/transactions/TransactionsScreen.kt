@@ -41,6 +41,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             transactionsViewModel.onEvent(TransactionEvent.ChangeWallet(it))
         }, {
             transactionsViewModel.onEvent(TransactionEvent.CloseDialog)
+        }, {
+            navController.navigate(Screen.AddWallet(it).route)
         })
     }
 
