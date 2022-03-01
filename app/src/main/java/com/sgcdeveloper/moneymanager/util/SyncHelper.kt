@@ -57,9 +57,6 @@ class SyncHelper @Inject constructor(
         val wallets = userDocument.get("wallets") as List<MutableMap<String, Any>>
         val transactions = userDocument.get("transactions") as List<MutableMap<String, Any>>
         GlobalScope.launch {
-            moneyManagerRepository.deleteAllWallets()
-            moneyManagerRepository.deleteAllTransactions()
-
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
             moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
         }

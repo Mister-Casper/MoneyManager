@@ -70,7 +70,7 @@ open class StatisticViewModel @Inject constructor(
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[0])
                 }
-            }else{
+            } else {
                 loadTransactions()
             }
         }
@@ -79,7 +79,7 @@ open class StatisticViewModel @Inject constructor(
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
             is StatisticEvent.ChangeWalletById -> {
-                if(wallets.value != null) {
+                if (wallets.value != null) {
                     WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
                     loadTransactions()
                     appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)

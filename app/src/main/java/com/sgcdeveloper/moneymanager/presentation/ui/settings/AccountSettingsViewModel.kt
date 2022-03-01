@@ -38,16 +38,16 @@ open class AccountSettingsViewModel @Inject constructor(
         googleSignInClient.signOut()
 
         runBlocking {
-            WalletSingleton.setWallet(null)
             appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
             appPreferencesHelper.setUserPassword(false)
             appPreferencesHelper.setDefaultWalletId(-1L)
             appPreferencesHelper.setLastSyncTime(0L)
             appPreferencesHelper.setUserName("")
-            navController.popBackStack(Screen.SignUp.route,true)
-            ProcessPhoenix.triggerRebirth(app)
             moneyManagerRepository.deleteAllWallets()
             moneyManagerRepository.deleteAllTransactions()
+            WalletSingleton.setWallet(null)
+            navController.popBackStack(Screen.SignUp.route,true)
+            ProcessPhoenix.triggerRebirth(app)
         }
     }
 }
