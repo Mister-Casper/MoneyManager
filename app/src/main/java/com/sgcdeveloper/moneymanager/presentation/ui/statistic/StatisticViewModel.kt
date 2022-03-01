@@ -81,7 +81,6 @@ open class StatisticViewModel @Inject constructor(
             is StatisticEvent.ChangeWalletById -> {
                 if (wallets.value != null) {
                     WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
-                    loadTransactions()
                     appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
                 }
             }
@@ -108,8 +107,7 @@ open class StatisticViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is StatisticEvent.SetWallet -> {
-                wallet.value = transactionEvent.wallet
-                loadTransactions()
+                WalletSingleton.setWallet(transactionEvent.wallet)
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.wallet.walletId)
             }
         }
