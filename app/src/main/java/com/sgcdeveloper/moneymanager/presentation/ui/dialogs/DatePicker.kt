@@ -15,14 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.presentation.theme.black
-import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
@@ -82,7 +79,7 @@ fun DatePicker(
                 CustomCalendarView(defaultDate, onDateSelected = {
                     onDateSelected(it)
                     onDismissRequest()
-                },isDarkTHeme)
+                }, isDarkTHeme)
 
                 Spacer(modifier = Modifier.size(8.dp))
 
@@ -111,17 +108,9 @@ fun CustomCalendarView(defaultDate: Date, onDateSelected: (LocalDate) -> Unit, i
     AndroidView(
         modifier = Modifier.wrapContentSize(),
         factory = { context ->
-            if (isDarkTHeme) {
-                val view = CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
-                view.setBackgroundColor(black.toArgb())
-                view.date = defaultDate.epochMillis
-                view
-            }else {
-                val view = CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom_Light))
-                view.setBackgroundColor(blue.toArgb())
-                view.date = defaultDate.epochMillis
-                view
-            }
+            val view = CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+            view.date = defaultDate.epochMillis
+            view
         },
         update = { view ->
             view.setOnDateChangeListener { _, year, month, dayOfMonth ->
