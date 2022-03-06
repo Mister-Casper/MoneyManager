@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
 import java.util.*
 
 data class Date(val epochMillis: Long) {
@@ -69,15 +70,16 @@ data class Date(val epochMillis: Long) {
     }
 
     fun getDayName(): String {
-        return getAsLocalDate().dayOfWeek.name
+        return getAsLocalDate().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
     }
 
-    fun getMonth():String{
-        return getAsLocalDate().month.name + " " + getAsLocalDate().year.toString()
+    fun getMonth(): String {
+        return getAsLocalDate().month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+            .uppercase() + " " + getAsLocalDate().year.toString()
     }
 
-    fun getMonthName():String{
-        return getAsLocalDate().month.name
+    fun getMonthName(): String {
+        return getAsLocalDate().month.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
     }
 
     fun toDateString(formatStyle: FormatStyle): String {
@@ -103,7 +105,7 @@ data class Date(val epochMillis: Long) {
         return Date(epochMillis / date.epochMillis)
     }
 
-    companion object{
+    companion object {
         @SuppressLint("ConstantLocale")
         private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
     }
