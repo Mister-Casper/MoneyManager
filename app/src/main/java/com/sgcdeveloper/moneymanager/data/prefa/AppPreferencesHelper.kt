@@ -5,6 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 class AppPreferencesHelper @Inject constructor(context: Context, private val defaultSettings: DefaultSettings) {
@@ -76,6 +77,14 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putLong(LAST_SYNC_TIME,time).apply()
     }
 
+    fun getFirstDayOfWeek(): DayOfWeek {
+        return DayOfWeek.of(prefs.getInt(FIRST_DAY_OF_WEEK,defaultSettings.firstDayOfWeek))
+    }
+
+    fun setFirstDayOfWeek(day:DayOfWeek) {
+        prefs.edit().putInt(FIRST_DAY_OF_WEEK,day.value).apply()
+    }
+
     companion object {
         const val LOGIN_STATUS = "LOGIN_STATUS"
         const val USER_NAME = "USER_NAME"
@@ -85,5 +94,6 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val IS_DARK_THEME = "IS_DARK_THEME"
         const val USER_PASSWORD = "USER_PASSWORD"
         const val IS_OLD = "IS_OLD"
+        const val FIRST_DAY_OF_WEEK = "FIRST_DAY_OF_WEEK"
     }
 }

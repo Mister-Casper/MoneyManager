@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.BarEntry
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.DayStatistic
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWeeklyStatistic
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 open class WeeklyStatisticViewModel @Inject constructor(
     private val app: Application,
-    private val getWeeklyStatistic: GetWeeklyStatistic
+    private val getWeeklyStatistic: GetWeeklyStatistic,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     val empties = mutableStateOf<List<BarEntry>>(Collections.emptyList())
@@ -37,7 +39,7 @@ open class WeeklyStatisticViewModel @Inject constructor(
 
     val wallet = mutableStateOf(WalletSingleton.wallet.value!!)
     var timeIntervalController =
-        TimeIntervalController.WeeklyController(getWeeklyStatistic.getStartDate(Date(LocalDate.now())))
+        TimeIntervalController.WeeklyController(getWeeklyStatistic.getStartDate(Date(LocalDate.now()),appPreferencesHelper.getFirstDayOfWeek()))
     private var transactionType = TransactionType.Expense
 
     fun onEvent(weeklyStatisticScreenEvent: WeeklyStatisticScreenEvent) {
