@@ -213,6 +213,7 @@ fun AddWalletItem(onClick: () -> Unit) {
             text = stringResource(id = R.string.add_new_wallet),
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.secondary,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .weight(1f)
