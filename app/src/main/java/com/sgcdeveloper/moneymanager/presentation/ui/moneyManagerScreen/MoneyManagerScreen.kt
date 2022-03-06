@@ -144,7 +144,7 @@ private fun MainScreenNavigationConfigurations(
                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
             if (wallet != null)
                 addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
-            AddWalletScreen(navController, addWalletViewModel)
+            AddWalletScreen(navController, addWalletViewModel, addTransactionViewModel)
 
             backStackEntry.arguments?.putString("wallet", "")
         }

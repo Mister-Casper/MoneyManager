@@ -1,4 +1,4 @@
-package com.sgcdeveloper.moneymanager.presentation.ui.composables
+package com.sgcdeveloper.moneymanager.presentation.ui.registration
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

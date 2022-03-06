@@ -43,6 +43,8 @@ open class AddTransactionViewModel @Inject constructor(
     val transactionToWallet = MutableLiveData<Wallet>()
 
     val isTransactionCanBeSaved = mutableStateOf(false)
+    val back = mutableStateOf(false)
+    val backDialog = mutableStateOf(false)
 
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
