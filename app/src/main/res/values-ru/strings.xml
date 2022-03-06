@@ -135,6 +135,7 @@
     <string name="choose_password">Установить пароль</string>
     <string name="change_password">Сменить пароль</string>
     <string name="delete_passwrod">Удалить пароль</string>
+    <string name="first_day">Установить первый день недели</string>
 
     <string name="cash_wallet">Наличные</string>
 
