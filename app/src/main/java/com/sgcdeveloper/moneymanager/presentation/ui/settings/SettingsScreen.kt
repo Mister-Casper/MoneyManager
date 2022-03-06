@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -26,10 +27,19 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DaySelectorDialog
+import java.time.format.TextStyle
+import java.util.*
 
 @Composable
 fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
     val context = LocalContext.current
+
+    if (darkThemeViewModel.isShowSelectFirstDayDialog) {
+        DaySelectorDialog(darkThemeViewModel.firstDayOfWeek.value,
+            { darkThemeViewModel.setFirstDayOfWeek(it) },
+            { darkThemeViewModel.isShowSelectFirstDayDialog = false })
+    }
 
     LazyColumn(
         Modifier
@@ -82,6 +92,30 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     modifier = Modifier.align(Alignment.CenterEnd),
                     checked = darkThemeViewModel.isDarkTheme.value,
                     onCheckedChange = { darkThemeViewModel.setIsDark(it) }
+                )
+            }
+            MenuItem(Modifier.clickable { darkThemeViewModel.isShowSelectFirstDayDialog = true }) {
+                Column(Modifier.align(Alignment.CenterStart)) {
+                    Text(
+                        text = stringResource(id = R.string.first_day),
+                        color = white,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = darkThemeViewModel.firstDayOfWeek.value.getDisplayName(
+                            TextStyle.FULL,
+                            Locale.getDefault()
+                        ),
+                        color = white,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowRight,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
             MenuItem(Modifier.clickable { navController.navigate(Screen.PasswordSettings.route) }) {
@@ -188,6 +222,7 @@ fun MenuItem(modifier: Modifier = Modifier, context: @Composable BoxScope.() -> 
                 .fillMaxWidth()
                 .height(64.dp)
                 .padding(6.dp)
+                .padding(start = 6.dp)
         ) {
             context()
         }

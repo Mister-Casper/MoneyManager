@@ -38,15 +38,19 @@ open class WeeklyStatisticViewModel @Inject constructor(
     var rowColor = blue.toArgb()
 
     val wallet = mutableStateOf(WalletSingleton.wallet.value!!)
-    var timeIntervalController =
-        TimeIntervalController.WeeklyController(getWeeklyStatistic.getStartDate(Date(LocalDate.now()),appPreferencesHelper.getFirstDayOfWeek()))
+    lateinit var timeIntervalController: TimeIntervalController.WeeklyController
     private var transactionType = TransactionType.Expense
 
     fun onEvent(weeklyStatisticScreenEvent: WeeklyStatisticScreenEvent) {
         when (weeklyStatisticScreenEvent) {
             is WeeklyStatisticScreenEvent.Init -> {
                 timeIntervalController =
-                    TimeIntervalController.WeeklyController(timeIntervalController.startDay)
+                    TimeIntervalController.WeeklyController(
+                        getWeeklyStatistic.getStartDate(
+                            Date(LocalDate.now()),
+                            appPreferencesHelper.getFirstDayOfWeek()
+                        )
+                    )
                 wallet.value = weeklyStatisticScreenEvent.wallet
                 transactionType = weeklyStatisticScreenEvent.transactionType
                 loadStatistic()
@@ -65,7 +69,13 @@ open class WeeklyStatisticViewModel @Inject constructor(
     private fun loadStatistic() {
         viewModelScope.launch {
             val statistic =
-                getWeeklyStatistic(app, wallet.value, transactionType, timeIntervalController.startDay, timeIntervalController)
+                getWeeklyStatistic(
+                    app,
+                    wallet.value,
+                    transactionType,
+                    timeIntervalController.startDay,
+                    timeIntervalController
+                )
             labels = statistic.labels
             rowColor = statistic.rowColor
             empties.value = statistic.dayItems.map { it.entry }

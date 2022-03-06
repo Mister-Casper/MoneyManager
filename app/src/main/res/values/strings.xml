@@ -135,6 +135,7 @@
     <string name="choose_password">CHOOSE PASSWORD</string>
     <string name="change_password">CHANGE PASSWORD</string>
     <string name="delete_passwrod">DELETE PASSWORD</string>
+    <string name="first_day">Set first day of week</string>
 
     <string name="cash_wallet">Cash</string>
 
@@ -148,7 +149,7 @@
     <string name="sure">Sure!</string>
     <string name="later">Later</string>
     <string name="alredy_done">Already done</string>
-    <string name="get_feedback">"Are you enjoying our app?\n Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
+    <string name="get_feedback">"Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
 
     <string name="select_date">Select date</string>
     <string name="start">Start</string>

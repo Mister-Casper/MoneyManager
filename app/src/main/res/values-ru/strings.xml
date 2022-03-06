@@ -148,7 +148,7 @@
     <string name="sure">Конечно!</string>
     <string name="later">Позже</string>
     <string name="alredy_done">Уже сделано</string>
-    <string name="get_feedback">"Вам нравится наше приложение?\n Пожалуйста, оставьте отзыв, если вы хотите поддержать нас или вам нужны новые функции, я добавлю их в следующем обновлении.\n"</string>
+    <string name="get_feedback">"Пожалуйста, оставьте отзыв, если вы хотите поддержать нас или вам нужны новые функции, я добавлю их в следующем обновлении.\n"</string>
 
     <string name="select_date">Выберите дату</string>
     <string name="start">Начало</string>
