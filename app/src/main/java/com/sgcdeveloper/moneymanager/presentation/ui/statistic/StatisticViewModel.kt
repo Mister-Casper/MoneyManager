@@ -59,7 +59,8 @@ open class StatisticViewModel @Inject constructor(
         WalletSingleton.addObserver(object : WalletChangerListener {
             override fun walletChanged(newWallet: Wallet?) {
                 wallet.value = newWallet
-                loadTransactions()
+                if (newWallet != null)
+                    loadTransactions(newWallet)
             }
         })
         wallets.observeForever {
@@ -71,7 +72,7 @@ open class StatisticViewModel @Inject constructor(
                     WalletSingleton.setWallet(it[0])
                 }
             } else {
-                loadTransactions()
+                loadTransactions(WalletSingleton.wallet.value!!)
             }
         }
     }
@@ -90,15 +91,15 @@ open class StatisticViewModel @Inject constructor(
             is StatisticEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
                 description.value = timeInterval.value.getDescription()
-                loadTransactions()
+                loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.MoveBack -> {
                 timeInterval.value.moveBack()
-                loadTransactions()
+                loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.MoveNext -> {
                 timeInterval.value.moveNext()
-                loadTransactions()
+                loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.ShowSelectTimeIntervalDialog -> {
                 dialog.value = DialogState.SelectTimeIntervalDialog(timeInterval.value)
@@ -113,18 +114,18 @@ open class StatisticViewModel @Inject constructor(
         }
     }
 
-    private fun loadTransactions() {
+    private fun loadTransactions(wallet: Wallet) {
         viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
-                    wallet.value!!,
+                    wallet,
                     timeInterval.value
                 )
             isEmpty.value = transactionItems.value.isEmpty()
 
-            val incomeMoney = transactionItems.value.getIncome(wallet.value!!)
-            val expenseMoney = transactionItems.value.getExpense(wallet.value!!)
+            val incomeMoney = transactionItems.value.getIncome(wallet)
+            val expenseMoney = transactionItems.value.getExpense(wallet)
             val totalMoney = incomeMoney + expenseMoney
 
             income.value = getFormattedMoney(incomeMoney)
@@ -134,7 +135,7 @@ open class StatisticViewModel @Inject constructor(
             expenseStruct.value =
                 walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    wallet.value!!
+                    wallet
                 )
             expenseColors.value = expenseStruct.value.map { it.color }
             expenseEntries.value = expenseStruct.value.map { it.pieEntry }
@@ -142,7 +143,7 @@ open class StatisticViewModel @Inject constructor(
             incomeStruct.value =
                 walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
                     transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    wallet.value!!
+                    wallet
                 )
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
