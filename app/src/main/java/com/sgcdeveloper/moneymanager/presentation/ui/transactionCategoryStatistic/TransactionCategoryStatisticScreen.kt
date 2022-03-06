@@ -235,6 +235,8 @@ fun TransactionCategoryItem(
                 Text(
                     text = item.money,
                     textAlign = TextAlign.End,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
                     modifier = Modifier.align(Alignment.End),
                     color = Color(item.moneyColor)
                 )

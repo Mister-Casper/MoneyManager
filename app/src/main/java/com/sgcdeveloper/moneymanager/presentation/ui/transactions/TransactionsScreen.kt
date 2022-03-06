@@ -268,6 +268,8 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
             }
             Text(
                 text = item.money,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterVertically),
                 color = Color(item.moneyColor)
             )
