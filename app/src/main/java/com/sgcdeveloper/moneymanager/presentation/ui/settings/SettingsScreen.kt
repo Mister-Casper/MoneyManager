@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -40,12 +41,16 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
     if (darkThemeViewModel.isShowSelectFirstDayDialog) {
         DaySelectorDialog(stringResource(id = R.string.first_day),
             DayOfWeek.values().map { it.getDisplayName(TextStyle.FULL, Locale.getDefault()) },
-            darkThemeViewModel.firstDayOfWeek.value,
-            { darkThemeViewModel.setFirstDayOfWeek(it as DayOfWeek) },
-            { darkThemeViewModel.isShowSelectFirstDayDialog = false })
+            darkThemeViewModel.firstDayOfWeek.value.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+            { name ->
+                darkThemeViewModel.setFirstDayOfWeek(
+                    DayOfWeek.values()
+                        .find { name as String == it.getDisplayName(TextStyle.FULL, Locale.getDefault()) }!!
+                )
+            }, { darkThemeViewModel.isShowSelectFirstDayDialog = false })
     }
     if (darkThemeViewModel.isShowSelectStartupScreenDialog) {
-        DaySelectorDialog(stringResource(id = R.string.sturtup_screen),
+        DaySelectorDialog(stringResource(id = R.string.startup_screen),
             BottomMoneyManagerNavigationScreens.values().map { stringResource(id = it.resourceId) },
             stringResource(darkThemeViewModel.defaultStartupScreen.value.resourceId),
             {
@@ -57,6 +62,13 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 )
             },
             { darkThemeViewModel.isShowSelectStartupScreenDialog = false })
+    }
+    if (darkThemeViewModel.isShowStartupTransactionTypeDialog) {
+        DaySelectorDialog(stringResource(id = R.string.startup_transaction_type),
+            TransactionType.values().map { stringResource(id = it.stringRes) },
+            stringResource(darkThemeViewModel.defaultStartupTransactionType.value.stringRes),
+            { darkThemeViewModel.setStartupTransactionType(TransactionType.getByName(it as String, context)) },
+            { darkThemeViewModel.isShowStartupTransactionTypeDialog = false })
     }
 
     LazyColumn(
@@ -139,12 +151,33 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             MenuItem(Modifier.clickable { darkThemeViewModel.isShowSelectStartupScreenDialog = true }) {
                 Column(Modifier.align(Alignment.CenterStart)) {
                     Text(
-                        text = stringResource(id = R.string.sturtup_screen),
+                        text = stringResource(id = R.string.startup_screen),
                         color = white,
                         fontSize = 20.sp
                     )
                     Text(
                         text = stringResource(id = darkThemeViewModel.defaultStartupScreen.value.resourceId),
+                        color = white,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowRight,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
+            }
+            MenuItem(Modifier.clickable { darkThemeViewModel.isShowStartupTransactionTypeDialog = true }) {
+                Column(Modifier.align(Alignment.CenterStart)) {
+                    Text(
+                        text = stringResource(id = R.string.startup_transaction_type),
+                        color = white,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = stringResource(id = darkThemeViewModel.defaultStartupTransactionType.value.stringRes),
                         color = white,
                         fontWeight = FontWeight.Light,
                         fontSize = 16.sp

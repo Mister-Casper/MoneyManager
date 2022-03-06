@@ -199,8 +199,12 @@ class MainActivity : ComponentActivity() {
                             val wallet =
                                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
 
-                            addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
+                            if(wallet != null) {
+                                addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
+                            }
                             AddTransactionScreen(addTransactionViewModel, navController)
+
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
                             val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()

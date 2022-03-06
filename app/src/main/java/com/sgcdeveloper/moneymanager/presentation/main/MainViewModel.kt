@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.DayOfWeek
@@ -22,6 +23,7 @@ open class MainViewModel
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
     val firstDayOfWeek = mutableStateOf(appPreferencesHelper.getFirstDayOfWeek())
     val defaultStartupScreen = mutableStateOf(appPreferencesHelper.getStartupScreen())
+    val defaultStartupTransactionType = mutableStateOf(appPreferencesHelper.getStartupTransactionType())
 
     var isShowSelectFirstDayDialog by mutableStateOf(false)
     var isShowSelectStartupScreenDialog by mutableStateOf(false)
@@ -42,4 +44,8 @@ open class MainViewModel
         appPreferencesHelper.setStartupScreen(startupScreen)
     }
 
+    fun setStartupTransactionType(startupTransactionType:TransactionType){
+        this.defaultStartupTransactionType.value = startupTransactionType
+        appPreferencesHelper.setStartupTransactionType(startupTransactionType)
+    }
 }

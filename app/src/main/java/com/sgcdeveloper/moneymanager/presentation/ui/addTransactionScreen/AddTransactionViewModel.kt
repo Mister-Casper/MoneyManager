@@ -57,6 +57,7 @@ open class AddTransactionViewModel @Inject constructor(
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets.getUIWallets()
         }
+        showScreen(appPreferencesHelper.getStartupTransactionType())
     }
 
     fun onEvent(addTransactionEvent: AddTransactionEvent) {
@@ -65,15 +66,7 @@ open class AddTransactionViewModel @Inject constructor(
                 if (transactionId == 0L) {
                     val transaction = addTransactionEvent.transaction
                     transactionId = transaction.id
-                    currentScreen.value =
-                        TransactionScreen.values().find { it.transactionType == transaction.transactionType }!!
-                    currentScreenName.value = when (currentScreen.value) {
-                        TransactionScreen.Expense ->
-                            app.getString(R.string.expense)
-                        TransactionScreen.Income ->
-                            app.getString(R.string.income)
-                        else -> app.getString(R.string.transfer)
-                    }
+                    showScreen(transaction.transactionType)
                     transactionDate.value = transaction.date
                     transactionAmount.value = transaction.value.toMoneyString()
                     transactionDescription.value = transaction.description
@@ -91,8 +84,10 @@ open class AddTransactionViewModel @Inject constructor(
                 }
             }
             is AddTransactionEvent.SetDefaultWallet -> {
-                if (transactionFromWallet.value == null)
+                if (transactionFromWallet.value == null) {
                     transactionFromWallet.value = addTransactionEvent.wallet
+                    showScreen(appPreferencesHelper.getStartupTransactionType())
+                }
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
                 currentScreen.value = addTransactionEvent.transactionScreen
@@ -204,6 +199,18 @@ open class AddTransactionViewModel @Inject constructor(
             TransactionScreen.Expense -> {
                 (transactionExpenseCategory.value != TransactionCategory.None)
             }
+        }
+    }
+
+    private fun showScreen(type: TransactionType) {
+        currentScreen.value =
+            TransactionScreen.values().find { it.transactionType == type }!!
+        currentScreenName.value = when (currentScreen.value) {
+            TransactionScreen.Expense ->
+                app.getString(R.string.expense)
+            TransactionScreen.Income ->
+                app.getString(R.string.income)
+            else -> app.getString(R.string.transfer)
         }
     }
 

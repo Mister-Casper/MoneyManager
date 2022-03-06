@@ -135,7 +135,9 @@
     <string name="choose_password">Установить пароль</string>
     <string name="change_password">Сменить пароль</string>
     <string name="delete_passwrod">Удалить пароль</string>
-    <string name="first_day">Установить первый день недели</string>
+    <string name="first_day">Первый день недели</string>
+    <string name="startup_screen">Стартовый экран</string>
+    <string name="startup_transaction_type">Стартовый тип транзакции</string>
 
     <string name="cash_wallet">Наличные</string>
 
