@@ -1,6 +1,5 @@
 package com.sgcdeveloper.moneymanager.presentation.main
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CancellationSignal
@@ -11,17 +10,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
@@ -38,6 +35,8 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
+import com.sgcdeveloper.moneymanager.presentation.theme.black
+import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
@@ -100,12 +99,22 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberAnimatedNavController()
 
+            val systemUiController = rememberSystemUiController()
+            if(darkThemeViewModel.isDarkTheme.value){
+                systemUiController.setSystemBarsColor(
+                    color = black
+                )
+            }else{
+                systemUiController.setSystemBarsColor(
+                    color = blue
+                )
+            }
+
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
                 if (pref.getLoginStatus() == LoginStatus.None && savedInstanceState == null)
                     askReview()
                 Surface(
                     color = MaterialTheme.colors.background,
-                    modifier = Modifier.padding(top = LocalContext.current.pxToDp(getStatusBarHeight()).dp)
                 ) {
                     AnimatedNavHost(navController = navController, startDestination = Screen.SignIn.route) {
                         val registrationViewModel: RegistrationViewModel by viewModels()
@@ -442,19 +451,6 @@ class MainActivity : ComponentActivity() {
             } catch (e: ApiException) {
             }
         }
-    }
-
-    fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
-    }
-
-    fun Context.pxToDp(px: Int): Int {
-        return (px / resources.displayMetrics.density).toInt()
     }
 
     private fun askReview() {
