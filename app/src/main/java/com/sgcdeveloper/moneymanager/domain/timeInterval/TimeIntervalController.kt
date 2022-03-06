@@ -37,7 +37,7 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
     class WeeklyController(
         var startDay: Date = Date(LocalDate.now()),
-        var endDay: Date = Date(startDay.getAsLocalDate().plusDays(7))
+        var endDay: Date = Date(startDay.getAsLocalDate().plusDays(6))
     ) :
         TimeIntervalController(R.drawable.weekly_icon, R.string.weekly) {
 

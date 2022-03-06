@@ -94,7 +94,10 @@ class GetWeeklyStatistic @Inject constructor(
     }
 
     fun getStartDate(now: Date, firstDayOfWeek: DayOfWeek): Date {
-        val dif = kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDayOfWeek.value + 7)
+        val dif = if (firstDayOfWeek == now.getAsLocalDate().dayOfWeek)
+            0
+        else
+             kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDayOfWeek.value + 7)
         return Date(now.getAsLocalDate().minusDays(dif.toLong()))
     }
 }
