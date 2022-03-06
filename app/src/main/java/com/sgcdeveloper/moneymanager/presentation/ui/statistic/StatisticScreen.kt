@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,6 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
-import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 
 @Composable
@@ -42,7 +40,7 @@ fun StatisticScreen(
     statisticViewModel: StatisticViewModel,
     navController: NavController
 ) {
-    val wallet = remember { statisticViewModel.wallet }.observeAsState()
+    val wallet = remember { statisticViewModel.wallet }
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -82,20 +80,20 @@ fun StatisticScreen(
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    WalletSingleton.wallet.value?.let {
+                    if(wallet.value != null) {
                         Text(
                             text = wallet.value!!.name,
                             fontSize = 22.sp,
                             modifier = Modifier.align(Alignment.CenterVertically),
                             color = MaterialTheme.colors.secondary
                         )
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            "",
-                            Modifier.align(Alignment.CenterVertically),
-                            tint = MaterialTheme.colors.secondary
-                        )
                     }
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        "",
+                        Modifier.align(Alignment.CenterVertically),
+                        tint = MaterialTheme.colors.secondary
+                    )
                 }
                 Row(Modifier.align(Alignment.CenterEnd)) {
                     Icon(

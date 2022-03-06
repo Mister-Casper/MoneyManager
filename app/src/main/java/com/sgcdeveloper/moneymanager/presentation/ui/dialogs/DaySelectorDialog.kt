@@ -16,28 +16,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import java.time.DayOfWeek
-import java.time.format.TextStyle
-import java.util.*
 
 @Composable
 fun DaySelectorDialog(
-    defaultDay: DayOfWeek,
-    onSelected: (day: DayOfWeek) -> Unit,
+    title:String,
+    items:List<String>,
+    defaultDay: Any,
+    onSelected: (day: Any) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val days = DayOfWeek.values()
-
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
         title = {
-            Text(text = stringResource(id = R.string.first_day), color = MaterialTheme.colors.secondary)
+            Text(text = title, color = MaterialTheme.colors.secondary)
         },
         text = {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(days.size) {
-                    val day = days[it]
+                items(items.size) {
+                    val day = items[it]
                     Box(modifier = Modifier
                         .clickable {
                             onSelected(day)
@@ -51,7 +48,7 @@ fun DaySelectorDialog(
                                 onClick = {}
                             )
                             Text(
-                                text = day.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                                text = day,
                                 fontSize = 18.sp,
                                 modifier = Modifier
                                     .padding(start = 16.dp)

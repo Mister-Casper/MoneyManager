@@ -25,9 +25,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DaySelectorDialog
+import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.*
 
@@ -36,9 +38,25 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
     val context = LocalContext.current
 
     if (darkThemeViewModel.isShowSelectFirstDayDialog) {
-        DaySelectorDialog(darkThemeViewModel.firstDayOfWeek.value,
-            { darkThemeViewModel.setFirstDayOfWeek(it) },
+        DaySelectorDialog(stringResource(id = R.string.first_day),
+            DayOfWeek.values().map { it.getDisplayName(TextStyle.FULL, Locale.getDefault()) },
+            darkThemeViewModel.firstDayOfWeek.value,
+            { darkThemeViewModel.setFirstDayOfWeek(it as DayOfWeek) },
             { darkThemeViewModel.isShowSelectFirstDayDialog = false })
+    }
+    if (darkThemeViewModel.isShowSelectStartupScreenDialog) {
+        DaySelectorDialog(stringResource(id = R.string.sturtup_screen),
+            BottomMoneyManagerNavigationScreens.values().map { stringResource(id = it.resourceId) },
+            stringResource(darkThemeViewModel.defaultStartupScreen.value.resourceId),
+            {
+                darkThemeViewModel.setStartupScreen(
+                    BottomMoneyManagerNavigationScreens.getByName(
+                        it as String,
+                        context
+                    )
+                )
+            },
+            { darkThemeViewModel.isShowSelectStartupScreenDialog = false })
     }
 
     LazyColumn(
@@ -106,6 +124,27 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                             TextStyle.FULL,
                             Locale.getDefault()
                         ),
+                        color = white,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowRight,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
+            }
+            MenuItem(Modifier.clickable { darkThemeViewModel.isShowSelectStartupScreenDialog = true }) {
+                Column(Modifier.align(Alignment.CenterStart)) {
+                    Text(
+                        text = stringResource(id = R.string.sturtup_screen),
+                        color = white,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = stringResource(id = darkThemeViewModel.defaultStartupScreen.value.resourceId),
                         color = white,
                         fontWeight = FontWeight.Light,
                         fontSize = 16.sp

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -31,7 +30,7 @@ open class StatisticViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
-    var wallet: MutableLiveData<Wallet> = MutableLiveData(WalletSingleton.wallet.value)
+    val wallet = mutableStateOf(WalletSingleton.wallet.value)
 
     var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getUIWallets()
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
@@ -56,6 +55,19 @@ open class StatisticViewModel @Inject constructor(
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
     init {
+        wallets.observeForever {
+            val savedWalletId = appPreferencesHelper.getDefaultWalletId()
+            if (WalletSingleton.wallet.value == null) {
+                val savedWallet = it.find { wallet -> wallet.walletId == savedWalletId }
+                if (savedWalletId != -1L && savedWallet != null) {
+                    WalletSingleton.setWallet(savedWallet)
+                } else if (it.isNotEmpty()) {
+                    WalletSingleton.setWallet(it[0])
+                }
+            }else{
+                loadTransactions(WalletSingleton.wallet.value!!)
+            }
+        }
         WalletSingleton.addObserver(object : WalletChangerListener {
             override fun walletChanged(newWallet: Wallet?) {
                 wallet.value = newWallet
@@ -63,18 +75,6 @@ open class StatisticViewModel @Inject constructor(
                     loadTransactions(newWallet)
             }
         })
-        wallets.observeForever {
-            val savedWallet = appPreferencesHelper.getDefaultWalletId()
-            if (WalletSingleton.wallet.value == null) {
-                if (savedWallet != -1L) {
-                    WalletSingleton.setWallet(it.find { wallet -> wallet.walletId == savedWallet }!!)
-                } else if (it.isNotEmpty()) {
-                    WalletSingleton.setWallet(it[0])
-                }
-            } else {
-                loadTransactions(WalletSingleton.wallet.value!!)
-            }
-        }
     }
 
     fun onEvent(transactionEvent: StatisticEvent) {

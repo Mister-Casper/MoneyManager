@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity() {
                             InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
-                            MoneyManagerScreen(navController)
+                            MoneyManagerScreen(navController,darkThemeViewModel)
                         }
                         composable(Screen.AccountSettings.route) {
                             val accountSettingsViewModel: AccountSettingsViewModel by viewModels()

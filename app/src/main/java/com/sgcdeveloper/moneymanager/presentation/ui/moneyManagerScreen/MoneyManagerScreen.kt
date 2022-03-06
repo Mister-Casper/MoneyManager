@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sgcdeveloper.moneymanager.presentation.main.MainActivity
+import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
@@ -24,7 +25,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsSc
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 
 @Composable
-fun MoneyManagerScreen(globalNavController: NavHostController) {
+fun MoneyManagerScreen(globalNavController: NavHostController,mainViewModel:MainViewModel) {
     val navController = rememberNavController()
     val bottomNavigationItems = listOf(
         BottomMoneyManagerNavigationScreens.Home,
@@ -34,7 +35,7 @@ fun MoneyManagerScreen(globalNavController: NavHostController) {
     Scaffold(
         bottomBar = { SpookyAppBottomNavigation(navController, bottomNavigationItems) }
     ) {
-        MainScreenNavigationConfigurations(navController, globalNavController)
+        MainScreenNavigationConfigurations(navController, globalNavController,mainViewModel)
     }
     BackHandler {
         // Ignore
@@ -74,11 +75,12 @@ fun SpookyAppBottomNavigation(
 @Composable
 private fun MainScreenNavigationConfigurations(
     navController: NavHostController,
-    globalNavController: NavController
+    globalNavController: NavController,
+    mainViewModel:MainViewModel
 ) {
     NavHost(
         navController,
-        startDestination = BottomMoneyManagerNavigationScreens.Transactions.route,
+        startDestination = mainViewModel.defaultStartupScreen.value.route,
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
             val homeViewModel: HomeViewModel by (LocalContext.current as MainActivity).viewModels()

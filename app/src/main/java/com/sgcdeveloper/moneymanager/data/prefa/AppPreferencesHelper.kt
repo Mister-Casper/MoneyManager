@@ -5,6 +5,8 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import java.time.DayOfWeek
 import javax.inject.Inject
 
@@ -85,6 +87,22 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putInt(FIRST_DAY_OF_WEEK,day.value).apply()
     }
 
+    fun getStartupScreen(): BottomMoneyManagerNavigationScreens {
+        return BottomMoneyManagerNavigationScreens.of(prefs.getString(STARTUP_SCREEN,defaultSettings.defaultScreen)!!)
+    }
+
+    fun setStartupScreen(startupScreen:BottomMoneyManagerNavigationScreens) {
+        prefs.edit().putString(STARTUP_SCREEN,startupScreen.route).apply()
+    }
+
+    fun getStartupTransactionType(): TransactionType {
+        return TransactionType.getByOrdinal(prefs.getInt(STARTUP_TRANSACTION_TYPE,defaultSettings.defaultTransactionType.ordinal))
+    }
+
+    fun setStartupTransactionType(type:TransactionType) {
+        prefs.edit().putInt(STARTUP_TRANSACTION_TYPE,type.ordinal).apply()
+    }
+
     companion object {
         const val LOGIN_STATUS = "LOGIN_STATUS"
         const val USER_NAME = "USER_NAME"
@@ -95,5 +113,7 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val USER_PASSWORD = "USER_PASSWORD"
         const val IS_OLD = "IS_OLD"
         const val FIRST_DAY_OF_WEEK = "FIRST_DAY_OF_WEEK"
+        const val STARTUP_SCREEN = "STARTUP_SCREEN"
+        const val STARTUP_TRANSACTION_TYPE = "STARTUP_TRANSACTION_TYPE"
     }
 }
