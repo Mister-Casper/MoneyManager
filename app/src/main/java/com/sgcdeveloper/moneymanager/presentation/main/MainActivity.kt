@@ -17,6 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -64,9 +65,9 @@ import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
-import com.sgcdeveloper.moneymanager.util.MyRatingRequest
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
+import com.shurajcodx.appratingdialog.AppRatingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -100,7 +101,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberAnimatedNavController()
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
-                if (pref.getLoginStatus() == LoginStatus.None)
+                if (pref.getLoginStatus() == LoginStatus.None && savedInstanceState == null)
                     askReview()
                 Surface(
                     color = MaterialTheme.colors.background,
@@ -457,20 +458,21 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun askReview() {
-        MyRatingRequest.with(this)
-            .scheduleAfter(3)
-            .agreeButtonText(getString(com.sgcdeveloper.moneymanager.R.string.sure))
-            .laterButtonSeletor(com.sgcdeveloper.moneymanager.R.color.gray)
-            .laterButtonText(getString(com.sgcdeveloper.moneymanager.R.string.later))
-            .doneButtonText(getString(com.sgcdeveloper.moneymanager.R.string.alredy_done))
-            .backgroundResource(com.sgcdeveloper.moneymanager.R.color.black)
-            .message(getString(com.sgcdeveloper.moneymanager.R.string.get_feedback))
-            .listener(object : MyRatingRequest.ClickListener {
-                override fun onAgreeButtonClick() {}
-                override fun onDoneButtonClick() {}
-                override fun onLaterButtonClick() {}
-            })
-            .register()
+        val appRatingDialog = AppRatingDialog.Builder(this)
+            .setMessageText(getString(com.sgcdeveloper.moneymanager.R.string.get_feedback))
+            .setTriggerCount(3)
+            .setLayoutBackgroundColor(com.sgcdeveloper.moneymanager.R.color.black)
+            .setIconDrawable(true, ContextCompat.getDrawable(this, com.sgcdeveloper.moneymanager.R.mipmap.icon))
+            .setRateButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
+            .setNeverRateButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
+            .setRateLaterButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
+            .setMessageTextColor(com.sgcdeveloper.moneymanager.R.color.white)
+            .setTitleTextColor(com.sgcdeveloper.moneymanager.R.color.white)
+            .setRateLaterButtonTextColor(com.sgcdeveloper.moneymanager.R.color.white)
+            .setNeverRateButtonTextColor(com.sgcdeveloper.moneymanager.R.color.white)
+            .setRepeatCount(3)
+            .build()
 
+        appRatingDialog.show()
     }
 }

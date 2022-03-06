@@ -126,7 +126,7 @@ dependencies {
 
     implementation 'com.amirarcane.lock-screen:lockscreen:2.0.0'
 
-    implementation 'com.iamhabib:rating-request:1.0.1'
+    implementation 'com.github.shurajcodx:android-app-rating-dialog:1.0.6'
 
     implementation 'com.jakewharton:process-phoenix:2.1.2'
 }
