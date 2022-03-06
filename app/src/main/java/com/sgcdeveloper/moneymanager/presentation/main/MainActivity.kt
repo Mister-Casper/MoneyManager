@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val pref = AppPreferencesHelper(this, DefaultSettings())
-        if (pref.getUserPassword()) {
+        if (pref.getUserPassword() && savedInstanceState == null) {
             val intent = MyEnterPinActivity.getIntent(this, false)
             startActivityForResult(intent, REQUEST_CODE)
         }
