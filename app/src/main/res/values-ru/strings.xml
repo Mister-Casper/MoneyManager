@@ -157,4 +157,7 @@
     <string name="done">готово</string>
     <string name="add_new_wallet">Добавить кошелек</string>
 
+    <string name="weekly_spending">Доходы</string>
+    <string name="weekly_earning">Траты</string>
+
 </resources>

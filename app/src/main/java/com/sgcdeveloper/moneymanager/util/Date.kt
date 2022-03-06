@@ -76,6 +76,10 @@ data class Date(val epochMillis: Long) {
         return getAsLocalDate().month.name + " " + getAsLocalDate().year.toString()
     }
 
+    fun getMonthName():String{
+        return getAsLocalDate().month.name
+    }
+
     fun toDateString(formatStyle: FormatStyle): String {
         val f =
             DateTimeFormatter.ofLocalizedDate(formatStyle).withLocale(Locale.getDefault())

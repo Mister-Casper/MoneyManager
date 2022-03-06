@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
@@ -52,7 +53,7 @@ fun TransactionCategoryStatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        },statisticViewModel.isDarkTheme())
+        }, statisticViewModel.isDarkTheme())
     }
 
     CheckDataFromAddTransactionScreen(navController, statisticViewModel)
@@ -88,15 +89,19 @@ fun TransactionCategoryStatisticScreen(
                             .weight(1f)
                     )
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.edit_calendar_icon),
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(32.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
-                )
+                Row(
+                    Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit_calendar_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
+                    )
+                }
             }
             Row(Modifier.fillMaxWidth()) {
                 TimeIntervalControllerView(
@@ -127,7 +132,15 @@ fun TransactionCategoryStatisticScreen(
                             stringResource(id = R.string.expense_structure),
                             statisticViewModel.expenseEntries.value,
                             statisticViewModel.expenseColors.value,
-                            { }, false
+                            { }, false,
+                            {
+                                navController.navigate(
+                                    Screen.WeeklyStatisticScreen(
+                                        statisticViewModel.wallet.value,
+                                        TransactionType.Expense
+                                    ).route
+                                )
+                            }
                         )
                     }
                     items(statisticViewModel.expenseStruct.value.size) {
@@ -143,7 +156,14 @@ fun TransactionCategoryStatisticScreen(
                             stringResource(id = R.string.income_structure),
                             statisticViewModel.incomeEntries.value,
                             statisticViewModel.incomeColors.value,
-                            { }, false
+                            { }, false,{
+                                navController.navigate(
+                                    Screen.WeeklyStatisticScreen(
+                                        statisticViewModel.wallet.value,
+                                        TransactionType.Income
+                                    ).route
+                                )
+                            }
                         )
                     }
                     items(statisticViewModel.incomeStruct.value.size) {

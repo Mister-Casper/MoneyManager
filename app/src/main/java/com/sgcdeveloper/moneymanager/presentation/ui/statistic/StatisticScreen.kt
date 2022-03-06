@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.red
@@ -49,7 +50,7 @@ fun StatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        },statisticViewModel.isDarkTheme())
+        }, statisticViewModel.isDarkTheme())
     } else if (dialog.value is DialogState.WalletPickerDialog) {
         WalletPickerDialog(statisticViewModel.wallets.value, wallet.value, {
             statisticViewModel.onEvent(StatisticEvent.SetWallet(it))
@@ -237,6 +238,14 @@ fun StatisticScreen(
                         statisticViewModel.expenseColors.value,
                         {
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Expense).route)
+                        },
+                        onWeeklyStatisticClick = {
+                            navController.navigate(
+                                Screen.WeeklyStatisticScreen(
+                                    statisticViewModel.wallet.value,
+                                    TransactionType.Expense
+                                ).route
+                            )
                         }
                     )
                 }
@@ -248,6 +257,14 @@ fun StatisticScreen(
                         statisticViewModel.incomeColors.value,
                         {
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Income).route)
+                        },
+                        onWeeklyStatisticClick = {
+                            navController.navigate(
+                                Screen.WeeklyStatisticScreen(
+                                    statisticViewModel.wallet.value,
+                                    TransactionType.Income
+                                ).route
+                            )
                         }
                     )
                 }

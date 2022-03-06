@@ -34,6 +34,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
@@ -60,6 +61,9 @@ import com.sgcdeveloper.moneymanager.presentation.ui.util.MyEnterPinActivity
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
 import com.sgcdeveloper.moneymanager.util.MyRatingRequest
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
@@ -366,6 +370,20 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.PasswordSettings.route) {
                             val passwordSettingsViewModel: PasswordSettingsViewModel by viewModels()
                             PasswordSettings(navController, passwordSettingsViewModel)
+                        }
+                        composable("WeeklyStatisticScreen/" + "{wallet}" + "/" + "{type}") { backStackEntry ->
+                            val weeklyStatisticViewModel: WeeklyStatisticViewModel by viewModels()
+
+                            val walletJson = backStackEntry.arguments?.getString("wallet")
+                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            val type = Gson().fromJson(backStackEntry.arguments?.getString("type"), TransactionType::class.java)
+                            if(wallet != null) {
+                                weeklyStatisticViewModel.onEvent(
+                                    WeeklyStatisticScreenEvent.Init(wallet,type)
+                                )
+                            }
+                            WeeklyStatisticScreen(navController, weeklyStatisticViewModel)
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                     }
 

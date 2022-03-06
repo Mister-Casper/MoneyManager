@@ -157,4 +157,7 @@
     <string name="done">DONE</string>
     <string name="add_new_wallet">Add Wallet</string>
 
+    <string name="weekly_spending">Weekly spending</string>
+    <string name="weekly_earning">Weekly earning</string>
+
 </resources>

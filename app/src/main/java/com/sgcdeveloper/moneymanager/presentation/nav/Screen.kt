@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.util.toSafeJson
 
@@ -24,6 +25,9 @@ sealed class Screen(val route: String) {
 
     class TimeIntervalTransactions(wallet: Wallet? = null) :
         Screen("TimeIntervalTransactions/" + Gson().toSafeJson(wallet))
+
+    class WeeklyStatisticScreen(wallet: Wallet? = null, transactionType: TransactionType? = null) :
+        Screen("WeeklyStatisticScreen/" + Gson().toSafeJson(wallet) + "/" + Gson().toSafeJson(transactionType))
 
     class TransactionCategoryTransactions(wallet: Wallet? = null, category: TransactionCategory? = null) :
         Screen("TransactionCategoryTransactions/" + Gson().toSafeJson(category) + "/" + Gson().toSafeJson(wallet))
