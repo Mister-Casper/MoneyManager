@@ -1,6 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.dialogs
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,6 +28,8 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
+
+var yOffset = 0
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -61,7 +66,13 @@ fun TimeIntervalPickerDialog(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .customDialogModifier(CustomDialogPosition.BOTTOM),
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    if(offset.y <= yOffset)
+                        onDismiss()
+                }
+            }
+            .customtDialogModifier(),
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
@@ -92,6 +103,14 @@ fun TimeIntervalPickerDialog(
         },
         confirmButton = {}, properties = DialogProperties(usePlatformDefaultWidth = false)
     )
+}
+
+fun Modifier.customtDialogModifier() = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    yOffset = constraints.maxHeight - placeable.height
+    layout(constraints.maxWidth, constraints.maxHeight) {
+        placeable.place(0, yOffset, 10f)
+    }
 }
 
 @Composable

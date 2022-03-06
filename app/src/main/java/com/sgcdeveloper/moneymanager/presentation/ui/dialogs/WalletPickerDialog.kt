@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.dialogs
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,6 +31,8 @@ import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.AutoSizeText
 
+var ywOffset = 0
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WalletPickerDialog(
@@ -36,7 +40,7 @@ fun WalletPickerDialog(
     defaultWallet: Wallet? = null,
     onAdd: (wallet: Wallet) -> Unit = {},
     onDismiss: () -> Unit = {},
-    onAddNewWallet: (newWallet:Wallet) -> Unit = {}
+    onAddNewWallet: (newWallet: Wallet) -> Unit = {}
 ) {
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
@@ -45,7 +49,13 @@ fun WalletPickerDialog(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .customDialogModifier(CustomDialogPosition.BOTTOM),
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                   if(offset.y <= ywOffset)
+                       onDismiss()
+                }
+            }
+            .customDialogModifier(),
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
@@ -67,10 +77,10 @@ fun WalletPickerDialog(
             }
         },
         text = {
-            WalletSelector(wallets, defaultWallet,{
+            WalletSelector(wallets, defaultWallet, {
                 onAdd(it)
                 onDismiss()
-            },{
+            }, {
                 onAddNewWallet(it)
             })
         },
@@ -78,21 +88,11 @@ fun WalletPickerDialog(
     )
 }
 
-enum class CustomDialogPosition {
-    BOTTOM, TOP
-}
-
-fun Modifier.customDialogModifier(pos: CustomDialogPosition) = layout { measurable, constraints ->
+fun Modifier.customDialogModifier() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
+    ywOffset = constraints.maxHeight - placeable.height
     layout(constraints.maxWidth, constraints.maxHeight) {
-        when (pos) {
-            CustomDialogPosition.BOTTOM -> {
-                placeable.place(0, constraints.maxHeight - placeable.height, 10f)
-            }
-            CustomDialogPosition.TOP -> {
-                placeable.place(0, 0, 10f)
-            }
-        }
+        placeable.place(0, ywOffset, 10f)
     }
 }
 
@@ -101,26 +101,23 @@ private fun WalletSelector(
     wallets: List<Wallet>? = null,
     defaultWallet: Wallet? = null,
     onAdd: (wallet: Wallet) -> Unit,
-    onAddNewWallet: (newWallet:Wallet) -> Unit = {}
+    onAddNewWallet: (newWallet: Wallet) -> Unit = {}
 ) {
     var selectedOption by remember {
         mutableStateOf(defaultWallet)
     }
-
-    Column(Modifier.fillMaxWidth()) {
-        LazyColumn {
-            wallets?.let {
-                items(wallets.size) {
-                    val item = wallets[it]
-                    if (item is AddNewWallet) {
-                        AddWalletItem {
-                            onAddNewWallet(item)
-                        }
-                    } else {
-                        ExistWalletItem(item, selectedOption) {
-                            selectedOption = item
-                            onAdd(item)
-                        }
+    LazyColumn(Modifier.fillMaxWidth()) {
+        wallets?.let {
+            items(wallets.size) {
+                val item = wallets[it]
+                if (item is AddNewWallet) {
+                    AddWalletItem {
+                        onAddNewWallet(item)
+                    }
+                } else {
+                    ExistWalletItem(item, selectedOption) {
+                        selectedOption = item
+                        onAdd(item)
                     }
                 }
             }
