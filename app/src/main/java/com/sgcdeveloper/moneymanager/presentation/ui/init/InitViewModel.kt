@@ -62,7 +62,9 @@ open class InitViewModel @Inject constructor(
                 initNewAccount()
                 appPreferencesHelper.setLoginStatus(LoginStatus.None)
                 isMoveNext.value = true
-                syncHelper.syncServerData()
+                viewModelScope.launch {
+                    syncHelper.syncServerData()
+                }
             }
             is InitEvent.ChangeDefaultWalletName -> {
                 if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH || initEvent.newDefaultWalletName.length <= defaultWalletName.value.length)

@@ -12,10 +12,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -88,14 +85,14 @@ class SyncHelper @Inject constructor(
         return false
     }
 
-    fun syncServerData(isSignOut: Boolean = false, onFinish: () -> Unit = {}) {
-        val db = FirebaseFirestore.getInstance()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val docRef: DocumentReference = db.collection("users").document(user.uid)
-            val time = Date(LocalDateTime.now()).epochMillis
+    suspend fun syncServerData(isSignOut: Boolean = false, onFinish: () -> Unit = {}) =
+        CoroutineScope(Dispatchers.IO).async {
+            val db = FirebaseFirestore.getInstance()
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                val docRef: DocumentReference = db.collection("users").document(user.uid)
+                val time = Date(LocalDateTime.now()).epochMillis
 
-            runBlocking {
                 appPreferencesHelper.setLastSyncTime(time)
                 val settingsData = hashMapOf(
                     AppPreferencesHelper.LAST_SYNC_TIME to time,
@@ -111,9 +108,9 @@ class SyncHelper @Inject constructor(
                 )
                 docRef.set(settingsData)
                 onFinish()
+
             }
-        }
-    }
+        }.await()
 
     private suspend fun getWallets(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
