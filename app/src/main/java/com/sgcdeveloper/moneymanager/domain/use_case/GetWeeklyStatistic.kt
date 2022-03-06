@@ -14,7 +14,6 @@ import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Compani
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.red
-import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,7 +66,7 @@ class GetWeeklyStatistic @Inject constructor(
                     dayValue.key.getDayName(),
                     dayValue.key.toDayMonthString(),
                     getFormattedMoney(wallet, day.sumOf { it.value }),
-                    (if (type == TransactionType.Expense) red else white).toArgb(),
+                    if (type == TransactionType.Expense) red.toArgb() else 0,
                     transactionsCount,
                     BarEntry(i.toFloat(), day.sumOf { it.value }.toFloat())
                 )

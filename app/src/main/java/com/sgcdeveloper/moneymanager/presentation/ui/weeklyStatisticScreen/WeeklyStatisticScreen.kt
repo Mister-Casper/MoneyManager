@@ -128,20 +128,25 @@ fun WeeklyStatisticScreen(navController: NavController, weeklyStatisticViewModel
                 Box(Modifier.fillMaxWidth()) {
                     Column(Modifier.align(Alignment.CenterStart)) {
                         Text(text = day.dayName, fontSize = 18.sp, fontWeight = FontWeight.Medium, color = textColor)
-                        Text(text = day.dateName, fontSize = 18.sp, fontWeight = FontWeight.Thin, color = textColor)
+                        Text(text = day.dateName, fontSize = 18.sp, fontWeight = FontWeight.Light, color = textColor)
                     }
                     Column(Modifier.align(Alignment.CenterEnd)) {
+                        val sumColor = if(day.colorSum != 0)
+                            Color(day.colorSum)
+                        else
+                            MaterialTheme.colors.secondary
                         Text(
                             text = day.sum,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(day.colorSum),
+                            color = sumColor,
                             modifier = Modifier.align(Alignment.End)
                         )
                         Text(
                             text = day.countTransactions,
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.Light,
+                            color = textColor,
                             modifier = Modifier.align(Alignment.End)
                         )
                     }
