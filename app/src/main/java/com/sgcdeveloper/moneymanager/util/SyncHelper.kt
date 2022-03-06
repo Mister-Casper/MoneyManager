@@ -1,8 +1,6 @@
 package com.sgcdeveloper.moneymanager.util
 
 import android.content.Context
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -18,6 +16,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -30,25 +29,25 @@ class SyncHelper @Inject constructor(
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
         val db = FirebaseFirestore.getInstance()
         val user = FirebaseAuth.getInstance().currentUser
-            if (user != null) {
-                val docRef: DocumentReference = db.collection("users").document(user.uid)
-                docRef.get().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val document = task.result
-                        if (document.exists()) {
-                            val lastUpdate =
-                                document.data?.getOrDefault(AppPreferencesHelper.LAST_SYNC_TIME, -1000) as Long
-                            if (lastUpdate > appPreferencesHelper.getLastSyncTime() || isAnyway) {
-                                if (loadSyncData(document)) {
-                                    isNewUser(true)
-                                } else
-                                    isNewUser(false)
-                            }
-                        } else {
-                            isNewUser(true)
+        if (user != null) {
+            val docRef: DocumentReference = db.collection("users").document(user.uid)
+            docRef.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document.exists()) {
+                        val lastUpdate =
+                            document.data?.getOrDefault(AppPreferencesHelper.LAST_SYNC_TIME, -1000) as Long
+                        if (lastUpdate > appPreferencesHelper.getLastSyncTime() || isAnyway) {
+                            if (loadSyncData(document)) {
+                                isNewUser(true)
+                            } else
+                                isNewUser(false)
                         }
+                    } else {
+                        isNewUser(true)
                     }
                 }
+            }
         }
     }
 
@@ -77,11 +76,19 @@ class SyncHelper @Inject constructor(
         val walletId = userDocument.getLong(AppPreferencesHelper.DEFAULT_WALLET_ID)
         if (walletId != null)
             appPreferencesHelper.setDefaultWalletId(walletId)
-
+        val firstDayOfWeek = userDocument.getLong(AppPreferencesHelper.FIRST_DAY_OF_WEEK)
+        if (firstDayOfWeek != null)
+            appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(firstDayOfWeek.toInt()))
+        val isDarkTHeme = userDocument.getBoolean(AppPreferencesHelper.IS_DARK_THEME)
+        if (isDarkTHeme != null)
+            appPreferencesHelper.setIsDarkTheme(isDarkTHeme)
+        val isOld = userDocument.getBoolean(AppPreferencesHelper.IS_OLD)
+        if (isOld != null)
+            appPreferencesHelper.setIsOld(isOld)
         return false
     }
 
-    fun syncServerData(isSignOut: Boolean = false,onFinish:()->Unit = {}) {
+    fun syncServerData(isSignOut: Boolean = false, onFinish: () -> Unit = {}) {
         val db = FirebaseFirestore.getInstance()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -96,22 +103,14 @@ class SyncHelper @Inject constructor(
                     AppPreferencesHelper.LOGIN_STATUS to Gson().toJson(appPreferencesHelper.getLoginStatus()),
                     AppPreferencesHelper.DEFAULT_CURRENCY to Gson().toJson(appPreferencesHelper.getDefaultCurrency()),
                     AppPreferencesHelper.DEFAULT_WALLET_ID to appPreferencesHelper.getDefaultWalletId(),
+                    AppPreferencesHelper.FIRST_DAY_OF_WEEK to appPreferencesHelper.getFirstDayOfWeek().value,
+                    AppPreferencesHelper.IS_DARK_THEME to appPreferencesHelper.getIsDarkTheme(),
+                    AppPreferencesHelper.IS_OLD to appPreferencesHelper.getIsOld(),
                     "wallets" to getWallets(),
                     "transactions" to getTransactions()
                 )
                 docRef.set(settingsData)
-                    .addOnCompleteListener{onFinish()}
-
-                if (isSignOut) {
-                    val auth = FirebaseAuth.getInstance()
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken("241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com")
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-                    auth.signOut()
-                    googleSignInClient.signOut()
-                }
+                onFinish()
             }
         }
     }

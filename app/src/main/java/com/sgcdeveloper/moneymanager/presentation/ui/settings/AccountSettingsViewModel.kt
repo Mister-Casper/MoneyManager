@@ -37,17 +37,19 @@ open class AccountSettingsViewModel @Inject constructor(
         auth.signOut()
         googleSignInClient.signOut()
 
-        runBlocking {
-            appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
-            appPreferencesHelper.setUserPassword(false)
-            appPreferencesHelper.setDefaultWalletId(-1L)
-            appPreferencesHelper.setLastSyncTime(0L)
-            appPreferencesHelper.setUserName("")
-            moneyManagerRepository.deleteAllWallets()
-            moneyManagerRepository.deleteAllTransactions()
-            navController.popBackStack(Screen.SignUp.route,true)
-            WalletSingleton.setWallet(null)
-            ProcessPhoenix.triggerRebirth(app)
+        syncHelper.syncServerData(true) {
+            runBlocking {
+                appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
+                appPreferencesHelper.setUserPassword(false)
+                appPreferencesHelper.setDefaultWalletId(-1L)
+                appPreferencesHelper.setLastSyncTime(0L)
+                appPreferencesHelper.setUserName("")
+                moneyManagerRepository.deleteAllWallets()
+                moneyManagerRepository.deleteAllTransactions()
+                navController.popBackStack(Screen.SignUp.route, true)
+                WalletSingleton.setWallet(null)
+                ProcessPhoenix.triggerRebirth(app)
+            }
         }
     }
 }
