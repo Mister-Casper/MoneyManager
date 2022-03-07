@@ -79,7 +79,7 @@ class GetWeeklyStatistic @Inject constructor(
             }
 
             return@async WeeklyStatistic(
-                daysStatistic.toSortedMap().map { it.value },
+                daysStatistic.map { it.value },
                 getFormattedMoney(
                     wallet,
                     daysStatisticMap.values.sumOf { it.sumOf { transaction -> transaction.value } }),
