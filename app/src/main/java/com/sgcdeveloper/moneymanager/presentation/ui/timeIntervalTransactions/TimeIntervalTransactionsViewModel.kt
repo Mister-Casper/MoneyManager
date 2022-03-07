@@ -48,7 +48,6 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
         when (transactionEvent) {
             is TimeIntervalTransactionEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
-                loadTransactions()
             }
             is TimeIntervalTransactionEvent.SetDefaultWalletId -> {
                 viewModelScope.launch {
@@ -58,7 +57,6 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
             }
             is TimeIntervalTransactionEvent.SetDefaultWallet -> {
                 defaultWallet.value = transactionEvent.wallet
-                loadTransactions()
             }
             is TimeIntervalTransactionEvent.MoveBack -> {
                 timeInterval.value.moveBack()
@@ -82,6 +80,7 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
                     transactionCategoryFilter.value = null
                     title.value = app.getString(R.string.transactions)
                 }
+                loadTransactions()
             }
         }
     }
