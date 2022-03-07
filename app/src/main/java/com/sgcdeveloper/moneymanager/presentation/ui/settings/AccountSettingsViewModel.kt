@@ -30,7 +30,7 @@ open class AccountSettingsViewModel @Inject constructor(
 
     fun signOut(navController: NavController) {
         viewModelScope.launch {
-            syncHelper.syncServerData(true) {
+            syncHelper.syncServerData {
                 viewModelScope.launch {
                     appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
                     appPreferencesHelper.setUserPassword(false)

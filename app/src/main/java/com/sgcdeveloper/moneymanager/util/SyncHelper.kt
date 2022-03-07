@@ -85,7 +85,7 @@ class SyncHelper @Inject constructor(
         return false
     }
 
-    suspend fun syncServerData(isSignOut: Boolean = false, onFinish: () -> Unit = {}) =
+    suspend fun syncServerData(onFinish: () -> Unit = {}) =
         CoroutineScope(Dispatchers.IO).async {
             val db = FirebaseFirestore.getInstance()
             val user = FirebaseAuth.getInstance().currentUser
