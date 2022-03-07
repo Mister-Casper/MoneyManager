@@ -29,22 +29,29 @@ open class MainViewModel
     var isShowSelectStartupScreenDialog by mutableStateOf(false)
     var isShowStartupTransactionTypeDialog by mutableStateOf(false)
 
+    fun init() {
+        isDarkTheme.value = appPreferencesHelper.getIsDarkTheme()
+        firstDayOfWeek.value = appPreferencesHelper.getFirstDayOfWeek()
+        defaultStartupScreen.value = appPreferencesHelper.getStartupScreen()
+        defaultStartupTransactionType.value = appPreferencesHelper.getStartupTransactionType()
+    }
+
     fun setIsDark(isDark: Boolean) {
         isDarkTheme.value = isDark
         appPreferencesHelper.setIsDarkTheme(isDark)
     }
 
-    fun setFirstDayOfWeek(firstDayOfWeek:DayOfWeek){
+    fun setFirstDayOfWeek(firstDayOfWeek: DayOfWeek) {
         this.firstDayOfWeek.value = firstDayOfWeek
         appPreferencesHelper.setFirstDayOfWeek(firstDayOfWeek)
     }
 
-    fun setStartupScreen(startupScreen:BottomMoneyManagerNavigationScreens){
+    fun setStartupScreen(startupScreen: BottomMoneyManagerNavigationScreens) {
         this.defaultStartupScreen.value = startupScreen
         appPreferencesHelper.setStartupScreen(startupScreen)
     }
 
-    fun setStartupTransactionType(startupTransactionType:TransactionType){
+    fun setStartupTransactionType(startupTransactionType: TransactionType) {
         this.defaultStartupTransactionType.value = startupTransactionType
         appPreferencesHelper.setStartupTransactionType(startupTransactionType)
     }

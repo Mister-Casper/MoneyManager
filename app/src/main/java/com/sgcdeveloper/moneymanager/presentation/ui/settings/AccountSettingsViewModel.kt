@@ -9,13 +9,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +26,8 @@ open class AccountSettingsViewModel @Inject constructor(
     private val app: Application,
     private val appPreferencesHelper: AppPreferencesHelper,
     private val syncHelper: SyncHelper,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val defaultSettings: DefaultSettings
 ) : AndroidViewModel(app) {
 
     val userName = appPreferencesHelper.getUserNAme()
@@ -37,6 +41,10 @@ open class AccountSettingsViewModel @Inject constructor(
                     appPreferencesHelper.setDefaultWalletId(-1L)
                     appPreferencesHelper.setLastSyncTime(0L)
                     appPreferencesHelper.setUserName("")
+                    appPreferencesHelper.setStartupTransactionType(defaultSettings.defaultTransactionType)
+                    appPreferencesHelper.setStartupScreen(BottomMoneyManagerNavigationScreens.Transactions)
+                    appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(defaultSettings.firstDayOfWeek))
+                    appPreferencesHelper.setIsDarkTheme(false)
                     moneyManagerRepository.deleteAllWallets()
                     moneyManagerRepository.deleteAllTransactions()
                     WalletSingleton.setWallet(null)

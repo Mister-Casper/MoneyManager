@@ -12,6 +12,8 @@ import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import kotlinx.coroutines.*
 import java.time.DayOfWeek
 import java.time.LocalDateTime
@@ -82,6 +84,15 @@ class SyncHelper @Inject constructor(
         val isOld = userDocument.getBoolean(AppPreferencesHelper.IS_OLD)
         if (isOld != null)
             appPreferencesHelper.setIsOld(isOld)
+        val firstDay = userDocument.getLong(AppPreferencesHelper.FIRST_DAY_OF_WEEK)
+        if (firstDay != null)
+            appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(firstDay.toInt()))
+        val startupScreen = userDocument.getString(AppPreferencesHelper.STARTUP_SCREEN)
+        if (startupScreen != null)
+            appPreferencesHelper.setStartupScreen(BottomMoneyManagerNavigationScreens.of(startupScreen))
+        val startupTransactionType = userDocument.getLong(AppPreferencesHelper.STARTUP_TRANSACTION_TYPE)
+        if (startupTransactionType != null)
+            appPreferencesHelper.setStartupTransactionType(TransactionType.getByOrdinal(startupTransactionType.toInt()))
         return false
     }
 
@@ -103,6 +114,9 @@ class SyncHelper @Inject constructor(
                     AppPreferencesHelper.FIRST_DAY_OF_WEEK to appPreferencesHelper.getFirstDayOfWeek().value,
                     AppPreferencesHelper.IS_DARK_THEME to appPreferencesHelper.getIsDarkTheme(),
                     AppPreferencesHelper.IS_OLD to appPreferencesHelper.getIsOld(),
+                    AppPreferencesHelper.FIRST_DAY_OF_WEEK to appPreferencesHelper.getFirstDayOfWeek().value,
+                    AppPreferencesHelper.STARTUP_SCREEN to appPreferencesHelper.getStartupScreen().route,
+                    AppPreferencesHelper.STARTUP_TRANSACTION_TYPE to appPreferencesHelper.getStartupTransactionType().ordinal,
                     "wallets" to getWallets(),
                     "transactions" to getTransactions()
                 )

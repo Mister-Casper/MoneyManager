@@ -187,6 +187,7 @@ class MainActivity : ComponentActivity() {
                             InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
+                            darkThemeViewModel.init()
                             MoneyManagerScreen(navController, darkThemeViewModel)
                         }
                         composable(Screen.AccountSettings.route) {
