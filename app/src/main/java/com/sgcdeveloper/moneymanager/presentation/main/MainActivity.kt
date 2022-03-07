@@ -100,11 +100,11 @@ class MainActivity : ComponentActivity() {
             val navController = rememberAnimatedNavController()
 
             val systemUiController = rememberSystemUiController()
-            if(darkThemeViewModel.isDarkTheme.value){
+            if (darkThemeViewModel.isDarkTheme.value) {
                 systemUiController.setSystemBarsColor(
                     color = black
                 )
-            }else{
+            } else {
                 systemUiController.setSystemBarsColor(
                     color = blue
                 )
@@ -187,7 +187,7 @@ class MainActivity : ComponentActivity() {
                             InitScreen(initViewModel, navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
-                            MoneyManagerScreen(navController,darkThemeViewModel)
+                            MoneyManagerScreen(navController, darkThemeViewModel)
                         }
                         composable(Screen.AccountSettings.route) {
                             val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
@@ -199,7 +199,7 @@ class MainActivity : ComponentActivity() {
                             val wallet =
                                 Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
 
-                            if(wallet != null) {
+                            if (wallet != null) {
                                 addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
                             }
                             AddTransactionScreen(addTransactionViewModel, navController)
@@ -237,11 +237,12 @@ class MainActivity : ComponentActivity() {
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            timeIntervalTransactionsViewModel.onEvent(
-                                TimeIntervalTransactionEvent.SetDefaultWallet(
-                                    wallet
+                            if (wallet != null)
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.SetDefaultWallet(
+                                        wallet
+                                    )
                                 )
-                            )
                             if (TimeInternalSingleton.timeIntervalController != null) {
                                 val it = TimeInternalSingleton.timeIntervalController!!
                                 val timeInterval = when (it) {
@@ -284,6 +285,8 @@ class MainActivity : ComponentActivity() {
                             )
 
                             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
+
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
                             val statisticViewModel: StatisticViewModel by viewModels()
@@ -300,12 +303,15 @@ class MainActivity : ComponentActivity() {
                             val statisticViewModel: StatisticViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            statisticViewModel.onEvent(StatisticEvent.SetWallet(wallet))
+                            if (wallet != null)
+                                statisticViewModel.onEvent(StatisticEvent.SetWallet(wallet))
                             TransactionCategoryStatisticScreen(
                                 statisticViewModel,
                                 navController,
                                 TransactionScreen.Expense
                             )
+
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
                             val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
@@ -318,11 +324,12 @@ class MainActivity : ComponentActivity() {
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            timeIntervalTransactionsViewModel.onEvent(
-                                TimeIntervalTransactionEvent.SetDefaultWallet(
-                                    wallet
+                            if (wallet != null)
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.SetDefaultWallet(
+                                        wallet
+                                    )
                                 )
-                            )
 
                             if (TimeInternalSingleton.timeIntervalController != null) {
                                 val it = TimeInternalSingleton.timeIntervalController!!
@@ -359,15 +366,18 @@ class MainActivity : ComponentActivity() {
                                 )
                                 TimeInternalSingleton.timeIntervalController = null
                             }
-                            timeIntervalTransactionsViewModel.onEvent(
-                                TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
-                                    category
+                            if (category != null)
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
+                                        category
+                                    )
                                 )
-                            )
                             TimeIntervalTransactionsScreen(
                                 timeIntervalTransactionsViewModel,
                                 navController
                             )
+                            backStackEntry.arguments?.putString("wallet", "")
+                            backStackEntry.arguments?.putString("category", "")
                         }
                         composable(Screen.Settings.route) {
                             SettingsScreen(navController, darkThemeViewModel)
@@ -390,10 +400,13 @@ class MainActivity : ComponentActivity() {
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            val type = Gson().fromJson(backStackEntry.arguments?.getString("type"), TransactionType::class.java)
-                            if(wallet != null) {
+                            val type = Gson().fromJson(
+                                backStackEntry.arguments?.getString("type"),
+                                TransactionType::class.java
+                            )
+                            if (wallet != null) {
                                 weeklyStatisticViewModel.onEvent(
-                                    WeeklyStatisticScreenEvent.Init(wallet,type)
+                                    WeeklyStatisticScreenEvent.Init(wallet, type)
                                 )
                             }
                             WeeklyStatisticScreen(navController, weeklyStatisticViewModel)
