@@ -38,11 +38,10 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDia
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletViewModel,
-                    addTransactionViewModel: AddTransactionViewModel) {
+fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletViewModel) {
     val dialog = remember { addWalletViewModel.dialogState }
-    val dialogBackOpen = remember { addTransactionViewModel.backDialog }
-    val signalBack = remember { addTransactionViewModel.back }
+    val dialogBackOpen = remember { addWalletViewModel.backDialog }
+    val signalBack = remember { addWalletViewModel.back }
 
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
@@ -66,7 +65,16 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         }
     }
     if (dialogBackOpen.value){
-        DialogBack(addTransactionViewModel)
+        DialogBack(dialogBackOpen.value,signalBack.value,
+            signalReturn={
+                signalBack.value = false
+                dialogBackOpen.value = false
+            },
+            dialogOpen={
+                dialogBackOpen.value = false
+                navController.popBackStack()
+            }
+        )
     }
     if (signalBack.value) {
         signalBack.value = false

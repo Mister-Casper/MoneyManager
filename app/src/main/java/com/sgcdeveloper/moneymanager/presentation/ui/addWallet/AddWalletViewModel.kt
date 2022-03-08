@@ -40,6 +40,8 @@ open class AddWalletViewModel @Inject constructor(
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     val currencies = currencyRepository.getCurrencies()
+    val back = mutableStateOf(false)
+    val backDialog = mutableStateOf(false)
 
     var isEditingMode = mutableStateOf(false)
 

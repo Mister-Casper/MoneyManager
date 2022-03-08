@@ -70,12 +70,17 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
         }, R.string.are_u_sure_delete_transaction)
     }
     if (dialogBackOpen.value){
-        DialogBack(addTransactionViewModel)
-    }
-    if (signalBack.value) {
-        signalBack.value = false
-        addTransactionViewModel.clear()
-        navController.popBackStack()
+        DialogBack(dialogBackOpen.value,signalBack.value,
+            signalReturn={
+                signalBack.value = false
+                dialogBackOpen.value = false
+            },
+            dialogOpen={
+                dialogBackOpen.value = false
+                addTransactionViewModel.clear()
+                navController.popBackStack()
+            }
+        )
     }
 
     when (addTransactionViewModel.currentScreen.value) {
