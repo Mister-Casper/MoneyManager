@@ -46,12 +46,12 @@ data class Date(val epochMillis: Long) {
     }
 
     fun toMonthString(): String {
-        val f = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.getDefault())
+        val f = DateTimeFormatter.ofPattern("MMM yyyy").withLocale(Locale.getDefault())
         return f.format(getZoneDateTime())
     }
 
     fun toDayMonthString(): String {
-        val f = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
+        val f = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())
         return f.format(getZoneDateTime())
     }
 
@@ -74,7 +74,7 @@ data class Date(val epochMillis: Long) {
     }
 
     fun getMonth(): String {
-        return getAsLocalDate().month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+        return getAsLocalDate().month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
             .uppercase() + " " + getAsLocalDate().year.toString()
     }
 
@@ -107,6 +107,6 @@ data class Date(val epochMillis: Long) {
 
     companion object {
         @SuppressLint("ConstantLocale")
-        private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
+        private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())
     }
 }
