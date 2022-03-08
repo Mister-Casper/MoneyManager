@@ -1,12 +1,9 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.dialogs
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -25,11 +22,10 @@ fun DatePicker(
 
     AlertDialog(
         onDismissRequest = { onDismissRequest() },
-        modifier = Modifier.size(400.dp, 600.dp),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         text = {
             MaterialDatePicker.Builder.datePicker()
-                .setSelection(Date((defaultDate.getAsLocalDate()).plusDays(1)).epochMillis)
+                .setSelection(defaultDate.epochMillis)
                 .build()
                 .apply {
                     addOnPositiveButtonClickListener { onDateSelected(Date(it).getAsLocalDate()) }
