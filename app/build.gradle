@@ -15,8 +15,8 @@ android {
         applicationId "com.sgcdeveloper.moneymanager"
         minSdk 21
         targetSdk 31
-        versionCode 8
-        versionName "1.0.6"
+        versionCode 10
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -126,7 +126,7 @@ dependencies {
 
     implementation 'com.amirarcane.lock-screen:lockscreen:2.0.0'
 
-    implementation 'com.github.shurajcodx:android-app-rating-dialog:1.0.6'
+    implementation 'io.github.kobakei:ratethisapp:1.2.0'
 
     implementation 'com.jakewharton:process-phoenix:2.1.2'
 

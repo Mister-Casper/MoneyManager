@@ -3,7 +3,6 @@ package com.sgcdeveloper.moneymanager.presentation.main
 import android.content.Intent
 import android.os.Bundle
 import android.os.CancellationSignal
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,7 +12,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -25,6 +24,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
+import com.kobakei.ratethisapp.RateThisApp
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
@@ -66,14 +66,13 @@ import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.Weekl
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
-import com.shurajcodx.appratingdialog.AppRatingDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private lateinit var authResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var googleInSigned: (isNewUser: Boolean, userName: String) -> Unit
@@ -111,8 +110,14 @@ class MainActivity : ComponentActivity() {
             }
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
-                if (pref.getLoginStatus() == LoginStatus.None && savedInstanceState == null)
-                    askReview()
+                if (pref.getLoginStatus() == LoginStatus.None && savedInstanceState == null) {
+                    val config =
+                        RateThisApp.Config(3, 5)
+                    config.setMessage(com.sgcdeveloper.moneymanager.R.string.get_feedback)
+                    RateThisApp.init(config)
+                    RateThisApp.onCreate(this)
+                    RateThisApp.showRateDialogIfNeeded(this)
+                }
                 Surface(
                     color = MaterialTheme.colors.background,
                 ) {
@@ -469,24 +474,5 @@ class MainActivity : ComponentActivity() {
             } catch (e: ApiException) {
             }
         }
-    }
-
-    private fun askReview() {
-        val appRatingDialog = AppRatingDialog.Builder(this)
-            .setMessageText(getString(com.sgcdeveloper.moneymanager.R.string.get_feedback))
-            .setTriggerCount(3)
-            .setLayoutBackgroundColor(com.sgcdeveloper.moneymanager.R.color.black)
-            .setIconDrawable(true, ContextCompat.getDrawable(this, com.sgcdeveloper.moneymanager.R.mipmap.icon))
-            .setRateButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
-            .setNeverRateButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
-            .setRateLaterButtonBackground(com.sgcdeveloper.moneymanager.R.color.gray)
-            .setMessageTextColor(com.sgcdeveloper.moneymanager.R.color.white)
-            .setTitleTextColor(com.sgcdeveloper.moneymanager.R.color.white)
-            .setRateLaterButtonTextColor(com.sgcdeveloper.moneymanager.R.color.white)
-            .setNeverRateButtonTextColor(com.sgcdeveloper.moneymanager.R.color.white)
-            .setRepeatCount(3)
-            .build()
-
-        appRatingDialog.show()
     }
 }
