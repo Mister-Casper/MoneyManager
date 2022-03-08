@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
@@ -55,7 +56,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
         DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
-            navController.popBackStack()
+            navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
         }, {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
@@ -83,7 +84,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(bottom = 60.dp, start = 12.dp, end = 12.dp, top = 4.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         item {
             Column {
@@ -96,6 +97,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                             .align(Alignment.CenterVertically)
                             .clickable {
                                 dialogBackOpen.value = true
+                                navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
                             }
                     )
                     Text(
@@ -123,7 +125,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     }
                     Button(onClick = {
                         addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                        navController.popBackStack()
+                        navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
                     }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.save),

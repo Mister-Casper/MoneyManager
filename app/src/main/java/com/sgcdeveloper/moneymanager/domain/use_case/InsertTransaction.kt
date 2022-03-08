@@ -7,6 +7,7 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
+import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.toSafeDouble
 import javax.inject.Inject
 
@@ -14,7 +15,8 @@ class InsertTransaction @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository,
     private val insertWallet: InsertWallet,
-    private val getWallets: GetWallets
+    private val getWallets: GetWallets,
+    private val syncHelper: SyncHelper
 ) {
     suspend operator fun invoke(
         transactionId: Long,
@@ -38,7 +40,7 @@ class InsertTransaction @Inject constructor(
 
         updateWalletMoney(transactionType, amount.toDouble(), fromWallet.walletId, toWallet?.walletId)
 
-        return moneyManagerRepository.insertTransaction(
+        val transactionId = moneyManagerRepository.insertTransaction(
             TransactionEntry(
                 id = transactionId,
                 date = date,
@@ -50,11 +52,14 @@ class InsertTransaction @Inject constructor(
                 category = newCategory
             )
         )
+        syncHelper.syncServerData()
+        return transactionId
     }
 
     suspend fun deleteTransaction(transactionId: Long) {
         cancelTransaction(transactionId)
         moneyManagerRepository.removeTransaction(transactionId)
+        syncHelper.syncServerData()
     }
 
     suspend fun cancelTransaction(transactionId: Long) {
@@ -62,6 +67,7 @@ class InsertTransaction @Inject constructor(
         updateWalletMoney(
             transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId
         )
+        syncHelper.syncServerData()
     }
 
     private suspend fun updateWalletMoney(

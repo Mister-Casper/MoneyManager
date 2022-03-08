@@ -8,8 +8,16 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import javax.inject.Inject
 
 class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: AppDatabase) : MoneyManagerRepository {
+    override fun getWalletsOnce(): List<WalletEntry> {
+        return appDatabase.walletDao().getWalletsOnce()
+    }
+
     override fun getWallets(): LiveData<List<WalletEntry>> {
         return appDatabase.walletDao().getWallets()
+    }
+
+    override suspend fun getAsyncWallets(): List<WalletEntry> {
+        return appDatabase.walletDao().getAsyncWallets()
     }
 
     override suspend fun getWallet(id: Long): WalletEntry {
@@ -22,6 +30,22 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun removeWallet(id: Long) {
         appDatabase.walletDao().removeWallet(id)
+    }
+
+    override suspend fun deleteAllWallets() {
+        appDatabase.walletDao().deleteAllWallets()
+    }
+
+    override suspend fun insertWallets(wallets: List<WalletEntry>) {
+        appDatabase.walletDao().insertWallets(wallets)
+    }
+
+    override suspend fun getTransactionsOnce(): List<TransactionEntry> {
+        return appDatabase.transactionDao().getTransactionsOnce()
+    }
+
+    override fun getTransactions(): LiveData<List<TransactionEntry>> {
+        return appDatabase.transactionDao().getTransactions()
     }
 
     override fun getTransactions(walletId: Long): LiveData<List<TransactionEntry>> {
@@ -46,5 +70,13 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun removeWalletTransactions(walletId: Long) {
         appDatabase.transactionDao().removeWalletTransactions(walletId)
+    }
+
+    override suspend fun deleteAllTransactions() {
+        appDatabase.transactionDao().deleteAllTransactions()
+    }
+
+    override suspend fun insertTransactions(transactions: List<TransactionEntry>) {
+        appDatabase.transactionDao().insertTransactions(transactions)
     }
 }

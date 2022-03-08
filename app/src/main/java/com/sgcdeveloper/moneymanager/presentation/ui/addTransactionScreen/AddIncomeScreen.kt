@@ -12,7 +12,7 @@ import com.sgcdeveloper.moneymanager.R
 
 @Composable
 fun AddIncomeScreen(addTransactionViewModel: AddTransactionViewModel) {
-    LazyColumn(Modifier.padding(12.dp)) {
+    LazyColumn(Modifier.padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         item {
             Column(Modifier.fillMaxSize()) {
                 DatePicker(addTransactionViewModel)

@@ -11,6 +11,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ open class InitViewModel @Inject constructor(
     private val app: Application,
     private val currencyRepository: CurrencyRepository,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val syncHelper: SyncHelper
 ) : AndroidViewModel(app) {
 
     val currencies = currencyRepository.getCurrencies()
@@ -29,7 +31,7 @@ open class InitViewModel @Inject constructor(
     val userName = mutableStateOf(appPreferencesHelper.getUserNAme())
     val currency = mutableStateOf(currencyRepository.getDefaultCurrency())
     val defaultMoney = mutableStateOf("")
-    val defaultWalletName = mutableStateOf(app.getString(R.string.wallet_number, 1))
+    val defaultWalletName = mutableStateOf(app.getString(R.string.cash_wallet))
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     val isMoveNext = mutableStateOf(false)
@@ -60,6 +62,9 @@ open class InitViewModel @Inject constructor(
                 initNewAccount()
                 appPreferencesHelper.setLoginStatus(LoginStatus.None)
                 isMoveNext.value = true
+                viewModelScope.launch {
+                    syncHelper.syncServerData()
+                }
             }
             is InitEvent.ChangeDefaultWalletName -> {
                 if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH || initEvent.newDefaultWalletName.length <= defaultWalletName.value.length)
@@ -70,9 +75,13 @@ open class InitViewModel @Inject constructor(
     }
 
     private fun initNewAccount() {
+        appPreferencesHelper.setUserName(userName.value)
+        appPreferencesHelper.setDefaultCurrency(currency.value)
+
         viewModelScope.launch {
-            appPreferencesHelper.setUserName(userName.value)
-            appPreferencesHelper.setDefaultCurrency(currency.value)
+            moneyManagerRepository.deleteAllWallets()
+            moneyManagerRepository.deleteAllTransactions()
+
             val firstWallet = WalletEntry(
                 isDefault = true,
                 name = defaultWalletName.value,

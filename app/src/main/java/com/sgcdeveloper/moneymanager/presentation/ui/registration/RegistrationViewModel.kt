@@ -16,6 +16,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.util.Network.checkInternetConnection
+import com.sgcdeveloper.moneymanager.util.SyncHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.*
 import javax.inject.Inject
@@ -25,7 +26,8 @@ import javax.inject.Inject
 open class RegistrationViewModel @Inject constructor(
     private val app: Application,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val syncHelper: SyncHelper
 ) : AndroidViewModel(app) {
 
     val isSignInError = mutableStateOf(false)
@@ -73,14 +75,16 @@ open class RegistrationViewModel @Inject constructor(
         when (registrationEvent) {
             is RegistrationEvent.SignIn -> {
                 showLoadingDialog.value = true
-                authRepository.signIn(registrationEvent) {it,username->
-                    if (checkInternetConnection()) {
-                        if (it) {
+                authRepository.signIn(registrationEvent) { it, username ->
+                    if (!it) {
+                        isSignInError.value = true
+                        showLoadingDialog.value = false
+                    }
+                    syncHelper.syncLocalData(true) {
+                        if (checkInternetConnection()) {
                             updateLogInStatus(LoginStatus.None)
-                        } else {
-                            showLoadingDialog.value = false
-                            isSignInError.value = true
                         }
+                        showLoadingDialog.value = false
                     }
                 }
             }
@@ -95,15 +99,15 @@ open class RegistrationViewModel @Inject constructor(
                     isPasswordConfirmError.value = true
                 else {
                     showLoadingDialog.value = true
-                    authRepository.signUp(registrationEvent) {it,username->
+                    authRepository.signUp(registrationEvent) { it, username ->
                         if (checkInternetConnection()) {
                             if (it) {
                                 appPreferencesHelper.setUserName(username)
                                 updateLogInStatus(LoginStatus.Initing)
                             } else {
-                                showLoadingDialog.value = false
                                 isSignInError.value = true
                             }
+                            showLoadingDialog.value = false
                         }
                     }
                 }
@@ -113,18 +117,20 @@ open class RegistrationViewModel @Inject constructor(
             }
             is RegistrationEvent.SignInWithGoogle -> {
                 val signInIntent = googleSignInClient.signInIntent
-                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser,userName->
-                    if (isNewUser) {
-                        appPreferencesHelper.setUserName(userName)
-                        updateLogInStatus(LoginStatus.Initing)
-                    }
-                    else
-                        updateLogInStatus(LoginStatus.None)
-                }, {
-                    isSignInError.value = false
+                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser, userName ->
                     showLoadingDialog.value = true
+                    syncHelper.syncLocalData(true) {
+                        if (it) {
+                            appPreferencesHelper.setUserName(userName)
+                            updateLogInStatus(LoginStatus.Initing)
+                        } else
+                            updateLogInStatus(LoginStatus.None)
+                        showLoadingDialog.value = false
+                    }
+                }, {
+                    isSignInError.value = true
+                    showLoadingDialog.value = false
                 })
-                showLoadingDialog.value = true
             }
             is RegistrationEvent.ChangeName -> {
                 name.value = registrationEvent.newName

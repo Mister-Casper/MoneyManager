@@ -62,7 +62,12 @@ class GetWallets @Inject constructor(
     }
 
     companion object {
+        private val locales = HashMap<String,Locale>()
+        private val formatters = HashMap<Locale,NumberFormat>()
+
         fun getLocalFromISO(iso4217code: String): Locale? {
+            if(locales.containsKey(iso4217code))
+                return locales[iso4217code]
             var toReturn: Locale? = null
             for (locale in NumberFormat.getAvailableLocales()) {
                 val code = NumberFormat.getCurrencyInstance(locale).currency!!.currencyCode
@@ -71,7 +76,16 @@ class GetWallets @Inject constructor(
                     break
                 }
             }
+            locales[iso4217code] = toReturn!!
             return toReturn
+        }
+
+        fun getCurrencyFormatter(locale:Locale):NumberFormat{
+            if(formatters.containsKey(locale))
+                return formatters[locale]!!
+            val formatter =  NumberFormat.getCurrencyInstance(locale)
+            formatters[locale] = formatter
+            return formatter
         }
     }
 }

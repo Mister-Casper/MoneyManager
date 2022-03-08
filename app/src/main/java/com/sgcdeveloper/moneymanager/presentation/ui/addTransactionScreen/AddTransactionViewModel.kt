@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -26,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 open class AddTransactionViewModel @Inject constructor(
     private val app: Application,
-    private val walletsUseCases: WalletsUseCases
+    private val walletsUseCases: WalletsUseCases,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     lateinit var wallets: LiveData<List<Wallet>>
@@ -51,10 +53,13 @@ open class AddTransactionViewModel @Inject constructor(
     var isTransactionFromWallet = true
     var transactionId = 0L
 
+    fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
+
     init {
         viewModelScope.launch {
-            wallets = walletsUseCases.getWallets()
+            wallets = walletsUseCases.getWallets.getUIWallets()
         }
+        showScreen(appPreferencesHelper.getStartupTransactionType())
     }
 
     fun onEvent(addTransactionEvent: AddTransactionEvent) {
@@ -63,15 +68,7 @@ open class AddTransactionViewModel @Inject constructor(
                 if (transactionId == 0L) {
                     val transaction = addTransactionEvent.transaction
                     transactionId = transaction.id
-                    currentScreen.value =
-                        TransactionScreen.values().find { it.transactionType == transaction.transactionType }!!
-                    currentScreenName.value = when (currentScreen.value) {
-                        TransactionScreen.Expense ->
-                            app.getString(R.string.expense)
-                        TransactionScreen.Income ->
-                            app.getString(R.string.income)
-                        else -> app.getString(R.string.transfer)
-                    }
+                    showScreen(transaction.transactionType)
                     transactionDate.value = transaction.date
                     transactionAmount.value = transaction.value.toMoneyString()
                     transactionDescription.value = transaction.description
@@ -89,8 +86,10 @@ open class AddTransactionViewModel @Inject constructor(
                 }
             }
             is AddTransactionEvent.SetDefaultWallet -> {
-                if (transactionFromWallet.value == null)
+                if (transactionFromWallet.value == null) {
                     transactionFromWallet.value = addTransactionEvent.wallet
+                    showScreen(appPreferencesHelper.getStartupTransactionType())
+                }
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
                 currentScreen.value = addTransactionEvent.transactionScreen
@@ -202,6 +201,18 @@ open class AddTransactionViewModel @Inject constructor(
             TransactionScreen.Expense -> {
                 (transactionExpenseCategory.value != TransactionCategory.None)
             }
+        }
+    }
+
+    private fun showScreen(type: TransactionType) {
+        currentScreen.value =
+            TransactionScreen.values().find { it.transactionType == type }!!
+        currentScreenName.value = when (currentScreen.value) {
+            TransactionScreen.Expense ->
+                app.getString(R.string.expense)
+            TransactionScreen.Income ->
+                app.getString(R.string.income)
+            else -> app.getString(R.string.transfer)
         }
     }
 

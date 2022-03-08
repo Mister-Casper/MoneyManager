@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
@@ -24,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 open class TimeIntervalTransactionsViewModel @Inject constructor(
     private val app: Application,
-    private val walletsUseCases: WalletsUseCases
+    private val walletsUseCases: WalletsUseCases,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
     var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.DailyController())
 
@@ -40,15 +42,21 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
+    fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
+
     fun onEvent(transactionEvent: TimeIntervalTransactionEvent) {
         when (transactionEvent) {
             is TimeIntervalTransactionEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
-                loadTransactions()
+            }
+            is TimeIntervalTransactionEvent.SetDefaultWalletId -> {
+                viewModelScope.launch {
+                    defaultWallet.value = walletsUseCases.getWallets.getWallet(transactionEvent.walletId)
+                    loadTransactions()
+                }
             }
             is TimeIntervalTransactionEvent.SetDefaultWallet -> {
                 defaultWallet.value = transactionEvent.wallet
-                loadTransactions()
             }
             is TimeIntervalTransactionEvent.MoveBack -> {
                 timeInterval.value.moveBack()
@@ -65,8 +73,14 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter -> {
-                transactionCategoryFilter.value = transactionEvent.category
-                title.value = app.getString(transactionEvent.category.description)
+                if (!(transactionEvent.category is TransactionCategory.All)) {
+                    transactionCategoryFilter.value = transactionEvent.category
+                    title.value = app.getString(transactionEvent.category.description)
+                } else {
+                    transactionCategoryFilter.value = null
+                    title.value = app.getString(R.string.transactions)
+                }
+                loadTransactions()
             }
         }
     }

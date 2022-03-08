@@ -48,7 +48,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     if (initViewModel.isMoveNext.value)
         navController.navigate(Screen.MoneyManagerScreen.route)
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Text(
             text = stringResource(id = R.string.add_account),
             fontSize = 24.sp,

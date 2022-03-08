@@ -6,6 +6,7 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 sealed class TimeIntervalTransactionEvent {
     class SetDefaultWallet(val wallet: Wallet) : TimeIntervalTransactionEvent()
+    class SetDefaultWalletId(val walletId: Long) : TimeIntervalTransactionEvent()
     class ChangeTimeInterval(val timeIntervalController: TimeIntervalController) : TimeIntervalTransactionEvent()
     class ChangeTransactionCategoryFilter(val category:TransactionCategory) : TimeIntervalTransactionEvent()
 

@@ -1,8 +1,10 @@
 package com.sgcdeveloper.moneymanager.util
 
+import android.annotation.SuppressLint
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.time.format.TextStyle
 import java.util.*
 
 data class Date(val epochMillis: Long) {
@@ -35,8 +37,7 @@ data class Date(val epochMillis: Long) {
     }
 
     fun toDateString(): String {
-        val f = DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.getDefault())
-        return f.format(getZoneDateTime())
+        return dateStringFormatter.format(getZoneDateTime())
     }
 
     fun toWeekString(): String {
@@ -45,7 +46,12 @@ data class Date(val epochMillis: Long) {
     }
 
     fun toMonthString(): String {
-        val f = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.getDefault())
+        val f = DateTimeFormatter.ofPattern("MMM yyyy").withLocale(Locale.getDefault())
+        return f.format(getZoneDateTime())
+    }
+
+    fun toDayMonthString(): String {
+        val f = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())
         return f.format(getZoneDateTime())
     }
 
@@ -64,11 +70,16 @@ data class Date(val epochMillis: Long) {
     }
 
     fun getDayName(): String {
-        return getAsLocalDate().dayOfWeek.name
+        return getAsLocalDate().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
     }
 
-    fun getMonth():String{
-        return getAsLocalDate().month.name + " " + getAsLocalDate().year.toString()
+    fun getMonth(): String {
+        return getAsLocalDate().month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+            .uppercase() + " " + getAsLocalDate().year.toString()
+    }
+
+    fun getMonthName(): String {
+        return getAsLocalDate().month.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
     }
 
     fun toDateString(formatStyle: FormatStyle): String {
@@ -94,4 +105,8 @@ data class Date(val epochMillis: Long) {
         return Date(epochMillis / date.epochMillis)
     }
 
+    companion object {
+        @SuppressLint("ConstantLocale")
+        private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())
+    }
 }

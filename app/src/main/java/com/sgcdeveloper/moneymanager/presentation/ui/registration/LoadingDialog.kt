@@ -1,9 +1,14 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.registration
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +31,12 @@ fun LoadingDialog(isShowLoadingDialog: Boolean) {
                     .size(100.dp)
                     .background(MaterialTheme.colors.background, shape = RoundedCornerShape(8.dp))
             ) {
-                Column {
+                Row() {
                     CircularProgressIndicator(modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp))
                     Text(
                         text = stringResource(R.string.loading),
-                        modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 0.dp))
+                        modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically),
+                        color = MaterialTheme.colors.secondary)
                 }
             }
         }

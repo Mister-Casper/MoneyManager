@@ -9,11 +9,14 @@ import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.toRoundString
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class GetCategoriesStatistic @Inject constructor(private val context: Context) {
 
-    fun getExpenseStatistic(
+    suspend fun getExpenseStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
     ): List<CategoryStatistic> {
@@ -23,7 +26,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
         ) { return@getCategoriesStatistic it.transactionEntry.transactionType == TransactionType.Expense || (it.transactionEntry.transactionType == TransactionType.Transfer && it.transactionEntry.fromWalletId == wallet.walletId) }
     }
 
-    fun getIncomeStatistic(
+    suspend fun getIncomeStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
     ): List<CategoryStatistic> {
@@ -32,11 +35,11 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
         ) { return@getCategoriesStatistic it.transactionEntry.transactionType == TransactionType.Income || (it.transactionEntry.transactionType == TransactionType.Transfer && it.transactionEntry.toWalletId == wallet.walletId) }
     }
 
-    private fun getCategoriesStatistic(
+    suspend fun getCategoriesStatistic(
         wallet: Wallet,
         transaction: List<BaseTransactionItem.TransactionItem>,
-        filter: (it: BaseTransactionItem.TransactionItem) -> Boolean
-    ): List<CategoryStatistic> {
+        filter: (it: BaseTransactionItem.TransactionItem) -> Boolean = {true}
+    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
         val categories = mutableListOf<CategoryStatistic>()
 
         var maxSum = 0.0
@@ -48,10 +51,10 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
                 oneCategoryTransactions.forEach { transaction ->
                     sum += transaction.transactionEntry.value
                 }
-                val transactionsCount = if(oneCategoryTransactions.size == 1)
+                val transactionsCount = if (oneCategoryTransactions.size == 1)
                     context.getString(R.string.one_transaction)
                 else
-                    context.getString(R.string.transactions_count,oneCategoryTransactions.size)
+                    context.getString(R.string.transactions_count, oneCategoryTransactions.size)
                 categories.add(
                     CategoryStatistic(
                         sum = sum,
@@ -69,10 +72,10 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
 
         categories.forEach {
             it.pieEntry = PieEntry((it.sum / maxSum * 100).toInt().toFloat(), it.category + " " + it.money)
-            it.percent =(it.sum / maxSum * 100).toRoundString() + " %"
+            it.percent = (it.sum / maxSum * 100).toRoundString() + " %"
         }
 
-        return categories
-    }
+        return@async categories.sortedByDescending { it.sum }
+    }.await()
 
 }

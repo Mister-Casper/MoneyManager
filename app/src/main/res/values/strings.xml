@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MoneyManager</string>
+    <string name="app_name">Money Manager</string>
 
     <string name="home">Home</string>
     <string name="statistic">Statistic</string>
@@ -8,6 +8,9 @@
     <string name="loading">Loading!</string>
     <string name="confirm_action">"Confirm action</string>
     <string name="exit_without_saving">"Are you sure you want to exit without saving?</string>
+
+    <string name="loading">Loading…</string>
+
     <string name="sign_up_to_save">Sign up to save your information</string>
     <string name="sign_up">SIGN IN</string>
     <string name="log_in">Sign up</string>
@@ -64,16 +67,21 @@
 
     <string name="bills">Bills</string>
     <string name="clothes">Clothes</string>
+    <string name="donation">Donation</string>
     <string name="education">Education</string>
     <string name="entertainment">Entertainment</string>
     <string name="sport">Sport</string>
     <string name="food">Food</string>
     <string name="gifts">Gifts</string>
     <string name="health">Health</string>
+    <string name="insurance">Insurance</string>
+    <string name="household">Household</string>
     <string name="furniture">Furniture</string>
     <string name="pet">Pet</string>
+    <string name="aelf_improvement">Self Improvement</string>
     <string name="shopping">Shopping</string>
     <string name="transport">Transport</string>
+    <string name="tax">Tax</string>
     <string name="travel">Travel</string>
     <string name="others">Others</string>
 
@@ -110,6 +118,7 @@
     <string name="monthly">Monthly</string>
     <string name="quarterly">Quarterly</string>
     <string name="yearly">Yearly</string>
+    <string name="custom">Custom</string>
 
     <string name="show_more">Show more</string>
     <string name="expense_structure">Expense Structure</string>
@@ -119,5 +128,46 @@
     <string name="structure">Structure</string>
     <string name="one_transaction">1 transaction</string>
     <string name="transactions_count">%1$d transactions</string>
+
+    <string name="dashboard">Dashboard</string>
+
+    <string name="settings">Settings</string>
+    <string name="account">Account</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="account_settings">Account</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="select_time_interval">Select Time Interval</string>
+
+    <string name="password_settings">Password Settings</string>
+    <string name="choose_password">CHOOSE PASSWORD</string>
+    <string name="change_password">CHANGE PASSWORD</string>
+    <string name="delete_passwrod">DELETE PASSWORD</string>
+    <string name="first_day">First day of week</string>
+    <string name="startup_screen">Startup screen</string>
+    <string name="startup_transaction_type">Startup transaction type</string>
+
+    <string name="cash_wallet">Cash</string>
+
+    <string name="leave_feedback_description">"If you have any ideas for improving the app, we'd love to hear your opinion"</string>
+    <string name="leave_feedback">Leave feedback</string>
+    <string name="other_projects">Other projects (Ad)</string>
+    <string name="other_projects_description">We will be glad if you have a look at our other projects</string>
+    <string name="share_app">Share this app</string>
+    <string name="check_this_app">Hey Check out this Great app: %1$s</string>
+
+    <string name="sure">Sure!</string>
+    <string name="later">Later</string>
+    <string name="alredy_done">Already done</string>
+    <string name="get_feedback">"Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
+
+    <string name="select_date">Select date</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+
+    <string name="done">DONE</string>
+    <string name="add_new_wallet">Add Wallet</string>
+
+    <string name="weekly_spending">Weekly spending</string>
+    <string name="weekly_earning">Weekly earning</string>
 
 </resources>

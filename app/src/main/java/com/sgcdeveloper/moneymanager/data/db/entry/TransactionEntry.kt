@@ -16,4 +16,32 @@ class TransactionEntry(
     val fromWalletId: Long,
     val toWalletId: Long = 0,
     val category:TransactionCategory
-)
+){
+    fun toObject(): HashMap<String, Any> {
+        return hashMapOf(
+            "id" to id,
+            "date" to date.epochMillis,
+            "value" to value,
+            "description" to description,
+            "transactionType" to transactionType.ordinal,
+            "fromWalletId" to fromWalletId,
+            "toWalletId" to toWalletId,
+            "category" to category.id,
+        )
+    }
+
+    companion object{
+        fun getTaskByHashMap(data: MutableMap<String, Any>): TransactionEntry {
+            return TransactionEntry(
+                data["id"] as Long,
+                Date(data["date"] as Long),
+                data["value"] as Double,
+                data["description"] as String,
+                TransactionType.getByOrdinal((data["transactionType"] as Long).toInt()),
+                data["fromWalletId"] as Long,
+                data["toWalletId"] as Long,
+                TransactionCategory.getById((data["category"] as Long).toInt()),
+            )
+        }
+    }
+}

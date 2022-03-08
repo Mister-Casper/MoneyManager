@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "241755459365-31of4p81amnbo82mu0oi0epn94c8dpim.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgcdeveloper.moneymanager",
+            "certificate_hash": "0d3fb88892c67207546e1305ead22d5cf5b317cd"
+          }
+        },
+        {
+          "client_id": "241755459365-iftt986rop5tcvvdlntl4vdkvi0hnggo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sgcdeveloper.moneymanager",
+            "certificate_hash": "7468d0ee3bf659b3714b3ac1eae949b43916a84c"
+          }
+        },
+        {
           "client_id": "241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -12,7 +12,8 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     abstract fun getDescription(): String
     abstract fun isInInterval(intervalDate: Date): Boolean
 
-    class DailyController(private var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.daily_icon, R.string.daily) {
+    class DailyController(var date: Date = Date(LocalDate.now())) :
+        TimeIntervalController(R.drawable.daily_icon, R.string.daily) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusDays(1))
         }
@@ -34,9 +35,11 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         }
     }
 
-    class WeeklyController(private var startDay: Date = Date(LocalDate.now())) :
+    class WeeklyController(
+        var startDay: Date = Date(LocalDate.now()),
+        var endDay: Date = Date(startDay.getAsLocalDate().plusDays(6))
+    ) :
         TimeIntervalController(R.drawable.weekly_icon, R.string.weekly) {
-        private var endDay: Date = Date(startDay.getAsLocalDate().plusDays(7))
 
         override fun moveBack() {
             startDay = Date(startDay.getAsLocalDate().minusDays(7))
@@ -63,7 +66,8 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         }
     }
 
-    class MonthlyController(var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.monthly_icon, R.string.monthly) {
+    class MonthlyController(var date: Date = Date(LocalDate.now())) :
+        TimeIntervalController(R.drawable.monthly_icon, R.string.monthly) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusMonths(1))
         }
@@ -88,9 +92,11 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         }
     }
 
-    class QuarterlyController(private var startDay: Date = Date(LocalDate.now())) :
+    class QuarterlyController(
+        var startDay: Date = Date(LocalDate.now()),
+        var endDay: Date = Date(startDay.getAsLocalDate().plusMonths(3))
+    ) :
         TimeIntervalController(R.drawable.quarterly_icon, R.string.quarterly) {
-        private var endDay: Date = Date(startDay.getAsLocalDate().plusMonths(3))
 
         override fun moveBack() {
             startDay = Date(startDay.getAsLocalDate().minusMonths(3))
@@ -117,7 +123,8 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         }
     }
 
-    class YearlyController(var date: Date = Date(LocalDate.now())) : TimeIntervalController(R.drawable.yearly_icon, R.string.yearly) {
+    class YearlyController(var date: Date = Date(LocalDate.now())) :
+        TimeIntervalController(R.drawable.yearly_icon, R.string.yearly) {
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusYears(1))
         }
@@ -139,7 +146,7 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         }
     }
 
-    class AllController(private val allString: String) : TimeIntervalController(R.drawable.infinity_icon, R.string.all) {
+    class AllController(val allString: String) : TimeIntervalController(R.drawable.infinity_icon, R.string.all) {
         override fun moveBack() {}
         override fun moveNext() {}
 
@@ -158,8 +165,38 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
     companion object {
         fun getItems(context: Context): List<TimeIntervalController> {
-            return listOf(DailyController(), WeeklyController(), MonthlyController(), QuarterlyController(), YearlyController(), AllController(context.getString(R.string.all)))
+            return listOf(
+                DailyController(),
+                WeeklyController(),
+                MonthlyController(),
+                QuarterlyController(),
+                YearlyController(),
+                AllController(context.getString(R.string.all)),
+                CustomController
+            )
         }
     }
 
+    object CustomController:TimeIntervalController(R.drawable.edit_calendar_icon,R.string.custom){
+        lateinit var startDate:Date
+        lateinit var endDate:Date
+
+        override fun moveBack() {}
+
+        override fun moveNext() {}
+
+        override fun isCanMove(): Boolean {
+            return false
+        }
+
+        override fun getDescription(): String {
+            return startDate.toWeekString() + " - " + endDate.toWeekString()
+        }
+
+        override fun isInInterval(intervalDate: Date): Boolean {
+            return (startDate.toDateString() == intervalDate.toDateString()
+                    || endDate.toDateString() == intervalDate.toDateString() ||
+                    (intervalDate.epochMillis <= endDate.epochMillis && intervalDate.epochMillis >= startDate.epochMillis))
+        }
+    }
 }

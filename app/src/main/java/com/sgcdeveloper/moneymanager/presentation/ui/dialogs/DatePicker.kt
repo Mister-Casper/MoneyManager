@@ -79,7 +79,7 @@ fun DatePicker(
                 CustomCalendarView(defaultDate, onDateSelected = {
                     onDateSelected(it)
                     onDismissRequest()
-                },isDarkTHeme)
+                }, isDarkTHeme)
 
                 Spacer(modifier = Modifier.size(8.dp))
 
@@ -94,7 +94,7 @@ fun DatePicker(
                         Text(
                             text = stringResource(id = R.string.cancel),
                             style = MaterialTheme.typography.button,
-                            color = MaterialTheme.colors.secondary
+                            color = white
                         )
                     }
                 }
@@ -108,13 +108,11 @@ fun CustomCalendarView(defaultDate: Date, onDateSelected: (LocalDate) -> Unit, i
     AndroidView(
         modifier = Modifier.wrapContentSize(),
         factory = { context ->
-            if (isDarkTHeme)
-                CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
-            else
-                CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom_Light))
+            val view = CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+            view.date = defaultDate.epochMillis
+            view
         },
         update = { view ->
-            view.date = defaultDate.epochMillis
             view.setOnDateChangeListener { _, year, month, dayOfMonth ->
                 onDateSelected(
                     LocalDate

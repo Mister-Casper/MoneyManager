@@ -6,8 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowLeft
-import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -17,20 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
-import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.StatisticPieChart
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.TimeIntervalControllerView
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
@@ -42,7 +40,7 @@ fun StatisticScreen(
     statisticViewModel: StatisticViewModel,
     navController: NavController
 ) {
-    val wallet = remember { statisticViewModel.defaultWallet }
+    val wallet = remember { statisticViewModel.wallet }
     val dialog = remember { statisticViewModel.dialog }
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
@@ -50,12 +48,14 @@ fun StatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        })
+        }, statisticViewModel.isDarkTheme())
     } else if (dialog.value is DialogState.WalletPickerDialog) {
-        WalletPickerDialog(statisticViewModel.wallets.value, statisticViewModel.defaultWallet.value, {
+        WalletPickerDialog(statisticViewModel.wallets.value, wallet.value, {
             statisticViewModel.onEvent(StatisticEvent.SetWallet(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
+        }, {
+            navController.navigate(Screen.AddWallet(it).route)
         })
     }
 
@@ -65,11 +65,11 @@ fun StatisticScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 50.dp)
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(12.dp)
         ) {
             Box(Modifier.fillMaxWidth()) {
                 Row(
@@ -80,58 +80,47 @@ fun StatisticScreen(
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    wallet.value?.let {
+                    if(wallet.value != null) {
                         Text(
                             text = wallet.value!!.name,
                             fontSize = 22.sp,
                             modifier = Modifier.align(Alignment.CenterVertically),
                             color = MaterialTheme.colors.secondary
                         )
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            "",
-                            Modifier.align(Alignment.CenterVertically),
-                            tint = MaterialTheme.colors.secondary
-                        )
                     }
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        "",
+                        Modifier.align(Alignment.CenterVertically),
+                        tint = MaterialTheme.colors.secondary
+                    )
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.edit_calendar_icon),
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(32.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
-                )
+                Row(Modifier.align(Alignment.CenterEnd)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.edit_calendar_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
+                    )
+                    Spacer(modifier = Modifier.padding(start = 12.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings_icon),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { navController.navigate(Screen.Settings.route) }
+                    )
+                }
             }
             Row(Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowLeft,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveBack) }
-                )
-                Text(
-                    text = statisticViewModel.description.value,
-                    Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    textAlign = TextAlign.Center,
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colors.secondary
-                )
-                Icon(
-                    imageVector = Icons.Filled.ArrowRight,
-                    contentDescription = "",
-                    tint = if (statisticViewModel.timeInterval.value.isCanMove()) MaterialTheme.colors.secondary else gray,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .size(48.dp)
-                        .clickable { statisticViewModel.onEvent(StatisticEvent.MoveNext) }
+                TimeIntervalControllerView(
+                    { statisticViewModel.onEvent(StatisticEvent.MoveBack) },
+                    { statisticViewModel.onEvent(StatisticEvent.MoveNext) },
+                    statisticViewModel.timeInterval.value.isCanMove(),
+                    statisticViewModel.description.value
                 )
             }
             LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
@@ -161,7 +150,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.income),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -177,7 +166,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.expense),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -190,7 +179,7 @@ fun StatisticScreen(
                             ) {
                                 Text(
                                     text = stringResource(id = R.string.total),
-                                    fontWeight = FontWeight.Thin,
+                                    fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f),
                                     color = white
                                 )
@@ -210,7 +199,7 @@ fun StatisticScreen(
                                     TimeInternalSingleton.timeIntervalController =
                                         statisticViewModel.timeInterval.value
                                     navController.navigate(
-                                        Screen.TimeIntervalTransactions(statisticViewModel.defaultWallet.value).route
+                                        Screen.TimeIntervalTransactions(wallet.value).route
                                     )
                                 }) {
                                 Row(
@@ -220,7 +209,7 @@ fun StatisticScreen(
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.show_more),
-                                        fontWeight = FontWeight.Thin,
+                                        fontWeight = FontWeight.Medium,
                                         modifier = Modifier
                                             .weight(1f)
                                             .align(Alignment.CenterVertically),
@@ -246,7 +235,15 @@ fun StatisticScreen(
                         statisticViewModel.expenseEntries.value,
                         statisticViewModel.expenseColors.value,
                         {
-                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Expense).route)
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Expense).route)
+                        },
+                        onWeeklyStatisticClick = {
+                            navController.navigate(
+                                Screen.WeeklyStatisticScreen(
+                                    statisticViewModel.wallet.value,
+                                    TransactionType.Expense
+                                ).route
+                            )
                         }
                     )
                 }
@@ -257,17 +254,25 @@ fun StatisticScreen(
                         statisticViewModel.incomeEntries.value,
                         statisticViewModel.incomeColors.value,
                         {
-                            navController.navigate(Screen.TransactionCategoryStatisticScreen(TransactionScreen.Income).route)
+                            navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Income).route)
+                        },
+                        onWeeklyStatisticClick = {
+                            navController.navigate(
+                                Screen.WeeklyStatisticScreen(
+                                    statisticViewModel.wallet.value,
+                                    TransactionType.Income
+                                ).route
+                            )
                         }
                     )
                 }
 
-                item { Spacer(modifier = Modifier.padding(bottom = 55.dp)) }
+                item { Spacer(modifier = Modifier.padding(bottom = 80.dp)) }
             }
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(statisticViewModel.defaultWallet.value).route) },
+            onClick = { navController.navigate(Screen.AddTransaction(wallet.value).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)

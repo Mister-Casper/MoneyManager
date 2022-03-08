@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
 }
 
 android {
@@ -13,8 +15,8 @@ android {
         applicationId "com.sgcdeveloper.moneymanager"
         minSdk 21
         targetSdk 31
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -103,7 +105,11 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-perf-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
 
@@ -115,4 +121,15 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
+    implementation 'com.amirarcane.lock-screen:lockscreen:2.0.0'
+
+    implementation 'io.github.kobakei:ratethisapp:1.2.0'
+
+    implementation 'com.jakewharton:process-phoenix:2.1.2'
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+
 }

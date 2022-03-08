@@ -31,7 +31,8 @@ fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
         Icon(
             painter = painterResource(id = R.drawable.edit_calendar_icon),
             contentDescription = "",
-            Modifier
+            tint = MaterialTheme.colors.secondary,
+            modifier = Modifier
                 .size(32.dp)
                 .align(Alignment.CenterVertically)
                 .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowChangeDateDialog) }
