@@ -9,8 +9,6 @@
     <string name="confirm_action">"Confirm action</string>
     <string name="exit_without_saving">"Are you sure you want to exit without saving?</string>
 
-    <string name="loading">Loading…</string>
-
     <string name="sign_up_to_save">Sign up to save your information</string>
     <string name="sign_up">SIGN IN</string>
     <string name="log_in">Sign up</string>
