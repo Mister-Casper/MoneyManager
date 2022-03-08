@@ -3,7 +3,7 @@
 
     <string name="home">Кошелек</string>
     <string name="statistic">Статистика</string>
-    <string name="transaction">Транзакция</string>
+    <string name="transaction">Транзакции</string>
 
     <string name="loading">Загрузка…</string>
     <string name="sign_up_to_save">Зарегистрируйтесь, чтобы сохранить ваши данные</string>
