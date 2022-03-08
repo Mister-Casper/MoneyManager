@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addWallet
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,11 +27,13 @@ import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletIconPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogBack
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
 
@@ -38,6 +41,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDia
 @Composable
 fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletViewModel) {
     val dialog = remember { addWalletViewModel.dialogState }
+    val dialogBackOpen = remember { addWalletViewModel.backDialog }
+    val signalBack = remember { addWalletViewModel.back }
 
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
@@ -60,7 +65,22 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
     }
-
+    if (dialogBackOpen.value){
+        DialogBack(dialogBackOpen.value,signalBack.value,
+            signalReturn={
+                signalBack.value = false
+                dialogBackOpen.value = false
+            },
+            dialogOpen={
+                dialogBackOpen.value = false
+                navController.popBackStack()
+            }
+        )
+    }
+    if (signalBack.value) {
+        signalBack.value = false
+        navController.popBackStack()
+    }
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -76,6 +96,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .clickable {
+                                dialogBackOpen.value = true
                                 navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
                             }
                     )
@@ -194,5 +215,8 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                 }
             }
         }
+    }
+    BackHandler {
+        dialogBackOpen.value = true
     }
 }

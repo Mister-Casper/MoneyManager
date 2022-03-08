@@ -26,12 +26,16 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 
 @Composable
 fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navController: NavController) {
     val currentTransactionScreen = remember { addTransactionViewModel.currentScreen }
     val currentScreenName = remember { addTransactionViewModel.currentScreenName }
     val dialog = remember { addTransactionViewModel.dialogState }
+    val dialogBackOpen = remember { addTransactionViewModel.backDialog }
+    val signalBack = remember { addTransactionViewModel.back }
     val wallets = addTransactionViewModel.wallets.observeAsState()
 
     if (dialog.value is DialogState.DatePickerDialog) {
@@ -69,6 +73,19 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
         }, R.string.are_u_sure_delete_transaction)
     }
+    if (dialogBackOpen.value){
+        DialogBack(dialogBackOpen.value,signalBack.value,
+            signalReturn={
+                signalBack.value = false
+                dialogBackOpen.value = false
+            },
+            dialogOpen={
+                dialogBackOpen.value = false
+                addTransactionViewModel.clear()
+                navController.popBackStack()
+            }
+        )
+    }
 
     when (addTransactionViewModel.currentScreen.value) {
         TransactionScreen.Expense -> addTransactionViewModel.currentScreenName.value =
@@ -91,8 +108,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable {
-                        navController.popBackStack()
-                        addTransactionViewModel.clear()
+                        dialogBackOpen.value = true
                     }
             )
             Text(
@@ -169,8 +185,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
     }
 
     BackHandler {
-        navController.popBackStack()
-        addTransactionViewModel.clear()
+        dialogBackOpen.value = true
     }
 }
 
