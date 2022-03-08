@@ -29,13 +29,7 @@
     <style name="Theme.MoneyManager.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="CalenderViewCustom" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
-        <item name="colorAccent">@color/white</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="background">@color/white</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="colorPrimary">@color/white</item>
-        <item name="android:textColorPrimary">@color/white</item>
+
     </style>
 
 </resources>
