@@ -10,6 +10,7 @@ import com.sgcdeveloper.moneymanager.data.repository.MoneyManagerRepositoryImpl
 import com.sgcdeveloper.moneymanager.domain.repository.AuthRepository
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.util.MIGRATION_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,6 +40,7 @@ class AppModule {
     fun providesRoomDatabase(app: Application): AppDatabase {
         return Room
             .databaseBuilder(app, AppDatabase::class.java, "ApplicationBD")
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 }

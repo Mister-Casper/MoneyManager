@@ -51,13 +51,15 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
         }
         item {
             if (wallets.value != null)
-                WalletDashboard(wallets.value!!) {
-                    if(it is AddNewWallet){
+                WalletDashboard(wallets.value!!, {
+                    if (it is AddNewWallet) {
                         navController.navigate(Screen.AddWallet(it).route)
-                    }else{
+                    } else {
                         navController.navigate(Screen.WalletScreen(it).route)
                     }
-                }
+                }, {
+                    navController.navigate(Screen.WalletsManagerScreen.route)
+                })
         }
     }
 }

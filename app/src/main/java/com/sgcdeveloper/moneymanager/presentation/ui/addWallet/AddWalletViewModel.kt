@@ -46,7 +46,7 @@ open class AddWalletViewModel @Inject constructor(
     var isEditingMode = mutableStateOf(false)
 
     init {
-        wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value)
+        wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value, order = 0)
         formatMoney(walletMoney.value)
     }
 

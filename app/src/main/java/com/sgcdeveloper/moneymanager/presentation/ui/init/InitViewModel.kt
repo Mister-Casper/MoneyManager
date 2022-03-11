@@ -86,7 +86,8 @@ open class InitViewModel @Inject constructor(
                 isDefault = true,
                 name = defaultWalletName.value,
                 money = defaultMoney.value.toDoubleOrNull() ?: 0.0,
-                currency = currency.value
+                currency = currency.value,
+                order = 1
             )
             moneyManagerRepository.insertWallet(firstWallet)
         }

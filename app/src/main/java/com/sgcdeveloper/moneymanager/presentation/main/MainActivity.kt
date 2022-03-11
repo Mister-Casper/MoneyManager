@@ -44,6 +44,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.Transa
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
@@ -61,6 +62,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.util.MyEnterPinActivity
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.walletsManager.WalletsManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
@@ -417,6 +419,10 @@ class MainActivity : FragmentActivity() {
                             }
                             WeeklyStatisticScreen(navController, weeklyStatisticViewModel)
                             backStackEntry.arguments?.putString("wallet", "")
+                        }
+                        composable(Screen.WalletsManagerScreen.route) {
+                            val homeVIewModel:HomeViewModel by viewModels()
+                            WalletsManagerScreen(homeVIewModel,navController)
                         }
                     }
 

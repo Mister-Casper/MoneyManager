@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
@@ -21,6 +22,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
+        }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+        sourceSets {
+            androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
         }
     }
 
@@ -100,11 +115,11 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.37'
     kapt 'com.google.dagger:hilt-android-compiler:2.37'
 
-    def room_version = "2.3.0"
-    implementation "androidx.room:room-runtime:$room_version"
+    def room_version = "2.4.0-alpha04"
+    implementation "androidx.room:room-runtime:2.5.0-alpha01"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-ktx:2.5.0-alpha01"
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
@@ -142,5 +157,7 @@ dependencies {
     implementation 'com.jakewharton:process-phoenix:2.1.2'
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.7.4")
 
 }

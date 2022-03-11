@@ -19,7 +19,7 @@ class GetWallets @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
     private val currencyRepository: CurrencyRepository
 ) {
-    operator fun invoke(): LiveData<List<Wallet>> {
+    operator fun invoke(): LiveData<MutableList<Wallet>> {
         return Transformations.map(moneyManagerRepository.getWallets()) {
             transformWallets(it)
         }
@@ -35,8 +35,8 @@ class GetWallets @Inject constructor(
         return transformWallet(moneyManagerRepository.getWallet(id))
     }
 
-    private fun transformWallets(wallets: List<WalletEntry>): List<Wallet> {
-        return wallets.map { wallet -> transformWallet(wallet) }
+    private fun transformWallets(wallets: List<WalletEntry>): MutableList<Wallet> {
+        return wallets.map { wallet -> transformWallet(wallet) }.sortedBy { it.order }.toMutableList()
     }
 
     private fun transformWallet(wallet: WalletEntry): Wallet {
@@ -52,7 +52,8 @@ class GetWallets @Inject constructor(
             formatter.format(wallet.money),
             wallet.color,
             getDrawable(wallet.icon),
-            wallet.currency
+            wallet.currency,
+            wallet.order
         )
     }
 

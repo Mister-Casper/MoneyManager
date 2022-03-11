@@ -24,11 +24,29 @@ class InsertWallet @Inject constructor(
                 money = wallet.money.toDoubleOrNull() ?: 0.0,
                 currency = wallet.currency,
                 color = wallet.color,
-                icon = getDrawableName(wallet.icon)
+                icon = getDrawableName(wallet.icon),
+                order = wallet.order
             )
         )
         syncHelper.syncServerData()
         return walletId
+    }
+
+    suspend fun insertWallets(wallets:List<Wallet>){
+         moneyManagerRepository.insertWallets(
+             wallets.map { wallet ->
+                 WalletEntry(
+                     id = wallet.walletId,
+                     isDefault = wallet.isDefault,
+                     name = wallet.name,
+                     money = wallet.money.toDoubleOrNull() ?: 0.0,
+                     currency = wallet.currency,
+                     color = wallet.color,
+                     icon = getDrawableName(wallet.icon),
+                     order = wallet.order
+                 )
+             }
+        )
     }
 
     private fun getDrawableName(id: Int): String {

@@ -168,4 +168,7 @@
     <string name="weekly_spending">Weekly spending</string>
     <string name="weekly_earning">Weekly earning</string>
 
+    <string name="manage_wallets">Manage wallets</string>
+    <string name="manage">Manage</string>
+
 </resources>

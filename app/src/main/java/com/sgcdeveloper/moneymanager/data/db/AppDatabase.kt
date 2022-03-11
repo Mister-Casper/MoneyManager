@@ -13,7 +13,7 @@ package com.sgcdeveloper.moneymanager.data.db
 
 @Database(
     entities = [WalletEntry::class, TransactionEntry::class],
-    version = 1
+    version = 2
 )
 @TypeConverters(CurrencyConverter::class, DateConverter::class, TransactionCategoryConverter::class)
 abstract class AppDatabase : RoomDatabase() {
