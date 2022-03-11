@@ -127,7 +127,7 @@
     <string name="none" />
     <string name="structure">Структура</string>
     <string name="one_transaction">1 транзакция</string>
-    <string name="transactions_count">транзакций: %1$d</string>
+    <string name="transactions_count">%1$d транзакций</string>
 
     <string name="dashboard">Панель управления</string>
 
