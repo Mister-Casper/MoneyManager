@@ -3,7 +3,6 @@ package com.sgcdeveloper.moneymanager.presentation.ui.init
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -14,7 +13,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,9 +61,6 @@ open class InitViewModel @Inject constructor(
                 initNewAccount()
                 appPreferencesHelper.setLoginStatus(LoginStatus.None)
                 isMoveNext.value = true
-                viewModelScope.launch {
-                    syncHelper.syncServerData()
-                }
             }
             is InitEvent.ChangeDefaultWalletName -> {
                 if (initEvent.newDefaultWalletName.length <= MAX_WALLET_NAME_LENGTH || initEvent.newDefaultWalletName.length <= defaultWalletName.value.length)
@@ -78,7 +74,7 @@ open class InitViewModel @Inject constructor(
         appPreferencesHelper.setUserName(userName.value)
         appPreferencesHelper.setDefaultCurrency(currency.value)
 
-        viewModelScope.launch {
+        runBlocking {
             moneyManagerRepository.deleteAllWallets()
             moneyManagerRepository.deleteAllTransactions()
 
@@ -90,6 +86,8 @@ open class InitViewModel @Inject constructor(
                 order = 1
             )
             moneyManagerRepository.insertWallet(firstWallet)
+
+            syncHelper.syncServerData()
         }
     }
 
