@@ -10,7 +10,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
-fun DeleteWalletDialog(information: String,  onCancel: () -> Unit) {
+fun InformationDialog(information: String,  onCancel: () -> Unit) {
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,

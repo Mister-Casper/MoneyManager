@@ -27,15 +27,11 @@ import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletIconPicker
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogBack
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCurrenciesDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,7 +57,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
     }else if (dialog.value is DialogState.InformDialog){
-        DeleteWalletDialog((dialog.value as DialogState.InformDialog).information) {
+        InformationDialog((dialog.value as DialogState.InformDialog).information) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
     }
