@@ -19,6 +19,9 @@ open class TransactionCategory(
 
     sealed class ExpenseCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
         TransactionCategory(_id, _color, _icon, _description) {
+        object AllExpense :
+            ExpenseCategory(33, wallet_color_24.toArgb(), R.drawable.infinity_icon, R.string.all_category)
+
         object Bills : ExpenseCategory(2, wallet_color_1.toArgb(), R.drawable.bills_icon, R.string.bills)
         object Clothes : ExpenseCategory(3, wallet_color_2.toArgb(), R.drawable.clothes_icon, R.string.clothes)
         object Donation : ExpenseCategory(4, wallet_color_3.toArgb(), R.drawable.donation_icon, R.string.donation)
@@ -34,7 +37,9 @@ open class TransactionCategory(
         object Insurance : ExpenseCategory(12, wallet_color_11.toArgb(), R.drawable.insurance_icon, R.string.insurance)
         object Furniture : ExpenseCategory(13, wallet_color_13.toArgb(), R.drawable.furniture_icon, R.string.furniture)
         object Pet : ExpenseCategory(14, wallet_color_14.toArgb(), R.drawable.pet_icon, R.string.pet)
-        object SelfImprovement : ExpenseCategory(15, wallet_color_15.toArgb(), R.drawable.self_improving_icon, R.string.aelf_improvement)
+        object SelfImprovement :
+            ExpenseCategory(15, wallet_color_15.toArgb(), R.drawable.self_improving_icon, R.string.aelf_improvement)
+
         object Shopping : ExpenseCategory(16, wallet_color_16.toArgb(), R.drawable.shopping_icon, R.string.shopping)
         object Tax : ExpenseCategory(17, wallet_color_17.toArgb(), R.drawable.tax_icon, R.string.tax)
         object Transport : ExpenseCategory(18, wallet_color_18.toArgb(), R.drawable.transport_icon, R.string.transport)
@@ -42,6 +47,10 @@ open class TransactionCategory(
         object Others : ExpenseCategory(20, wallet_color_20.toArgb(), R.drawable.others_icon, R.string.others)
 
         companion object {
+            fun getAllItems(): List<ExpenseCategory> {
+                return listOf(AllExpense) + getItems()
+            }
+
             fun getItems(): List<ExpenseCategory> {
                 return listOf(
                     Bills,
@@ -73,7 +82,9 @@ open class TransactionCategory(
         object Award : IncomeCategory(21, wallet_color_11.toArgb(), R.drawable.sport_icon, R.string.award)
         object Bonus : IncomeCategory(22, wallet_color_12.toArgb(), R.drawable.bonus_icon, R.string.bonus)
         object Dividend : IncomeCategory(23, wallet_color_13.toArgb(), R.drawable.dividend_icon, R.string.dividend)
-        object Investment : IncomeCategory(24, wallet_color_14.toArgb(), R.drawable.investment_icon, R.string.investment)
+        object Investment :
+            IncomeCategory(24, wallet_color_14.toArgb(), R.drawable.investment_icon, R.string.investment)
+
         object Lottery : IncomeCategory(25, wallet_color_15.toArgb(), R.drawable.lottery_icon, R.string.lottery)
         object Salary : IncomeCategory(26, wallet_color_16.toArgb(), R.drawable.salary_icon, R.string.salary)
         object Tips : IncomeCategory(27, wallet_color_17.toArgb(), R.drawable.tips_icon, R.string.tips)

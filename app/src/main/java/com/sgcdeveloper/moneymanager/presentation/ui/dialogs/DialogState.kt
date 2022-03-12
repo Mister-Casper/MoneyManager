@@ -14,4 +14,5 @@ sealed class DialogState {
     object DeleteTransactionDialog : DialogState()
     object DatePickerDialog : DialogState()
     object CategoryPickerDialog : DialogState()
+    object SelectExpenseCategoryDialog : DialogState()
 }

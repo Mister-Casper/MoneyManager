@@ -171,5 +171,8 @@
     <string name="weekly_earning">Траты</string>
 
     <string name="manage_wallets">Управление кошельками</string>
+    <string name="manage">Управлять</string>
+
+    <string name="all_category">Все категории</string>
 
 </resources>
