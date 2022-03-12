@@ -31,6 +31,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.AutoSizeText
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.InformationDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import org.burnoutcrew.reorderable.*
 
@@ -43,12 +44,18 @@ fun WalletsManagerScreen(
     var showDeleteWalletDialog by remember { mutableStateOf<Wallet?>(null) }
 
     if (showDeleteWalletDialog != null) {
-        DeleteWalletDialog(showDeleteWalletDialog, {
-            homeViewModel.deleteWallet(showDeleteWalletDialog!!)
-            showDeleteWalletDialog = null
-        }, {
-            showDeleteWalletDialog = null
-        })
+        if (showDeleteWalletDialog!!.isDefault) {
+            InformationDialog(stringResource(R.string.cant_delete_default_wallet)) {
+                showDeleteWalletDialog = null
+            }
+        } else {
+            DeleteWalletDialog(showDeleteWalletDialog, {
+                homeViewModel.deleteWallet(showDeleteWalletDialog!!)
+                showDeleteWalletDialog = null
+            }, {
+                showDeleteWalletDialog = null
+            })
+        }
     }
 
     Column(
