@@ -79,6 +79,7 @@ fun WalletsManagerScreen(
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(40.dp)
                         .clickable {
                             homeViewModel.save()
                             navController.popBackStack()

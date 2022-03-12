@@ -66,6 +66,7 @@ fun TimeIntervalTransactionsScreen(
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(40.dp)
                         .clickable {
                             transactionsViewModel.clear()
                             navController.popBackStack()

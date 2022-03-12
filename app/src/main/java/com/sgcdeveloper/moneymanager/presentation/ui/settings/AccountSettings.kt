@@ -44,6 +44,7 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
+                            .size(40.dp)
                             .clickable {
                                 navController.popBackStack()
                             }

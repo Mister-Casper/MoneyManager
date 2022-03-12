@@ -75,6 +75,7 @@ fun TransactionCategoryStatisticScreen(
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
+                            .size(40.dp)
                             .clickable {
                                 navController.popBackStack()
                             }

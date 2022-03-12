@@ -91,9 +91,10 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
+                            .size(40.dp)
                             .clickable {
                                 dialogBackOpen.value = true
-                                navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
+                                navController.popBackStack()
                             }
                     )
                     Text(

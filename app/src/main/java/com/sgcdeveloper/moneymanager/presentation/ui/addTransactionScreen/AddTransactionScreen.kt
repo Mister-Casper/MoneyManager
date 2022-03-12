@@ -26,8 +26,6 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 
 @Composable
 fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navController: NavController) {
@@ -107,6 +105,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                 tint = MaterialTheme.colors.secondary,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
+                    .size(40.dp)
                     .clickable {
                         dialogBackOpen.value = true
                     }
