@@ -15,7 +15,7 @@ fun InformationDialog(information: String,  onCancel: () -> Unit) {
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,
         title = {
-            Text(information)
+            Text(information, color = MaterialTheme.colors.secondary)
         },
         dismissButton = {
             Button(onClick = onCancel) {
