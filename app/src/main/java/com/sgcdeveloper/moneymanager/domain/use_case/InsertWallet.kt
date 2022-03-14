@@ -25,7 +25,7 @@ class InsertWallet @Inject constructor(
                 currency = wallet.currency,
                 color = wallet.color,
                 icon = getDrawableName(wallet.icon),
-                order = wallet.order
+                order = if(wallet.order != -1L) wallet.order else moneyManagerRepository.getLastWalletOrder() + 1
             )
         )
         syncHelper.syncServerData()

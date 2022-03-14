@@ -19,7 +19,7 @@ open class Wallet(
     val color: Int = wallet_color_1.toArgb(),
     val icon: Int,
     open val currency: Currency,
-    var order: Long
+    var order: Long = -1
 ) : Parcelable {
     fun copy(
         walletId: Long = this.walletId,
@@ -44,6 +44,5 @@ class AddNewWallet(val defaultCurrency: Currency) :
         NumberFormat.getCurrencyInstance(getLocalFromISO(defaultCurrency.code)!!).format(0),
         wallet_colors[0].toArgb(),
         R.drawable.wallet_icon_1,
-        defaultCurrency,
-        0
+        defaultCurrency
     )

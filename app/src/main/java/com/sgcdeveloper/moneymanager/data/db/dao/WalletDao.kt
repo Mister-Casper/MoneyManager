@@ -33,4 +33,7 @@ interface WalletDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWallets(wallets: List<WalletEntry>)
+
+    @Query("SELECT MAX(orderPosition) FROM WalletEntry")
+    suspend fun getLastWalletOrder() : Long
 }
