@@ -62,7 +62,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         AddCurrencyDialog(currency = (dialog.value as DialogState.AddCurrencyRateDialog).currency, onAdd = {
             addWalletViewModel.onEvent(WalletEvent.AddCurrency(it))
         }) {
-            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
+            addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
         }
     }
 
