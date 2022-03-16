@@ -58,8 +58,8 @@ open class InitViewModel @Inject constructor(
                 dialogState.value = DialogState.NoneDialogState
             }
             is InitEvent.Next -> {
-                initNewAccount()
                 appPreferencesHelper.setLoginStatus(LoginStatus.None)
+                initNewAccount()
                 isMoveNext.value = true
             }
             is InitEvent.ChangeDefaultWalletName -> {
