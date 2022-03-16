@@ -8,9 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
+import com.sgcdeveloper.moneymanager.domain.use_case.GetAvailableRates
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
+import com.sgcdeveloper.moneymanager.domain.use_case.InsertRate
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_colors
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
@@ -20,12 +23,15 @@ import com.sgcdeveloper.moneymanager.util.wallet_icons
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 open class AddWalletViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
+    private val getAvailableRates: GetAvailableRates,
+    private val insertRate: InsertRate,
     private val appPreferencesHelper: AppPreferencesHelper,
     private val currencyRepository: CurrencyRepository
 ) : AndroidViewModel(app) {
@@ -45,9 +51,14 @@ open class AddWalletViewModel @Inject constructor(
 
     var isEditingMode = mutableStateOf(false)
 
+    var availableRates: List<Currency> = Collections.emptyList()
+
     init {
         wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value, order = 0)
         formatMoney(walletMoney.value)
+        getAvailableRates().observeForever {
+            availableRates = it
+        }
     }
 
     fun onEvent(walletEvent: WalletEvent) {
@@ -72,10 +83,11 @@ open class AddWalletViewModel @Inject constructor(
                 dialogState.value = DialogState.SelectCurrenciesDialogState
             }
             is WalletEvent.ChangeCurrency -> {
-                walletCurrency.value = walletEvent.currency
-                this.wallet.value = this.wallet.value!!.copy(currency = walletEvent.currency)
-                dialogState.value = DialogState.NoneDialogState
-                formatMoney(walletMoney.value)
+                if (!availableRates.contains(walletEvent.currency)) {
+                    dialogState.value = DialogState.AddCurrencyRateDialog(walletEvent.currency)
+                } else {
+                 changeCurrency(walletEvent.currency)
+                }
             }
             is WalletEvent.CloseDialog -> {
                 dialogState.value = DialogState.NoneDialogState
@@ -113,7 +125,21 @@ open class AddWalletViewModel @Inject constructor(
                     walletsUseCases.deleteWallet(wallet.value!!.walletId)
                 }
             }
+            is WalletEvent.AddCurrency -> {
+                viewModelScope.launch {
+                    insertRate(walletEvent.rate)
+                    changeCurrency(walletEvent.rate.currency)
+                }
+            }
         }
+    }
+
+    private fun changeCurrency(currency: Currency) {
+        walletCurrency.value = currency
+        this.wallet.value = this.wallet.value!!.copy(currency = currency)
+        dialogState.value = DialogState.NoneDialogState
+        formatMoney(walletMoney.value)
+        dialogState.value = DialogState.NoneDialogState
     }
 
     private fun formatMoney(money: String) {

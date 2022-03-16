@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.data.repository
 
 import androidx.lifecycle.LiveData
 import com.sgcdeveloper.moneymanager.data.db.AppDatabase
+import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
@@ -82,5 +83,25 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun insertTransactions(transactions: List<TransactionEntry>) {
         appDatabase.transactionDao().insertTransactions(transactions)
+    }
+
+    override suspend fun getRatesOnce(): List<RateEntry> {
+        return appDatabase.rateDao().getRatesOnce()
+    }
+
+    override fun getRates(): LiveData<List<RateEntry>> {
+        return appDatabase.rateDao().getRates()
+    }
+
+    override suspend fun insertRates(rateEntries: List<RateEntry>) {
+        appDatabase.rateDao().insertRates(rateEntries)
+    }
+
+    override suspend fun insertRate(rateEntry: RateEntry): Long {
+        return appDatabase.rateDao().insertRate(rateEntry)
+    }
+
+    override suspend fun deleteAllRates() {
+        appDatabase.rateDao().deleteAllRates()
     }
 }

@@ -46,9 +46,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             defaultCurrency = addWalletViewModel.walletCurrency.value,
             onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.ChangeCurrency(it))
-            }) {
-            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
-        }
+            })
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
         DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
@@ -60,7 +58,14 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         InformationDialog((dialog.value as DialogState.InformDialog).information) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
+    }else if(dialog.value is DialogState.AddCurrencyRateDialog){
+        AddCurrencyDialog(currency = (dialog.value as DialogState.AddCurrencyRateDialog).currency, onAdd = {
+            addWalletViewModel.onEvent(WalletEvent.AddCurrency(it))
+        }) {
+            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
+        }
     }
+
     if (dialogBackOpen.value){
         DialogBack(dialogBackOpen.value,signalBack.value,
             signalReturn={

@@ -47,6 +47,7 @@ open class AccountSettingsViewModel @Inject constructor(
                     appPreferencesHelper.setIsDarkTheme(false)
                     moneyManagerRepository.deleteAllWallets()
                     moneyManagerRepository.deleteAllTransactions()
+                    moneyManagerRepository.deleteAllRates()
                     WalletSingleton.setWallet(null)
                     navController.popBackStack(Screen.SignUp.route, true)
                     ProcessPhoenix.triggerRebirth(app)

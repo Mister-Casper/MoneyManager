@@ -1,6 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addWallet
 
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import com.sgcdeveloper.moneymanager.domain.model.Rate
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 
 sealed class WalletEvent {
@@ -10,6 +11,7 @@ sealed class WalletEvent {
     class ChangeMoney(val money: String) : WalletEvent()
     class ChangeColor(val color: Int) : WalletEvent()
     class ChangeIcon(val icon: Int) : WalletEvent()
+    class AddCurrency(val rate: Rate) : WalletEvent()
 
     object ShowDeleteWalletDialog : WalletEvent()
     object ShowChangeCurrencyDialog : WalletEvent()
