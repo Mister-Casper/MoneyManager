@@ -26,7 +26,8 @@ open class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets.getUIWallets()
             walletsUseCases.getWallets().observeForever {
-                existWallets = it.toMutableStateList()
+                existWallets.clear()
+                existWallets.addAll(it.toMutableStateList())
             }
         }
     }
@@ -43,7 +44,6 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun deleteWallet(wallet:Wallet){
-        existWallets.remove(wallet)
         viewModelScope.launch {
             walletsUseCases.deleteWallet(wallet.walletId)
         }
