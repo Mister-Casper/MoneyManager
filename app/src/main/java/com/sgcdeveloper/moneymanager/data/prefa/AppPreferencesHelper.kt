@@ -38,7 +38,7 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
     }
 
     fun getIsDarkTheme():Boolean{
-        return prefs.getBoolean(IS_DARK_THEME,false)
+        return prefs.getBoolean(IS_DARK_THEME,true)
     }
 
     fun setIsDarkTheme(isDark:Boolean){

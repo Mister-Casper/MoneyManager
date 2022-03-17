@@ -44,7 +44,6 @@ open class AccountSettingsViewModel @Inject constructor(
                     appPreferencesHelper.setStartupTransactionType(defaultSettings.defaultTransactionType)
                     appPreferencesHelper.setStartupScreen(BottomMoneyManagerNavigationScreens.Transactions)
                     appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(defaultSettings.firstDayOfWeek))
-                    appPreferencesHelper.setIsDarkTheme(false)
                     moneyManagerRepository.deleteAllWallets()
                     moneyManagerRepository.deleteAllTransactions()
                     moneyManagerRepository.deleteAllRates()
