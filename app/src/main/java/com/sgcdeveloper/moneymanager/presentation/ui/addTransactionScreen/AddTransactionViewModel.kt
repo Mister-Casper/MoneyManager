@@ -21,6 +21,7 @@ import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -171,7 +172,7 @@ open class AddTransactionViewModel @Inject constructor(
             }
             is AddTransactionEvent.DeleteTransaction -> {
                 dialogState.value = DialogState.NoneDialogState
-                viewModelScope.launch {
+                runBlocking {
                     walletsUseCases.insertTransaction.deleteTransaction(transactionId)
                 }
             }
