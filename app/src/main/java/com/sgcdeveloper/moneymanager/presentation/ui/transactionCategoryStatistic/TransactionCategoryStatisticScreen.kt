@@ -261,6 +261,10 @@ fun CheckDataFromAddTransactionScreen(
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
+        if (statisticViewModel.wallet.value!!.walletId == 0L) {
+            statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
+            return
+        }
         if (secondScreenResult != -1L) {
             statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
         }

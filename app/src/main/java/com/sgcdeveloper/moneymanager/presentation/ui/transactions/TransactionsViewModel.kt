@@ -76,7 +76,7 @@ open class TransactionsViewModel @Inject constructor(
         }
     }
 
-    private fun loadTransactions() {
+    fun loadTransactions() {
         loadTransactionJob?.cancel()
         loadTransactionJob = viewModelScope.launch {
             transactionItems.value = walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!)

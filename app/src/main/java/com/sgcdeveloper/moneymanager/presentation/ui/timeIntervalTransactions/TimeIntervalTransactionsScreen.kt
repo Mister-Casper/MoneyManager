@@ -241,6 +241,10 @@ fun CheckDataFromAddTransactionScreen(navController: NavController, transactions
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
+        if (transactionsViewModel.defaultWallet.value!!.walletId == 0L) {
+            transactionsViewModel.loadTransactions()
+            return
+        }
         if (secondScreenResult != -1L) {
             transactionsViewModel.onEvent(TimeIntervalTransactionEvent.SetDefaultWalletId(it))
         }

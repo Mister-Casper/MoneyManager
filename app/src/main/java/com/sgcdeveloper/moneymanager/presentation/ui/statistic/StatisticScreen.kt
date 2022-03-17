@@ -33,6 +33,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.TimeIntervalPickerDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 
 @Composable
@@ -300,6 +301,10 @@ fun CheckDataFromAddTransactionScreen(
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
+        if (statisticViewModel.wallet.value!!.walletId == 0L) {
+            statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
+            return
+        }
         if (secondScreenResult != -1L) {
             statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
         }

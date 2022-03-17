@@ -114,7 +114,7 @@ open class StatisticViewModel @Inject constructor(
         }
     }
 
-    private fun loadTransactions(wallet: Wallet) {
+    fun loadTransactions(wallet: Wallet) {
         viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =

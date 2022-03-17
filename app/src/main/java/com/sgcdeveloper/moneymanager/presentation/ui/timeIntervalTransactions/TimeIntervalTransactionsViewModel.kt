@@ -85,7 +85,7 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
         }
     }
 
-    private fun loadTransactions() {
+    fun loadTransactions() {
         viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
