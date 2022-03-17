@@ -1,8 +1,10 @@
 package com.sgcdeveloper.moneymanager.domain.use_case
 
 import android.content.Context
+import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class InsertTransaction @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository,
+    private val currencyRepository: CurrencyRepository,
     private val insertWallet: InsertWallet,
     private val getWallets: GetWallets,
     private val syncHelper: SyncHelper
@@ -76,6 +79,9 @@ class InsertTransaction @Inject constructor(
         fromWalletId: Long,
         toWalletId: Long?
     ) {
+        val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.currency.code }
+        val rates = moneyManagerRepository.getRatesOnce() + RateEntry(0, currencyRepository.getDefaultCurrency(), 1.0)
+
         val fromWallet = getWallets.getWallet(fromWalletId)
         when (transactionType) {
             TransactionType.Expense -> {
@@ -87,7 +93,7 @@ class InsertTransaction @Inject constructor(
             TransactionType.Transfer -> {
                 val toWallet = getWallets.getWallet(toWalletId!!)
                 insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
-                insertWallet(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount).toString()))
+                insertWallet(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[fromWalletId] }!!.rate).toString()))
             }
         }
     }
