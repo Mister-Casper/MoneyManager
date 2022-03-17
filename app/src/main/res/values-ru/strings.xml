@@ -174,5 +174,13 @@
     <string name="manage">Управлять</string>
 
     <string name="all_category">Все категории</string>
+    <string name="add_budget">Добавить бюджет</string>
+    <string name="budget_name">Название</string>
+
+    <string name="add_currency">Добавить валюту</string>
+    <string name="currency_rate">Курс</string>
+    <string name="exchange_rate">Обменные курсы</string>
+
+    <string name="all_wallets">Все кошельки</string>
 
 </resources>

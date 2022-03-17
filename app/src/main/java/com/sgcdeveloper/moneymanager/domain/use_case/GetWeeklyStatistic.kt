@@ -23,7 +23,8 @@ import javax.inject.Inject
 
 class GetWeeklyStatistic @Inject constructor(
     private val context: Context,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val getTransactionsUseCase: GetTransactionsUseCase
 ) {
 
     suspend operator fun invoke(
@@ -37,8 +38,7 @@ class GetWeeklyStatistic @Inject constructor(
             val daysStatistic = LinkedHashMap<Int, DayStatistic>()
             val daysStatisticMap = LinkedHashMap<Date, MutableList<TransactionEntry>>()
             val daysMap = getWeek(startDate).toSet()
-            val transactions =
-                moneyManagerRepository.getWalletTransactions(wallet.walletId).sortedBy { it.date.epochMillis }
+            val transactions = getTransactionsUseCase(wallet)
             daysMap.forEach {
                 daysStatisticMap[Date(it.getAsLocalDate())] = ArrayList()
             }
@@ -96,7 +96,7 @@ class GetWeeklyStatistic @Inject constructor(
         val dif = if (firstDayOfWeek == now.getAsLocalDate().dayOfWeek)
             0
         else
-             kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDayOfWeek.value + 7)
+            kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDayOfWeek.value + 7)
         return Date(now.getAsLocalDate().minusDays(dif.toLong()))
     }
 }

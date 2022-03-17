@@ -180,4 +180,6 @@
     <string name="rate" translatable="false">1.00 %1$s = %2$s %3$s</string>
     <string name="exchange_rate">Exchange Rate</string>
 
+    <string name="all_wallets">All Wallets</string>
+
 </resources>

@@ -16,9 +16,9 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_DESCRIPTION_SIZE
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_MONEY_LENGTH
 import com.sgcdeveloper.moneymanager.util.Date
+import com.sgcdeveloper.moneymanager.util.deleteUselessZero
 import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
-import com.sgcdeveloper.moneymanager.util.deleteUselessZero
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -86,7 +86,7 @@ open class AddTransactionViewModel @Inject constructor(
                 }
             }
             is AddTransactionEvent.SetDefaultWallet -> {
-                if (transactionFromWallet.value == null) {
+                if (transactionFromWallet.value == null && addTransactionEvent.wallet.walletId != 0L) {
                     transactionFromWallet.value = addTransactionEvent.wallet
                     showScreen(appPreferencesHelper.getStartupTransactionType())
                 }
@@ -217,7 +217,6 @@ open class AddTransactionViewModel @Inject constructor(
     }
 
     fun clear() {
-        currentScreen.value = TransactionScreen.Expense
         currentScreenName.value = app.getString(R.string.expense)
         transactionDate.value = Date(LocalDateTime.now())
         transactionAmount.value = ""

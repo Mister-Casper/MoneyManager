@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getLocalFromISO
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
+import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_24
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_colors
 import kotlinx.android.parcel.Parcelize
 import java.text.NumberFormat
@@ -31,7 +32,7 @@ open class Wallet(
         icon: Int = this.icon,
         currency: Currency = this.currency,
         order: Long = this.order
-    ) = Wallet(walletId, isDefault, name, money, formattedMoney, color, icon, currency,order)
+    ) = Wallet(walletId, isDefault, name, money, formattedMoney, color, icon, currency, order)
 }
 
 @Parcelize
@@ -44,5 +45,18 @@ class AddNewWallet(val defaultCurrency: Currency) :
         NumberFormat.getCurrencyInstance(getLocalFromISO(defaultCurrency.code)!!).format(0),
         wallet_colors[0].toArgb(),
         R.drawable.wallet_icon_1,
+        defaultCurrency
+    )
+
+@Parcelize
+class AllWallets(val _name: String,val allMoney: String, val defaultCurrency: Currency) :
+    Wallet(
+        0,
+        false,
+        _name,
+        "",
+        allMoney,
+        wallet_color_24.toArgb(),
+        R.drawable.infinity_icon,
         defaultCurrency
     )

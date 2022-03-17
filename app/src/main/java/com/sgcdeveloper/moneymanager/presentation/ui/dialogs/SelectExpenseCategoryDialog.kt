@@ -139,7 +139,7 @@ private fun CategorySelector(
 }
 
 @Composable
-fun <T : Int> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> {
+fun <T : Any> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> {
     return rememberSaveable(
         saver = Saver(
             save = { it.toHashSet() },

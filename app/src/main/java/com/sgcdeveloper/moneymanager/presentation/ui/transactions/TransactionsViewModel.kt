@@ -13,6 +13,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -25,11 +26,12 @@ open class TransactionsViewModel @Inject constructor(
 ) : AndroidViewModel(app) {
     val wallet = mutableStateOf(WalletSingleton.wallet.value)
 
-    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getUIWallets()
+    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getAllUIWallets()
     var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
     val isEmpty = mutableStateOf(false)
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
+    private var loadTransactionJob: Job? = null
 
     init {
         wallets.observeForever {
@@ -41,13 +43,13 @@ open class TransactionsViewModel @Inject constructor(
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[0])
                 }
-            }else{
+            } else {
                 loadTransactions()
             }
         }
         WalletSingleton.addObserver(object : WalletChangerListener {
             override fun walletChanged(newWallet: Wallet?) {
-                if(newWallet != null) {
+                if (newWallet != null) {
                     wallet.value = newWallet
                     loadTransactions()
                 }
@@ -75,7 +77,8 @@ open class TransactionsViewModel @Inject constructor(
     }
 
     private fun loadTransactions() {
-        viewModelScope.launch {
+        loadTransactionJob?.cancel()
+        loadTransactionJob = viewModelScope.launch {
             transactionItems.value = walletsUseCases.getTransactionItems(WalletSingleton.wallet.value!!)
             isEmpty.value = transactionItems.value.isEmpty()
         }

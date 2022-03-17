@@ -19,12 +19,11 @@ import javax.inject.Inject
 
 class GetTransactionItems @Inject constructor(
     private val context: Context,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val getTransactionsUseCase:GetTransactionsUseCase
 ) {
     suspend operator fun invoke(wallet: Wallet): List<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
-        return@async convertTransactionsToItems(
-            wallet,
-            moneyManagerRepository.getWalletTransactions(wallet.walletId).sortedByDescending { it.date.epochMillis })
+        return@async convertTransactionsToItems(wallet, getTransactionsUseCase(wallet))
     }.await()
 
     suspend fun getTimeIntervalTransactions(
@@ -42,9 +41,8 @@ class GetTransactionItems @Inject constructor(
         wallet: Wallet, timeIntervalController: TimeIntervalController,
         transactionCategory: TransactionCategory? = null
     ): List<TransactionEntry> = CoroutineScope(Dispatchers.IO).async {
-        return@async moneyManagerRepository.getWalletTransactions(wallet.walletId)
+        return@async getTransactionsUseCase(wallet)
             .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.id == transactionCategory.id) }
-            .sortedByDescending { it.date.epochMillis }
     }.await()
 
     private suspend fun convertTransactionsToItems(

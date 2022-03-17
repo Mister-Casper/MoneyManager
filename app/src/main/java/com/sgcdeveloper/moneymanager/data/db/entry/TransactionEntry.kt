@@ -7,7 +7,7 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 
 @Entity
-class TransactionEntry(
+data class TransactionEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val date:Date,
     val value: Double,
