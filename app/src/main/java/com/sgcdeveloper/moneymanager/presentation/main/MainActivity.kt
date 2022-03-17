@@ -25,10 +25,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.kobakei.ratethisapp.RateThisApp
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -220,7 +220,7 @@ class MainActivity : FragmentActivity() {
                             val transaction =
                                 Gson().fromJson(
                                     backStackEntry.arguments?.getString("transaction"),
-                                    TransactionEntry::class.java
+                                    Transaction::class.java
                                 )
 
                             if (transaction != null)

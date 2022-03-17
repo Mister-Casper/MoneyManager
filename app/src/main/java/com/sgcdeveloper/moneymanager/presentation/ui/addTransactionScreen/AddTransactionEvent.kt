@@ -1,12 +1,12 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import java.time.LocalDate
 
 sealed class AddTransactionEvent {
-    class SetExistTransaction(val transaction: TransactionEntry) : AddTransactionEvent()
+    class SetExistTransaction(val transaction: Transaction) : AddTransactionEvent()
     class SetDefaultWallet(val wallet: Wallet) : AddTransactionEvent()
     class ChangeAddTransactionScreen(val transactionScreen: TransactionScreen) :
         AddTransactionEvent()

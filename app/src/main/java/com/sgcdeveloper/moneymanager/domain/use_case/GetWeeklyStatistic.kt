@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.compose.ui.graphics.toArgb
 import com.github.mikephil.charting.data.BarEntry
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.DayStatistic
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.model.WeeklyStatistic
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
@@ -36,7 +36,7 @@ class GetWeeklyStatistic @Inject constructor(
     ): WeeklyStatistic =
         CoroutineScope(Dispatchers.IO).async {
             val daysStatistic = LinkedHashMap<Int, DayStatistic>()
-            val daysStatisticMap = LinkedHashMap<Date, MutableList<TransactionEntry>>()
+            val daysStatisticMap = LinkedHashMap<Date, MutableList<Transaction>>()
             val daysMap = getWeek(startDate).toSet()
             val transactions = getTransactionsUseCase(wallet)
             daysMap.forEach {

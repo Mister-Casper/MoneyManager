@@ -70,7 +70,7 @@ open class AddTransactionViewModel @Inject constructor(
                     transactionId = transaction.id
                     showScreen(transaction.transactionType)
                     transactionDate.value = transaction.date
-                    transactionAmount.value = transaction.value.deleteUselessZero()
+                    transactionAmount.value = transaction.baseCurrencyValue.deleteUselessZero()
                     transactionDescription.value = transaction.description
                     if (transaction.transactionType == TransactionType.Income) {
                         transactionIncomeCategory.value = transaction.category

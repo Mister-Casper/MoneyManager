@@ -2,8 +2,8 @@ package com.sgcdeveloper.moneymanager.domain.use_case
 
 import android.content.Context
 import androidx.compose.ui.graphics.toArgb
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
@@ -40,14 +40,14 @@ class GetTransactionItems @Inject constructor(
     private suspend fun getWalletTransactions(
         wallet: Wallet, timeIntervalController: TimeIntervalController,
         transactionCategory: TransactionCategory? = null
-    ): List<TransactionEntry> = CoroutineScope(Dispatchers.IO).async {
+    ): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
         return@async getTransactionsUseCase(wallet)
             .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.id == transactionCategory.id) }
     }.await()
 
     private suspend fun convertTransactionsToItems(
         wallet: Wallet,
-        transactions: List<TransactionEntry>
+        transactions: List<Transaction>
     ): MutableList<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
         val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.name }
         val items = mutableListOf<BaseTransactionItem>()
@@ -92,7 +92,7 @@ class GetTransactionItems @Inject constructor(
         return@async items
     }.await()
 
-    private suspend fun getTransactionsMoney(wallet: Wallet, transactions: List<TransactionEntry>): String =
+    private suspend fun getTransactionsMoney(wallet: Wallet, transactions: List<Transaction>): String =
         CoroutineScope(Dispatchers.IO).async {
             return@async getFormattedMoney(wallet, transactions.sumOf {
                 when (it.transactionType) {
@@ -118,7 +118,7 @@ class GetTransactionItems @Inject constructor(
     private suspend fun getTransactionDescription(
         walletFromId: Long,
         walletToId: Long,
-        transactionEntry: TransactionEntry,
+        transactionEntry: Transaction,
         wallets: Map<Long, String>
     ): String = CoroutineScope(Dispatchers.IO).async {
         return@async if (transactionEntry.transactionType == TransactionType.Transfer) {

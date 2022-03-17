@@ -1,7 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.nav
 
 import com.google.gson.Gson
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
@@ -22,7 +22,7 @@ sealed class Screen(val route: String) {
     class AddTransaction(wallet: Wallet? = null) :
         Screen("AddTransaction/" + Gson().toSafeJson(wallet))
 
-    class EditTransaction(transaction: TransactionEntry? = null) :
+    class EditTransaction(transaction: Transaction? = null) :
         Screen("EditTransaction/" + Gson().toSafeJson(transaction))
 
     class TimeIntervalTransactions(wallet: Wallet? = null) :
