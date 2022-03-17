@@ -16,13 +16,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
 fun AmountPicker(addTransactionViewModel: AddTransactionViewModel) {
     var symbol = "$"
     if (addTransactionViewModel.transactionFromWallet.value?.currency != null)
-        symbol = WalletSingleton.wallet.value!!.currency.symbol
+        symbol = addTransactionViewModel.transactionFromWallet.value?.currency!!.symbol
 
     Row(
         Modifier
