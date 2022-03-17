@@ -21,6 +21,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.model.Rate
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
+import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 
 @Composable
@@ -54,7 +55,11 @@ fun AddCurrencyDialog(currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel:
                             .padding(start = 8.dp)
                     )
                 }
-                Button(modifier = Modifier.align(Alignment.CenterEnd), onClick = { onAdd(Rate(currency, rate.toDouble())) }) {
+                Button(
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    onClick = { onAdd(Rate(currency, rate.toDouble())) },
+                    enabled = rate.isDouble() && rate.toDouble() > 0
+                ) {
                     Text(text = stringResource(id = R.string.save), color = white)
                 }
             }
@@ -101,7 +106,7 @@ fun AddCurrencyDialog(currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel:
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 )
                 Text(
-                    text = stringResource(id = R.string.rate,currency.code,rate,currency.code),
+                    text = stringResource(id = R.string.rate, currency.code, rate, currency.code),
                     fontSize = 12.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
