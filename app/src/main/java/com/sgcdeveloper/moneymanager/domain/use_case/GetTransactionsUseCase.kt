@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.domain.use_case
 
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.model.AllWallets
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -42,35 +43,24 @@ class GetTransactionsUseCase @Inject constructor(
                         transaction.toWalletId,
                         transaction.category
                     )
-                }else{
-                    Transaction(
-                        transaction.id,
-                        transaction.date,
-                        transaction.value,
-                        transaction.value,
-                        transaction.description,
-                        transaction.transactionType,
-                        transaction.fromWalletId,
-                        transaction.toWalletId,
-                        transaction.category
-                    )
-                }
+                } else { toTransaction(transaction) }
             }
         } else {
-            moneyManagerRepository.getWalletTransactions(wallet.walletId).map {
-                Transaction(
-                    it.id,
-                    it.date,
-                    it.value,
-                    it.value,
-                    it.description,
-                    it.transactionType,
-                    it.fromWalletId,
-                    it.toWalletId,
-                    it.category
-                )
-            }
+            moneyManagerRepository.getWalletTransactions(wallet.walletId).map { toTransaction(it) }
         }.sortedByDescending { it.date.epochMillis }
     }.await()
 
+    private fun toTransaction(transaction: TransactionEntry): Transaction {
+        return Transaction(
+            transaction.id,
+            transaction.date,
+            transaction.value,
+            transaction.value,
+            transaction.description,
+            transaction.transactionType,
+            transaction.fromWalletId,
+            transaction.toWalletId,
+            transaction.category
+        )
+    }
 }
