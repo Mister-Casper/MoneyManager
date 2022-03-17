@@ -25,7 +25,7 @@ import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 
 @Composable
-fun AddCurrencyDialog(currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel: () -> Unit) {
+fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel: () -> Unit) {
     var rate by remember { mutableStateOf("1.00") }
 
     AlertDialog(
@@ -106,7 +106,7 @@ fun AddCurrencyDialog(currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel:
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 )
                 Text(
-                    text = stringResource(id = R.string.rate, currency.code, rate, currency.code),
+                    text = stringResource(id = R.string.rate, defaultCurrency.code, rate, currency.code),
                     fontSize = 12.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)

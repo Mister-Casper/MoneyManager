@@ -55,6 +55,8 @@ open class AddWalletViewModel @Inject constructor(
     var availableCurrencies: List<Currency> = Collections.emptyList()
     var availableRates = MutableLiveData<List<BaseRate>>()
 
+    val defaultCurrency = currencyRepository.getDefaultCurrency()
+
     init {
         wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value, order = 0)
         formatMoney(walletMoney.value)

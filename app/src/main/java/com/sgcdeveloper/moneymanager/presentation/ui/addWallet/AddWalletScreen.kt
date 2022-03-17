@@ -54,25 +54,28 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         }, {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
-    }else if (dialog.value is DialogState.InformDialog){
+    } else if (dialog.value is DialogState.InformDialog) {
         InformationDialog((dialog.value as DialogState.InformDialog).information) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
-    }else if(dialog.value is DialogState.AddCurrencyRateDialog){
-        AddCurrencyDialog(currency = (dialog.value as DialogState.AddCurrencyRateDialog).currency, onAdd = {
-            addWalletViewModel.onEvent(WalletEvent.AddCurrency(it))
-        }) {
+    } else if (dialog.value is DialogState.AddCurrencyRateDialog) {
+        AddCurrencyDialog(
+            addWalletViewModel.defaultCurrency,
+            (dialog.value as DialogState.AddCurrencyRateDialog).currency,
+            {
+                addWalletViewModel.onEvent(WalletEvent.AddCurrency(it))
+            }) {
             addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
         }
     }
 
-    if (dialogBackOpen.value){
-        DialogBack(dialogBackOpen.value,signalBack.value,
-            signalReturn={
+    if (dialogBackOpen.value) {
+        DialogBack(dialogBackOpen.value, signalBack.value,
+            signalReturn = {
                 signalBack.value = false
                 dialogBackOpen.value = false
             },
-            dialogOpen={
+            dialogOpen = {
                 dialogBackOpen.value = false
                 navController.popBackStack()
             }
@@ -127,7 +130,10 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     }
                     Button(onClick = {
                         addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                        navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
+                        navController.popBackStack(
+                            route = BottomMoneyManagerNavigationScreens.Home.route,
+                            inclusive = false
+                        )
                     }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.save),
