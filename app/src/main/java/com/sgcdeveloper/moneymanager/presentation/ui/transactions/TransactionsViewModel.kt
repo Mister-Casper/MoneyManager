@@ -41,7 +41,7 @@ open class TransactionsViewModel @Inject constructor(
                 if (savedWalletId != -1L && savedWallet != null) {
                     WalletSingleton.setWallet(savedWallet)
                 } else if (it.isNotEmpty()) {
-                    WalletSingleton.setWallet(it[0])
+                    WalletSingleton.setWallet(it[1])
                 }
             } else {
                 loadTransactions()
