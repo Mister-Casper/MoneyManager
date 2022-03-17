@@ -9,7 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
-import com.sgcdeveloper.moneymanager.util.toMoneyString
+import com.sgcdeveloper.moneymanager.util.deleteUselessZero
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class GetWallets @Inject constructor(
 
     private fun transformWallet(wallet: WalletEntry): Wallet {
         val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
-        var money = wallet.money.toMoneyString()
+        var money = wallet.money.deleteUselessZero()
         if (money == "0.0" || money == "0")
             money = ""
         return Wallet(

@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.BaseRate
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
@@ -51,13 +52,17 @@ open class AddWalletViewModel @Inject constructor(
 
     var isEditingMode = mutableStateOf(false)
 
-    var availableRates: List<Currency> = Collections.emptyList()
+    var availableCurrencies: List<Currency> = Collections.emptyList()
+    var availableRates = MutableLiveData<List<BaseRate>>()
 
     init {
         wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value, order = 0)
         formatMoney(walletMoney.value)
         getAvailableRates().observeForever {
-            availableRates = it
+            availableCurrencies = it.map { it.currency }
+        }
+        getAvailableRates.getBaseRates().observeForever {
+            availableRates.value = it
         }
     }
 
@@ -83,7 +88,7 @@ open class AddWalletViewModel @Inject constructor(
                 dialogState.value = DialogState.SelectCurrenciesDialogState
             }
             is WalletEvent.ChangeCurrency -> {
-                if (!availableRates.contains(walletEvent.currency)) {
+                if (!availableCurrencies.contains(walletEvent.currency)) {
                     dialogState.value = DialogState.AddCurrencyRateDialog(walletEvent.currency)
                 } else {
                  changeCurrency(walletEvent.currency)
@@ -147,6 +152,12 @@ open class AddWalletViewModel @Inject constructor(
             NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(walletCurrency.value.code)!!)
         this.wallet.value =
             this.wallet.value!!.copy(formattedMoney = formatter.format(money.toDoubleOrNull() ?: 0))
+    }
+
+    fun saveRates(rates: List<BaseRate>) {
+        viewModelScope.launch {
+            insertRate.insertRates(rates)
+        }
     }
 
 }

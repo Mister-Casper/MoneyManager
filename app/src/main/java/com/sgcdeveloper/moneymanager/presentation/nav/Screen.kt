@@ -15,6 +15,7 @@ sealed class Screen(val route: String) {
     object Settings : Screen("Settings")
     object AccountSettings : Screen("AccountSettings")
     object PasswordSettings : Screen("PasswordSettings")
+    object ExchangeRatesScreen : Screen("ExchangeRatesScreen")
     object MoneyManagerScreen : Screen("Home")
     object WalletsManagerScreen : Screen("WalletsManagerScreen")
     class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + Gson().toSafeJson(wallet))

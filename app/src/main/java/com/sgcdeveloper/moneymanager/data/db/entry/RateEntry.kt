@@ -21,11 +21,6 @@ class RateEntry(
 
     companion object {
         fun getRateByHashMap(data: MutableMap<String, Any>): RateEntry {
-            val order = if(data["order"] == null){
-                data["id"]
-            }else{
-                data["order"]
-            }
             return RateEntry(
                 data["id"] as Long,
                 Gson().fromJson(data["currency"] as String, Currency::class.java),

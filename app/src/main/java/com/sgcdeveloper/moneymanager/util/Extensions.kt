@@ -35,7 +35,7 @@ fun String.toSafeDouble(): Double {
         this.toDouble()
 }
 
-fun Double.toMoneyString(): String {
+fun Double.deleteUselessZero(): String {
     return if (this.rem(1) == 0.0)
         this.toLong().toString()
     else

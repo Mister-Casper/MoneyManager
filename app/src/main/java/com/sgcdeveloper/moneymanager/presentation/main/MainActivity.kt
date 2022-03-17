@@ -421,8 +421,12 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.WalletsManagerScreen.route) {
-                            val homeVIewModel:HomeViewModel by viewModels()
-                            WalletsManagerScreen(homeVIewModel,navController)
+                            val homeVIewModel: HomeViewModel by viewModels()
+                            WalletsManagerScreen(homeVIewModel, navController)
+                        }
+                        composable(Screen.ExchangeRatesScreen.route) {
+                            val addWalletViewModel: AddWalletViewModel by viewModels()
+                            ExchangeRatesScreen(navController, addWalletViewModel)
                         }
                     }
 

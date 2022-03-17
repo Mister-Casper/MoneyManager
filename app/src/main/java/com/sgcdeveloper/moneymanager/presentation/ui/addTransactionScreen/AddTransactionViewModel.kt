@@ -18,7 +18,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companio
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.isDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
-import com.sgcdeveloper.moneymanager.util.toMoneyString
+import com.sgcdeveloper.moneymanager.util.deleteUselessZero
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -70,7 +70,7 @@ open class AddTransactionViewModel @Inject constructor(
                     transactionId = transaction.id
                     showScreen(transaction.transactionType)
                     transactionDate.value = transaction.date
-                    transactionAmount.value = transaction.value.toMoneyString()
+                    transactionAmount.value = transaction.value.deleteUselessZero()
                     transactionDescription.value = transaction.description
                     if (transaction.transactionType == TransactionType.Income) {
                         transactionIncomeCategory.value = transaction.category
