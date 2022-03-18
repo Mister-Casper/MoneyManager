@@ -94,6 +94,7 @@ open class AddWalletViewModel @Inject constructor(
                     dialogState.value = DialogState.AddCurrencyRateDialog(walletEvent.currency)
                 } else {
                  changeCurrency(walletEvent.currency)
+                    dialogState.value = DialogState.NoneDialogState
                 }
             }
             is WalletEvent.CloseDialog -> {

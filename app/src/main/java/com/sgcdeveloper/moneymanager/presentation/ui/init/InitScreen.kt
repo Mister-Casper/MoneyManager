@@ -40,6 +40,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     if (dialogState.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(initViewModel.currencies, initViewModel.currency.value, {
             initViewModel.onEvent(InitEvent.ChangeCurrency(it))
+            initViewModel.onEvent(InitEvent.CloseDialog)
         }, {
             initViewModel.onEvent(InitEvent.CloseDialog)
         })

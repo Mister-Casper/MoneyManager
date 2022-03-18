@@ -101,7 +101,6 @@ fun SelectCurrenciesDialog(
 
                 RadioGroup(currencyItems, defaultCurrency) {
                     onAdd(it)
-                    onDismiss()
                 }
             }
         },

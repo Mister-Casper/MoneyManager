@@ -46,7 +46,9 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             defaultCurrency = addWalletViewModel.walletCurrency.value,
             onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.ChangeCurrency(it))
-            })
+            }){
+            addWalletViewModel.onEvent(WalletEvent.CloseDialog)
+        }
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
         DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
