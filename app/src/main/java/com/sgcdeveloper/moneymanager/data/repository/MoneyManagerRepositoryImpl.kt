@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.data.repository
 
 import androidx.lifecycle.LiveData
 import com.sgcdeveloper.moneymanager.data.db.AppDatabase
+import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
@@ -103,5 +104,37 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun deleteAllRates() {
         appDatabase.rateDao().deleteAllRates()
+    }
+
+    override fun getBudgetsOnce(): List<BudgetEntry> {
+        return appDatabase.budgetDao().getBudgetsOnce()
+    }
+
+    override fun getBudgets(): LiveData<List<BudgetEntry>> {
+        return appDatabase.budgetDao().getBudgets()
+    }
+
+    override suspend fun getAsyncWBudgets(): List<BudgetEntry> {
+        return appDatabase.budgetDao().getAsyncWBudgets()
+    }
+
+    override suspend fun getBudget(id: Long): BudgetEntry {
+        return appDatabase.budgetDao().getBudget(id)
+    }
+
+    override suspend fun insertBudget(budgetEntry: BudgetEntry): Long {
+        return appDatabase.budgetDao().insertBudget(budgetEntry)
+    }
+
+    override suspend fun removeBudget(id: Long) {
+        return appDatabase.budgetDao().removeBudget(id)
+    }
+
+    override suspend fun deleteAllBudgets() {
+        return appDatabase.budgetDao().deleteAllBudgets()
+    }
+
+    override suspend fun insertBudgets(budgetEntries: List<BudgetEntry>) {
+        return appDatabase.budgetDao().insertBudgets(budgetEntries)
     }
 }

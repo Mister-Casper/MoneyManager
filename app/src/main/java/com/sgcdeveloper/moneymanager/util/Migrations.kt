@@ -15,3 +15,9 @@ val MIGRATION_2_3: Migration = object : Migration(2, 3) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `RateEntry` (`id` INTEGER PRIMARY KEY NOT NULL, `currency` TEXT NOT NULL, `rate` REAL NOT NULL)")
     }
 }
+
+val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `BudgetEntry` (`id` INTEGER PRIMARY KEY NOT NULL, `budgetName` TEXT NOT NULL, `amount` REAL NOT NULL, `categories` TEXT NOT NULL,`color` INTEGER NOT NULL,`date` INTEGER NOT NULL,`period` TEXT NOT NULL)")
+    }
+}

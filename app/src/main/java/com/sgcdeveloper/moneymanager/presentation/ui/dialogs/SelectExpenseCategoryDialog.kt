@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
@@ -32,36 +29,52 @@ import java.util.*
 
 @Composable
 fun SelectExpenseCategoryDialog(
-    defaultCategories: List<TransactionCategory>? = null,
-    onAdd: (categories: List<Int>) -> Unit = {},
+    defaultCategories: List<TransactionCategory.ExpenseCategory>? = null,
+    onAdd: (categories: List<TransactionCategory.ExpenseCategory>) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
+    var items = defaultCategories!!
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
         title = {
-            Row(Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .clickable { onDismiss() }
-                )
-                Text(
-                    text = stringResource(id = R.string.select_category),
-                    color = MaterialTheme.colors.secondary,
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp)
-                )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart)) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .clickable { onDismiss() }
+                    )
+                    Text(
+                        text = stringResource(id = R.string.select_category),
+                        color = MaterialTheme.colors.secondary,
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 8.dp)
+                    )
+                }
+                Button(onClick = {
+                    onAdd(items.sortedBy { it.id })
+                    onDismiss()
+                }, Modifier.align(Alignment.CenterEnd)) {
+                    Text(
+                        text = stringResource(id = R.string.save),
+                        Modifier.align(Alignment.CenterVertically),
+                        color = white
+                    )
+                }
             }
         },
         text = {
             CategorySelector(defaultCategories) {
-                onAdd(it)
+                items = it
             }
         },
         confirmButton = {})
@@ -69,11 +82,11 @@ fun SelectExpenseCategoryDialog(
 
 @Composable
 private fun CategorySelector(
-    defaultCategory: List<TransactionCategory>? = null,
-    onAdd: (category: List<Int>) -> Unit,
+    defaultCategory: List<TransactionCategory.ExpenseCategory>? = null,
+    onAdd: (category: List<TransactionCategory.ExpenseCategory>) -> Unit,
 ) {
-    val selectedOption = rememberMutableStateListOf<Int>()
-    selectedOption.addAll((defaultCategory ?: Collections.emptyList()).toMutableSet().map { it.id })
+    val selectedOption = rememberMutableStateListOf<TransactionCategory.ExpenseCategory>()
+    selectedOption.addAll((defaultCategory ?: Collections.emptyList()).toMutableSet())
     val items = TransactionCategory.ExpenseCategory.getAllItems().toMutableList()
 
     Column(Modifier.fillMaxWidth()) {
@@ -84,21 +97,25 @@ private fun CategorySelector(
                     Modifier
                         .padding(4.dp)
                         .clickable {
-                            if (item.id == TransactionCategory.ExpenseCategory.AllExpense.id) {
-                                if (item.id in selectedOption) {
+                            if (item == TransactionCategory.ExpenseCategory.AllExpense) {
+                                if (item in selectedOption) {
                                     selectedOption.clear()
                                 } else {
-                                    selectedOption.addAll(items.map { it.id })
+                                    selectedOption.addAll(items)
                                 }
                             } else {
-                                selectedOption.remove(TransactionCategory.ExpenseCategory.AllExpense.id)
-                                if (item.id in selectedOption) {
-                                    selectedOption.removeAll { it == item.id }
+                                selectedOption.remove(TransactionCategory.ExpenseCategory.AllExpense)
+                                if (item in selectedOption) {
+                                    selectedOption.removeAll { it == item }
                                 } else {
-                                    selectedOption.add(item.id)
+                                    selectedOption.add(item)
                                 }
                             }
-                            onAdd(selectedOption.toList())
+                            onAdd(
+                                selectedOption
+                                    .toSet()
+                                    .toList()
+                            )
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -129,7 +146,7 @@ private fun CategorySelector(
                         fontSize = 18.sp
                     )
                     RadioButton(
-                        selected = (item.id in selectedOption),
+                        selected = (item in selectedOption),
                         onClick = null
                     )
                 }

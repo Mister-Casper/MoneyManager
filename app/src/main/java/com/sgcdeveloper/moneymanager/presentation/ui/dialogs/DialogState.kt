@@ -10,6 +10,7 @@ sealed class DialogState {
     class SelectTimeIntervalDialog(val timeIntervalController: TimeIntervalController) : DialogState()
     class AddCurrencyRateDialog(val currency: Currency): DialogState()
 
+    object StringSelectorDialogState : DialogState()
     object SelectCurrenciesDialogState : DialogState()
     object NoneDialogState : DialogState()
     object DeleteWalletDialog : DialogState()

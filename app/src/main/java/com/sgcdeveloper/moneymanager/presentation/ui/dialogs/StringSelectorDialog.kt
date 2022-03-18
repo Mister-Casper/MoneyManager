@@ -18,10 +18,10 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
-fun DaySelectorDialog(
+fun StringSelectorDialog(
     title:String,
     items:List<String>,
-    defaultDay: Any,
+    defaultValue: Any,
     onSelected: (day: Any) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -44,7 +44,7 @@ fun DaySelectorDialog(
                         Row(Modifier.fillMaxHeight()) {
                             RadioButton(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                selected = (day == defaultDay),
+                                selected = (day == defaultValue),
                                 onClick = {}
                             )
                             Text(

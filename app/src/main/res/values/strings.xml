@@ -181,5 +181,8 @@
     <string name="exchange_rate">Exchange Rate</string>
 
     <string name="all_wallets">All Wallets</string>
+    <string name="budget_color">Color</string>
+    <string name="start_date">Start Date : %1$s</string>
+    <string name="budget_period">Period</string>
 
 </resources>

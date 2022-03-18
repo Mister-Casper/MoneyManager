@@ -29,7 +29,7 @@ import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DaySelectorDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialog
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.*
@@ -39,7 +39,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
     val context = LocalContext.current
 
     if (darkThemeViewModel.isShowSelectFirstDayDialog) {
-        DaySelectorDialog(stringResource(id = R.string.first_day),
+        StringSelectorDialog(stringResource(id = R.string.first_day),
             DayOfWeek.values().map { it.getDisplayName(TextStyle.FULL, Locale.getDefault()) },
             darkThemeViewModel.firstDayOfWeek.value.getDisplayName(TextStyle.FULL, Locale.getDefault()),
             { name ->
@@ -50,7 +50,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             }, { darkThemeViewModel.isShowSelectFirstDayDialog = false })
     }
     if (darkThemeViewModel.isShowSelectStartupScreenDialog) {
-        DaySelectorDialog(stringResource(id = R.string.startup_screen),
+        StringSelectorDialog(stringResource(id = R.string.startup_screen),
             BottomMoneyManagerNavigationScreens.values().map { stringResource(id = it.resourceId) },
             stringResource(darkThemeViewModel.defaultStartupScreen.value.resourceId),
             {
@@ -64,7 +64,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             { darkThemeViewModel.isShowSelectStartupScreenDialog = false })
     }
     if (darkThemeViewModel.isShowStartupTransactionTypeDialog) {
-        DaySelectorDialog(stringResource(id = R.string.startup_transaction_type),
+        StringSelectorDialog(stringResource(id = R.string.startup_transaction_type),
             TransactionType.values().map { stringResource(id = it.stringRes) },
             stringResource(darkThemeViewModel.defaultStartupTransactionType.value.stringRes),
             { darkThemeViewModel.setStartupTransactionType(TransactionType.getByName(it as String, context)) },

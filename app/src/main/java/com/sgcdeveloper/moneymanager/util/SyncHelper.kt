@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
+import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
@@ -58,10 +59,13 @@ class SyncHelper @Inject constructor(
         val transactions = userDocument.get("transactions") as List<MutableMap<String, Any>>
         val rates =
             if (userDocument.get("rates") != null) userDocument.get("rates") as List<MutableMap<String, Any>> else Collections.emptyList()
+        val budgets =
+            if (userDocument.get("budgets") != null) userDocument.get("budgets") as List<MutableMap<String, Any>> else Collections.emptyList()
         GlobalScope.launch {
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
             moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
+            moneyManagerRepository.insertBudgets(budgets.map { budget -> BudgetEntry.getBudgetByHashMap(budget) })
         }
         val lastSyncTIme = userDocument.getLong(AppPreferencesHelper.LAST_SYNC_TIME)
         if (lastSyncTIme != null)
@@ -124,7 +128,8 @@ class SyncHelper @Inject constructor(
                     AppPreferencesHelper.STARTUP_TRANSACTION_TYPE to appPreferencesHelper.getStartupTransactionType().ordinal,
                     "wallets" to getWallets(),
                     "transactions" to getTransactions(),
-                    "rates" to getRate()
+                    "rates" to getRate(),
+                    "budgets" to getBudgets()
                 )
                 docRef.set(settingsData)
                 onFinish()
@@ -151,6 +156,14 @@ class SyncHelper @Inject constructor(
     private suspend fun getRate(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
         moneyManagerRepository.getRatesOnce().forEach { rate ->
+            list.add(rate.toObject())
+        }
+        return list
+    }
+
+    private suspend fun getBudgets(): List<MutableMap<String, Any>> {
+        val list: MutableList<MutableMap<String, Any>> = ArrayList()
+        moneyManagerRepository.getAsyncWBudgets().forEach { rate ->
             list.add(rate.toObject())
         }
         return list
