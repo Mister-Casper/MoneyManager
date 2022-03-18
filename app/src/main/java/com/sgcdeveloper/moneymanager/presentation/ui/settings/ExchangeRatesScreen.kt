@@ -126,7 +126,7 @@ fun ExchangeRatesScreen(navController: NavController, addWalletViewModel: AddWal
                     )
                 )
                 androidx.compose.material.Text(
-                    text = stringResource(id = R.string.rate, rate.currency.code, rate.rate, rate.currency.code),
+                    text = stringResource(id = R.string.rate, addWalletViewModel.defaultCurrency.code, rate.rate, rate.currency.code),
                     fontSize = 12.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
