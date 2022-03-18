@@ -25,7 +25,7 @@ fun DatePicker(
         onDismissRequest = { onDismissRequest() },
         properties = DialogProperties(usePlatformDefaultWidth = false),
         text = {
-            DatePickerDialog(
+            val dialog = DatePickerDialog(
                 context,
                 { q: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
                     val cal = Calendar.getInstance()
@@ -36,7 +36,11 @@ fun DatePicker(
                 defaultDate.getAsLocalDate().year,
                 defaultDate.getAsLocalDate().monthValue - 1,
                 defaultDate.getAsLocalDate().dayOfMonth
-            ).show()
+            )
+            dialog.show()
+            dialog.setOnDismissListener {
+                onDismissRequest()
+            }
         },
         buttons = {})
 }
