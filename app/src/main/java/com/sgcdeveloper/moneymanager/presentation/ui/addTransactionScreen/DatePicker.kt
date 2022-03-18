@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,8 +43,6 @@ fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
             singleLine = true,
             trailingIcon = {
                 Icon(painter = painterResource(id = R.drawable.edit_calendar_icon), "",Modifier.size(32.dp))
-            }, placeholder = {
-                Text(text = stringResource(id = R.string.select_category))
             }, interactionSource = source
         )
     }
