@@ -17,7 +17,7 @@ open class TransactionCategory(
 
     object All : TransactionCategory(32, wallet_color_18.toArgb(), R.drawable.transfer_icon, R.string.all)
 
-    sealed class ExpenseCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
+    open class ExpenseCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
         TransactionCategory(_id, _color, _icon, _description) {
         object AllExpense :
             ExpenseCategory(33, wallet_color_24.toArgb(), R.drawable.infinity_icon, R.string.all_category)
@@ -77,7 +77,7 @@ open class TransactionCategory(
         }
     }
 
-    sealed class IncomeCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
+    open class IncomeCategory(_id: Int, _color: Int, _icon: Int, _description: Int) :
         TransactionCategory(_id, _color, _icon, _description) {
         object Award : IncomeCategory(21, wallet_color_11.toArgb(), R.drawable.sport_icon, R.string.award)
         object Bonus : IncomeCategory(22, wallet_color_12.toArgb(), R.drawable.bonus_icon, R.string.bonus)
