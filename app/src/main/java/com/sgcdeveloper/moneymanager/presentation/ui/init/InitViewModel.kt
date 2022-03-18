@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.init
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
@@ -9,6 +10,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_6
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
@@ -83,6 +85,7 @@ open class InitViewModel @Inject constructor(
                 name = defaultWalletName.value,
                 money = defaultMoney.value.toDoubleOrNull() ?: 0.0,
                 currency = currency.value,
+                color = wallet_color_6.toArgb(),
                 order = 1
             )
             moneyManagerRepository.insertWallet(firstWallet)
