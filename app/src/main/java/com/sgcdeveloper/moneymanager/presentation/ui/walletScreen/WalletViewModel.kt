@@ -11,6 +11,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -31,11 +32,14 @@ open class WalletViewModel @Inject constructor(
 
     var transactionsStatistic = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
 
+    private var loadingJob: Job?= null
+
     fun onEvent(showWalletEvent: ShowWalletEvent) {
         when (showWalletEvent) {
             is ShowWalletEvent.SetShowWallet -> {
                 wallet = showWalletEvent.wallet
-                viewModelScope.launch {
+                loadingJob?.cancel()
+                loadingJob = viewModelScope.launch {
                     transactionItems.value = walletsUseCases.getTransactionItems(wallet)
 
                     income.value = app.getString(R.string.transactions_count,

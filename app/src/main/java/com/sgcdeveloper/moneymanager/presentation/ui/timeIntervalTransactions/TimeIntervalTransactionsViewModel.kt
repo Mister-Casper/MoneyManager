@@ -17,6 +17,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
@@ -41,6 +42,8 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
     val title = mutableStateOf(app.getString(R.string.transactions))
 
     val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
+
+    private var loadingJob: Job?= null
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
@@ -86,7 +89,8 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
     }
 
     fun loadTransactions() {
-        viewModelScope.launch {
+        loadingJob?.cancel()
+        loadingJob = viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(

@@ -16,6 +16,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
@@ -40,6 +41,8 @@ open class WeeklyStatisticViewModel @Inject constructor(
     val wallet = mutableStateOf(WalletSingleton.wallet.value!!)
     lateinit var timeIntervalController: TimeIntervalController.WeeklyController
     private var transactionType = TransactionType.Expense
+
+    private var loadingJob: Job?= null
 
     fun onEvent(weeklyStatisticScreenEvent: WeeklyStatisticScreenEvent) {
         when (weeklyStatisticScreenEvent) {
@@ -67,7 +70,8 @@ open class WeeklyStatisticViewModel @Inject constructor(
     }
 
     private fun loadStatistic() {
-        viewModelScope.launch {
+        loadingJob?.cancel()
+        loadingJob = viewModelScope.launch {
             val statistic =
                 getWeeklyStatistic(
                     app,

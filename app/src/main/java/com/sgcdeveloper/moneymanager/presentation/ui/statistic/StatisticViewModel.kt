@@ -19,6 +19,7 @@ import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
@@ -53,6 +54,8 @@ open class StatisticViewModel @Inject constructor(
     val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
+
+    private var loadingJob: Job?= null
 
     init {
         wallets.observeForever {
@@ -115,7 +118,8 @@ open class StatisticViewModel @Inject constructor(
     }
 
     fun loadTransactions(wallet: Wallet) {
-        viewModelScope.launch {
+        loadingJob?.cancel()
+        loadingJob = viewModelScope.launch {
             description.value = timeInterval.value.getDescription()
             transactionItems.value =
                 walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
