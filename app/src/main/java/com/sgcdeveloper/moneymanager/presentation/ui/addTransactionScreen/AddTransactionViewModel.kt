@@ -192,6 +192,10 @@ open class AddTransactionViewModel @Inject constructor(
     }
 
     private fun updateFormattedAMount() {
+        if (transactionAmount.value.isEmpty()) {
+            formattedTransactionAmount.value = ""
+            return
+        }
         viewModelScope.launch {
             val wallet = if (transactionFromWallet.value == null)
                 WalletSingleton.wallet.value!!
@@ -199,7 +203,7 @@ open class AddTransactionViewModel @Inject constructor(
                 transactionFromWallet.value!!
             formattedTransactionAmount.value = GetTransactionItems.getFormattedMoney(
                 wallet,
-                transactionAmount.value.toDouble()
+                transactionAmount.value.toSafeDouble()
             )
         }
     }
@@ -238,6 +242,7 @@ open class AddTransactionViewModel @Inject constructor(
         currentScreenName.value = app.getString(R.string.expense)
         transactionDate.value = Date(LocalDateTime.now())
         transactionAmount.value = ""
+        formattedTransactionAmount.value = ""
         transactionDescription.value = ""
         transactionExpenseCategory.value = TransactionCategory.None
         transactionIncomeCategory.value = TransactionCategory.None
