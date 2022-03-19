@@ -79,6 +79,7 @@ open class InitViewModel @Inject constructor(
         runBlocking {
             moneyManagerRepository.deleteAllWallets()
             moneyManagerRepository.deleteAllTransactions()
+            moneyManagerRepository.deleteAllRates()
 
             val firstWallet = WalletEntry(
                 isDefault = true,

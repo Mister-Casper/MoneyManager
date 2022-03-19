@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keepclassmembers,allowobfuscation class * {
+@com.google.gson.annotations.SerializedName <fields>;
+}
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.Currency { <fields>; }
+-keep class com.sgcdeveloper.moneymanager.domain.model.Currency

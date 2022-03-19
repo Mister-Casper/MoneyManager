@@ -9,7 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 
 @Entity
-class WalletEntry(
+data class WalletEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val isDefault: Boolean,
     val name: String,
