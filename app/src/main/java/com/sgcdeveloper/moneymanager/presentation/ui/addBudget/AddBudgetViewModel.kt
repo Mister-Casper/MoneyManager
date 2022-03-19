@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.InsertBudget
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -17,7 +18,9 @@ import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.util.Date
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
+import com.sgcdeveloper.moneymanager.util.toSafeDouble
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -33,6 +36,7 @@ open class AddBudgetViewModel @Inject constructor(
 
     val budgetStartDate = mutableStateOf(Date(LocalDateTime.now()))
     val budgetAmount = mutableStateOf("")
+    val formattedBudgetAmount = mutableStateOf("")
     val budgetName = mutableStateOf("")
     val defaultCurrency = currencyRepository.getDefaultCurrency()
 
@@ -51,8 +55,10 @@ open class AddBudgetViewModel @Inject constructor(
     fun onEvent(addBudgetEvent: AddBudgetEvent) {
         when (addBudgetEvent) {
             is AddBudgetEvent.ChangeBudgetAmount -> {
-                if (addBudgetEvent.amount.isWillBeDouble() && addBudgetEvent.amount.length <= InitViewModel.MAX_MONEY_LENGTH)
+                if (addBudgetEvent.amount.isWillBeDouble() && addBudgetEvent.amount.length <= InitViewModel.MAX_MONEY_LENGTH) {
                     budgetAmount.value = addBudgetEvent.amount
+                    updateFormattedAMount()
+                }
             }
             is AddBudgetEvent.ChangeBudgetName -> {
                 if (addBudgetEvent.name.length <= InitViewModel.MAX_DESCRIPTION_SIZE)
@@ -97,6 +103,21 @@ open class AddBudgetViewModel @Inject constructor(
             }
         }
         isBudgetCanBeSaved.value = checkIsCanBeSaved()
+    }
+
+    private fun updateFormattedAMount() {
+        if (budgetAmount.value.isEmpty()) {
+            formattedBudgetAmount.value = ""
+            return
+        }
+        viewModelScope.launch {
+            val wallet = WalletSingleton.wallet.value!!
+
+            formattedBudgetAmount.value = GetTransactionItems.getFormattedMoney(
+                wallet,
+                budgetAmount.value.toSafeDouble()
+            )
+        }
     }
 
     fun getTransactionCategories(context: Context): String {

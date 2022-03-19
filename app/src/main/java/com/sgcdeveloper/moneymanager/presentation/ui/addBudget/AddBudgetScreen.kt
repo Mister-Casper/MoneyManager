@@ -118,13 +118,11 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     "",
                 )
 
-                val symbol = addBudgetViewModel.defaultCurrency.symbol
-
                 TextField(
                     value = addBudgetViewModel.budgetAmount.value,
                     onValueChange = { addBudgetViewModel.onEvent(AddBudgetEvent.ChangeBudgetAmount(it)) },
                     placeholder = { Text(text = "0") },
-                    label = { Text(stringResource(id = R.string.amount, symbol)) },
+                    label = { Text(stringResource(id = R.string.amount, addBudgetViewModel.formattedBudgetAmount.value)) },
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
