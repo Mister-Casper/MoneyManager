@@ -18,15 +18,11 @@ import com.sgcdeveloper.moneymanager.R
 
 @Composable
 fun ColumnScope.AmountPicker(addTransactionViewModel: AddTransactionViewModel) {
-    var symbol = "$"
-    if (addTransactionViewModel.transactionFromWallet.value?.currency != null)
-        symbol = addTransactionViewModel.transactionFromWallet.value?.currency!!.symbol
-
     TextField(
         value = addTransactionViewModel.transactionAmount.value,
         onValueChange = { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionAmount(it)) },
         placeholder = { Text(text = "0") },
-        label = { Text(stringResource(id = R.string.amount, symbol)) },
+        label = { Text(stringResource(id = R.string.amount, addTransactionViewModel.formattedTransactionAmount.value)) },
         maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()

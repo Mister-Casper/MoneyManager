@@ -9,16 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_DESCRIPTION_SIZE
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_MONEY_LENGTH
-import com.sgcdeveloper.moneymanager.util.Date
-import com.sgcdeveloper.moneymanager.util.deleteUselessZero
-import com.sgcdeveloper.moneymanager.util.isDouble
-import com.sgcdeveloper.moneymanager.util.isWillBeDouble
+import com.sgcdeveloper.moneymanager.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -39,6 +37,7 @@ open class AddTransactionViewModel @Inject constructor(
 
     val transactionDate = mutableStateOf(Date(LocalDateTime.now()))
     val transactionAmount = mutableStateOf("")
+    val formattedTransactionAmount = mutableStateOf("")
     val transactionDescription = mutableStateOf("")
     val transactionIncomeCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
     val transactionExpenseCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
@@ -83,6 +82,7 @@ open class AddTransactionViewModel @Inject constructor(
                         if (transaction.transactionType == TransactionType.Transfer)
                             transactionToWallet.value = walletsUseCases.getWallets.getWallet(transaction.toWalletId)
                         isTransactionCanBeSaved.value = checkIsCanBeSaved()
+                        updateFormattedAMount()
                     }
                 }
             }
@@ -90,6 +90,7 @@ open class AddTransactionViewModel @Inject constructor(
                 if (transactionFromWallet.value == null && addTransactionEvent.wallet.walletId != 0L) {
                     transactionFromWallet.value = addTransactionEvent.wallet
                     showScreen(appPreferencesHelper.getStartupTransactionType())
+                    updateFormattedAMount()
                 }
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
@@ -105,8 +106,10 @@ open class AddTransactionViewModel @Inject constructor(
                 transactionDate.value = Date(addTransactionEvent.date)
             }
             is AddTransactionEvent.ChangeTransactionAmount -> {
-                if (addTransactionEvent.amount.isWillBeDouble() && addTransactionEvent.amount.length <= MAX_MONEY_LENGTH)
+                if (addTransactionEvent.amount.isWillBeDouble() && addTransactionEvent.amount.length <= MAX_MONEY_LENGTH) {
                     transactionAmount.value = addTransactionEvent.amount
+                    updateFormattedAMount()
+                }
             }
             is AddTransactionEvent.ChangeTransactionDescription -> {
                 if (addTransactionEvent.description.length <= MAX_DESCRIPTION_SIZE)
@@ -145,6 +148,7 @@ open class AddTransactionViewModel @Inject constructor(
                         transactionToWallet.value = addTransactionEvent.wallet
                 } else
                     transactionFromWallet.value = addTransactionEvent.wallet
+                updateFormattedAMount()
             }
             is AddTransactionEvent.InsertTransaction -> {
                 val category =
@@ -185,6 +189,19 @@ open class AddTransactionViewModel @Inject constructor(
             transactionExpenseCategory.value
         else
             transactionIncomeCategory.value
+    }
+
+    private fun updateFormattedAMount() {
+        viewModelScope.launch {
+            val wallet = if (transactionFromWallet.value == null)
+                WalletSingleton.wallet.value!!
+            else
+                transactionFromWallet.value!!
+            formattedTransactionAmount.value = GetTransactionItems.getFormattedMoney(
+                wallet,
+                transactionAmount.value.toDouble()
+            )
+        }
     }
 
     private fun checkIsCanBeSaved(): Boolean {
