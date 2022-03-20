@@ -37,6 +37,8 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
 import com.sgcdeveloper.moneymanager.presentation.theme.black
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.ui.addBudget.AddBudgetScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.addBudget.AddBudgetViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionViewModel
@@ -427,6 +429,14 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.ExchangeRatesScreen.route) {
                             val addWalletViewModel: AddWalletViewModel by viewModels()
                             ExchangeRatesScreen(navController, addWalletViewModel)
+                        }
+                        composable(Screen.AddBudgetScreen(null).route + "{budget}"){
+                            val addBudgetViewModel: AddBudgetViewModel by viewModels()
+                            AddBudgetScreen(addBudgetViewModel, navController)
+                        }
+                        composable("AddBudgetScreen/"){
+                            val addBudgetViewModel: AddBudgetViewModel by viewModels()
+                            AddBudgetScreen(addBudgetViewModel, navController)
                         }
                     }
 

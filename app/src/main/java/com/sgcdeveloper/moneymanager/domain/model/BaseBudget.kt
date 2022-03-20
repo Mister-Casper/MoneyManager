@@ -1,10 +1,11 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
+import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 sealed class BaseBudget {
-    class BudgetHeader(val periodName:String) :
+    class BudgetHeader(val periodName:String,val timeIntervalController: TimeIntervalController) :
         BaseBudget()
 
     class BudgetItem(
@@ -15,7 +16,8 @@ sealed class BaseBudget {
         val spent: String,
         val left: String,
         val budget: String,
-        val period:String
+        val period:String,
+        val progress:Double
     ) : BaseBudget()
 
     object AddNewBudget : BaseBudget()

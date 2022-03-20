@@ -84,6 +84,7 @@ private fun MainScreenNavigationConfigurations(
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
             val homeViewModel: HomeViewModel by (LocalContext.current as MainActivity).viewModels()
+            homeViewModel.loadBudgets()
             HomeScreen(homeViewModel, globalNavController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {

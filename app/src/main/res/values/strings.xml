@@ -184,6 +184,6 @@
     <string name="budget_color">Color</string>
     <string name="start_date">Start Date : %1$s</string>
     <string name="budget_period">Period</string>
-    <string name="budget">Budget</string>
+    <string name="budget">BUDGET</string>
 
 </resources>
