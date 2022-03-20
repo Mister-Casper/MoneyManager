@@ -49,14 +49,16 @@ class GetWallets @Inject constructor(
     }
 
     suspend fun getWallet(id: Long): Wallet {
-        return transformWallet(moneyManagerRepository.getWallet(id))
+          return transformWallet(moneyManagerRepository.getWallet(id))
     }
 
     private fun transformWallets(wallets: List<WalletEntry>): MutableList<Wallet> {
         return wallets.map { wallet -> transformWallet(wallet) }.sortedBy { it.order }.toMutableList()
     }
 
-    private fun transformWallet(wallet: WalletEntry): Wallet {
+    private fun transformWallet(wallet: WalletEntry?): Wallet {
+        if(wallet == null)
+            return Wallet(currency = com.sgcdeveloper.moneymanager.domain.model.Currency("","",""))
         val formatter = NumberFormat.getCurrencyInstance(getLocalFromISO(wallet.currency.code)!!)
         var money = wallet.money.deleteUselessZero()
         if (money == "0.0" || money == "0")
