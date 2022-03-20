@@ -18,7 +18,7 @@ open class Wallet(
     val money: String = "",
     val formattedMoney: String = "",
     val color: Int = wallet_color_1.toArgb(),
-    val icon: Int,
+    val icon: Int = R.drawable.wallet_icon_1,
     open val currency: Currency,
     var order: Long = -1
 ) : Parcelable {
