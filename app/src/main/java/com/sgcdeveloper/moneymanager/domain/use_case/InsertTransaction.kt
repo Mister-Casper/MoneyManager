@@ -94,8 +94,8 @@ class InsertTransaction @Inject constructor(
                 TransactionType.Transfer -> {
                     newWallets.remove(fromWallet)
                     newWallets.remove(toWallet)
-                    newWallets.add(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
-                    newWallets.add(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                    newWallets.add(fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
+                    newWallets.add(toWallet.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
                 }
             }
         }
