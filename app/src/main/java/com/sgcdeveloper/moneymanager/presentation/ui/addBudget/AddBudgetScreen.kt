@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -167,36 +166,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 )
                 ColorPicker(40.dp, addBudgetViewModel.colorBudget.value) {
                     addBudgetViewModel.onEvent(AddBudgetEvent.ChangeColor(it))
-                }
-
-                val sourceDate = remember { MutableInteractionSource() }
-
-                if (sourceDate.collectIsPressedAsState().value) {
-                    addBudgetViewModel.onEvent(AddBudgetEvent.ShowChangeDateDialog)
-                }
-
-                Row(Modifier.fillMaxWidth()) {
-                    TextField(
-                        value = stringResource(
-                            id = R.string.start_date,
-                            addBudgetViewModel.budgetStartDate.value.toDateString()
-                        ),
-                        onValueChange = {},
-                        readOnly = true,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(top = 12.dp, start = 20.dp, end = 20.dp)
-                            .fillMaxWidth(),
-                        colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
-                        singleLine = true,
-                        trailingIcon = {
-                            androidx.compose.material.Icon(
-                                painter = painterResource(id = R.drawable.edit_calendar_icon),
-                                "",
-                                Modifier.size(32.dp)
-                            )
-                        }, interactionSource = sourceDate
-                    )
                 }
 
                 val sourceTimeInterval = remember { MutableInteractionSource() }
