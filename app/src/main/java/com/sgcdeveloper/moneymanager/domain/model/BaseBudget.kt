@@ -26,7 +26,8 @@ sealed class BaseBudget {
         val periodDescription:String,
         val graphEntries:List<BudgetGraphEntry>,
         val startPeriod:String,
-        val endPeriod:String
+        val endPeriod:String,
+        val spendCategories:List<CategoryStatistic>
     ) : BaseBudget()
 
     object AddNewBudget : BaseBudget()

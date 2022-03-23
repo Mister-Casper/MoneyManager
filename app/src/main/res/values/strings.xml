@@ -191,5 +191,6 @@
     <string name="spent">Spent</string>
     <string name="budget_category">Category</string>
     <string name="budget_budget">Budget</string>
+    <string name="transaction_list">Transaction list</string>
 
 </resources>

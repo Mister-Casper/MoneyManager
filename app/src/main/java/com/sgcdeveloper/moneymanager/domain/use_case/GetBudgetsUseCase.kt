@@ -28,7 +28,8 @@ class GetBudgetsUseCase @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
     private val context: Context,
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val appPreferencesHelper: AppPreferencesHelper
+    private val appPreferencesHelper: AppPreferencesHelper,
+    private val getCategoriesStatistic: GetCategoriesStatistic
 ) {
 
     suspend operator fun invoke(firstDate: Date = Date(LocalDate.now())): List<BaseBudget> =
@@ -86,7 +87,8 @@ class GetBudgetsUseCase @Inject constructor(
                             periodDescription = budgetTImeInterval.getDescription(),
                             graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval),
                             startPeriod = budgetTImeInterval.getStartDate().toDateString(),
-                            endPeriod = budgetTImeInterval.getEndDate().toDateString()
+                            endPeriod = budgetTImeInterval.getEndDate().toDateString(),
+                            spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(transactions,WalletSingleton.wallet.value!!,budgetTImeInterval)
                         )
                     )
                 }

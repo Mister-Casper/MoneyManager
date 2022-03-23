@@ -2,9 +2,12 @@ package com.sgcdeveloper.moneymanager.presentation.ui.budget
 
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -19,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -29,11 +33,14 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
+import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.RoundedLinearProgressIndicator
 import com.sgcdeveloper.moneymanager.presentation.ui.util.BudgetMarkerView
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
 fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
@@ -262,6 +269,85 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                         color = MaterialTheme.colors.secondary
                     )
                 }
+                Text(
+                    text = stringResource(id = R.string.transaction_list),
+                    modifier = Modifier.padding(start = 12.dp,top = 12.dp),
+                    color = MaterialTheme.colors.secondary,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            items(budget.spendCategories.size){
+                val category = budget.spendCategories[it]
+                TransactionCategoryItem(category,navController)
+            }
+        }
+    }
+}
+
+@Composable
+fun TransactionCategoryItem(
+    item: CategoryStatistic,
+    navController: NavController) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navController.navigate(
+                    Screen.TransactionCategoryTransactions(
+                        WalletSingleton.wallet.value,
+                        item.categoryEntry
+                    ).route
+                )
+            }
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp)
+        ) {
+            Row {
+                Card(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .align(Alignment.CenterVertically),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Box(modifier = Modifier.background(Color(item.color))) {
+                        androidx.compose.material.Icon(
+                            painter = painterResource(id = item.icon),
+                            contentDescription = "",
+                            Modifier
+                                .align(Alignment.Center)
+                                .size(40.dp),
+                            tint = white
+                        )
+                    }
+                }
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 16.dp)
+                        .align(Alignment.CenterVertically)
+                ) {
+                    Text(text = item.category, fontSize = 16.sp, color = white)
+                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                }
+            }
+            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                Text(
+                    text = item.money,
+                    textAlign = TextAlign.End,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.End),
+                    color = Color(item.moneyColor)
+                )
+                Text(
+                    text = item.count,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.align(Alignment.End)
+                )
             }
         }
     }
