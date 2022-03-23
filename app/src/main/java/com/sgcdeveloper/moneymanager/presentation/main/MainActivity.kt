@@ -28,6 +28,7 @@ import com.kobakei.ratethisapp.RateThisApp
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
+import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
@@ -46,6 +47,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.Transa
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
@@ -275,9 +277,9 @@ class MainActivity : FragmentActivity() {
                                         TimeIntervalController.AllController(it.allString)
                                     }
                                     is TimeIntervalController.CustomController -> {
-                                        val controller = TimeIntervalController.CustomController
-                                        controller.startDate = it.startDate
-                                        controller.endDate = it.endDate
+                                        val controller = TimeIntervalController.CustomController()
+                                        controller.startIntervalDate = it.startIntervalDate
+                                        controller.endIntervalDate = it.endIntervalDate
                                         controller
                                     }
                                 }
@@ -363,9 +365,9 @@ class MainActivity : FragmentActivity() {
                                         TimeIntervalController.AllController(it.allString)
                                     }
                                     is TimeIntervalController.CustomController -> {
-                                        val controller = TimeIntervalController.CustomController
-                                        controller.startDate = it.startDate
-                                        controller.endDate = it.endDate
+                                        val controller = TimeIntervalController.CustomController()
+                                        controller.startIntervalDate = it.startIntervalDate
+                                        controller.endIntervalDate = it.endIntervalDate
                                         controller
                                     }
                                 }
@@ -437,6 +439,11 @@ class MainActivity : FragmentActivity() {
                         composable("AddBudgetScreen/"){
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
                             AddBudgetScreen(addBudgetViewModel, navController)
+                        }
+                        composable(Screen.BudgetScreen(null).route + "{budget}"){
+                            val budgetJson = it.arguments?.getString("budget")
+                            val budget = Gson().fromJson( budgetJson, BaseBudget.BudgetItem::class.java)
+                            BudgetScreen(budget,navController)
                         }
                     }
 

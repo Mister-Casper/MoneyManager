@@ -23,7 +23,7 @@ class InsertBudget @Inject constructor(private val moneyManagerRepository: Money
             BudgetEntry(
                 budgetName = budgetName,
                 amount = amount.toDouble(),
-                categories = categories,
+                categories = categories.toList(),
                 color = color,
                 date = date,
                 period = period

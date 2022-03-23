@@ -185,5 +185,11 @@
     <string name="start_date">Start Date : %1$s</string>
     <string name="budget_period">Period</string>
     <string name="budget">BUDGET</string>
+    <string name="remain">Remain %1$s</string>
+    <string name="budget_view">Budget</string>
+    <string name="overspent">Overspent %1$s</string>
+    <string name="spent">Spent</string>
+    <string name="budget_category">Category</string>
+    <string name="budget_budget">Budget</string>
 
 </resources>

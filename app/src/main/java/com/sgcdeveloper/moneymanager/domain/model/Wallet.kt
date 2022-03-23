@@ -49,7 +49,7 @@ class AddNewWallet(val defaultCurrency: Currency) :
     )
 
 @Parcelize
-class AllWallets(val _name: String,val allMoney: String, val defaultCurrency: Currency) :
+class AllWallets(val _name: String="",val allMoney: String="", val defaultCurrency: Currency = Currency("","","")) :
     Wallet(
         0,
         false,

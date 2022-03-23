@@ -162,5 +162,4 @@ open class AddWalletViewModel @Inject constructor(
             insertRate.insertRates(rates)
         }
     }
-
 }

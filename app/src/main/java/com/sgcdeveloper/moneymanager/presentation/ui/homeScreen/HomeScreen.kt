@@ -28,50 +28,56 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val wallets = remember { homeViewModel.wallets }.observeAsState()
     val budgets = remember { homeViewModel.budgets }
 
-    LazyColumn(
+    Column(
         Modifier
-            .padding(bottom = 60.dp)
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
-        item {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(id = R.string.dashboard),
-                    Modifier.align(Alignment.CenterStart),
-                    color = MaterialTheme.colors.secondary,
-                    fontSize = 22.sp,
+            .fillMaxWidth()
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)) {
+            Text(
+                text = stringResource(id = R.string.dashboard),
+                Modifier.align(Alignment.CenterStart),
+                color = MaterialTheme.colors.secondary,
+                fontSize = 22.sp,
+            )
+            Row(Modifier.align(Alignment.CenterEnd)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.settings_icon),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable { navController.navigate(Screen.Settings.route) }
                 )
-                Row(Modifier.align(Alignment.CenterEnd)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.settings_icon),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable { navController.navigate(Screen.Settings.route) }
-                    )
-                }
             }
         }
-        item {
-            if (wallets.value != null)
-                WalletDashboard(wallets.value!!, {
-                    if (it is AddNewWallet) {
-                        navController.navigate(Screen.AddWallet(it).route)
-                    } else {
-                        navController.navigate(Screen.WalletScreen(it).route)
+        LazyColumn(
+            Modifier
+                .padding(bottom = 60.dp)
+        ) {
+            item {
+                if (wallets.value != null)
+                    WalletDashboard(wallets.value!!, {
+                        if (it is AddNewWallet) {
+                            navController.navigate(Screen.AddWallet(it).route)
+                        } else {
+                            navController.navigate(Screen.WalletScreen(it).route)
+                        }
+                    }, {
+                        navController.navigate(Screen.WalletsManagerScreen.route)
+                    })
+            }
+            item {
+                BudgetDashboard(budgets, {
+                    if (it is BaseBudget.AddNewBudget) {
+                        navController.navigate(Screen.AddBudgetScreen().route)
+                    }else if (it is BaseBudget.BudgetItem){
+                        navController.navigate(Screen.BudgetScreen(it).route)
                     }
-                }, {
-                    navController.navigate(Screen.WalletsManagerScreen.route)
-                })
-        }
-        item {
-            BudgetDashboard(budgets, {
-                if (it is BaseBudget.AddNewBudget) {
-                    navController.navigate(Screen.AddBudgetScreen().route)
-                }
-            }) {
+                }) {
 
+                }
             }
         }
     }

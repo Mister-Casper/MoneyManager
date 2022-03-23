@@ -18,7 +18,7 @@ class GetTransactionsUseCase @Inject constructor(
     private val currencyRepository: CurrencyRepository,
 ) {
 
-    suspend operator fun invoke(wallet: Wallet): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
+    suspend operator fun invoke(wallet: Wallet = AllWallets()): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
         val transactions = moneyManagerRepository.getTransactionsOnce().toMutableList()
         val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.currency.code }
         val rates = moneyManagerRepository.getRatesOnce() + RateEntry(0,currencyRepository.getDefaultCurrency(),1.0)

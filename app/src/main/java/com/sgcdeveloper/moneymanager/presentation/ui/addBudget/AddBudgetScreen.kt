@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addBudget
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -80,6 +81,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         .align(Alignment.CenterVertically)
                         .size(40.dp)
                         .clickable {
+                            addBudgetViewModel.clear()
                             navController.popBackStack()
                         }
                 )
@@ -96,6 +98,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     onClick = {
                         navController.popBackStack()
                         addBudgetViewModel.onEvent(AddBudgetEvent.InsertBudget)
+                        addBudgetViewModel.clear()
                     }, enabled = addBudgetViewModel.isBudgetCanBeSaved.value,
                     colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)
                 ) {
@@ -192,5 +195,10 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 }
             }
         }
+    }
+
+    BackHandler {
+        addBudgetViewModel.clear()
+        navController.popBackStack()
     }
 }

@@ -2,6 +2,7 @@ package com.sgcdeveloper.moneymanager.presentation.nav
 
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
+import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -19,6 +20,7 @@ sealed class Screen(val route: String) {
     object ExchangeRatesScreen : Screen("ExchangeRatesScreen")
     object MoneyManagerScreen : Screen("Home")
     object WalletsManagerScreen : Screen("WalletsManagerScreen")
+    class BudgetScreen(budget: BaseBudget.BudgetItem?) : Screen("BudgetScreen/" + Gson().toSafeJson(budget))
     class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + Gson().toSafeJson(wallet))
     class AddTransaction(wallet: Wallet? = null) :
         Screen("AddTransaction/" + Gson().toSafeJson(wallet))

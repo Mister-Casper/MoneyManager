@@ -74,6 +74,10 @@ open class TransactionCategory(
                     Others
                 )
             }
+
+            fun getStringRes(category:ExpenseCategory):Int{
+                   return getAllItems().find { category.id == it.id }!!.description
+            }
         }
     }
 
