@@ -72,6 +72,7 @@ class GetBudgetsUseCase @Inject constructor(
                                 WalletSingleton.wallet.value!!,
                                 kotlin.math.abs(left)
                             ),
+                            budgetValue = budget.amount,
                             budget = getFormattedMoney(
                                 WalletSingleton.wallet.value!!,
                                 budget.amount
@@ -83,7 +84,9 @@ class GetBudgetsUseCase @Inject constructor(
                             progressPercent = df.format(spent / budget.amount * 100).toFloat().toString(),
                             categoryDescription = categoryDescription,
                             periodDescription = budgetTImeInterval.getDescription(),
-                            graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval)
+                            graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval),
+                            startPeriod = budgetTImeInterval.getStartDate().toDateString(),
+                            endPeriod = budgetTImeInterval.getEndDate().toDateString()
                         )
                     )
                 }

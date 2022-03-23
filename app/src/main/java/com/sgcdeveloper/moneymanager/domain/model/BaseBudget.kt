@@ -17,13 +17,16 @@ sealed class BaseBudget {
         val spent: String,
         val left: String,
         @StringRes val leftStrRes:Int,
+        val budgetValue: Double,
         val budget: String,
         val progressPercent:String,
         val period:String,
         val progress:Float,
         val categoryDescription:String,
         val periodDescription:String,
-        val graphEntries:List<BudgetGraphEntry>
+        val graphEntries:List<BudgetGraphEntry>,
+        val startPeriod:String,
+        val endPeriod:String
     ) : BaseBudget()
 
     object AddNewBudget : BaseBudget()

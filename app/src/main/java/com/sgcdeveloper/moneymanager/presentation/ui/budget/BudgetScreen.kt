@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.budget
 
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,11 +24,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
+import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.RoundedLinearProgressIndicator
 import com.sgcdeveloper.moneymanager.presentation.ui.util.BudgetMarkerView
@@ -100,8 +103,18 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     )
                 }
                 Box(Modifier.fillMaxWidth()) {
-                    Text(text = budget.spent, Modifier.align(Alignment.CenterStart), fontWeight = FontWeight.Bold,color = MaterialTheme.colors.secondary)
-                    Text(text = budget.left, Modifier.align(Alignment.CenterEnd), fontWeight = FontWeight.Bold,color = MaterialTheme.colors.secondary)
+                    Text(
+                        text = budget.spent,
+                        Modifier.align(Alignment.CenterStart),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        text = budget.left,
+                        Modifier.align(Alignment.CenterEnd),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.secondary
+                    )
                 }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     RoundedLinearProgressIndicator(
@@ -179,7 +192,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                         val lineDataSet = LineDataSet(lineEntries, "")
                         lineDataSet.setDrawFilled(true)
                         lineDataSet.color = budget.color
-                        lineDataSet.valueTextColor =  Color.Unspecified.toArgb()
+                        lineDataSet.valueTextColor = Color.Unspecified.toArgb()
                         lineDataSet.fillDrawable = GradientDrawable(
                             GradientDrawable.Orientation.TOP_BOTTOM,
                             intArrayOf(Color(budget.color).copy(alpha = 0.2f).toArgb(), budget.color)
@@ -195,6 +208,16 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                         this.marker = mv
                         this.axisLeft.textColor = textColor.toArgb()
                         this.xAxis.textColor = Color.Unspecified.toArgb()
+                        val ll = LimitLine(budget.budgetValue.toFloat(), budget.budget)
+                        ll.lineWidth = 2f
+                        ll.enableDashedLine(30f, 8f, 0f)
+                        ll.lineColor = red.toArgb()
+                        ll.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
+                        ll.textSize = 10f
+                        ll.typeface = Typeface.DEFAULT
+                        ll.textColor = textColor.toArgb()
+                        this.axisLeft.addLimitLine(ll)
+                        this.axisLeft.axisMaximum = budget.budgetValue.toFloat()
                     }
                 }, modifier = Modifier
                     .height(180.dp)
@@ -203,7 +226,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     val lineDataSet = LineDataSet(budget.graphEntries, "")
                     lineDataSet.setDrawFilled(true)
                     lineDataSet.color = budget.color
-                    lineDataSet.valueTextColor =  Color.Unspecified.toArgb()
+                    lineDataSet.valueTextColor = Color.Unspecified.toArgb()
                     lineDataSet.fillDrawable = GradientDrawable(
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         intArrayOf(Color(budget.color).copy(alpha = 0.2f).toArgb(), budget.color)
@@ -213,9 +236,32 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     it.xAxis.setDrawGridLines(false)
                     it.setScaleEnabled(false)
                     it.description.isEnabled = false
+                    val ll = LimitLine(budget.budgetValue.toFloat(), budget.budget)
+                    ll.lineWidth = 2f
+                    ll.enableDashedLine(30f, 8f, 0f)
+                    ll.lineColor = red.toArgb()
+                    ll.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
+                    ll.textSize = 10f
+                    ll.typeface = Typeface.DEFAULT
+                    ll.textColor = textColor.toArgb()
+                    it.axisLeft.addLimitLine(ll)
+                    it.axisLeft.axisMaximum = budget.budgetValue.toFloat()
                     it.marker = mv
                     it.invalidate()
                 })
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = budget.startPeriod,
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        color = MaterialTheme.colors.secondary
+                    )
+                    Text(
+                        text = budget.endPeriod,
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        color = MaterialTheme.colors.secondary
+                    )
+                }
             }
         }
     }
