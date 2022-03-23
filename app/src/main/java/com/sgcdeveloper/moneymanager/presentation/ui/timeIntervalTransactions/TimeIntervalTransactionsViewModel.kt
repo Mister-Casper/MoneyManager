@@ -51,6 +51,7 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
         when (transactionEvent) {
             is TimeIntervalTransactionEvent.ChangeTimeInterval -> {
                 timeInterval.value = transactionEvent.timeIntervalController
+                loadTransactions()
             }
             is TimeIntervalTransactionEvent.SetDefaultWalletId -> {
                 viewModelScope.launch {
