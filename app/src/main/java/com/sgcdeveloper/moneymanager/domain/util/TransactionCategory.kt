@@ -103,6 +103,12 @@ open class TransactionCategory(
     }
 
     companion object {
+        private val allItems = (IncomeCategory.getItems() + ExpenseCategory.getAllItems()).associateBy { it.id }
+
+        fun findById(id:Int):TransactionCategory{
+            return allItems[id]!!
+        }
+
         fun getById(id: Int): TransactionCategory {
             return getItems().find { it.id == id }!!
         }

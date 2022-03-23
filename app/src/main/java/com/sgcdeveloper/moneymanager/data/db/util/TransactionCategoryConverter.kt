@@ -12,7 +12,7 @@ class TransactionCategoryConverter {
 
     @TypeConverter
     fun toCurrency(transactionCategoryId: Int): TransactionCategory {
-        return TransactionCategory.getItems().find { it.id == transactionCategoryId }!!
+        return TransactionCategory.findById(transactionCategoryId)
     }
 
 }
