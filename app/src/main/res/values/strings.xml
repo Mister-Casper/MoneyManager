@@ -182,7 +182,6 @@
 
     <string name="all_wallets">All Wallets</string>
     <string name="budget_color">Color</string>
-    <string name="start_date">Start Date : %1$s</string>
     <string name="budget_period">Period</string>
     <string name="budget">BUDGET</string>
     <string name="remain">Remain %1$s</string>
