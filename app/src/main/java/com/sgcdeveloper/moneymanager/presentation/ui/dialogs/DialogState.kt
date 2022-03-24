@@ -9,6 +9,7 @@ sealed class DialogState {
     class WalletPickerDialog(val wallet: Wallet?) : DialogState()
     class SelectTimeIntervalDialog(val timeIntervalController: TimeIntervalController) : DialogState()
     class AddCurrencyRateDialog(val currency: Currency): DialogState()
+    class DeleteDialog(val massage:String) : DialogState()
 
     object StringSelectorDialogState : DialogState()
     object SelectCurrenciesDialogState : DialogState()

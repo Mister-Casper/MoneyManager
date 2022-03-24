@@ -192,5 +192,6 @@
     <string name="budget_category">Category</string>
     <string name="budget_budget">Budget</string>
     <string name="transaction_list">Transaction list</string>
+    <string name="delete_dialog_massage">Do you really want to delete this budget?</string>
 
 </resources>

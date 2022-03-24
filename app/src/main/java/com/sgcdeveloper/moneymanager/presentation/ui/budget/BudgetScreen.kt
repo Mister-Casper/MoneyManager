@@ -39,11 +39,29 @@ import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.RoundedLinearProgressIndicator
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.util.BudgetMarkerView
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
-fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
+fun BudgetScreen(
+    budgetScreenViewModel: BudgetScreenViewModel,
+    budget: BaseBudget.BudgetItem,
+    navController: NavController
+) {
+    val dialog = budgetScreenViewModel.dialogState.value
+
+    if (dialog is DialogState.DeleteDialog) {
+        DeleteDialog(dialog.massage, {
+            budgetScreenViewModel.deleteBudget(budget)
+            budgetScreenViewModel.closeDIalog()
+            navController.popBackStack()
+        }, {
+            budgetScreenViewModel.closeDIalog()
+        })
+    }
+
     Column(Modifier.fillMaxWidth()) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Row(Modifier.align(Alignment.CenterStart)) {
@@ -83,7 +101,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(40.dp)
-                        .clickable { navController.popBackStack() })
+                        .clickable { budgetScreenViewModel.showDeleteBudgetDialog() })
             }
         }
         LazyColumn(
