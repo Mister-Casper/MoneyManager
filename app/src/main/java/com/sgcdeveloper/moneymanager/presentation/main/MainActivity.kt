@@ -456,6 +456,7 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.BudgetManagerScreen.route){
                             val homeViewModel: HomeViewModel by viewModels()
+                            homeViewModel.loadBudgets()
                             BudgetManagerScreen(homeViewModel,navController)
                         }
                     }
