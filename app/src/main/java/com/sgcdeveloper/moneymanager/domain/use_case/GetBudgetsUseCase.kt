@@ -93,7 +93,8 @@ class GetBudgetsUseCase @Inject constructor(
                             spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
                                 transactions,
                                 WalletSingleton.wallet.value!!,
-                                budgetTImeInterval
+                                budgetTImeInterval,
+                                budget.categories
                             ),
                             maxX = max(budget.amount,spent)
                         )

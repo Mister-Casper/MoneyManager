@@ -10,6 +10,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.util.toRoundString
@@ -85,13 +86,15 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
     suspend fun getExpenseCategoriesStatistic(
         transaction: List<Transaction>,
         wallet: Wallet,
-        timeIntervalController: TimeIntervalController
+        timeIntervalController: TimeIntervalController,
+        filterCategories:List<TransactionCategory.ExpenseCategory>
     ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
+        val filterCategoriesId = filterCategories.map { it.id }
         val categories = mutableListOf<CategoryStatistic>()
 
         var maxSum = 0.0
 
-        transaction.filter { timeIntervalController.isInInterval(it.date) }
+        transaction.filter { timeIntervalController.isInInterval(it.date) && filterCategoriesId.contains(it.category.id)}
             .groupBy { it.category.icon }.values.forEach { oneCategoryTransactions ->
                 val firstTransaction = oneCategoryTransactions[0]
                 var sum = 0.0
