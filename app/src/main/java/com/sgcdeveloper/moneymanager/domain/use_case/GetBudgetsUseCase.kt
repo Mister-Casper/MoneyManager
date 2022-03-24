@@ -23,6 +23,7 @@ import kotlinx.coroutines.async
 import java.time.DayOfWeek
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.math.max
 
 class GetBudgetsUseCase @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
@@ -82,13 +83,19 @@ class GetBudgetsUseCase @Inject constructor(
                             period = context.getString(periodBudget.key.periodNameRes),
                             categories = budget.categories,
                             progress = df.format(progress).toFloat(),
-                            progressPercent = df.format(spent / budget.amount * 100).toFloat().toString(),
+                            progressPercent = df.format(kotlin.math.min(100f, (spent / budget.amount * 100).toFloat()))
+                                .toString(),
                             categoryDescription = categoryDescription,
                             periodDescription = budgetTImeInterval.getDescription(),
                             graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval),
                             startPeriod = budgetTImeInterval.getStartDate().toDateString(),
                             endPeriod = budgetTImeInterval.getEndDate().toDateString(),
-                            spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(transactions,WalletSingleton.wallet.value!!,budgetTImeInterval)
+                            spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
+                                transactions,
+                                WalletSingleton.wallet.value!!,
+                                budgetTImeInterval
+                            ),
+                            maxX = max(budget.amount,spent)
                         )
                     )
                 }

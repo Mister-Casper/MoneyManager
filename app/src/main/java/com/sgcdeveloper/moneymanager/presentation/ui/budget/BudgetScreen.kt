@@ -224,7 +224,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                         ll.typeface = Typeface.DEFAULT
                         ll.textColor = textColor.toArgb()
                         this.axisLeft.addLimitLine(ll)
-                        this.axisLeft.axisMaximum = budget.budgetValue.toFloat()
+                        this.axisLeft.axisMaximum = budget.maxX.toFloat()
                     }
                 }, modifier = Modifier
                     .height(180.dp)
@@ -252,7 +252,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     ll.typeface = Typeface.DEFAULT
                     ll.textColor = textColor.toArgb()
                     it.axisLeft.addLimitLine(ll)
-                    it.axisLeft.axisMaximum = budget.budgetValue.toFloat()
+                    it.axisLeft.axisMaximum = budget.maxX.toFloat()
                     it.marker = mv
                     it.invalidate()
                 })
