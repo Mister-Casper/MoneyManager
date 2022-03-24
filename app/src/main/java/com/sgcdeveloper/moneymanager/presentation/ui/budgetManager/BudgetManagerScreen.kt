@@ -84,14 +84,21 @@ fun BudgetHeader(budget: BaseBudget.BudgetHeader, onClick: () -> Unit) {
         Text(
             text = budget.header,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            color = MaterialTheme.colors.secondary
         )
         Text(
             text = budget.periodDescription,
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            color = MaterialTheme.colors.secondary
         )
-        Text(text = budget.total, modifier = Modifier.align(Alignment.CenterHorizontally), fontSize = 14.sp)
+        Text(
+            text = budget.total,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            fontSize = 14.sp,
+            color = MaterialTheme.colors.secondary
+        )
         Divider()
     }
 }
@@ -102,8 +109,8 @@ fun BudgetItem(budget: BaseBudget.BudgetItem, onClick: () -> Unit) {
         Modifier
             .padding(8.dp)
             .clickable { onClick() }) {
-        Text(text = budget.budgetName)
-        Text(text = budget.periodDescription)
+        Text(text = budget.budgetName, color = MaterialTheme.colors.secondary)
+        Text(text = budget.periodDescription, color = MaterialTheme.colors.secondary)
         Box(
             Modifier
                 .fillMaxWidth()
