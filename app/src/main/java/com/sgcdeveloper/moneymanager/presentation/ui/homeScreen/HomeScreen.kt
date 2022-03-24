@@ -31,10 +31,13 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)) {
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        ) {
             Text(
                 text = stringResource(id = R.string.dashboard),
                 Modifier.align(Alignment.CenterStart),
@@ -72,11 +75,11 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 BudgetDashboard(budgets, {
                     if (it is BaseBudget.AddNewBudget) {
                         navController.navigate(Screen.AddBudgetScreen().route)
-                    }else if (it is BaseBudget.BudgetItem){
+                    } else if (it is BaseBudget.BudgetItem) {
                         navController.navigate(Screen.BudgetScreen(it).route)
                     }
                 }) {
-
+                    navController.navigate(Screen.BudgetManagerScreen.route)
                 }
             }
         }

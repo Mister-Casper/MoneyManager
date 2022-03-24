@@ -192,5 +192,11 @@
     <string name="budget_budget">Budget</string>
     <string name="transaction_list">Transaction list</string>
     <string name="delete_dialog_massage">Do you really want to delete this budget?</string>
+    <string name="total_budget">Total %1$s / %2$s</string>
+    <string name="daily_full">Daily budget ></string>
+    <string name="weekly_full">Weekly budget ></string>
+    <string name="monthly_full">Monthly budget ></string>
+    <string name="quarterly_full">Quarterly budget ></string>
+    <string name="yearly_full">Yearly budget ></string>
 
 </resources>

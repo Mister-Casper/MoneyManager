@@ -55,10 +55,10 @@ fun BudgetScreen(
     if (dialog is DialogState.DeleteDialog) {
         DeleteDialog(dialog.massage, {
             budgetScreenViewModel.deleteBudget(budget)
-            budgetScreenViewModel.closeDIalog()
+            budgetScreenViewModel.closeDialog()
             navController.popBackStack()
         }, {
-            budgetScreenViewModel.closeDIalog()
+            budgetScreenViewModel.closeDialog()
         })
     }
 

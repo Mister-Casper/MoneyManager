@@ -51,6 +51,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewMode
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreenViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
@@ -452,6 +453,10 @@ class MainActivity : FragmentActivity() {
                             val budgetJson = it.arguments?.getString("budget")
                             val budget = Gson().fromJson( budgetJson, BaseBudget.BudgetItem::class.java)
                             BudgetScreen(budgetScreenViewModel,budget,navController)
+                        }
+                        composable(Screen.BudgetManagerScreen.route){
+                            val homeViewModel: HomeViewModel by viewModels()
+                            BudgetManagerScreen(homeViewModel,navController)
                         }
                     }
 

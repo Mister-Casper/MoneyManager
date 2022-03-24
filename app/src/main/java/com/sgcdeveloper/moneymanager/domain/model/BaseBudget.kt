@@ -6,7 +6,13 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 sealed class BaseBudget {
-    class BudgetHeader(val periodName:String,val timeIntervalController: TimeIntervalController) :
+    class BudgetHeader(
+        val periodName: String,
+        val timeIntervalController: TimeIntervalController,
+        val total: String,
+        val header: String,
+        val periodDescription:String
+    ) :
         BaseBudget()
 
     class BudgetItem(
@@ -16,19 +22,19 @@ sealed class BaseBudget {
         val categories: List<TransactionCategory.ExpenseCategory>,
         val spent: String,
         val left: String,
-        @StringRes val leftStrRes:Int,
+        @StringRes val leftStrRes: Int,
         val budgetValue: Double,
         val budget: String,
-        val progressPercent:String,
-        val period:String,
-        val progress:Float,
-        val categoryDescription:String,
-        val periodDescription:String,
-        val graphEntries:List<BudgetGraphEntry>,
-        val startPeriod:String,
-        val endPeriod:String,
-        val spendCategories:List<CategoryStatistic>,
-        val maxX:Double
+        val progressPercent: String,
+        val period: String,
+        val progress: Float,
+        val categoryDescription: String,
+        val periodDescription: String,
+        val graphEntries: List<BudgetGraphEntry>,
+        val startPeriod: String,
+        val endPeriod: String,
+        val spendCategories: List<CategoryStatistic>,
+        val maxX: Double
     ) : BaseBudget()
 
     object AddNewBudget : BaseBudget()

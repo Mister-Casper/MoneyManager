@@ -40,14 +40,28 @@ class GetBudgetsUseCase @Inject constructor(
             val budgetEntries = moneyManagerRepository.getAsyncWBudgets()
             budgetEntries.sortedBy { it.period.ordinal }.groupBy { it.period }.forEach { periodBudget ->
                 val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
+                val spents = mutableListOf<Double>()
+                periodBudget.value.forEach { budget ->
+                    spents.add(getSpent(transactions, budget, budgetTImeInterval))
+                }
                 budgets.add(
                     BaseBudget.BudgetHeader(
                         context.getString(periodBudget.key.periodNameRes),
-                        budgetTImeInterval
+                        budgetTImeInterval,
+                        context.getString(
+                            R.string.total_budget,
+                            getFormattedMoney(WalletSingleton.wallet.value!!, spents.sum()),
+                            getFormattedMoney(
+                                WalletSingleton.wallet.value!!,
+                                periodBudget.value.sumOf { it.amount }
+                            )
+                        ),
+                        context.getString(periodBudget.key.fullNameRes),
+                        budgetTImeInterval.getDescription()
                     )
                 )
-                periodBudget.value.forEach { budget ->
-                    val spent = getSpent(transactions, budget, budgetTImeInterval)
+                periodBudget.value.forEachIndexed { i, budget ->
+                    val spent = spents[i]
                     val progress = kotlin.math.min(1f, (spent / budget.amount).toFloat())
                     val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
                     val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
@@ -96,7 +110,7 @@ class GetBudgetsUseCase @Inject constructor(
                                 budgetTImeInterval,
                                 budget.categories
                             ),
-                            maxX = max(budget.amount,spent)
+                            maxX = max(budget.amount, spent)
                         )
                     )
                 }

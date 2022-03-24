@@ -24,7 +24,7 @@ open class BudgetScreenViewModel @Inject constructor(
         dialogState.value = DialogState.DeleteDialog(app.getString(R.string.delete_dialog_massage))
     }
 
-    fun closeDIalog() {
+    fun closeDialog() {
         dialogState.value = DialogState.NoneDialogState
     }
 
