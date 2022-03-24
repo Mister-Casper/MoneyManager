@@ -74,7 +74,7 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(40.dp)
-                        .clickable { navController.popBackStack() }
+                        .clickable { navController.navigate(Screen.AddBudgetScreen(budget.budgetEntry).route) }
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.delete_icon),
@@ -271,15 +271,15 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
                 }
                 Text(
                     text = stringResource(id = R.string.transaction_list),
-                    modifier = Modifier.padding(start = 12.dp,top = 12.dp),
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp),
                     color = MaterialTheme.colors.secondary,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
-            items(budget.spendCategories.size){
+            items(budget.spendCategories.size) {
                 val category = budget.spendCategories[it]
-                TransactionCategoryItem(category,navController)
+                TransactionCategoryItem(category, navController)
             }
         }
     }
@@ -288,7 +288,8 @@ fun BudgetScreen(budget: BaseBudget.BudgetItem, navController: NavController) {
 @Composable
 fun TransactionCategoryItem(
     item: CategoryStatistic,
-    navController: NavController) {
+    navController: NavController
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

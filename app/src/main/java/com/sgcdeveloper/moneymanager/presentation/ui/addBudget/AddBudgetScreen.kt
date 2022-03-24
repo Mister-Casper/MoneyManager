@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
@@ -82,7 +83,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         .size(40.dp)
                         .clickable {
                             addBudgetViewModel.clear()
-                            navController.popBackStack()
+                            navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route,false)
                         }
                 )
                 Text(
@@ -96,7 +97,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 )
                 Button(
                     onClick = {
-                        navController.popBackStack()
+                        navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route,false)
                         addBudgetViewModel.onEvent(AddBudgetEvent.InsertBudget)
                         addBudgetViewModel.clear()
                     }, enabled = addBudgetViewModel.isBudgetCanBeSaved.value,

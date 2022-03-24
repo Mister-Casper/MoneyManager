@@ -1,11 +1,12 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addBudget
 
+import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import java.time.LocalDate
 
 sealed class AddBudgetEvent {
-
+    class SetDefaultBudget(val budget: BudgetEntry) : AddBudgetEvent()
     class ChangeBudgetName(val name: String) : AddBudgetEvent()
     class ChangeBudgetAmount(val amount: String) : AddBudgetEvent()
     class ChangeExpenseCategories(val categories: List<TransactionCategory.ExpenseCategory>) : AddBudgetEvent()

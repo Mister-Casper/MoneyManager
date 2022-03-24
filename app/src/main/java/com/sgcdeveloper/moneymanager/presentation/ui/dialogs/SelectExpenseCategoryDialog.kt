@@ -25,15 +25,17 @@ import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import java.util.*
 
 @Composable
 fun SelectExpenseCategoryDialog(
-    defaultCategories: List<TransactionCategory.ExpenseCategory>? = null,
+    defaultCategories: List<TransactionCategory.ExpenseCategory>,
     onAdd: (categories: List<TransactionCategory.ExpenseCategory>) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
-    var items = defaultCategories!!
+    var items = if (defaultCategories.contains(TransactionCategory.ExpenseCategory.AllExpense))
+            TransactionCategory.ExpenseCategory.getAllItems()
+        else
+            defaultCategories
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
@@ -42,7 +44,8 @@ fun SelectExpenseCategoryDialog(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .align(Alignment.CenterStart)) {
+                        .align(Alignment.CenterStart)
+                ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "",
@@ -82,12 +85,12 @@ fun SelectExpenseCategoryDialog(
 
 @Composable
 private fun CategorySelector(
-    defaultCategory: List<TransactionCategory.ExpenseCategory>? = null,
+    defaultCategory: List<TransactionCategory.ExpenseCategory>,
     onAdd: (category: List<TransactionCategory.ExpenseCategory>) -> Unit,
 ) {
-    val selectedOption = rememberMutableStateListOf<TransactionCategory.ExpenseCategory>()
-    selectedOption.addAll((defaultCategory ?: Collections.emptyList()).toMutableSet())
-    val items = TransactionCategory.ExpenseCategory.getAllItems().toMutableList()
+    val selectedOption = rememberMutableStateListOf<Int>()
+    selectedOption.addAll((defaultCategory.map { it.id }))
+    val items = TransactionCategory.ExpenseCategory.getAllItems()
 
     Column(Modifier.fillMaxWidth()) {
         LazyColumn {
@@ -98,23 +101,24 @@ private fun CategorySelector(
                         .padding(4.dp)
                         .clickable {
                             if (item == TransactionCategory.ExpenseCategory.AllExpense) {
-                                if (item in selectedOption) {
+                                if (item.id in selectedOption) {
                                     selectedOption.clear()
                                 } else {
-                                    selectedOption.addAll(items)
+                                    selectedOption.addAll(items.map { it.id })
                                 }
                             } else {
-                                selectedOption.remove(TransactionCategory.ExpenseCategory.AllExpense)
-                                if (item in selectedOption) {
-                                    selectedOption.removeAll { it == item }
+                                selectedOption.remove(TransactionCategory.ExpenseCategory.AllExpense.id)
+                                if (item.id in selectedOption) {
+                                    selectedOption.removeAll { it == item.id }
                                 } else {
-                                    selectedOption.add(item)
+                                    selectedOption.add(item.id)
                                 }
                             }
                             onAdd(
                                 selectedOption
                                     .toSet()
                                     .toList()
+                                    .map { TransactionCategory.findById(it) as TransactionCategory.ExpenseCategory}
                             )
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -146,7 +150,7 @@ private fun CategorySelector(
                         fontSize = 18.sp
                     )
                     RadioButton(
-                        selected = (item in selectedOption),
+                        selected = (selectedOption.contains(item.id)),
                         onClick = null
                     )
                 }

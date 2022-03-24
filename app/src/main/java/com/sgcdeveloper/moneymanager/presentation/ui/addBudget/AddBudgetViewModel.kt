@@ -17,10 +17,7 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
-import com.sgcdeveloper.moneymanager.util.Date
-import com.sgcdeveloper.moneymanager.util.WalletSingleton
-import com.sgcdeveloper.moneymanager.util.isWillBeDouble
-import com.sgcdeveloper.moneymanager.util.toSafeDouble
+import com.sgcdeveloper.moneymanager.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -54,6 +51,17 @@ open class AddBudgetViewModel @Inject constructor(
 
     fun onEvent(addBudgetEvent: AddBudgetEvent) {
         when (addBudgetEvent) {
+            is AddBudgetEvent.SetDefaultBudget -> {
+                val budget = addBudgetEvent.budget
+                transactionId = budget.id
+                budgetAmount.value = budget.amount.deleteUselessZero()
+                updateFormattedAMount()
+                budgetName.value = budget.budgetName
+                transactionCategories.clear()
+                transactionCategories.addAll(budget.categories)
+                colorBudget.value = budget.color
+                budgetPeriod.value = budget.period
+            }
             is AddBudgetEvent.ChangeBudgetAmount -> {
                 if (addBudgetEvent.amount.isWillBeDouble() && addBudgetEvent.amount.length <= InitViewModel.MAX_MONEY_LENGTH) {
                     budgetAmount.value = addBudgetEvent.amount
@@ -70,6 +78,7 @@ open class AddBudgetViewModel @Inject constructor(
             is AddBudgetEvent.InsertBudget -> {
                 viewModelScope.launch {
                     insertBudget(
+                        transactionId,
                         budgetName.value,
                         budgetAmount.value,
                         transactionCategories,

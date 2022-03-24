@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 class InsertBudget @Inject constructor(private val moneyManagerRepository: MoneyManagerRepository,private val syncHelper: SyncHelper) {
     suspend operator fun invoke(
+        id:Long,
         budgetName: String,
         amount: String,
         categories: List<TransactionCategory.ExpenseCategory>,
@@ -21,6 +22,7 @@ class InsertBudget @Inject constructor(private val moneyManagerRepository: Money
     ) {
         moneyManagerRepository.insertBudget(
             BudgetEntry(
+                id = id,
                 budgetName = budgetName,
                 amount = amount.toDouble(),
                 categories = categories.toList(),

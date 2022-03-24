@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.kobakei.ratethisapp.RateThisApp
+import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -38,6 +39,7 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
 import com.sgcdeveloper.moneymanager.presentation.theme.black
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.ui.addBudget.AddBudgetEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.addBudget.AddBudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addBudget.AddBudgetViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
@@ -434,7 +436,11 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.AddBudgetScreen(null).route + "{budget}"){
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
+                            val budget = Gson().fromJson( it.arguments?.getString("budget"), BudgetEntry::class.java)
+                            if (budget != null)
+                                addBudgetViewModel.onEvent(AddBudgetEvent.SetDefaultBudget(budget))
                             AddBudgetScreen(addBudgetViewModel, navController)
+                            it.arguments?.putString("budget", "")
                         }
                         composable("AddBudgetScreen/"){
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
