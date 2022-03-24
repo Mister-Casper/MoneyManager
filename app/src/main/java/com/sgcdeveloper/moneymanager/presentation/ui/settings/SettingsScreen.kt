@@ -112,19 +112,21 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.ExchangeRatesScreen.route) }) {
-                Text(
-                    text = stringResource(id = R.string.exchange_rate),
-                    Modifier.align(Alignment.CenterStart),
-                    color = white,
-                    fontSize = 20.sp
-                )
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowRight,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                )
+            if(darkThemeViewModel.isExistRates()) {
+                MenuItem(Modifier.clickable { navController.navigate(Screen.ExchangeRatesScreen.route) }) {
+                    Text(
+                        text = stringResource(id = R.string.exchange_rate),
+                        Modifier.align(Alignment.CenterStart),
+                        color = white,
+                        fontSize = 20.sp
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.secondary,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                }
             }
             MenuItem {
                 Text(

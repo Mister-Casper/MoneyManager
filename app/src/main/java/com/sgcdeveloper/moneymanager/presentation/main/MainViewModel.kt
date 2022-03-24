@@ -6,9 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import javax.inject.Inject
 
@@ -18,6 +20,7 @@ open class MainViewModel
 @Inject constructor(
     private val app: Application,
     private val appPreferencesHelper: AppPreferencesHelper,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
 
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
@@ -35,6 +38,8 @@ open class MainViewModel
         defaultStartupScreen.value = appPreferencesHelper.getStartupScreen()
         defaultStartupTransactionType.value = appPreferencesHelper.getStartupTransactionType()
     }
+
+    fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 
     fun setIsDark(isDark: Boolean) {
         isDarkTheme.value = isDark
