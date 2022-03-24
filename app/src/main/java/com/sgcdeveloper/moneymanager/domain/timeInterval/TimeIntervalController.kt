@@ -4,6 +4,7 @@ import android.content.Context
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 sealed class TimeIntervalController(val icon: Int, val name: Int) {
@@ -11,14 +12,23 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     abstract fun moveNext()
     abstract fun isCanMove(): Boolean
     abstract fun getDescription(): String
-    abstract fun isInInterval(intervalDate: Date): Boolean
     abstract fun getGraphTimeInterval(): Long
     abstract fun getStartDate(): Date
     abstract fun getEndDate(): Date
     abstract fun getDividersCount(): Int
 
+    fun isInInterval(intervalDate: Date): Boolean {
+        if (this is AllController)
+            return true
+        val date = intervalDate.epochMillis / TimeUnit.DAYS.toMillis(1)
+        val startDate = getStartDate().epochMillis / TimeUnit.DAYS.toMillis(1)
+        val endDate = getEndDate().epochMillis / TimeUnit.DAYS.toMillis(1)
+        return (date in startDate..endDate)
+    }
+
     class DailyController(var date: Date = Date(LocalDate.now())) :
         TimeIntervalController(R.drawable.daily_icon, R.string.daily) {
+
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusDays(1))
         }
@@ -33,10 +43,6 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
         override fun getDescription(): String {
             return date.toDateString()
-        }
-
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return date.toDateString() == intervalDate.toDateString()
         }
 
         override fun getGraphTimeInterval(): Long {
@@ -72,12 +78,6 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
             return startDay.toWeekString() + " - " + endDay.toWeekString()
         }
 
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return (startDay.toDateString() == intervalDate.toDateString()
-                    || endDay.toDateString() == intervalDate.toDateString() ||
-                    (intervalDate.epochMillis <= endDay.epochMillis && intervalDate.epochMillis >= startDay.epochMillis))
-        }
-
         override fun getGraphTimeInterval(): Long {
             return TimeUnit.DAYS.toMillis(1)
         }
@@ -90,14 +90,18 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     class MonthlyController(var date: Date = Date(LocalDate.now().withDayOfMonth(1))) :
         TimeIntervalController(R.drawable.monthly_icon, R.string.monthly) {
 
+        private var endDate = Date(date.getAsLocalDate().withDayOfMonth(date.getAsLocalDate().lengthOfMonth()))
+
         constructor(date: LocalDate) : this(Date(date.withDayOfMonth(1)))
 
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusMonths(1))
+            endDate = Date(endDate.getAsLocalDate().minusMonths(1))
         }
 
         override fun moveNext() {
             date = Date(date.getAsLocalDate().plusMonths(1))
+            endDate = Date(endDate.getAsLocalDate().plusMonths(1))
         }
 
         override fun isCanMove(): Boolean {
@@ -108,20 +112,12 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
             return date.toMonthString()
         }
 
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return date.getAsLocalDate().withDayOfMonth(1) <= intervalDate.getAsLocalDate()
-                    && date.getAsLocalDate()
-                .withDayOfMonth(date.getAsLocalDate().lengthOfMonth()) >= intervalDate.getAsLocalDate()
-                    && date.getAsLocalDate().month == intervalDate.getAsLocalDate().month
-        }
-
         override fun getGraphTimeInterval(): Long {
             return TimeUnit.DAYS.toMillis(date.getAsLocalDate().lengthOfMonth().toLong()) / 8
         }
 
         override fun getStartDate(): Date = date
-        override fun getEndDate(): Date =
-            Date(date.getAsLocalDate().withDayOfMonth(date.getAsLocalDate().lengthOfMonth()))
+        override fun getEndDate(): Date = endDate
 
         override fun getDividersCount(): Int = 8
     }
@@ -159,12 +155,6 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
             return startDay.toMonthString() + " - " + endDay.toMonthString()
         }
 
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return (startDay.toDateString() == intervalDate.toDateString()
-                    || endDay.toDateString() == intervalDate.toDateString() ||
-                    (intervalDate.epochMillis <= endDay.epochMillis && intervalDate.epochMillis >= startDay.epochMillis))
-        }
-
         override fun getGraphTimeInterval(): Long {
             return (endDay.epochMillis - startDay.epochMillis) / 8
         }
@@ -177,16 +167,21 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     class YearlyController(var date: Date = Date(LocalDate.now())) :
         TimeIntervalController(R.drawable.yearly_icon, R.string.yearly) {
 
+        private var endDate =
+            Date(date.getAsLocalDate().withMonth(12).withDayOfMonth(date.getAsLocalDate().lengthOfMonth()))
+
         constructor(startDay: LocalDate) : this(
             Date(startDay.withDayOfMonth(1).withMonth(1)),
         )
 
         override fun moveBack() {
             date = Date(date.getAsLocalDate().minusYears(1))
+            endDate = Date(endDate.getAsLocalDate().minusYears(1))
         }
 
         override fun moveNext() {
             date = Date(date.getAsLocalDate().plusYears(1))
+            endDate = Date(endDate.getAsLocalDate().plusYears(1))
         }
 
         override fun isCanMove(): Boolean {
@@ -197,17 +192,12 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
             return date.getAsLocalDate().year.toString()
         }
 
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return intervalDate.getAsLocalDate().year == date.getAsLocalDate().year
-        }
-
         override fun getGraphTimeInterval(): Long {
             return TimeUnit.DAYS.toMillis(date.getAsLocalDate().lengthOfYear().toLong()) / 8
         }
 
-        override fun getStartDate(): Date = Date(date.getAsLocalDate().withMonth(1).withDayOfMonth(1))
-        override fun getEndDate(): Date =
-            Date(date.getAsLocalDate().withMonth(12).withDayOfMonth(date.getAsLocalDate().lengthOfMonth()))
+        override fun getStartDate(): Date = date
+        override fun getEndDate(): Date = endDate
 
         override fun getDividersCount(): Int = 8
     }
@@ -222,10 +212,6 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
         override fun getDescription(): String {
             return allString
-        }
-
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return true
         }
 
         override fun getGraphTimeInterval(): Long {
@@ -253,8 +239,8 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
     class CustomController(private val step: Long? = null) :
         TimeIntervalController(R.drawable.edit_calendar_icon, R.string.custom) {
-        lateinit var startIntervalDate: Date
-        lateinit var endIntervalDate: Date
+        var startIntervalDate: Date = Date(LocalDateTime.now())
+        var endIntervalDate: Date = Date(LocalDateTime.now())
 
         override fun moveBack() {
             step?.let {
@@ -276,12 +262,6 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
         override fun getDescription(): String {
             return startIntervalDate.toWeekString() + " - " + endIntervalDate.toWeekString()
-        }
-
-        override fun isInInterval(intervalDate: Date): Boolean {
-            return (startIntervalDate.toDateString() == intervalDate.toDateString()
-                    || endIntervalDate.toDateString() == intervalDate.toDateString() ||
-                    (intervalDate.epochMillis <= endIntervalDate.epochMillis && intervalDate.epochMillis >= startIntervalDate.epochMillis))
         }
 
         override fun getGraphTimeInterval(): Long {

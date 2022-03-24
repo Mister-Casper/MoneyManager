@@ -36,7 +36,7 @@ class GetBudgetsUseCase @Inject constructor(
         CoroutineScope(Dispatchers.IO).async {
             val budgets: MutableList<BaseBudget> = mutableListOf()
             val transactions = getTransactionsUseCase().sortedBy { it.date.epochMillis }
-            val budgetEntries = moneyManagerRepository.getBudgetsOnce()
+            val budgetEntries = moneyManagerRepository.getAsyncWBudgets()
             budgetEntries.sortedBy { it.period.ordinal }.groupBy { it.period }.forEach { periodBudget ->
                 val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
                 budgets.add(
