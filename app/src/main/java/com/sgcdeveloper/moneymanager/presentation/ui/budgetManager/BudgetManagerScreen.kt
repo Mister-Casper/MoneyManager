@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.RoundedLinearProgressIndicator
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
@@ -64,7 +65,7 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
                     }
                 } else if (budget is BaseBudget.BudgetItem) {
                     BudgetItem(budget) {
-
+                        navController.navigate(Screen.BudgetScreen(budget).route)
                     }
                 }
             }
