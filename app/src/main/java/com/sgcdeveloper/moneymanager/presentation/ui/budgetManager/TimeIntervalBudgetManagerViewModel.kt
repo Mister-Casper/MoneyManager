@@ -5,19 +5,24 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetBudgetsUseCase
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
+import com.sgcdeveloper.moneymanager.util.Date
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class TimeIntervalBudgetManagerViewModel @Inject constructor(
     private val app: Application,
-    private val getBudgetsUseCase: GetBudgetsUseCase
+    private val getBudgetsUseCase: GetBudgetsUseCase,
+    private val appPreferencesHelper:AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     val description = mutableStateOf("")
@@ -33,7 +38,8 @@ class TimeIntervalBudgetManagerViewModel @Inject constructor(
                 TimeIntervalController.DailyController()
             }
             BudgetPeriod.Weekly -> {
-                TimeIntervalController.WeeklyController()
+                val date = getStartDate(Date(LocalDateTime.now()), appPreferencesHelper.getFirstDayOfWeek())
+                TimeIntervalController.WeeklyController(date)
             }
             BudgetPeriod.Monthly -> {
                 TimeIntervalController.MonthlyController()
@@ -57,6 +63,14 @@ class TimeIntervalBudgetManagerViewModel @Inject constructor(
                 ) as List<BaseBudget.BudgetItem>
             )
         }
+    }
+
+    private fun getStartDate(now: Date, firstDay: DayOfWeek): Date {
+        val dif = if (firstDay == now.getAsLocalDate().dayOfWeek)
+            0
+        else
+            kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDay.value + 7)
+        return Date(now.getAsLocalDate().minusDays(dif.toLong()))
     }
 
     fun moveBack() {

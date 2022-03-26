@@ -20,10 +20,13 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     fun isInInterval(intervalDate: Date): Boolean {
         if (this is AllController)
             return true
-        val date = intervalDate.epochMillis / TimeUnit.DAYS.toMillis(1)
-        val startDate = getStartDate().epochMillis / TimeUnit.DAYS.toMillis(1)
-        val endDate = getEndDate().epochMillis / TimeUnit.DAYS.toMillis(1)
-        return (date in startDate..endDate)
+        val date =
+            (intervalDate.epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
+        val startDate =
+            (getStartDate().epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
+        val endDate =
+            (((getEndDate().epochMillis + TimeUnit.DAYS.toMillis(1)) / TimeUnit.HOURS.toMillis(1)).toInt()) - 1
+        return (date in startDate .. endDate)
     }
 
     class DailyController(var date: Date = Date(LocalDate.now())) :
