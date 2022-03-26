@@ -90,10 +90,10 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 Text(
                     text = stringResource(id = R.string.add_budget),
                     color = MaterialTheme.colors.secondary,
-                    fontSize = 24.sp,
+                    fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp)
+                        .padding(start = 4.dp)
                         .weight(1f)
                 )
                 Button(

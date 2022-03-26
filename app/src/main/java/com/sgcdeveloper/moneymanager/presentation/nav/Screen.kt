@@ -5,6 +5,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
@@ -49,4 +50,7 @@ sealed class Screen(val route: String) {
         Screen("TransactionCategoryForWalletStatisticScreen/" + Gson().toSafeJson(wallet))
 
     class WalletScreen(wallet: Wallet?) : Screen("WalletScreen/" + Gson().toSafeJson(wallet))
+
+    class TimeIntervalBudgetManager(period: BudgetPeriod? = null) :
+        Screen("TimeIntervalBudgetManager/" + Gson().toSafeJson(period))
 }

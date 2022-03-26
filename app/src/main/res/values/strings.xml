@@ -198,5 +198,10 @@
     <string name="monthly_full">Monthly budget ></string>
     <string name="quarterly_full">Quarterly budget ></string>
     <string name="yearly_full">Yearly budget ></string>
+    <string name="daily_medium">Daily budget</string>
+    <string name="weekly_medium">Weekly budget</string>
+    <string name="monthly_medium">Monthly budget</string>
+    <string name="quarterly_medium">Quarterly budget</string>
+    <string name="yearly_medium">Yearly budget</string>
 
 </resources>

@@ -33,90 +33,103 @@ class GetBudgetsUseCase @Inject constructor(
     private val getCategoriesStatistic: GetCategoriesStatistic
 ) {
 
-    suspend operator fun invoke(firstDate: Date = Date(LocalDate.now())): List<BaseBudget> =
+    suspend operator fun invoke(
+        firstDate: Date = Date(LocalDate.now()),
+        period: BudgetPeriod? = null
+    ): List<BaseBudget> =
         CoroutineScope(Dispatchers.IO).async {
             val budgets: MutableList<BaseBudget> = mutableListOf()
             val transactions = getTransactionsUseCase().sortedBy { it.date.epochMillis }
             val budgetEntries = moneyManagerRepository.getAsyncWBudgets()
-            budgetEntries.sortedBy { it.period.ordinal }.groupBy { it.period }.forEach { periodBudget ->
-                val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
-                val spents = mutableListOf<Double>()
-                periodBudget.value.forEach { budget ->
-                    spents.add(getSpent(transactions, budget, budgetTImeInterval))
-                }
-                budgets.add(
-                    BaseBudget.BudgetHeader(
-                        context.getString(periodBudget.key.periodNameRes),
-                        budgetTImeInterval,
-                        context.getString(
-                            R.string.total_budget,
-                            getFormattedMoney(WalletSingleton.wallet.value!!, spents.sum()),
-                            getFormattedMoney(
-                                WalletSingleton.wallet.value!!,
-                                periodBudget.value.sumOf { it.amount }
-                            )
-                        ),
-                        context.getString(periodBudget.key.fullNameRes),
-                        budgetTImeInterval.getDescription()
-                    )
-                )
-                periodBudget.value.forEachIndexed { i, budget ->
-                    val spent = spents[i]
-                    val progress = kotlin.math.min(1f, (spent / budget.amount).toFloat())
-                    val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
-                    val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
-                    val categoryDescription =
-                        if (budget.categories.size == TransactionCategory.ExpenseCategory.getAllItems().size)
-                            context.getString(R.string.all_category)
-                        else
-                            budget.categories.filter { it.id != 0 }.joinToString(separator = ", ") {
-                                context.getString(
-                                    TransactionCategory.ExpenseCategory.getStringRes(it)
-                                )
-                            }
-
-                    budgets.add(
-                        BaseBudget.BudgetItem(
-                            budgetEntry = budget,
-                            color = budget.color,
-                            budgetName = budget.budgetName,
-                            spent = getFormattedMoney(
-                                WalletSingleton.wallet.value!!,
-                                spent
-                            ),
-                            left = getFormattedMoney(
-                                WalletSingleton.wallet.value!!,
-                                kotlin.math.abs(left)
-                            ),
-                            budgetValue = budget.amount,
-                            budget = getFormattedMoney(
-                                WalletSingleton.wallet.value!!,
-                                budget.amount
-                            ),
-                            leftStrRes = leftStrRes,
-                            period = context.getString(periodBudget.key.periodNameRes),
-                            categories = budget.categories,
-                            progress = progress,
-                            progressPercent = df.format(kotlin.math.min(100f, (spent / budget.amount * 100).toFloat()))
-                                .toString(),
-                            categoryDescription = categoryDescription,
-                            periodDescription = budgetTImeInterval.getDescription(),
-                            graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval),
-                            startPeriod = budgetTImeInterval.getStartDate().toDateString(),
-                            endPeriod = budgetTImeInterval.getEndDate().toDateString(),
-                            spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
-                                transactions,
-                                WalletSingleton.wallet.value!!,
+            budgetEntries.sortedBy { it.period.ordinal }.groupBy { it.period }
+                .filter { period == null || it.key.ordinal == period.ordinal }.forEach { periodBudget ->
+                    val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
+                    val spents = mutableListOf<Double>()
+                    periodBudget.value.forEach { budget ->
+                        spents.add(getSpent(transactions, budget, budgetTImeInterval))
+                    }
+                    if (period == null)
+                        budgets.add(
+                            BaseBudget.BudgetHeader(
+                                context.getString(periodBudget.key.periodNameRes),
                                 budgetTImeInterval,
-                                budget.categories
-                            ),
-                            maxX = max(budget.amount, spent)
+                                context.getString(
+                                    R.string.total_budget,
+                                    getFormattedMoney(WalletSingleton.wallet.value!!, spents.sum()),
+                                    getFormattedMoney(
+                                        WalletSingleton.wallet.value!!,
+                                        periodBudget.value.sumOf { it.amount }
+                                    )
+                                ),
+                                context.getString(periodBudget.key.fullNameRes),
+                                budgetTImeInterval.getDescription(),
+                                periodBudget.key
+                            )
                         )
-                    )
-                }
-            }
+                    periodBudget.value.forEachIndexed { i, budget ->
+                        val spent = spents[i]
+                        val progress = kotlin.math.min(1f, (spent / budget.amount).toFloat())
+                        val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
+                        val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
+                        val categoryDescription =
+                            if (budget.categories.size == TransactionCategory.ExpenseCategory.getAllItems().size)
+                                context.getString(R.string.all_category)
+                            else
+                                budget.categories.filter { it.id != 0 }.joinToString(separator = ", ") {
+                                    context.getString(
+                                        TransactionCategory.ExpenseCategory.getStringRes(it)
+                                    )
+                                }
 
-            return@async budgets + BaseBudget.AddNewBudget
+                        budgets.add(
+                            BaseBudget.BudgetItem(
+                                budgetEntry = budget,
+                                color = budget.color,
+                                budgetName = budget.budgetName,
+                                spent = getFormattedMoney(
+                                    WalletSingleton.wallet.value!!,
+                                    spent
+                                ),
+                                left = getFormattedMoney(
+                                    WalletSingleton.wallet.value!!,
+                                    kotlin.math.abs(left)
+                                ),
+                                budgetValue = budget.amount,
+                                budget = getFormattedMoney(
+                                    WalletSingleton.wallet.value!!,
+                                    budget.amount
+                                ),
+                                leftStrRes = leftStrRes,
+                                period = context.getString(periodBudget.key.periodNameRes),
+                                categories = budget.categories,
+                                progress = progress,
+                                progressPercent = df.format(
+                                    kotlin.math.min(
+                                        100f,
+                                        (spent / budget.amount * 100).toFloat()
+                                    )
+                                )
+                                    .toString(),
+                                categoryDescription = categoryDescription,
+                                periodDescription = budgetTImeInterval.getDescription(),
+                                graphEntries = getBudgetGraph(transactions, budget, budgetTImeInterval),
+                                startPeriod = budgetTImeInterval.getStartDate().toDateString(),
+                                endPeriod = budgetTImeInterval.getEndDate().toDateString(),
+                                spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
+                                    transactions,
+                                    WalletSingleton.wallet.value!!,
+                                    budgetTImeInterval,
+                                    budget.categories
+                                ),
+                                maxX = max(budget.amount, spent)
+                            )
+                        )
+                    }
+                }
+            if (period == null)
+                return@async budgets + BaseBudget.AddNewBudget
+            else
+                return@async budgets
         }.await()
 
     private suspend fun getBudgetTransactions(

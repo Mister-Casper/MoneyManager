@@ -33,6 +33,7 @@ import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -52,6 +53,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreenViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManager
+import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManagerViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
@@ -458,6 +461,14 @@ class MainActivity : FragmentActivity() {
                             val homeViewModel: HomeViewModel by viewModels()
                             homeViewModel.loadBudgets()
                             BudgetManagerScreen(homeViewModel,navController)
+                        }
+                        composable(Screen.TimeIntervalBudgetManager(null).route + "{period}"){
+                            val timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel by viewModels()
+                            val period = Gson().fromJson( it.arguments?.getString("period"), BudgetPeriod::class.java)
+                            if (period != null)
+                                timeIntervalBudgetManagerViewModel.loadBudgets(period)
+                            TimeIntervalBudgetManager(navController,timeIntervalBudgetManagerViewModel)
+                            it.arguments?.putString("period", "")
                         }
                     }
 

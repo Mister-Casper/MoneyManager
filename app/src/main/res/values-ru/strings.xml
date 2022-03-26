@@ -182,5 +182,26 @@
     <string name="exchange_rate">Обменные курсы</string>
 
     <string name="all_wallets">Все кошельки</string>
-
+    <string name="budget_color">Цвет</string>
+    <string name="budget_period">Период</string>
+    <string name="budget">Бюджет</string>
+    <string name="remain">Остаток %1$s</string>
+    <string name="budget_view">Бюджет</string>
+    <string name="overspent">Перерасход %1$s</string>
+    <string name="spent">Расход</string>
+    <string name="budget_category">Категории</string>
+    <string name="budget_budget">Бюджет</string>
+    <string name="transaction_list">Список транзакций</string>
+    <string name="delete_dialog_massage">Вы действительно хотите удалить этот бюджет?</string>
+    <string name="total_budget">Итого %1$s / %2$s</string>
+    <string name="daily_full">Дневной бюджет ></string>
+    <string name="weekly_full">Недельный бюджет ></string>
+    <string name="monthly_full">Месячный бюджет ></string>
+    <string name="quarterly_full">Квартальный бюджет ></string>
+    <string name="yearly_full">Годовой бюджет ></string>
+    <string name="daily_medium">Дневной бюджет</string>
+    <string name="weekly_medium">Недельный бюджет</string>
+    <string name="monthly_medium">Месячный бюджет</string>
+    <string name="quarterly_medium">Квартальный бюджет</string>
+    <string name="yearly_medium">Годовой бюджет</string>
 </resources>

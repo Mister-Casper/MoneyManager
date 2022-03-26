@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.domain.model
 import androidx.annotation.StringRes
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
+import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 sealed class BaseBudget {
@@ -11,7 +12,8 @@ sealed class BaseBudget {
         val timeIntervalController: TimeIntervalController,
         val total: String,
         val header: String,
-        val periodDescription:String
+        val periodDescription:String,
+        val period:BudgetPeriod
     ) :
         BaseBudget()
 

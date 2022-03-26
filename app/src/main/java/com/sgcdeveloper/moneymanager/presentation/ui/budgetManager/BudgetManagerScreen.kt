@@ -31,7 +31,12 @@ import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 @Composable
 fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val budgets = remember { homeViewModel.budgets }
-    Box(modifier = Modifier.fillMaxSize()) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)
+    ) {
         Column(Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(Modifier.align(Alignment.CenterStart)) {
@@ -60,7 +65,7 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
                     val budget = budgets[it]
                     if (budget is BaseBudget.BudgetHeader) {
                         BudgetHeader(budget) {
-
+                            navController.navigate(Screen.TimeIntervalBudgetManager(budget.period).route)
                         }
                     } else if (budget is BaseBudget.BudgetItem) {
                         BudgetItem(budget) {
@@ -77,10 +82,11 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
         OutlinedButton(
             onClick = { navController.navigate(Screen.AddBudgetScreen().route) },
             shape = CircleShape,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = blue)
         ) {
-
             androidx.compose.material.Icon(
                 painter = painterResource(id = R.drawable.add_icon),
                 contentDescription = "",
