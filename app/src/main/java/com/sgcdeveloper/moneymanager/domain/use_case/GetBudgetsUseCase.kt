@@ -96,7 +96,7 @@ class GetBudgetsUseCase @Inject constructor(
                             leftStrRes = leftStrRes,
                             period = context.getString(periodBudget.key.periodNameRes),
                             categories = budget.categories,
-                            progress = df.format(progress).toFloat(),
+                            progress = progress,
                             progressPercent = df.format(kotlin.math.min(100f, (spent / budget.amount * 100).toFloat()))
                                 .toString(),
                             categoryDescription = categoryDescription,

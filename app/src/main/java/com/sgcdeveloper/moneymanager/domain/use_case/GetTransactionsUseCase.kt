@@ -27,18 +27,20 @@ class GetTransactionsUseCase @Inject constructor(
             transactions.forEachIndexed { item, transaction ->
                 val transactionCode = wallets[transaction.fromWalletId]
                 if (transactionCode != defaultCurrency.code) {
+                    val rate = rates.find { it.currency.code == transactionCode }?.rate
                     transactions[item] =
-                        transaction.copy(value = transaction.value / rates.find { it.currency.code == transactionCode }!!.rate)
+                        transaction.copy(value = transaction.value / (rate?:1.0).toDouble())
                 }
             }
             transactions.map { transaction ->
                 val transactionCode = wallets[transaction.fromWalletId]
                 if (transactionCode != defaultCurrency.code) {
+                    val rate =  rates.find { it.currency.code == wallets[transaction.fromWalletId] }?.rate
                     Transaction(
                         transaction.id,
                         transaction.date,
                         transaction.value,
-                        transaction.value * rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate,
+                        transaction.value * (rate?:1.0),
                         transaction.description,
                         transaction.transactionType,
                         transaction.fromWalletId,
