@@ -127,12 +127,15 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
     class QuarterlyController(
         var startDay: Date = Date(LocalDate.now().withDayOfMonth(1)),
-        var endDay: Date = Date(startDay.getAsLocalDate().plusMonths(2))
+        var endDay: Date = startDay
     ) :
         TimeIntervalController(R.drawable.quarterly_icon, R.string.quarterly) {
 
         init {
-            endDay = Date(endDay.getAsLocalDate().withDayOfMonth(endDay.getAsLocalDate().lengthOfMonth()))
+            val start = startDay.getAsLocalDate()
+            val month = start.monthValue - ((start.monthValue ) % 3)
+            startDay = Date(start.withMonth(month))
+            endDay = Date(endDay.getAsLocalDate().withDayOfMonth(endDay.getAsLocalDate().lengthOfMonth()).withMonth((month + 2) % 12))
         }
 
         constructor(startDay: LocalDate) : this(
