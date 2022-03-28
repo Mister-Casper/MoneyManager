@@ -204,4 +204,18 @@
     <string name="quarterly_medium">Quarterly budget</string>
     <string name="yearly_medium">Yearly budget</string>
 
+    <string name="none_recurring_nterval">None</string>
+    <string name="recurring">Recurring</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="month">Month</string>
+    <string name="year">Year</string>
+    <string name="every">Every</string>
+    <string name="same_day_each_month">Same day each month(%1$d)</string>
+    <string name="end_of_month">End of month</string>
+    <string name="forever">Forever</string>
+    <string name="until">Until</string>
+    <string name="for_repeat">For..</string>
+    <string name="times">Times</string>
+
 </resources>

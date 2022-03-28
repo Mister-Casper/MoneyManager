@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
@@ -52,6 +53,8 @@ open class AddTransactionViewModel @Inject constructor(
 
     var isTransactionFromWallet = true
     var transactionId = 0L
+    val recurringInterval = mutableStateOf<RecurringInterval>(RecurringInterval.None)
+    val firstDayOfWeek = appPreferencesHelper.getFirstDayOfWeek()
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
@@ -179,6 +182,9 @@ open class AddTransactionViewModel @Inject constructor(
                 runBlocking {
                     walletsUseCases.insertTransaction.deleteTransaction(transactionId)
                 }
+            }
+            is AddTransactionEvent.ShowRepeatIntervalDialog ->{
+                dialogState.value = DialogState.RecurringDialog(recurringInterval.value)
             }
         }
         isTransactionCanBeSaved.value = checkIsCanBeSaved()

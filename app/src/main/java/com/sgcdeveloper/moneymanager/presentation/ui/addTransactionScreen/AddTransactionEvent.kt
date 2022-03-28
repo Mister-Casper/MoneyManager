@@ -18,6 +18,7 @@ sealed class AddTransactionEvent {
     class ChangeTransactionWallet(val wallet: Wallet) : AddTransactionEvent()
     class ShowWalletPickerDialog(val isFrom:Boolean = true) : AddTransactionEvent()
 
+    object ShowRepeatIntervalDialog : AddTransactionEvent()
     object DeleteTransaction : AddTransactionEvent()
     object ShowDeleteTransactionDialog : AddTransactionEvent()
     object ShowChangeDateDialog : AddTransactionEvent()

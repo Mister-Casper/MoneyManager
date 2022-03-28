@@ -70,14 +70,24 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
         }, {
             addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
         }, R.string.are_u_sure_delete_transaction)
+    } else if (dialog.value is DialogState.RecurringDialog) {
+        RecurringDialogPicker(defaultRecurringInterval = (dialog.value as DialogState.RecurringDialog).defaultRecurring,
+            date = addTransactionViewModel.transactionDate.value,
+            firstDay = addTransactionViewModel.firstDayOfWeek,
+            onAdd = {
+                addTransactionViewModel.recurringInterval.value = it
+                addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
+            },
+            onDismiss = { addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog) }
+        )
     }
-    if (dialogBackOpen.value){
-        DialogBack(dialogBackOpen.value,signalBack.value,
-            signalReturn={
+    if (dialogBackOpen.value) {
+        DialogBack(dialogBackOpen.value, signalBack.value,
+            signalReturn = {
                 signalBack.value = false
                 dialogBackOpen.value = false
             },
-            dialogOpen={
+            dialogOpen = {
                 dialogBackOpen.value = false
                 addTransactionViewModel.clear()
                 navController.popBackStack()

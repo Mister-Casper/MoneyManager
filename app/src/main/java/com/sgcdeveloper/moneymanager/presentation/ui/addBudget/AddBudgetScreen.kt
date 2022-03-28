@@ -131,7 +131,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                        .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                         .align(Alignment.CenterHorizontally),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary)
@@ -150,7 +150,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         readOnly = true,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                            .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                             .fillMaxWidth(),
                         colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                         singleLine = true,
@@ -187,7 +187,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         readOnly = true,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(top = 12.dp, start = 20.dp, end = 20.dp)
+                            .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                             .fillMaxWidth(),
                         colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                         singleLine = true,

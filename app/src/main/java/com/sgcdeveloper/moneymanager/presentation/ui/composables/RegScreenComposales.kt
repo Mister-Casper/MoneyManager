@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
@@ -90,7 +91,8 @@ fun ColumnScope.InputField(
     focusManager: FocusManager?=null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions =  KeyboardOptions(imeAction = ImeAction.Next)
+    keyboardOptions: KeyboardOptions =  KeyboardOptions(imeAction = ImeAction.Next),
+    padding: Dp = 10.dp
 ) {
     TextField(
         singleLine = true,
@@ -100,7 +102,7 @@ fun ColumnScope.InputField(
         placeholder = { Text(label) },
         modifier = Modifier
             .align(Alignment.CenterHorizontally)
-            .padding(top = 12.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 12.dp, start = padding, end = padding)
             .fillMaxWidth(),
         colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
         keyboardOptions = keyboardOptions,

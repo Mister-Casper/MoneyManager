@@ -164,7 +164,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     readOnly = true,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp, start = 20.dp, end = 20.dp)
+                        .padding(top = 8.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                     singleLine = true,
@@ -193,7 +193,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     },
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp, start = 20.dp, end = 20.dp)
+                        .padding(top = 8.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
                     colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                     singleLine = true,
