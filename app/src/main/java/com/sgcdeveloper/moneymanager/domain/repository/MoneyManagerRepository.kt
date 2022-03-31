@@ -1,8 +1,5 @@
 package com.sgcdeveloper.moneymanager.domain.repository
 
-import com.sgcdeveloper.moneymanager.data.db.dao.BudgetDao
-import com.sgcdeveloper.moneymanager.data.db.dao.RateDao
-import com.sgcdeveloper.moneymanager.data.db.dao.TransactionDao
-import com.sgcdeveloper.moneymanager.data.db.dao.WalletDao
+import com.sgcdeveloper.moneymanager.data.db.dao.*
 
-interface MoneyManagerRepository :WalletDao,TransactionDao,RateDao, BudgetDao
+interface MoneyManagerRepository : WalletDao, TransactionDao, RateDao, BudgetDao, RecurringTransactionDao

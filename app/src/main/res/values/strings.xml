@@ -217,5 +217,8 @@
     <string name="until">Until</string>
     <string name="for_repeat">For..</string>
     <string name="times">Times</string>
+    <string name="recurring_dashboard">RECURRING</string>
+    <string name="add_recurring">Add Recurring</string>
+    <string name="next_occurrence">Next occurrence: </string>
 
 </resources>

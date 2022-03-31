@@ -6,8 +6,8 @@ import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.util.*
 
-sealed class RecurringInterval(
-    val sameDay: Boolean = false,
+open class RecurringInterval(
+    val sameDay: Int = -1,
     val days: List<DayOfWeek> = Collections.emptyList(),
     val recurring: Recurring,
     val lastTransactionDate: Date?,
@@ -17,8 +17,7 @@ sealed class RecurringInterval(
     val type: RecurringEndType = RecurringEndType.Forever,
     val times: Int = 1
 ) {
-
-    object None : RecurringInterval(false, Collections.emptyList(), Recurring.None, null, false)
+    object None : RecurringInterval(-1, Collections.emptyList(), Recurring.None, null, false)
 
     class Daily(
         _lastTransactionDate: Date?,
@@ -29,7 +28,7 @@ sealed class RecurringInterval(
         type: RecurringEndType
     ) :
         RecurringInterval(
-            false,
+            -1,
             Collections.emptyList(),
             Recurring.Daily,
             _lastTransactionDate,
@@ -49,7 +48,7 @@ sealed class RecurringInterval(
         times: Int, type: RecurringEndType
     ) :
         RecurringInterval(
-            false,
+            -1,
             days,
             Recurring.Weekly,
             _lastTransactionDate,
@@ -61,7 +60,7 @@ sealed class RecurringInterval(
         )
 
     class Monthly(
-        sameDay: Boolean,
+        sameDay: Int,
         _lastTransactionDate: Date?,
         _isForever: Boolean,
         _endDate: Date,
@@ -88,7 +87,7 @@ sealed class RecurringInterval(
         type: RecurringEndType
     ) :
         RecurringInterval(
-            false,
+            -1,
             Collections.emptyList(),
             Recurring.Yearly,
             _lastTransactionDate,

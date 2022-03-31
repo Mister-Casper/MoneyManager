@@ -2,7 +2,10 @@ package com.sgcdeveloper.moneymanager.domain.use_case
 
 import android.content.Context
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
+import com.sgcdeveloper.moneymanager.data.db.entry.RecurringTransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.domain.model.Recurring
+import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
@@ -30,40 +33,63 @@ class InsertTransaction @Inject constructor(
         description: String,
         amount: String,
         date: Date,
-        category: TransactionCategory
+        category: TransactionCategory,
+        recurringInterval: RecurringInterval,
+        recurringTransactionId:Long
     ): Long {
         var toWalletId = 0L
         if (toWallet != null && transactionType == TransactionType.Transfer)
             toWalletId = toWallet.walletId
-        if (transactionId != 0L)
-            cancelTransaction(moneyManagerRepository.getTransaction(transactionId))
         val newCategory = if (category == TransactionCategory.None)
             TransactionCategory.Transfers
         else
             category
 
+        val transactionEntry = TransactionEntry(
+            id = transactionId,
+            date = date,
+            value = amount.toDouble(),
+            description = description,
+            transactionType = transactionType,
+            fromWalletId = fromWallet.walletId,
+            toWalletId = toWalletId,
+            category = newCategory
+        )
+
+        if (recurringInterval.recurring != Recurring.None) {
+            insertRecurringTransaction(transactionEntry, recurringInterval,recurringTransactionId)
+            return 0
+        }
+
+        if (transactionId != 0L)
+            cancelTransaction(moneyManagerRepository.getTransaction(transactionId))
         updateWalletMoney(transactionType, amount.toDouble(), fromWallet.walletId, toWallet?.walletId)
 
-        val transactionId = moneyManagerRepository.insertTransaction(
-            TransactionEntry(
-                id = transactionId,
-                date = date,
-                value = amount.toDouble(),
-                description = description,
-                transactionType = transactionType,
-                fromWalletId = fromWallet.walletId,
-                toWalletId = toWalletId,
-                category = newCategory
+        val newTransactionId = moneyManagerRepository.insertTransaction(transactionEntry)
+        syncHelper.syncServerData()
+        return newTransactionId
+    }
+
+    private suspend fun insertRecurringTransaction(entry: TransactionEntry, recurringInterval: RecurringInterval,  recurringTransactionId:Long) {
+        moneyManagerRepository.insertRecurringTransaction(
+            RecurringTransactionEntry(
+                id = recurringTransactionId,
+                transactionEntry = entry,
+                recurringInterval = recurringInterval,
+                fromWalletId = entry.fromWalletId,
+                toWalletId = entry.toWalletId
             )
         )
-        syncHelper.syncServerData()
-        return transactionId
     }
 
     suspend fun deleteTransaction(transactionId: Long) {
         cancelTransaction(moneyManagerRepository.getTransaction(transactionId))
         moneyManagerRepository.removeTransaction(transactionId)
         syncHelper.syncServerData()
+    }
+
+    suspend fun deleteRecurringTransaction(recurringTransactionId: Long){
+        moneyManagerRepository.removeRecurringTransaction(recurringTransactionId)
     }
 
     suspend fun cancelTransactions(transactions: List<TransactionEntry>, walletId: Long) {

@@ -24,4 +24,19 @@
 }
 -keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry { <fields>; }
 -keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.Currency { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.Recurring { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.RecurringTransactionEntry { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.RecurringEndType { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.RecurringInterval { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.domain.model.Currency
+-keep class com.sgcdeveloper.moneymanager.domain.model.Recurring
+-keep class com.sgcdeveloper.moneymanager.domain.model.RecurringEndType
+-keep class com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
+-keep class com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

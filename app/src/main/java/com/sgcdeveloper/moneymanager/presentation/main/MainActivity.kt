@@ -29,9 +29,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
-import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
-import com.sgcdeveloper.moneymanager.domain.model.Transaction
-import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -77,9 +75,11 @@ import com.sgcdeveloper.moneymanager.presentation.ui.walletsManager.WalletsManag
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
+import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 
@@ -224,6 +224,39 @@ class MainActivity : FragmentActivity() {
                             AddTransactionScreen(addTransactionViewModel, navController)
 
                             backStackEntry.arguments?.putString("wallet", "")
+                        }
+                        composable(Screen.AddRecurringTransaction(null).route + "{transaction}") {
+                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+
+                            val recurringTransaction =
+                                Gson().fromJson(
+                                    it.arguments?.getString("transaction"),
+                                    RecurringTransaction::class.java
+                                )
+
+                            if (recurringTransaction != null) {
+                                addTransactionViewModel.onEvent(
+                                    AddTransactionEvent.SetDefaultWRecurringTransaction(
+                                        recurringTransaction
+                                    )
+                                )
+                            }
+                            AddTransactionScreen(addTransactionViewModel, navController)
+
+                            it.arguments?.putString("transaction", "")
+                        }
+                        composable("AddRecurringTransaction/") {
+                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+                            addTransactionViewModel.recurringInterval.value = RecurringInterval.Daily(
+                                null,
+                                true,
+                                Date(LocalDateTime.now()),
+                                1,
+                                1,
+                                RecurringEndType.Forever
+                            )
+                            addTransactionViewModel.isMustBeRecurring = true
+                            AddTransactionScreen(addTransactionViewModel, navController)
                         }
                         composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
                             val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
@@ -439,35 +472,35 @@ class MainActivity : FragmentActivity() {
                             val addWalletViewModel: AddWalletViewModel by viewModels()
                             ExchangeRatesScreen(navController, addWalletViewModel)
                         }
-                        composable(Screen.AddBudgetScreen(null).route + "{budget}"){
+                        composable(Screen.AddBudgetScreen(null).route + "{budget}") {
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
-                            val budget = Gson().fromJson( it.arguments?.getString("budget"), BudgetEntry::class.java)
+                            val budget = Gson().fromJson(it.arguments?.getString("budget"), BudgetEntry::class.java)
                             if (budget != null)
                                 addBudgetViewModel.onEvent(AddBudgetEvent.SetDefaultBudget(budget))
                             AddBudgetScreen(addBudgetViewModel, navController)
                             it.arguments?.putString("budget", "")
                         }
-                        composable("AddBudgetScreen/"){
+                        composable("AddBudgetScreen/") {
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
                             AddBudgetScreen(addBudgetViewModel, navController)
                         }
-                        composable(Screen.BudgetScreen(null).route + "{budget}"){
+                        composable(Screen.BudgetScreen(null).route + "{budget}") {
                             val budgetScreenViewModel: BudgetScreenViewModel by viewModels()
                             val budgetJson = it.arguments?.getString("budget")
-                            val budget = Gson().fromJson( budgetJson, BaseBudget.BudgetItem::class.java)
-                            BudgetScreen(budgetScreenViewModel,budget,navController)
+                            val budget = Gson().fromJson(budgetJson, BaseBudget.BudgetItem::class.java)
+                            BudgetScreen(budgetScreenViewModel, budget, navController)
                         }
-                        composable(Screen.BudgetManagerScreen.route){
+                        composable(Screen.BudgetManagerScreen.route) {
                             val homeViewModel: HomeViewModel by viewModels()
                             homeViewModel.loadBudgets()
-                            BudgetManagerScreen(homeViewModel,navController)
+                            BudgetManagerScreen(homeViewModel, navController)
                         }
-                        composable(Screen.TimeIntervalBudgetManager(null).route + "{period}"){
+                        composable(Screen.TimeIntervalBudgetManager(null).route + "{period}") {
                             val timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel by viewModels()
-                            val period = Gson().fromJson( it.arguments?.getString("period"), BudgetPeriod::class.java)
+                            val period = Gson().fromJson(it.arguments?.getString("period"), BudgetPeriod::class.java)
                             if (period != null)
                                 timeIntervalBudgetManagerViewModel.loadBudgets(period)
-                            TimeIntervalBudgetManager(navController,timeIntervalBudgetManagerViewModel)
+                            TimeIntervalBudgetManager(navController, timeIntervalBudgetManagerViewModel)
                             it.arguments?.putString("period", "")
                         }
                     }

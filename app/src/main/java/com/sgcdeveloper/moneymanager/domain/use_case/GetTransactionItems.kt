@@ -113,6 +113,11 @@ class GetTransactionItems @Inject constructor(
             val formatter = getCurrencyFormatter(GetWallets.getLocalFromISO(wallet.currency.code)!!)
             return@async formatter.format(money)
         }.await()
+
+        suspend fun getFormattedMoney(currencyCode: String, money: Double): String = CoroutineScope(Dispatchers.IO).async {
+            val formatter = getCurrencyFormatter(GetWallets.getLocalFromISO(currencyCode)!!)
+            return@async formatter.format(money)
+        }.await()
     }
 
     private suspend fun getTransactionDescription(

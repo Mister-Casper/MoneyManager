@@ -18,15 +18,19 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
+import com.sgcdeveloper.moneymanager.domain.model.AddRecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
+import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.BudgetDashboard
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.RecurringTransactionsDashboard
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletDashboard
 
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val wallets = remember { homeViewModel.wallets }.observeAsState()
     val budgets = remember { homeViewModel.budgets }
+    val recurringTransactions = remember { homeViewModel.recurringTransactions }
 
     Column(
         Modifier
@@ -80,6 +84,15 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                     }
                 }) {
                     navController.navigate(Screen.BudgetManagerScreen.route)
+                }
+            }
+            item {
+                RecurringTransactionsDashboard(recurringTransactions) {
+                    if (it is RecurringTransaction) {
+                        navController.navigate(Screen.AddRecurringTransaction(it).route)
+                    } else if (it is AddRecurringTransaction) {
+                        navController.navigate(Screen.AddRecurringTransaction().route)
+                    }
                 }
             }
         }

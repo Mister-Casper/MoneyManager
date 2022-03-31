@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.Recurring
 import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
@@ -53,8 +54,11 @@ open class AddTransactionViewModel @Inject constructor(
 
     var isTransactionFromWallet = true
     var transactionId = 0L
+    var recurringTransactionId = 0L
     val recurringInterval = mutableStateOf<RecurringInterval>(RecurringInterval.None)
     val firstDayOfWeek = appPreferencesHelper.getFirstDayOfWeek()
+    var isRecurringMode = true
+    var isMustBeRecurring = false
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
@@ -67,8 +71,34 @@ open class AddTransactionViewModel @Inject constructor(
 
     fun onEvent(addTransactionEvent: AddTransactionEvent) {
         when (addTransactionEvent) {
+            is AddTransactionEvent.SetDefaultWRecurringTransaction -> {
+                if (transactionId == 0L) {
+                    recurringTransactionId = addTransactionEvent.recurringTransaction.id
+                    isMustBeRecurring = true
+                    val transaction = addTransactionEvent.recurringTransaction.transactionEntry
+                    transactionId = transaction.id
+                    showScreen(transaction.transactionType)
+                    transactionDate.value = transaction.date
+                    transactionAmount.value = transaction.value.toString()
+                    transactionDescription.value = transaction.description
+                    if (transaction.transactionType == TransactionType.Income) {
+                        transactionIncomeCategory.value = transaction.category
+                    } else if (transaction.transactionType == TransactionType.Expense) {
+                        transactionExpenseCategory.value = transaction.category
+                    }
+                    viewModelScope.launch {
+                        transactionFromWallet.value = walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
+                        if (transaction.transactionType == TransactionType.Transfer)
+                            transactionToWallet.value = walletsUseCases.getWallets.getWallet(transaction.toWalletId)
+                        isTransactionCanBeSaved.value = checkIsCanBeSaved()
+                        updateFormattedAMount()
+                    }
+                }
+                recurringInterval.value = addTransactionEvent.recurringTransaction.recurringInterval
+            }
             is AddTransactionEvent.SetExistTransaction -> {
                 if (transactionId == 0L) {
+                    isRecurringMode = false
                     val transaction = addTransactionEvent.transaction
                     transactionId = transaction.id
                     showScreen(transaction.transactionType)
@@ -169,7 +199,9 @@ open class AddTransactionViewModel @Inject constructor(
                         transactionDescription.value,
                         transactionAmount.value,
                         transactionDate.value,
-                        category
+                        category,
+                        recurringInterval.value,
+                        recurringTransactionId
                     )
                 }
                 clear()
@@ -180,10 +212,13 @@ open class AddTransactionViewModel @Inject constructor(
             is AddTransactionEvent.DeleteTransaction -> {
                 dialogState.value = DialogState.NoneDialogState
                 runBlocking {
-                    walletsUseCases.insertTransaction.deleteTransaction(transactionId)
+                    if (recurringTransactionId != 0L) {
+                        walletsUseCases.insertTransaction.deleteRecurringTransaction(recurringTransactionId)
+                    } else
+                        walletsUseCases.insertTransaction.deleteTransaction(transactionId)
                 }
             }
-            is AddTransactionEvent.ShowRepeatIntervalDialog ->{
+            is AddTransactionEvent.ShowRepeatIntervalDialog -> {
                 dialogState.value = DialogState.RecurringDialog(recurringInterval.value)
             }
         }
@@ -218,6 +253,8 @@ open class AddTransactionViewModel @Inject constructor(
         if (!transactionAmount.value.isDouble())
             return false
         if (!(transactionFromWallet.value != null))
+            return false
+        if (isMustBeRecurring && recurringInterval.value.recurring == Recurring.None)
             return false
         return when (currentScreen.value) {
             TransactionScreen.Transfer -> {
@@ -258,5 +295,9 @@ open class AddTransactionViewModel @Inject constructor(
         dialogState.value = DialogState.NoneDialogState
         isTransactionFromWallet = true
         transactionId = 0L
+        recurringTransactionId = 0L
+        recurringInterval.value = RecurringInterval.None
+        isRecurringMode = true
+        isMustBeRecurring = false
     }
 }

@@ -7,8 +7,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
+import com.sgcdeveloper.moneymanager.domain.model.BaseRecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.GetBudgetsUseCase
+import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -22,11 +24,13 @@ open class HomeViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
     private val getBudgetsUseCase: GetBudgetsUseCase,
+    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
 ) : AndroidViewModel(app) {
     lateinit var wallets: LiveData<List<Wallet>>
     var existWallets = mutableStateListOf<Wallet>()
     var budgets = mutableStateListOf<BaseBudget>()
-    private var loadBudgetsJob:Job? = null
+    var recurringTransactions = mutableStateListOf<BaseRecurringTransaction>()
+    private var loadBudgetsJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -59,9 +63,14 @@ open class HomeViewModel @Inject constructor(
         loadBudgetsJob?.cancel()
         loadBudgetsJob = viewModelScope.launch {
             val newBudgets = getBudgetsUseCase()
-            if(newBudgets != budgets) {
+            if (newBudgets != budgets) {
                 budgets.clear()
                 budgets.addAll(newBudgets)
+            }
+            val newRecurringTransactions = getRecurringTransactionsUseCase()
+            if (recurringTransactions != newRecurringTransactions) {
+                recurringTransactions.clear()
+                recurringTransactions.addAll(newRecurringTransactions)
             }
         }
     }

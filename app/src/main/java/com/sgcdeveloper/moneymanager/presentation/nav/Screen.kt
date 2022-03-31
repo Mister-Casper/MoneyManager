@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.nav
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
+import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
@@ -27,6 +28,9 @@ sealed class Screen(val route: String) {
     class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + Gson().toSafeJson(wallet))
     class AddTransaction(wallet: Wallet? = null) :
         Screen("AddTransaction/" + Gson().toSafeJson(wallet))
+
+    class AddRecurringTransaction(recurringTransaction: RecurringTransaction? = null) :
+        Screen("AddRecurringTransaction/" + Gson().toSafeJson(recurringTransaction))
 
     class EditTransaction(transaction: Transaction? = null) :
         Screen("EditTransaction/" + Gson().toSafeJson(transaction))

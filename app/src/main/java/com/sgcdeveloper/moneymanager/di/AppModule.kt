@@ -13,6 +13,7 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.util.MIGRATION_1_2
 import com.sgcdeveloper.moneymanager.util.MIGRATION_2_3
 import com.sgcdeveloper.moneymanager.util.MIGRATION_3_4
+import com.sgcdeveloper.moneymanager.util.MIGRATION_4_5
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,7 +43,7 @@ class AppModule {
     fun providesRoomDatabase(app: Application): AppDatabase {
         return Room
             .databaseBuilder(app, AppDatabase::class.java, "ApplicationBD")
-            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5)
             .build()
     }
 }

@@ -129,7 +129,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     .padding(start = 8.dp)
                     .weight(1f)
             )
-            if (addTransactionViewModel.transactionId != 0L) {
+            if (addTransactionViewModel.transactionId != 0L || addTransactionViewModel.recurringTransactionId != 0L) {
                 Icon(
                     painter = painterResource(id = R.drawable.delete_icon),
                     contentDescription = "",

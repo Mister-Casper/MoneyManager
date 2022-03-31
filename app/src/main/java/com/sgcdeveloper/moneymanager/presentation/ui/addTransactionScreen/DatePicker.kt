@@ -51,27 +51,29 @@ fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
                 Icon(painter = painterResource(id = R.drawable.edit_calendar_icon), "", Modifier.size(32.dp))
             }, interactionSource = source
         )
-        Column(
-            Modifier
-                .align(Alignment.Bottom)
-                .padding(start = 4.dp)
-                .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowRepeatIntervalDialog) }) {
-            Icon(
-                painter = painterResource(id = R.drawable.repeat_icon),
-                "",
+        if(addTransactionViewModel.isRecurringMode) {
+            Column(
                 Modifier
-                    .size(32.dp)
-                    .align(Alignment.CenterHorizontally),
-                tint = MaterialTheme.colors.secondary
-            )
-            Text(
-                text = stringResource(id = if (addTransactionViewModel.recurringInterval.value == RecurringInterval.None) R.string.recurring else addTransactionViewModel.recurringInterval.value.recurring.titleRes),
-                color = if (addTransactionViewModel.recurringInterval.value != RecurringInterval.None) blue else MaterialTheme.colors.secondary,
-                modifier = Modifier.align(
-                    Alignment.CenterHorizontally
-                ),
-                fontSize = 12.sp
-            )
+                    .align(Alignment.Bottom)
+                    .padding(start = 4.dp)
+                    .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowRepeatIntervalDialog) }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.repeat_icon),
+                    "",
+                    Modifier
+                        .size(32.dp)
+                        .align(Alignment.CenterHorizontally),
+                    tint = MaterialTheme.colors.secondary
+                )
+                Text(
+                    text = stringResource(id = if (addTransactionViewModel.recurringInterval.value == RecurringInterval.None) R.string.recurring else addTransactionViewModel.recurringInterval.value.recurring.titleRes),
+                    color = if (addTransactionViewModel.recurringInterval.value != RecurringInterval.None) blue else MaterialTheme.colors.secondary,
+                    modifier = Modifier.align(
+                        Alignment.CenterHorizontally
+                    ),
+                    fontSize = 12.sp
+                )
+            }
         }
     }
 }

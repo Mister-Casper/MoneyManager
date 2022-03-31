@@ -2,10 +2,7 @@ package com.sgcdeveloper.moneymanager.data.repository
 
 import androidx.lifecycle.LiveData
 import com.sgcdeveloper.moneymanager.data.db.AppDatabase
-import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
+import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import javax.inject.Inject
 
@@ -136,5 +133,37 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun insertBudgets(budgetEntries: List<BudgetEntry>) {
         return appDatabase.budgetDao().insertBudgets(budgetEntries)
+    }
+
+    override suspend fun getRecurringTransactionsOnce(): List<RecurringTransactionEntry> {
+        return appDatabase.recurringTransactionDao().getRecurringTransactionsOnce()
+    }
+
+    override fun getRecurringTransactions(): LiveData<List<RecurringTransactionEntry>> {
+        return appDatabase.recurringTransactionDao().getRecurringTransactions()
+    }
+
+    override suspend fun getRecurringTransaction(id: Long): RecurringTransactionEntry {
+        return appDatabase.recurringTransactionDao().getRecurringTransaction(id)
+    }
+
+    override suspend fun insertRecurringTransaction(transaction: RecurringTransactionEntry): Long {
+        return appDatabase.recurringTransactionDao().insertRecurringTransaction(transaction)
+    }
+
+    override suspend fun removeRecurringTransaction(id: Long) {
+        appDatabase.recurringTransactionDao().removeRecurringTransaction(id)
+    }
+
+    override suspend fun deleteAllRecurringTransactions() {
+        appDatabase.recurringTransactionDao().deleteAllRecurringTransactions()
+    }
+
+    override suspend fun insertRecurringTransactions(transactions: List<RecurringTransactionEntry>) {
+        appDatabase.recurringTransactionDao().insertRecurringTransactions(transactions)
+    }
+
+    override suspend fun removeRecurringTransactions(walletId: Long) {
+        appDatabase.recurringTransactionDao().removeRecurringTransactions(walletId)
     }
 }

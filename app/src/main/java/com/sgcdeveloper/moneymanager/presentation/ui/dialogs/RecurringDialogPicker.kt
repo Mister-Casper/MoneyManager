@@ -95,7 +95,7 @@ fun RecurringDialogPicker(
                 if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
                     until
                 } else {
-                    if (!isSameDay) {
+                    if (isSameDay != -1) {
                         val endDate = date.getAsLocalDate().plusMonths(times.toLong())
                         endDate.withDayOfMonth(endDate.lengthOfMonth())
                     }
@@ -306,9 +306,9 @@ fun RecurringDialogPicker(
                                     Modifier
                                         .padding(top = 16.dp, start = 20.dp)
                                         .fillMaxWidth()
-                                        .clickable { isSameDay = true }) {
+                                        .clickable { isSameDay = date.getAsLocalDate().dayOfMonth }) {
                                     RadioButton(
-                                        selected = isSameDay,
+                                        selected = isSameDay != -1,
                                         onClick = null
                                     )
                                     Text(
@@ -322,9 +322,9 @@ fun RecurringDialogPicker(
                                     Modifier
                                         .padding(top = 8.dp, start = 20.dp)
                                         .fillMaxWidth()
-                                        .clickable { isSameDay = false }) {
+                                        .clickable { isSameDay = -1 }) {
                                     RadioButton(
-                                        selected = !isSameDay,
+                                        selected = isSameDay == -1,
                                         onClick = null,
                                         Modifier.align(Alignment.CenterVertically)
                                     )
