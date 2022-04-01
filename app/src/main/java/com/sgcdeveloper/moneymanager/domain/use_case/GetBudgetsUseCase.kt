@@ -16,7 +16,6 @@ import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod.*
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
-import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -55,9 +54,9 @@ class GetBudgetsUseCase @Inject constructor(
                                 budgetTImeInterval,
                                 context.getString(
                                     R.string.total_budget,
-                                    getFormattedMoney(WalletSingleton.wallet.value!!, spents.sum()),
+                                    getFormattedMoney(appPreferencesHelper.getDefaultCurrency().code, spents.sum()),
                                     getFormattedMoney(
-                                        WalletSingleton.wallet.value!!,
+                                        appPreferencesHelper.getDefaultCurrency().code,
                                         periodBudget.value.sumOf { it.amount }
                                     )
                                 ),
@@ -87,16 +86,16 @@ class GetBudgetsUseCase @Inject constructor(
                                 color = budget.color,
                                 budgetName = budget.budgetName,
                                 spent = getFormattedMoney(
-                                    WalletSingleton.wallet.value!!,
+                                    appPreferencesHelper.getDefaultCurrency().code,
                                     spent
                                 ),
                                 left = getFormattedMoney(
-                                    WalletSingleton.wallet.value!!,
+                                    appPreferencesHelper.getDefaultCurrency().code,
                                     kotlin.math.abs(left)
                                 ),
                                 budgetValue = budget.amount,
                                 budget = getFormattedMoney(
-                                    WalletSingleton.wallet.value!!,
+                                    appPreferencesHelper.getDefaultCurrency().code,
                                     budget.amount
                                 ),
                                 leftStrRes = leftStrRes,
@@ -117,7 +116,7 @@ class GetBudgetsUseCase @Inject constructor(
                                 endPeriod = budgetTImeInterval.getEndDate().toDateString(),
                                 spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
                                     transactions,
-                                    WalletSingleton.wallet.value!!,
+                                    appPreferencesHelper.getDefaultCurrency(),
                                     budgetTImeInterval,
                                     budget.categories
                                 ),
@@ -209,7 +208,7 @@ class GetBudgetsUseCase @Inject constructor(
                     timeIntervalTransactions.key.toFloat(),
                     df.format(sum).toFloat(),
                     getFormattedMoney(
-                        WalletSingleton.wallet.value!!,
+                        appPreferencesHelper.getDefaultCurrency().code,
                         sum
                     ),
                     Date(timeIntervalController.getStartDate().epochMillis + timeIntervalTransactions.key * timeIntervalController.getGraphTimeInterval()).toDateString()
@@ -234,7 +233,7 @@ class GetBudgetsUseCase @Inject constructor(
             val finalEntries = List((dividerCount - 1 - maxX).toInt()) {
                 BudgetGraphEntry(
                     maxX + it.toFloat() + 1, maxY, getFormattedMoney(
-                        WalletSingleton.wallet.value!!,
+                        appPreferencesHelper.getDefaultCurrency().code,
                         maxY.toDouble()
                     ), Date(startDate.epochMillis + (maxX.toLong() + it.toLong() + 1) * step).toDateString()
                 )
@@ -242,7 +241,7 @@ class GetBudgetsUseCase @Inject constructor(
             return@async List(minX.toInt()) {
                 BudgetGraphEntry(
                     it.toFloat(), 0f, getFormattedMoney(
-                        WalletSingleton.wallet.value!!,
+                        appPreferencesHelper.getDefaultCurrency().code,
                         0.0
                     ), Date(startDate.epochMillis + it.toLong() * step).toDateString()
                 )

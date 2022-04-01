@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.compose.ui.graphics.toArgb
 import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
-import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
-import com.sgcdeveloper.moneymanager.domain.model.Transaction
-import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -85,7 +82,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
 
     suspend fun getExpenseCategoriesStatistic(
         transaction: List<Transaction>,
-        wallet: Wallet,
+        currency: Currency,
         timeIntervalController: TimeIntervalController,
         filterCategories:List<TransactionCategory.ExpenseCategory>
     ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
@@ -113,7 +110,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
                         color = firstTransaction.category.color,
                         moneyColor = red.toArgb(),
                         icon = firstTransaction.category.icon,
-                        money = getFormattedMoney(wallet, sum),
+                        money = getFormattedMoney(currency.code, sum),
                         count = transactionsCount
                     )
                 )
