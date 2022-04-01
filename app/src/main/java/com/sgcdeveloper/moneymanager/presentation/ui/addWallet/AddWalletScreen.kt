@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
@@ -51,7 +52,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
         DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
-            navController.popBackStack()
+            navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
         }, {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
