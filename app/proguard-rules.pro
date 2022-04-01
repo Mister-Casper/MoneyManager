@@ -33,10 +33,18 @@
 -keep class com.sgcdeveloper.moneymanager.domain.model.Currency
 -keep class com.sgcdeveloper.moneymanager.domain.model.Recurring
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringEndType
+-keep class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
+-keep class com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.util.TransactionCategory { <fields>; }
+-keep class com.sgcdeveloper.moneymanager.util.Date
+-keepclassmembers class com.sgcdeveloper.moneymanager.util.Date { <fields>; }
+
 -keepclassmembers class * extends java.lang.Enum {
     <fields>;
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+-keep class kotlin.Metadata { *; }

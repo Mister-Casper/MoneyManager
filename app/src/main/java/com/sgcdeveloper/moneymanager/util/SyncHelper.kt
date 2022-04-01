@@ -1,19 +1,16 @@
 package com.sgcdeveloper.moneymanager.util
 
-import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
-import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
-import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
+import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import kotlinx.coroutines.*
@@ -25,7 +22,7 @@ import javax.inject.Inject
 class SyncHelper @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val context: Context
+    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
 ) {
 
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
@@ -61,11 +58,22 @@ class SyncHelper @Inject constructor(
             if (userDocument.get("rates") != null) userDocument.get("rates") as List<MutableMap<String, Any>> else Collections.emptyList()
         val budgets =
             if (userDocument.get("budgets") != null) userDocument.get("budgets") as List<MutableMap<String, Any>> else Collections.emptyList()
+        val recurrings =
+            if (userDocument.get("recurrings") != null) userDocument.get("recurrings") as List<MutableMap<String, Any>> else Collections.emptyList()
         GlobalScope.launch {
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
             moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
             moneyManagerRepository.insertBudgets(budgets.map { budget -> BudgetEntry.getBudgetByHashMap(budget) })
+            runBlocking {
+                val recurringEntries = recurrings.map { recurring ->
+                    RecurringTransactionEntry.getRecurringTransactionEntry(
+                        recurring
+                    )
+                }
+                moneyManagerRepository.insertRecurringTransactions(recurringEntries)
+            }
+            getRecurringTransactionsUseCase.loadTransactions()
         }
         val lastSyncTIme = userDocument.getLong(AppPreferencesHelper.LAST_SYNC_TIME)
         if (lastSyncTIme != null)
@@ -129,7 +137,8 @@ class SyncHelper @Inject constructor(
                     "wallets" to getWallets(),
                     "transactions" to getTransactions(),
                     "rates" to getRate(),
-                    "budgets" to getBudgets()
+                    "budgets" to getBudgets(),
+                    "recurrings" to getRecurrings()
                 )
                 docRef.set(settingsData)
                 onFinish()
@@ -164,6 +173,14 @@ class SyncHelper @Inject constructor(
     private suspend fun getBudgets(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
         moneyManagerRepository.getAsyncWBudgets().forEach { rate ->
+            list.add(rate.toObject())
+        }
+        return list
+    }
+
+    private suspend fun getRecurrings(): List<MutableMap<String, Any>> {
+        val list: MutableList<MutableMap<String, Any>> = ArrayList()
+        moneyManagerRepository.getRecurringTransactionsOnce().forEach { rate ->
             list.add(rate.toObject())
         }
         return list

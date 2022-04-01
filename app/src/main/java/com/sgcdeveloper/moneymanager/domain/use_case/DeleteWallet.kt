@@ -10,5 +10,6 @@ class DeleteWallet @Inject constructor(
     suspend operator fun invoke(walletId: Long) {
         val transactions = moneyManagerRepository.getWalletTransactions(walletId)
         insertTransaction.cancelTransactions(transactions, walletId)
+        moneyManagerRepository.removeRecurringTransactions(walletId)
     }
 }

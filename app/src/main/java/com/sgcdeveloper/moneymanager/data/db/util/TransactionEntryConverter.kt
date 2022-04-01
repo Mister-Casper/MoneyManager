@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.data.db.util
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
+import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 class TransactionEntryConverter {
 
@@ -13,7 +14,8 @@ class TransactionEntryConverter {
 
     @TypeConverter
     fun toDate(transactionEntry: String): TransactionEntry {
-        return Gson().fromJson(transactionEntry,TransactionEntry::class.java)
+        val entry =  Gson().fromJson(transactionEntry,TransactionEntry::class.java)
+        return entry.copy(category = TransactionCategory.findById(entry.category.id))
     }
 
 }

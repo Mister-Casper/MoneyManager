@@ -204,4 +204,22 @@
     <string name="monthly_medium">Месячный бюджет</string>
     <string name="quarterly_medium">Квартальный бюджет</string>
     <string name="yearly_medium">Годовой бюджет</string>
+
+    <string name="none_recurring_nterval">Нет</string>
+    <string name="recurring">Регулярная</string>
+    <string name="day">День</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="year">Год</string>
+    <string name="every">Каждый</string>
+    <string name="same_day_each_month">Этот день каждого месяца(%1$d)</string>
+    <string name="end_of_month">Конец месяца</string>
+    <string name="forever">Навсегда</string>
+    <string name="until">До</string>
+    <string name="for_repeat">В течение..</string>
+    <string name="times">раз</string>
+    <string name="recurring_dashboard">Регулярные</string>
+    <string name="add_recurring">Добвить регулярную</string>
+    <string name="next_occurrence">Следующее событие: </string>
+
 </resources>

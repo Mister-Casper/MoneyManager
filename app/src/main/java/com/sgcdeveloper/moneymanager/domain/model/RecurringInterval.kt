@@ -10,7 +10,7 @@ open class RecurringInterval(
     val sameDay: Int = -1,
     val days: List<DayOfWeek> = Collections.emptyList(),
     val recurring: Recurring,
-    val lastTransactionDate: Date?,
+    var lastTransactionDate: Date?,
     val isForever: Boolean,
     val endDate: Date = Date(LocalDateTime.now()),
     val repeatInterval: Int = 1,

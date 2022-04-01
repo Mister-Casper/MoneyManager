@@ -5,13 +5,11 @@ import android.content.res.Resources
 import com.sgcdeveloper.moneymanager.data.db.entry.WalletEntry
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
-import com.sgcdeveloper.moneymanager.util.SyncHelper
 import javax.inject.Inject
 
 class InsertWallet @Inject constructor(
     private val context: Context,
-    private val moneyManagerRepository: MoneyManagerRepository,
-    private val syncHelper: SyncHelper
+    private val moneyManagerRepository: MoneyManagerRepository
 ) {
     suspend operator fun invoke(wallet: Wallet?): Long {
         if(wallet == null)
@@ -28,7 +26,6 @@ class InsertWallet @Inject constructor(
                 order = if(wallet.order != -1L) wallet.order else moneyManagerRepository.getLastWalletOrder() + 1
             )
         )
-        syncHelper.syncServerData()
         return walletId
     }
 

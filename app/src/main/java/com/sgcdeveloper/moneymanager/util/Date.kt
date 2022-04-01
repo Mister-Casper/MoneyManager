@@ -105,6 +105,12 @@ data class Date(val epochMillis: Long) {
         return Date(epochMillis / date.epochMillis)
     }
 
+    operator fun compareTo(date1:Date):Int{
+        val q = Date(this.getAsLocalDateTime().with(LocalTime.MIN)).epochMillis / 1000
+        val v =  Date(date1.getAsLocalDateTime().with(LocalTime.MAX)).epochMillis / 1000
+        return (q - v).toInt()
+    }
+
     companion object {
         @SuppressLint("ConstantLocale")
         private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())

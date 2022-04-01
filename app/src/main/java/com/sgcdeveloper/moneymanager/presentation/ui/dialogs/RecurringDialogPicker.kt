@@ -72,7 +72,7 @@ fun RecurringDialogPicker(
                 if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
                     until
                 } else {
-                    Date(date.getAsLocalDate().plusDays(times.toLong()))
+                    Date(date.getAsLocalDate().plusDays((times.toLong()) * repeatInterval.toInt() - 1))
                 }
             }
             Weekly -> {
@@ -81,11 +81,11 @@ fun RecurringDialogPicker(
                 } else {
                     var happened = 0
                     var i = 0L
-                    val endDate = date.getAsLocalDate()
+                    var endDate = date.getAsLocalDate()
                     while (happened != times.toInt()) {
                         if (selectedDay.contains(endDate.dayOfWeek))
                             happened++
-                        endDate.plusDays(1)
+                        endDate = endDate.plusDays(1)
                         i++
                     }
                     Date(endDate)
@@ -217,7 +217,7 @@ fun RecurringDialogPicker(
                             )
                         }
                         if (item == selectedRecurring) {
-                            if (item != None) {
+                            if (item != None && item != Weekly) {
                                 Row(Modifier.fillMaxWidth()) {
                                     Text(
                                         text = stringResource(id = R.string.every),

@@ -23,7 +23,8 @@ class InsertTransaction @Inject constructor(
     private val currencyRepository: CurrencyRepository,
     private val insertWallet: InsertWallet,
     private val getWallets: GetWallets,
-    private val syncHelper: SyncHelper
+    private val syncHelper: SyncHelper,
+    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
 ) {
     suspend operator fun invoke(
         transactionId: Long,
@@ -35,7 +36,7 @@ class InsertTransaction @Inject constructor(
         date: Date,
         category: TransactionCategory,
         recurringInterval: RecurringInterval,
-        recurringTransactionId:Long
+        recurringTransactionId: Long
     ): Long {
         var toWalletId = 0L
         if (toWallet != null && transactionType == TransactionType.Transfer)
@@ -57,7 +58,7 @@ class InsertTransaction @Inject constructor(
         )
 
         if (recurringInterval.recurring != Recurring.None) {
-            insertRecurringTransaction(transactionEntry, recurringInterval,recurringTransactionId)
+            insertRecurringTransaction(transactionEntry, recurringInterval, recurringTransactionId)
             return 0
         }
 
@@ -70,7 +71,11 @@ class InsertTransaction @Inject constructor(
         return newTransactionId
     }
 
-    private suspend fun insertRecurringTransaction(entry: TransactionEntry, recurringInterval: RecurringInterval,  recurringTransactionId:Long) {
+    private suspend fun insertRecurringTransaction(
+        entry: TransactionEntry,
+        recurringInterval: RecurringInterval,
+        recurringTransactionId: Long
+    ) {
         moneyManagerRepository.insertRecurringTransaction(
             RecurringTransactionEntry(
                 id = recurringTransactionId,
@@ -80,6 +85,7 @@ class InsertTransaction @Inject constructor(
                 toWalletId = entry.toWalletId
             )
         )
+        getRecurringTransactionsUseCase.loadTransactions()
     }
 
     suspend fun deleteTransaction(transactionId: Long) {
@@ -88,7 +94,7 @@ class InsertTransaction @Inject constructor(
         syncHelper.syncServerData()
     }
 
-    suspend fun deleteRecurringTransaction(recurringTransactionId: Long){
+    suspend fun deleteRecurringTransaction(recurringTransactionId: Long) {
         moneyManagerRepository.removeRecurringTransaction(recurringTransactionId)
     }
 
