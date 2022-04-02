@@ -18,6 +18,8 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.util.Network.checkInternetConnection
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -131,6 +133,14 @@ open class RegistrationViewModel @Inject constructor(
                     isSignInError.value = true
                     showLoadingDialog.value = false
                 })
+            }
+            is RegistrationEvent.SignInWithGoogleForExistAccount -> {
+                val signInIntent = googleSignInClient.signInIntent
+                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser, userName ->
+                    GlobalScope.launch {
+                        syncHelper.syncServerData()
+                    }
+                }, {})
             }
             is RegistrationEvent.ChangeName -> {
                 name.value = registrationEvent.newName

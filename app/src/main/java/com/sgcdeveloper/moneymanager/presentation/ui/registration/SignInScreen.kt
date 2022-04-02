@@ -113,7 +113,9 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                         }
                     }
                 }
-                /*   Text(
+            }
+        }
+        Text(
             text = stringResource(id = R.string.comtimue),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -121,8 +123,6 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                 .padding(bottom = 32.dp),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp
-        )*/
-            }
-        }
+        )
     }
 }

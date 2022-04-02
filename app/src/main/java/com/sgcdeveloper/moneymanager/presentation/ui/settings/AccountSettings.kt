@@ -23,41 +23,43 @@ import coil.transform.CircleCropTransformation
 import com.google.firebase.auth.FirebaseAuth
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.red
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.SignInGoogleButton
+import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEvent
+import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun AccountSettings(navController: NavController, accountSettingsViewModel: AccountSettingsViewModel) {
+fun AccountSettings(navController: NavController, accountSettingsViewModel: AccountSettingsViewModel,registrationViewModel:RegistrationViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
     val url = user?.photoUrl?.toString()
-
-    if (user != null) {
-        LazyColumn(
-            Modifier
-                .fillMaxSize()
-                .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-        ) {
-            item {
-                Row(Modifier.padding(top = 4.dp)) {
-                    androidx.compose.material.Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(40.dp)
-                            .clickable {
-                                navController.popBackStack()
-                            }
-                    )
-                    Text(
-                        text = stringResource(id = R.string.account_settings),
-                        color = MaterialTheme.colors.secondary,
-                        fontSize = 22.sp,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 4.dp)
-                    )
-                }
+    LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+    ) {
+        item {
+            Row(Modifier.padding(top = 4.dp)) {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(40.dp)
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                )
+                Text(
+                    text = stringResource(id = R.string.account_settings),
+                    color = MaterialTheme.colors.secondary,
+                    fontSize = 22.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 4.dp)
+                )
+            }
+            if (user != null) {
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -116,6 +118,10 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                                 .align(Alignment.CenterHorizontally)
                         )
                     }
+                }
+            } else {
+                SignInGoogleButton {
+                    registrationViewModel.onEvent(RegistrationEvent.SignInWithGoogle)
                 }
             }
         }

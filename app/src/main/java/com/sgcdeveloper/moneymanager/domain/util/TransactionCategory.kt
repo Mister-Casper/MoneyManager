@@ -47,12 +47,9 @@ open class TransactionCategory(
         object Others : ExpenseCategory(20, wallet_color_20.toArgb(), R.drawable.others_icon, R.string.others)
 
         companion object {
-            fun getAllItems(): List<ExpenseCategory> {
-                return listOf(AllExpense) + getItems()
-            }
-
-            fun getItems(): List<ExpenseCategory> {
-                return listOf(
+            private val allExpenseItems by lazy { listOf(AllExpense) + expenseItems }
+            private val expenseItems by lazy {
+                listOf(
                     Bills,
                     Clothes,
                     Donation,
@@ -75,8 +72,16 @@ open class TransactionCategory(
                 )
             }
 
-            fun getStringRes(category:ExpenseCategory):Int{
-                   return findById (category.id ).description
+            fun getAllItems(): List<ExpenseCategory> {
+                return allExpenseItems
+            }
+
+            fun getItems(): List<ExpenseCategory> {
+                return expenseItems
+            }
+
+            fun getStringRes(category: ExpenseCategory): Int {
+                return findById(category.id).description
             }
         }
     }
@@ -96,16 +101,30 @@ open class TransactionCategory(
         object Others : IncomeCategory(29, wallet_color_19.toArgb(), R.drawable.others_icon, R.string.others)
 
         companion object {
+            private val incomeItems by lazy {
+                listOf(
+                    Award,
+                    Bonus,
+                    Dividend,
+                    Investment,
+                    Lottery,
+                    Salary,
+                    Tips,
+                    Gifts,
+                    Others
+                )
+            }
+
             fun getItems(): List<IncomeCategory> {
-                return listOf(Award, Bonus, Dividend, Investment, Lottery, Salary, Tips, Gifts, Others)
+                return incomeItems
             }
         }
     }
 
     companion object {
-        private val allItems = (IncomeCategory.getItems() + ExpenseCategory.getAllItems()).associateBy { it.id }
+        private val allItems by lazy { (IncomeCategory.getItems() + ExpenseCategory.getAllItems()).associateBy { it.id } }
 
-        fun findById(id:Int):TransactionCategory{
+        fun findById(id: Int): TransactionCategory {
             return allItems[id]!!
         }
 

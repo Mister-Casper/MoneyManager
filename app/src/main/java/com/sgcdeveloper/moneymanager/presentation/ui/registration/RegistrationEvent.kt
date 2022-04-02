@@ -9,6 +9,7 @@ sealed class RegistrationEvent {
     class ChangeConfirmPassword(val newPassword:String) : RegistrationEvent()
 
     object SignInWithGoogle :RegistrationEvent()
+    object SignInWithGoogleForExistAccount :RegistrationEvent()
     object Skip : RegistrationEvent()
     object MoveToSignUp : RegistrationEvent()
     object MoveToSignIn : RegistrationEvent()

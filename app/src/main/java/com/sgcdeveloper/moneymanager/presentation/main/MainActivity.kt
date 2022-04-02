@@ -211,7 +211,8 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.AccountSettings.route) {
                             val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
-                            AccountSettings(navController, accountSettingsViewModel)
+                            val registrationViewModel: RegistrationViewModel by viewModels()
+                            AccountSettings(navController, accountSettingsViewModel,registrationViewModel)
                         }
                         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
                             val addTransactionViewModel: AddTransactionViewModel by viewModels()
