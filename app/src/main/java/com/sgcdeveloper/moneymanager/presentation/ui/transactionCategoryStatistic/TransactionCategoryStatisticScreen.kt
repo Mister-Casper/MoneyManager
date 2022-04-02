@@ -229,7 +229,7 @@ fun TransactionCategoryItem(
                         .align(Alignment.CenterVertically)
                 ) {
                     Text(text = item.category, fontSize = 16.sp, color = white)
-                    Text(text = item.percent, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
                 }
             }
             Column(modifier = Modifier.align(Alignment.CenterEnd)) {

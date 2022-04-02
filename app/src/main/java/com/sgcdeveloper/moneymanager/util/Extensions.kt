@@ -2,8 +2,11 @@ package com.sgcdeveloper.moneymanager.util
 
 import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
+import com.sgcdeveloper.moneymanager.domain.model.Transaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
+import com.sgcdeveloper.moneymanager.presentation.theme.red
+import com.sgcdeveloper.moneymanager.presentation.theme.white
 import kotlin.math.roundToInt
 
 fun String.isDouble(): Boolean {
@@ -62,4 +65,13 @@ fun List<BaseTransactionItem>.getExpense(wallet: Wallet): Double {
 
 fun Double.toRoundString(): String {
     return ((this * 100.0).roundToInt() / 100.0).toString()
+}
+
+fun Transaction.getMoneyColor(walletId:Long):androidx.compose.ui.graphics.Color{
+    return  if (this.transactionType == TransactionType.Expense) red else if (this.transactionType == TransactionType.Income) white else {
+        if (this.fromWalletId == walletId)
+            red
+        else
+            white
+    }
 }

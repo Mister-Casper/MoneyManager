@@ -9,7 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
-import com.sgcdeveloper.moneymanager.presentation.theme.red
+import com.sgcdeveloper.moneymanager.util.getMoneyColor
 import com.sgcdeveloper.moneymanager.util.toRoundString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,78 +21,33 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
     suspend fun getExpenseStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
-    ): List<CategoryStatistic> {
-        return getCategoriesStatistic(
-            wallet,
-            transactions
-        ) { return@getCategoriesStatistic it.transactionEntry.transactionType == TransactionType.Expense || (it.transactionEntry.transactionType == TransactionType.Transfer && it.transactionEntry.fromWalletId == wallet.walletId) }
-    }
+    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
+        return@async getCategoriesStatistic(
+            wallet.currency,
+            wallet.walletId,
+            transactions.map { it.transactionEntry }
+        ) { return@getCategoriesStatistic it.transactionType == TransactionType.Expense || (it.transactionType == TransactionType.Transfer && it.fromWalletId == wallet.walletId) }
+    }.await()
 
     suspend fun getIncomeStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
-    ): List<CategoryStatistic> {
-        return getCategoriesStatistic(
-            wallet, transactions,
-        ) { return@getCategoriesStatistic it.transactionEntry.transactionType == TransactionType.Income || (it.transactionEntry.transactionType == TransactionType.Transfer && it.transactionEntry.toWalletId == wallet.walletId) }
-    }
-
-    suspend fun getCategoriesStatistic(
-        wallet: Wallet,
-        transaction: List<BaseTransactionItem.TransactionItem>,
-        filter: (it: BaseTransactionItem.TransactionItem) -> Boolean = {true}
     ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
-        val categories = mutableListOf<CategoryStatistic>()
-
-        var maxSum = 0.0
-
-        transaction.filter { filter(it) }
-            .groupBy { it.transactionEntry.category.icon }.values.forEach { oneCategoryTransactions ->
-                val firstTransaction = oneCategoryTransactions[0]
-                var sum = 0.0
-                oneCategoryTransactions.forEach { transaction ->
-                    sum += transaction.transactionEntry.value
-                }
-                val transactionsCount = if (oneCategoryTransactions.size == 1)
-                    context.getString(R.string.one_transaction)
-                else
-                    context.getString(R.string.transactions_count, oneCategoryTransactions.size)
-                categories.add(
-                    CategoryStatistic(
-                        sum = sum,
-                        category = context.getString(firstTransaction.transactionEntry.category.description),
-                        categoryEntry = firstTransaction.transactionEntry.category,
-                        color = firstTransaction.transactionEntry.category.color,
-                        moneyColor = firstTransaction.moneyColor,
-                        icon = firstTransaction.transactionEntry.category.icon,
-                        money = getFormattedMoney(wallet, sum),
-                        count = transactionsCount
-                    )
-                )
-                maxSum += sum
-            }
-
-        categories.forEach {
-            it.pieEntry = PieEntry((it.sum / maxSum * 100).toInt().toFloat(), it.category + " " + it.money)
-            it.percent = (it.sum / maxSum * 100).toRoundString() + " %"
-        }
-
-        return@async categories.sortedByDescending { it.sum }
+        return@async getCategoriesStatistic(
+            wallet.currency, wallet.walletId, transactions.map { it.transactionEntry },
+        ) { return@getCategoriesStatistic it.transactionType == TransactionType.Income || (it.transactionType == TransactionType.Transfer && it.toWalletId == wallet.walletId) }
     }.await()
 
-    suspend fun getExpenseCategoriesStatistic(
-        transaction: List<Transaction>,
+    suspend fun getCategoriesStatistic(
         currency: Currency,
-        timeIntervalController: TimeIntervalController,
-        filterCategories:List<TransactionCategory.ExpenseCategory>
+        walletId: Long,
+        transaction: List<Transaction>,
+        filter: (it: Transaction) -> Boolean = { true }
     ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
-        val filterCategoriesId = filterCategories.map { it.id }
-        val categories = mutableListOf<CategoryStatistic>()
-
         var maxSum = 0.0
 
-        transaction.filter { timeIntervalController.isInInterval(it.date) && filterCategoriesId.contains(it.category.id)}
-            .groupBy { it.category.icon }.values.forEach { oneCategoryTransactions ->
+        return@async transaction.filter { filter(it) }
+            .groupBy { it.category.icon }.values.map { oneCategoryTransactions ->
                 val firstTransaction = oneCategoryTransactions[0]
                 var sum = 0.0
                 oneCategoryTransactions.forEach { transaction ->
@@ -102,26 +57,39 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
                     context.getString(R.string.one_transaction)
                 else
                     context.getString(R.string.transactions_count, oneCategoryTransactions.size)
-                categories.add(
-                    CategoryStatistic(
-                        sum = sum,
-                        category = context.getString(firstTransaction.category.description),
-                        categoryEntry = firstTransaction.category,
-                        color = firstTransaction.category.color,
-                        moneyColor = red.toArgb(),
-                        icon = firstTransaction.category.icon,
-                        money = getFormattedMoney(currency.code, sum),
-                        count = transactionsCount
-                    )
-                )
                 maxSum += sum
-            }
 
-        categories.forEach {
-            it.pieEntry = PieEntry((it.sum / maxSum * 100).toInt().toFloat(), it.category + " " + it.money)
-            it.percent = (it.sum / maxSum * 100).toRoundString()
-        }
-
-        return@async categories.sortedByDescending { it.sum }
+                CategoryStatistic(
+                    sum = sum,
+                    category = context.getString(firstTransaction.category.description),
+                    categoryEntry = firstTransaction.category,
+                    color = firstTransaction.category.color,
+                    moneyColor = firstTransaction.getMoneyColor(walletId).toArgb(),
+                    icon = firstTransaction.category.icon,
+                    money = getFormattedMoney(currency.code, sum),
+                    count = transactionsCount
+                )
+            }.map {
+                it.apply {
+                    it.pieEntry = PieEntry((it.sum / maxSum * 100).toInt().toFloat(), it.category + " " + it.money)
+                    it.percent = (it.sum / maxSum * 100).toRoundString()
+                }
+            }.sortedByDescending { it.sum }
     }.await()
+
+    suspend fun getExpenseCategoriesStatistic(
+        transaction: List<Transaction>,
+        currency: Currency,
+        timeIntervalController: TimeIntervalController,
+        filterCategories: List<TransactionCategory.ExpenseCategory>
+    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
+        val filterCategoriesId = filterCategories.map { it.id }
+
+        return@async getCategoriesStatistic(currency, 0, transaction) {
+            timeIntervalController.isInInterval(it.date) && filterCategoriesId.contains(
+                it.category.id
+            )
+        }
+    }.await()
+
 }

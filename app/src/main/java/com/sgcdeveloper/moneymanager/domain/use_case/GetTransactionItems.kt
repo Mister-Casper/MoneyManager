@@ -10,8 +10,7 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getCurrencyFormatter
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
-import com.sgcdeveloper.moneymanager.presentation.theme.red
-import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.util.getMoneyColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -62,13 +61,7 @@ class GetTransactionItems @Inject constructor(
                 )
             )
             oneDayTransactions.forEach { transaction ->
-                val moneyColor =
-                    if (transaction.transactionType == TransactionType.Expense) red else if (transaction.transactionType == TransactionType.Income) white else {
-                        if (transaction.fromWalletId == wallet.walletId)
-                            red
-                        else
-                            white
-                    }
+                val moneyColor = transaction.getMoneyColor(wallet.walletId)
 
                 items.add(
                     BaseTransactionItem.TransactionItem(
@@ -109,26 +102,26 @@ class GetTransactionItems @Inject constructor(
         }.await()
 
     companion object {
-        suspend fun getFormattedMoney(wallet: Wallet, money: Double): String = CoroutineScope(Dispatchers.IO).async {
+        fun getFormattedMoney(wallet: Wallet, money: Double): String {
             val formatter = getCurrencyFormatter(GetWallets.getLocalFromISO(wallet.currency.code)!!)
-            return@async formatter.format(money)
-        }.await()
+            return formatter.format(money)
+        }
 
-        suspend fun getFormattedMoney(currencyCode: String, money: Double): String = CoroutineScope(Dispatchers.IO).async {
+        fun getFormattedMoney(currencyCode: String, money: Double): String {
             val formatter = getCurrencyFormatter(GetWallets.getLocalFromISO(currencyCode)!!)
-            return@async formatter.format(money)
-        }.await()
+            return formatter.format(money)
+        }
     }
 
-    private suspend fun getTransactionDescription(
+    private fun getTransactionDescription(
         walletFromId: Long,
         walletToId: Long,
         transactionEntry: Transaction,
         wallets: Map<Long, String>
-    ): String = CoroutineScope(Dispatchers.IO).async {
-        return@async if (transactionEntry.transactionType == TransactionType.Transfer) {
+    ): String {
+        return if (transactionEntry.transactionType == TransactionType.Transfer) {
             wallets[walletFromId] + " -> " + wallets[walletToId]
         } else
             context.getString(transactionEntry.category.description)
-    }.await()
+    }
 }

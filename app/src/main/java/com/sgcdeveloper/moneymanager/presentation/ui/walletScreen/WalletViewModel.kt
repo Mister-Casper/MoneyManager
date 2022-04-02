@@ -57,8 +57,9 @@ open class WalletViewModel @Inject constructor(
 
                     transactionsStatistic.value =
                         walletsUseCases.getCategoriesStatistic.getCategoriesStatistic(
-                            wallet,
-                            transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
+                            wallet.currency,
+                            wallet.walletId,
+                            transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>().map { it.transactionEntry }
                         )
                 }
             }

@@ -11,7 +11,7 @@ import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
-import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
@@ -21,7 +21,6 @@ import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -132,9 +131,9 @@ open class StatisticViewModel @Inject constructor(
             val expenseMoney = transactionItems.value.getExpense(wallet)
             val totalMoney = incomeMoney + expenseMoney
 
-            income.value = getFormattedMoney(incomeMoney)
-            expense.value = getFormattedMoney(expenseMoney)
-            total.value = getFormattedMoney(totalMoney)
+            income.value = getFormattedMoney(wallet,incomeMoney)
+            expense.value = getFormattedMoney(wallet,expenseMoney)
+            total.value = getFormattedMoney(wallet,totalMoney)
 
             expenseStruct.value =
                 walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
@@ -152,12 +151,6 @@ open class StatisticViewModel @Inject constructor(
             incomeColors.value = incomeStruct.value.map { it.color }
             incomeEntries.value = incomeStruct.value.map { it.pieEntry }
         }
-    }
-
-    private fun getFormattedMoney(money: Double): String {
-        val formatter =
-            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(WalletSingleton.wallet.value!!.currency.code)!!)
-        return formatter.format(money)
     }
 
 }
