@@ -62,7 +62,7 @@
     <string name="cant_delete_default_wallet">Вы не можете удалить кошелек по умолчанию</string>
 
     <string name="income">Доход</string>
-    <string name="expense">Расход</string>
+    <string name="expense">Трата</string>
     <string name="transfer">Перевод</string>
 
     <string name="bills">ЖКХ</string>
@@ -121,7 +121,7 @@
     <string name="custom">Пользовательский</string>
 
     <string name="show_more">Показать больше</string>
-    <string name="expense_structure">Структура расходов</string>
+    <string name="expense_structure">Структура трат</string>
     <string name="income_structure">Структура дохода</string>
 
     <string name="none" />
@@ -188,7 +188,7 @@
     <string name="remain">Остаток %1$s</string>
     <string name="budget_view">Бюджет</string>
     <string name="overspent">Перерасход %1$s</string>
-    <string name="spent">Расход</string>
+    <string name="spent">Трата</string>
     <string name="budget_category">Категории</string>
     <string name="budget_budget">Бюджет</string>
     <string name="transaction_list">Список транзакций</string>
