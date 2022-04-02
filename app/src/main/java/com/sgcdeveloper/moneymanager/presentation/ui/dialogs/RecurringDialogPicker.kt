@@ -117,7 +117,7 @@ fun RecurringDialogPicker(
             return true
         if (selectedRecurring == Weekly && selectedDay.isEmpty())
             return false
-        if (!repeatInterval.isDigitsOnly() || repeatInterval.isEmpty())
+        if (!repeatInterval.isDigitsOnly() || repeatInterval.isEmpty() || !(repeatInterval.toInt() >= 1))
             return false
         if (selectedRecurringType == RecurringEndType.For && (!times.isDigitsOnly() || times.isEmpty()))
             return false
