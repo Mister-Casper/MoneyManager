@@ -186,12 +186,20 @@ fun TimeIntervalTransactionsScreen(
         if (transactionsViewModel.isEmpty.value) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(Modifier.align(Alignment.Center)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.empty_icon),
-                        contentDescription = "",
-                        Modifier.align(Alignment.CenterHorizontally),
-                        tint = MaterialTheme.colors.secondary
-                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painter = painterResource(id = R.drawable.empty_icon),
+                            contentDescription = "",
+                            Modifier
+                                .align(Alignment.CenterVertically)
+                                .weight(2f),
+                            tint = MaterialTheme.colors.secondary
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                     Text(
                         text = stringResource(id = R.string.no_transactions),
                         style = Typography.h5,
