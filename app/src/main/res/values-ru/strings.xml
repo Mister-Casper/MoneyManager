@@ -222,4 +222,6 @@
     <string name="add_recurring">Добвить регулярную</string>
     <string name="next_occurrence">Следующее событие: </string>
 
+    <string name="no_data_text">Нет транзакций</string>
+
 </resources>

@@ -221,4 +221,6 @@
     <string name="add_recurring">Add Recurring</string>
     <string name="next_occurrence">Next occurrence: </string>
 
+    <string name="no_data_text">No transactions</string>
+
 </resources>

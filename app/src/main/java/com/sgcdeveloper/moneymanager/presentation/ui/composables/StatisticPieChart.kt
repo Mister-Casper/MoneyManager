@@ -2,10 +2,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -59,6 +56,8 @@ fun StatisticPieChart(
                         .clickable { onWeeklyStatisticClick() }
                 )
             }
+            val noDataText = stringResource(id = R.string.no_data_text)
+            val textColor = MaterialTheme.colors.secondary.toArgb()
             AndroidView(factory = { ctx ->
                 PieChart(ctx).apply {
                     val dataSet = PieDataSet(entries, "")
@@ -76,6 +75,8 @@ fun StatisticPieChart(
                     this.legend.isWordWrapEnabled = true
                     this.legend.textColor = white.toArgb()
                     this.legend.textSize = 12f
+                    this.setNoDataText(noDataText)
+                    this.setNoDataTextColor(textColor)
                 }
             }, modifier = Modifier
                 .height(350.dp)
