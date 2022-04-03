@@ -43,7 +43,8 @@ fun SelectTransactionCategoryDialog(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(32.dp)
-                        .clickable { onDismiss() }
+                        .clickable { onDismiss() },
+                    tint = MaterialTheme.colors.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.select_category),

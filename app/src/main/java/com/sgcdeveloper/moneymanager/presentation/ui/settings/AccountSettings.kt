@@ -90,6 +90,7 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .fillMaxSize(),
+                                tint = MaterialTheme.colors.onSurface
                             )
                         }
                     }

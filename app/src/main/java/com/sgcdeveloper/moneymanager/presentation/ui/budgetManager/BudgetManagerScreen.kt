@@ -95,7 +95,8 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
             Icon(
                 painter = painterResource(id = R.drawable.add_icon),
                 contentDescription = "",
-                tint = white
+                tint = white,
+                modifier = Modifier.size(32.dp)
             )
             Text(text = stringResource(id = R.string.add_budget))
         }

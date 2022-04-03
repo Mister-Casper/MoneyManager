@@ -131,7 +131,7 @@ open class AddBudgetViewModel @Inject constructor(
 
     fun getTransactionCategories(context: Context): String {
         if (transactionCategories.size == TransactionCategory.ExpenseCategory.getAllItems().size) {
-            return context.getString(R.string.all)
+            return context.getString(R.string.all_category)
         }
         return transactionCategories.joinToString(separator = ", ") { context.getString(it.description) }
     }

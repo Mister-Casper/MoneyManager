@@ -55,14 +55,6 @@ fun SelectExpenseCategoryDialog(
                             .size(32.dp)
                             .clickable { onDismiss() }
                     )
-                    Text(
-                        text = stringResource(id = R.string.select_category),
-                        color = MaterialTheme.colors.secondary,
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
-                    )
                 }
                 Button(onClick = {
                     onAdd(items.sortedBy { it.id })
