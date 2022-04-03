@@ -13,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.sgcdeveloper.moneymanager.R
@@ -81,10 +79,7 @@ private fun SearchHint(modifier: Modifier = Modifier) {
             .then(modifier)
 
     ) {
-        Text(
-            text = stringResource(id = R.string.search),
-            color = MaterialTheme.colors.secondary
-        )
+        Text(text = stringResource(id = R.string.search))
     }
 }
 
@@ -139,15 +134,13 @@ fun SearchTextField(
                             .focusRequester(focusRequester)
                             .padding(top = 2.dp, bottom = 2.dp, start = 2.dp, end = 2.dp),
                         singleLine = true,
-                        textStyle = TextStyle(color = MaterialTheme.colors.secondary),
-                        cursorBrush = SolidColor(MaterialTheme.colors.secondary),
                         decorationBox = { innerTextField ->
                             val mainModifier = Modifier
                                 .fillMaxWidth()
                                 .border(
                                     width = 1.dp,
                                     shape = com.sgcdeveloper.moneymanager.presentation.theme.Shapes.small,
-                                    color = MaterialTheme.colors.secondary
+                                    color = MaterialTheme.colors.onBackground
                                 )
                                 .padding(8.dp)
                             Column(
@@ -171,8 +164,7 @@ fun SearchTextField(
                             IconButton(onClick = onClearQuery) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.cancel_icon),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colors.secondary
+                                    contentDescription = null
                                 )
                             }
                         }

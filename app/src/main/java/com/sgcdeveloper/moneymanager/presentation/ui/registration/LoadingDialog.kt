@@ -35,8 +35,7 @@ fun LoadingDialog(isShowLoadingDialog: Boolean) {
                     CircularProgressIndicator(modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 0.dp))
                     Text(
                         text = stringResource(R.string.loading),
-                        modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically),
-                        color = MaterialTheme.colors.secondary)
+                        modifier = Modifier.padding(start = 8.dp).align(Alignment.CenterVertically))
                 }
             }
         }

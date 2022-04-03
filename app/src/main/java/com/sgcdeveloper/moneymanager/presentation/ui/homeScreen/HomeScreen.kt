@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.homeScreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,27 +33,23 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val budgets = remember { homeViewModel.budgets }
     val recurringTransactions = remember { homeViewModel.recurringTransactions }
 
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    Column(Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .background(MaterialTheme.colors.surface)
+                .padding(top = 16.dp, bottom = 16.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.dashboard),
-                Modifier.align(Alignment.CenterStart),
-                color = MaterialTheme.colors.secondary,
-                fontSize = 22.sp,
+                Modifier.align(Alignment.CenterStart).padding(start = 12.dp),
+                color = MaterialTheme.colors.onBackground,
+                fontSize = 24.sp,
             )
-            Row(Modifier.align(Alignment.CenterEnd)) {
+            Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
                 Icon(
                     painter = painterResource(id = R.drawable.settings_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .size(32.dp)
                         .clickable { navController.navigate(Screen.Settings.route) }
@@ -61,7 +58,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
         }
         LazyColumn(
             Modifier
-                .padding(bottom = 60.dp)
+                .padding(bottom = 56.dp,start = 12.dp, end = 12.dp)
         ) {
             item {
                 if (wallets.value != null)

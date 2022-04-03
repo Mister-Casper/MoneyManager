@@ -43,13 +43,11 @@ fun StatisticPieChart(
                 Text(
                     text = header, fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = white,
                     modifier = Modifier.align(Alignment.CenterStart)
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.weekly_statistic_screen),
                     contentDescription = "",
-                    tint = white,
                     modifier = Modifier
                         .size(32.dp)
                         .align(Alignment.CenterEnd)
@@ -57,7 +55,7 @@ fun StatisticPieChart(
                 )
             }
             val noDataText = stringResource(id = R.string.no_data_text)
-            val textColor = MaterialTheme.colors.secondary.toArgb()
+            val textColor = MaterialTheme.colors.onBackground.toArgb()
             AndroidView(factory = { ctx ->
                 PieChart(ctx).apply {
                     val dataSet = PieDataSet(entries, "")
@@ -73,7 +71,7 @@ fun StatisticPieChart(
                     this.description.isEnabled = false
                     this.setHoleColor(Color.Transparent.toArgb())
                     this.legend.isWordWrapEnabled = true
-                    this.legend.textColor = white.toArgb()
+                    this.legend.textColor = textColor
                     this.legend.textSize = 12f
                     this.setNoDataText(noDataText)
                     this.setNoDataTextColor(textColor)
@@ -112,7 +110,6 @@ fun StatisticPieChart(
                             modifier = Modifier
                                 .weight(1f)
                                 .align(Alignment.CenterVertically),
-                            color = white,
                             fontSize = 20.sp
                         )
                         Icon(

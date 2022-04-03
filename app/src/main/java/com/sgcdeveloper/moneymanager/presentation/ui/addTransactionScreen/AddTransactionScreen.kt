@@ -1,6 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -8,7 +9,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -103,37 +104,38 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
         else -> addTransactionViewModel.currentScreenName.value = stringResource(id = R.string.transfer)
     }
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(12.dp)
-    ) {
-        Row {
+    Column(Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.surface)
+                .padding(top = 8.dp, bottom = 8.dp)
+        ) {
             Icon(
-                imageVector = Icons.Filled.ArrowBack,
+                imageVector = Icons.Filled.ArrowBackIosNew,
                 contentDescription = "",
-                tint = MaterialTheme.colors.secondary,
+                tint = MaterialTheme.colors.onSurface,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .size(40.dp)
+                    .size(32.dp)
+                    .padding(start = 12.dp)
                     .clickable {
                         dialogBackOpen.value = true
                     }
             )
             Text(
                 text = currentScreenName.value,
-                color = MaterialTheme.colors.secondary,
                 fontSize = 24.sp,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(start = 8.dp)
+                    .padding(start = 12.dp)
                     .weight(1f)
             )
             if (addTransactionViewModel.transactionId != 0L || addTransactionViewModel.recurringTransactionId != 0L) {
                 Icon(
                     painter = painterResource(id = R.drawable.delete_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onSurface,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .padding(end = 4.dp)
@@ -151,12 +153,13 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     navController.popBackStack()
                     addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
                 }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
-                colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)
+                colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray),
+                modifier = Modifier.padding(end = 12.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.save),
                     Modifier.align(Alignment.CenterVertically),
-                    color = if (addTransactionViewModel.isTransactionCanBeSaved.value) white else MaterialTheme.colors.secondary
+                    color = if (addTransactionViewModel.isTransactionCanBeSaved.value) white else MaterialTheme.colors.onBackground
                 )
             }
         }
@@ -209,7 +212,7 @@ fun RowScope.transactionNavigationButton(
     Button(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = if (currentTransactionScreen == targetScreen) blue else MaterialTheme.colors.background,
-            contentColor = if (currentTransactionScreen == targetScreen) white else MaterialTheme.colors.secondary
+            contentColor = if (currentTransactionScreen == targetScreen) white else MaterialTheme.colors.onBackground
         ),
         onClick = { onClick(targetScreen) }, modifier = Modifier.weight(1f)
     ) {

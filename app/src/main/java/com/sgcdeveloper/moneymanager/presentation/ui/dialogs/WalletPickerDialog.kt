@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -59,16 +59,15 @@ fun WalletPickerDialog(
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(32.dp)
                         .clickable { onDismiss() }
                 )
                 Text(
                     text = stringResource(id = R.string.select_wallet),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -160,13 +159,11 @@ fun ExistWalletItem(item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
         ) {
             AutoSizeText(
                 text = item.name,
-                color = MaterialTheme.colors.secondary,
                 suggestedFontSizes = listOf(18.sp, 16.sp, 14.sp, 2.sp)
             )
 
             AutoSizeText(
                 text = item.formattedMoney,
-                color = MaterialTheme.colors.secondary,
                 suggestedFontSizes = listOf(16.sp, 14.sp, 12.sp, 2.sp),
             )
         }
@@ -210,7 +207,6 @@ fun AddWalletItem(onClick: () -> Unit) {
             text = stringResource(id = R.string.add_new_wallet),
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.secondary,
             modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .weight(1f)

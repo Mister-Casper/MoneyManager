@@ -1,11 +1,12 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,31 +33,32 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationVi
 fun AccountSettings(navController: NavController, accountSettingsViewModel: AccountSettingsViewModel,registrationViewModel:RegistrationViewModel) {
     val user = FirebaseAuth.getInstance().currentUser
     val url = user?.photoUrl?.toString()
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    LazyColumn(Modifier.fillMaxSize()) {
         item {
-            Row(Modifier.padding(top = 4.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 androidx.compose.material.Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
                         .clickable {
                             navController.popBackStack()
                         }
                 )
                 Text(
                     text = stringResource(id = R.string.account_settings),
-                    color = MaterialTheme.colors.secondary,
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 4.dp)
+                        .padding(start = 12.dp),
+                    color = MaterialTheme.colors.onBackground
                 )
             }
             if (user != null) {
@@ -84,7 +86,6 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                         } else {
                             Icon(
                                 painter = painterResource(R.drawable.user_icon),
-                                tint = MaterialTheme.colors.secondary,
                                 contentDescription = "",
                                 modifier = Modifier
                                     .align(Alignment.Center)
@@ -98,14 +99,14 @@ fun AccountSettings(navController: NavController, accountSettingsViewModel: Acco
                             .align(Alignment.CenterVertically)
                     ) {
                         Text(
-                            text = user?.email!!,
-                            color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            text = user.email!!,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = MaterialTheme.colors.onBackground
                         )
                         Text(
                             text = accountSettingsViewModel.userName,
-                            color = MaterialTheme.colors.secondary,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            color = MaterialTheme.colors.onBackground
                         )
                         Text(
                             text = stringResource(id = R.string.sign_out),

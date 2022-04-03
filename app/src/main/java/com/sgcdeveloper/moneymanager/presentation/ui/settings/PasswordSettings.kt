@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +8,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,31 +25,32 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun PasswordSettings(navController: NavController, passwordSettingsViewModel: PasswordSettingsViewModel) {
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    LazyColumn(Modifier.fillMaxSize()) {
         item {
-            Row(Modifier.padding(top = 4.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
                         .clickable {
                             navController.popBackStack()
                         }
                 )
                 Text(
                     text = stringResource(id = R.string.password_settings),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 4.dp)
+                        .padding(start = 12.dp)
                 )
             }
             Column(

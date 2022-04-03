@@ -1,13 +1,13 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.budgetManager
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,28 +35,33 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxWidth()) {
-                Row(Modifier.align(Alignment.CenterStart)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(top = 16.dp, bottom = 16.dp)
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .size(40.dp)
-                            .clickable { navController.popBackStack() }
+                            .size(32.dp)
+                            .padding(start = 12.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            }
                     )
                     Text(
                         text = stringResource(id = R.string.budget_view),
-                        color = MaterialTheme.colors.secondary,
                         fontSize = 24.sp,
+                        color = MaterialTheme.colors.onBackground,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
-                            .weight(1f)
+                            .padding(start = 12.dp)
                     )
                 }
             }
@@ -87,12 +92,12 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
                 .padding(bottom = 8.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = blue)
         ) {
-            androidx.compose.material.Icon(
+            Icon(
                 painter = painterResource(id = R.drawable.add_icon),
                 contentDescription = "",
                 tint = white
             )
-            Text(text = stringResource(id = R.string.add_budget), color = white)
+            Text(text = stringResource(id = R.string.add_budget))
         }
     }
 }
@@ -102,7 +107,7 @@ fun BudgetHeader(budget: BaseBudget.BudgetHeader, onClick: () -> Unit) {
     Column(
         Modifier
             .clickable { onClick() }
-            .padding(bottom = 12.dp)
+            .padding(bottom = 8.dp, top = 8.dp)
             .fillMaxWidth()
     ) {
         Divider()

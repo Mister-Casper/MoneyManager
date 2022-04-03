@@ -57,11 +57,11 @@ fun SelectTimeIntervalDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
         title = {
-            Text(stringResource(id = R.string.select_date), color = MaterialTheme.colors.secondary)
+            Text(stringResource(id = R.string.select_date))
         },
         text = {
             Column(Modifier.padding(top = 8.dp)) {
-                Text(text = stringResource(id = R.string.start), color = MaterialTheme.colors.secondary)
+                Text(text = stringResource(id = R.string.start))
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -73,13 +73,11 @@ fun SelectTimeIntervalDialog(
                     Text(
                         text = firstDate.toDayMonthString(),
                         Modifier.weight(1f),
-                        fontWeight = FontWeight.Thin,
-                        color = MaterialTheme.colors.secondary
+                        fontWeight = FontWeight.Thin
                     )
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                     )
@@ -87,8 +85,7 @@ fun SelectTimeIntervalDialog(
                 Divider()
                 Text(
                     text = stringResource(id = R.string.end),
-                    Modifier.padding(top = 8.dp),
-                    color = MaterialTheme.colors.secondary
+                    Modifier.padding(top = 8.dp)
                 )
                 Row(
                     Modifier
@@ -101,13 +98,11 @@ fun SelectTimeIntervalDialog(
                     Text(
                         text = secondDate.toDayMonthString(),
                         Modifier.weight(1f),
-                        fontWeight = FontWeight.Thin,
-                        color = MaterialTheme.colors.secondary
+                        fontWeight = FontWeight.Thin
                     )
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                     )

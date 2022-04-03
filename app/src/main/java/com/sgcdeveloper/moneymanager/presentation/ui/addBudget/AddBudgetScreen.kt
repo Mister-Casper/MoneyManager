@@ -1,6 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addBudget
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -9,7 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -71,17 +72,22 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(12.dp)
     ) {
         item {
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 8.dp, bottom = 8.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .padding(start = 12.dp)
+                        .size(32.dp)
                         .clickable {
                             addBudgetViewModel.clear()
                             navController.popBackStack()
@@ -89,11 +95,10 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 )
                 Text(
                     text = stringResource(id = R.string.add_budget),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 4.dp)
+                        .padding(start = 12.dp)
                         .weight(1f)
                 )
                 Button(
@@ -103,12 +108,13 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         if (!navController.popBackStack(Screen.BudgetManagerScreen.route, false))
                             navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
                     }, enabled = addBudgetViewModel.isBudgetCanBeSaved.value,
-                    colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray)
+                    colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray),
+                    modifier = Modifier.padding(end = 12.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.save),
                         Modifier.align(Alignment.CenterVertically),
-                        color = if (addBudgetViewModel.isBudgetCanBeSaved.value) white else MaterialTheme.colors.secondary
+                        color = if (addBudgetViewModel.isBudgetCanBeSaved.value) white else MaterialTheme.colors.onBackground
                     )
                 }
             }
@@ -134,7 +140,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                         .align(Alignment.CenterHorizontally),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary)
                 )
 
                 val source = remember { MutableInteractionSource() }
@@ -152,7 +157,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                             .align(Alignment.CenterVertically)
                             .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                             .fillMaxWidth(),
-                        colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                         singleLine = true,
                         trailingIcon = {
                             androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
@@ -167,8 +171,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     fontSize = 14.sp,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .padding(top = 4.dp),
-                    color = MaterialTheme.colors.secondary
+                        .padding(top = 4.dp)
                 )
                 ColorPicker(40.dp, addBudgetViewModel.colorBudget.value) {
                     addBudgetViewModel.onEvent(AddBudgetEvent.ChangeColor(it))
@@ -189,7 +192,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                             .align(Alignment.CenterVertically)
                             .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                             .fillMaxWidth(),
-                        colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                         singleLine = true,
                         trailingIcon = {
                             androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")

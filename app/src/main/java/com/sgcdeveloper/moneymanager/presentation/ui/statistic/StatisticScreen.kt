@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.statistic
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -62,17 +63,17 @@ fun StatisticScreen(
 
     CheckDataFromAddTransactionScreen(navController, statisticViewModel)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize() .padding(bottom = 56.dp)) {
         Column(
             Modifier
                 .fillMaxSize()
         ) {
-            Box(Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 Row(
                     Modifier
                         .clickable {
@@ -81,26 +82,23 @@ fun StatisticScreen(
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    if(wallet.value != null) {
+                    if (wallet.value != null) {
                         Text(
                             text = wallet.value!!.name,
-                            fontSize = 22.sp,
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            color = MaterialTheme.colors.secondary
+                            fontSize = 24.sp,
+                            modifier = Modifier.align(Alignment.CenterVertically).padding(start = 12.dp),
                         )
                     }
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         "",
-                        Modifier.align(Alignment.CenterVertically),
-                        tint = MaterialTheme.colors.secondary
+                        Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                Row(Modifier.align(Alignment.CenterEnd)) {
+                Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .size(32.dp)
                             .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
@@ -109,7 +107,6 @@ fun StatisticScreen(
                     Icon(
                         painter = painterResource(id = R.drawable.settings_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .size(32.dp)
                             .clickable { navController.navigate(Screen.Settings.route) }
@@ -124,13 +121,12 @@ fun StatisticScreen(
                     statisticViewModel.description.value
                 )
             }
-            LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
+            LazyColumn(
+                Modifier
+                    .padding(start = 12.dp, end = 12.dp)
+            ) {
                 item {
-                    Card(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp)
-                    ) {
+                    Card(Modifier.fillMaxWidth()) {
                         Column(
                             Modifier
                                 .fillMaxWidth()
@@ -141,8 +137,7 @@ fun StatisticScreen(
                                 text = stringResource(id = R.string.overview),
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(top = 12.dp),
-                                fontSize = 18.sp,
-                                color = white
+                                fontSize = 18.sp
                             )
                             Row(
                                 Modifier
@@ -152,12 +147,10 @@ fun StatisticScreen(
                                 Text(
                                     text = stringResource(id = R.string.income),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = statisticViewModel.income.value,
-                                    color = white
+                                    text = statisticViewModel.income.value
                                 )
                             }
                             Row(
@@ -168,8 +161,7 @@ fun StatisticScreen(
                                 Text(
                                     text = stringResource(id = R.string.expense),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(text = statisticViewModel.expense.value, color = red)
                             }
@@ -181,12 +173,10 @@ fun StatisticScreen(
                                 Text(
                                     text = stringResource(id = R.string.total),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = statisticViewModel.total.value,
-                                    color = white
+                                    text = statisticViewModel.total.value
                                 )
                             }
                             Divider(
@@ -214,7 +204,6 @@ fun StatisticScreen(
                                         modifier = Modifier
                                             .weight(1f)
                                             .align(Alignment.CenterVertically),
-                                        color = white,
                                         fontSize = 20.sp
                                     )
                                     Icon(

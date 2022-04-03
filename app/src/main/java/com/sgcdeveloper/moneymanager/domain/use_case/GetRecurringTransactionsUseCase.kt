@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.domain.use_case
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.RecurringTransactionEntry
@@ -14,7 +15,6 @@ import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
-import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.toSafeDouble
 import kotlinx.coroutines.CoroutineScope
@@ -46,7 +46,7 @@ class GetRecurringTransactionsUseCase @Inject constructor(
                     moneyManagerRepository.getWallet(it.fromWalletId).currency.code,
                     it.transactionEntry.value
                 ),
-                (if (it.transactionEntry.transactionType == TransactionType.Expense) red else white).toArgb()
+                (if (it.transactionEntry.transactionType == TransactionType.Expense) red else Color.Unspecified).toArgb()
             )
         } + listOf(AddRecurringTransaction)
     }.await()

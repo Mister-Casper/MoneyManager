@@ -48,7 +48,6 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 16.dp),
                         fontSize = 18.sp,
-                        color = MaterialTheme.colors.secondary,
                         textAlign = TextAlign.Center
                     )
 
@@ -103,11 +102,9 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                         Row(Modifier.align(Alignment.Center)) {
                             Text(
                                 text = stringResource(id = R.string.dont_have_account),
-                                color = MaterialTheme.colors.secondary
                             )
                             Text(
                                 text = stringResource(id = R.string.log_in),
-                                color = MaterialTheme.colors.primary,
                                 modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignUp) }
                             )
                         }

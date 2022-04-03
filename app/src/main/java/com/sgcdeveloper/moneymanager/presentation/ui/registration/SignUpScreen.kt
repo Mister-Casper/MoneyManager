@@ -56,8 +56,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 20.dp),
-                        fontSize = 26.sp,
-                        color = MaterialTheme.colors.secondary
+                        fontSize = 26.sp
                     )
 
                     Text(
@@ -65,8 +64,7 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 3.dp),
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colors.secondary
+                        fontSize = 14.sp
                     )
 
                     InputField(
@@ -140,11 +138,9 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         Row(Modifier.align(Alignment.Center)) {
                             Text(
                                 text = stringResource(id = R.string.have_account),
-                                color = MaterialTheme.colors.secondary
                             )
                             Text(
                                 text = stringResource(id = R.string.login_here),
-                                color = MaterialTheme.colors.primary,
                                 modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignIn) }
                             )
                         }

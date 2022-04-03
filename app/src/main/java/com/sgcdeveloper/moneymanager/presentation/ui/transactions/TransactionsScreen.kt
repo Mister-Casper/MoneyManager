@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,11 +52,15 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
+            .padding(bottom = 56.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
-            Box(Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 Row(
                     Modifier
                         .align(Alignment.CenterStart)
@@ -68,23 +73,22 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     wallet.value?.let {
                         Text(
                             text = wallet.value!!.name,
-                            fontSize = 22.sp,
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            color = MaterialTheme.colors.secondary
+                            fontSize = 24.sp,
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 12.dp)
                         )
                     }
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         "",
-                        Modifier.align(Alignment.CenterVertically),
-                        tint = MaterialTheme.colors.secondary
+                        Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                Row(Modifier.align(Alignment.CenterEnd)) {
+                Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.list_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .size(32.dp)
@@ -100,7 +104,6 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     Icon(
                         painter = painterResource(id = R.drawable.settings_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .size(32.dp)
@@ -108,14 +111,13 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     )
                 }
             }
-            Row(Modifier.padding(top = 4.dp)) {
+            Row(Modifier.padding(top = 4.dp, start = 12.dp)) {
                 Icon(
                     painter = painterResource(id = R.drawable.balance_icon),
                     contentDescription = "",
                     Modifier
                         .size(32.dp)
-                        .align(Alignment.CenterVertically),
-                    tint = MaterialTheme.colors.secondary
+                        .align(Alignment.CenterVertically)
                 )
                 wallet.value?.let {
                     Text(
@@ -123,13 +125,11 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = 8.dp),
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colors.secondary
+                        fontSize = 18.sp
                     )
                 }
             }
             Divider(
-                color = MaterialTheme.colors.secondary,
                 thickness = 1.dp,
                 modifier = Modifier.padding(top = 16.dp)
             )
@@ -143,7 +143,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     }
                 }
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 55.dp))
+                    Spacer(modifier = Modifier.padding(bottom = 58.dp))
                 }
             }
         }
@@ -153,31 +153,29 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 Column(Modifier.align(Alignment.Center)) {
                     Row(
                         Modifier
-                            .fillMaxWidth()) {
+                            .fillMaxWidth()
+                    ) {
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(
                             painter = painterResource(id = R.drawable.empty_icon),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.CenterVertically)
-                                .weight(2f),
-                            tint = MaterialTheme.colors.secondary
+                                .weight(2f)
                         )
                         Spacer(modifier = Modifier.weight(1f))
                     }
                     Text(
                         text = stringResource(id = R.string.no_transactions),
                         style = Typography.h5,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Text(
                         text = stringResource(id = R.string.tap_to_add_transaction),
                         fontWeight = FontWeight.Thin,
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
             }
@@ -218,8 +216,7 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
                 text = header.dayNum,
                 fontSize = 42.sp,
                 modifier = Modifier.align(Alignment.CenterVertically),
-                fontWeight = FontWeight.Bold,
-                color = white
+                fontWeight = FontWeight.Bold
             )
             Column(
                 Modifier
@@ -227,10 +224,10 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
-                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = white)
+                Text(text = header.dayName, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text(text = header.month, fontSize = 12.sp, fontWeight = FontWeight.Medium)
             }
-            Text(text = header.money, Modifier.align(Alignment.CenterVertically), color = white)
+            Text(text = header.money, Modifier.align(Alignment.CenterVertically))
         }
     }
     Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
@@ -271,15 +268,15 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = white)
-                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                Text(text = item.category, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(text = item.description, fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
             Text(
                 text = item.money,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterVertically),
-                color = Color(item.moneyColor)
+                color = if (item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
             )
         }
     }

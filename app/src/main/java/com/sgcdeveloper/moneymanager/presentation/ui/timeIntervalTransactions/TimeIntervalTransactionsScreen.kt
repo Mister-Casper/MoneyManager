@@ -1,13 +1,14 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.timeIntervalTransactions
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,7 +46,7 @@ fun TimeIntervalTransactionsScreen(
             transactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTimeInterval(it))
         }, {
             transactionsViewModel.onEvent(TimeIntervalTransactionEvent.CloseDialog)
-        },transactionsViewModel.isDarkTheme())
+        }, transactionsViewModel.isDarkTheme())
     }
 
     CheckDataFromAddTransactionScreen(
@@ -53,33 +54,32 @@ fun TimeIntervalTransactionsScreen(
         transactionsViewModel
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            Row{
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
+                androidx.compose.material3.Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
-                        .clickable {
-                            transactionsViewModel.clear()
-                            navController.popBackStack()
-                        }
+                        .padding(start = 12.dp)
+                        .size(20.dp)
+                        .clickable { navController.popBackStack() }
                 )
                 Text(
                     text = transactionsViewModel.title.value,
-                    Modifier
+                    color = MaterialTheme.colors.onBackground,
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
                         .padding(start = 12.dp)
                         .weight(1f)
-                        .align(Alignment.CenterVertically),
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colors.secondary
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.edit_calendar_icon),
@@ -87,6 +87,7 @@ fun TimeIntervalTransactionsScreen(
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .padding(end = 12.dp)
                         .size(32.dp)
                         .clickable { transactionsViewModel.onEvent(TimeIntervalTransactionEvent.ShowSelectTimeIntervalDialog) }
                 )
@@ -105,7 +106,7 @@ fun TimeIntervalTransactionsScreen(
                         Card(
                             Modifier
                                 .fillMaxWidth()
-                                .padding(6.dp)
+                                .padding(top = 6.dp, bottom = 6.dp)
                         ) {
                             Column(
                                 Modifier
@@ -116,8 +117,7 @@ fun TimeIntervalTransactionsScreen(
                                     text = stringResource(id = R.string.overview),
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(start = 12.dp, top = 12.dp),
-                                    fontSize = 18.sp,
-                                    color = white
+                                    fontSize = 18.sp
                                 )
                                 Row(
                                     Modifier
@@ -127,12 +127,10 @@ fun TimeIntervalTransactionsScreen(
                                     Text(
                                         text = stringResource(id = R.string.income),
                                         fontWeight = FontWeight.Medium,
-                                        modifier = Modifier.weight(1f),
-                                        color = white
+                                        modifier = Modifier.weight(1f)
                                     )
                                     Text(
-                                        text = transactionsViewModel.income.value,
-                                        color = white
+                                        text = transactionsViewModel.income.value
                                     )
                                 }
                                 Row(
@@ -143,8 +141,7 @@ fun TimeIntervalTransactionsScreen(
                                     Text(
                                         text = stringResource(id = R.string.expense),
                                         fontWeight = FontWeight.Medium,
-                                        modifier = Modifier.weight(1f),
-                                        color = white
+                                        modifier = Modifier.weight(1f)
                                     )
                                     Text(text = transactionsViewModel.expense.value, color = red)
                                 }
@@ -156,8 +153,7 @@ fun TimeIntervalTransactionsScreen(
                                     Text(
                                         text = stringResource(id = R.string.total),
                                         fontWeight = FontWeight.Medium,
-                                        modifier = Modifier.weight(1f),
-                                        color = white
+                                        modifier = Modifier.weight(1f)
                                     )
                                     Text(
                                         text = transactionsViewModel.total.value,
@@ -188,31 +184,29 @@ fun TimeIntervalTransactionsScreen(
                 Column(Modifier.align(Alignment.Center)) {
                     Row(
                         Modifier
-                            .fillMaxWidth()) {
+                            .fillMaxWidth()
+                    ) {
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(
                             painter = painterResource(id = R.drawable.empty_icon),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.CenterVertically)
-                                .weight(2f),
-                            tint = MaterialTheme.colors.secondary
+                                .weight(2f)
                         )
                         Spacer(modifier = Modifier.weight(1f))
                     }
                     Text(
                         text = stringResource(id = R.string.no_transactions),
                         style = Typography.h5,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Text(
                         text = stringResource(id = R.string.tap_to_add_transaction),
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
                         fontSize = 14.sp,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
             }
@@ -243,7 +237,10 @@ fun TimeIntervalTransactionsScreen(
 }
 
 @Composable
-fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TimeIntervalTransactionsViewModel) {
+fun CheckDataFromAddTransactionScreen(
+    navController: NavController,
+    transactionsViewModel: TimeIntervalTransactionsViewModel
+) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")

@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
@@ -39,11 +39,12 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
                         .align(Alignment.CenterStart)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "",
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
+                            .size(32.dp)
                             .clickable { onCancel() }
                     )
                     Text(

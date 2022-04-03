@@ -1,13 +1,12 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.budgetManager
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,29 +24,33 @@ fun TimeIntervalBudgetManager(
     timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel
 ) {
     val budgets = remember { timeIntervalBudgetManagerViewModel.budgets }
-    LazyColumn(Modifier.padding(12.dp)) {
+    LazyColumn(Modifier.fillMaxSize()) {
         item {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row(Modifier.align(Alignment.CenterStart)) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(40.dp)
-                            .clickable { navController.popBackStack() }
-                    )
-                    Text(
-                        text = stringResource(id = timeIntervalBudgetManagerViewModel.period.mediumNameRes),
-                        color = MaterialTheme.colors.secondary,
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
-                            .weight(1f)
-                    )
-                }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
+                androidx.compose.material.Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
+                        .clickable {
+                            navController.popBackStack()
+                        }
+                )
+                androidx.compose.material3.Text(
+                    text = stringResource(id = timeIntervalBudgetManagerViewModel.period.mediumNameRes),
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colors.onBackground,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 12.dp)
+                )
             }
             Row(Modifier.fillMaxWidth()) {
                 TimeIntervalControllerView({

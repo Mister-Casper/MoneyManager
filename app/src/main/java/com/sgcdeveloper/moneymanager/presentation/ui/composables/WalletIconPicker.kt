@@ -39,13 +39,12 @@ fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit
                     Box(
                         modifier = Modifier
                             .size(size)
-                            .border(BorderStroke(2.dp, MaterialTheme.colors.secondary))
+                            .border(BorderStroke(2.dp, MaterialTheme.colors.onBackground))
                     ) {
                         Icon(
                             painter = painterResource(id = icon),
                             contentDescription = "",
-                            modifier = Modifier.size(size),
-                            tint = MaterialTheme.colors.secondary
+                            modifier = Modifier.size(size)
                         )
                     }
                 } else
@@ -60,8 +59,7 @@ fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit
                         Icon(
                             painter = painterResource(id = icon),
                             contentDescription = "",
-                            modifier = Modifier.size(size),
-                            tint = MaterialTheme.colors.secondary
+                            modifier = Modifier.size(size)
                         )
                     }
             }

@@ -9,11 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +56,7 @@ fun RecurringTransactionsDashboard(
                 }
             }
             items(recurringTransactionEntry.size) {
+                Spacer(modifier = Modifier.height(6.dp))
                 when (val transaction = recurringTransactionEntry[it]) {
                     AddRecurringTransaction -> {
                         AddRecurringTransactionsItem {
@@ -106,7 +109,7 @@ fun RecurringItem(item:RecurringTransaction,onClick: () -> Unit) {
                     .padding(start = 16.dp)
                     .align(Alignment.CenterVertically)
             ) {
-                Text(text = item.transactionEntry.description, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = white)
+                Text(text = item.transactionEntry.description, fontSize = 16.sp, fontWeight = FontWeight.Medium)
                 Text(text = stringResource(id = R.string.next_occurrence), fontSize = 14.sp)
                 Text(text = item.nextTransactionDate, fontSize = 16.sp)
             }
@@ -115,7 +118,7 @@ fun RecurringItem(item:RecurringTransaction,onClick: () -> Unit) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.align(Alignment.CenterVertically),
-                color = Color(item.moneyColor)
+                color = if(item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
             )
         }
     }

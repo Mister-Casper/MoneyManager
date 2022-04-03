@@ -1,17 +1,14 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.dialogs
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -21,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -48,16 +44,15 @@ fun SelectCurrenciesDialog(
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(32.dp)
                         .clickable { onDismiss() }
                 )
                 Text(
                     text = stringResource(id = R.string.select_currency),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -131,7 +126,7 @@ private fun RadioGroup(
 
                 val annotatedname = buildAnnotatedString {
                     withStyle(
-                        style = SpanStyle(fontWeight = FontWeight.Bold, color = MaterialTheme.colors.secondary),
+                        style = SpanStyle(fontWeight = FontWeight.Bold),
                     ) { append("  ${item.name}  ") }
                 }
 
@@ -140,8 +135,7 @@ private fun RadioGroup(
                     onClick = {
                         onAdd(item)
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    style = TextStyle(color = MaterialTheme.colors.secondary)
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }

@@ -64,6 +64,7 @@ fun BudgetDashboard(budgets: List<BaseBudget>, onClick: (budget: BaseBudget) -> 
                         AddBudgetItem { onClick(budget) }
                     }
                     is BaseBudget.BudgetHeader -> {
+                        Spacer(modifier = Modifier.height(6.dp))
                         BudgetHeader(budget)
                     }
                     is BaseBudget.BudgetItem -> {
@@ -77,50 +78,56 @@ fun BudgetDashboard(budgets: List<BaseBudget>, onClick: (budget: BaseBudget) -> 
 
 @Composable
 fun BudgetItem(budgetItem: BaseBudget.BudgetItem, onClick: () -> Unit) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 6.dp)
-            .clickable { onClick() }) {
-        Box(
-            modifier = Modifier
+    Card {
+        Column(
+            Modifier
                 .fillMaxWidth()
-        ) {
-            Text(
-                text = budgetItem.budgetName, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.align(
-                    Alignment.CenterStart
+                .padding(start = 12.dp, end = 12.dp, top = 6.dp)
+                .clickable { onClick() }) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = budgetItem.budgetName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(
+                        Alignment.CenterStart
+                    )
                 )
-            )
-            Text(
-                text = stringResource(id = budgetItem.leftStrRes, budgetItem.left),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-                modifier = Modifier.align(
-                    Alignment.CenterEnd
+                Text(
+                    text = stringResource(id = budgetItem.leftStrRes, budgetItem.left),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.align(
+                        Alignment.CenterEnd
+                    )
                 )
+            }
+            RoundedLinearProgressIndicator(
+                height = 8.dp,
+                progress = budgetItem.progress,
+                color = Color(budgetItem.color),
+                backgroundColor = dark_gray,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 12.dp)
             )
         }
-        RoundedLinearProgressIndicator(
-            height = 8.dp,
-            progress = budgetItem.progress,
-            color = Color(budgetItem.color),
-            backgroundColor = dark_gray,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 12.dp)
-        )
     }
 }
 
 @Composable
 fun BudgetHeader(budgetHeader: BaseBudget.BudgetHeader) {
-    Text(
-        text = budgetHeader.periodName,
-        fontWeight = FontWeight.Medium,
-        color = white,
-        fontSize = 18.sp,
-        modifier = Modifier.padding(start = 12.dp, top = 12.dp)
-    )
+    Card (Modifier.fillMaxWidth()){
+        Text(
+            text = budgetHeader.periodName,
+            fontWeight = FontWeight.Medium,
+            fontSize = 18.sp,
+            modifier = Modifier.padding(start = 12.dp, top = 12.dp)
+        )
+    }
 }
 
 @Composable

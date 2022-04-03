@@ -25,7 +25,7 @@ fun DeleteWalletDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,
         title = {
-            Text(text = stringResource(id = titleId), color = MaterialTheme.colors.secondary)
+            Text(text = stringResource(id = titleId))
         },
         text = {
             wallet?.let {

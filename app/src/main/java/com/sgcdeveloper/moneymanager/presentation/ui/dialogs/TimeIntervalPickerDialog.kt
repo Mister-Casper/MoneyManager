@@ -10,7 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -76,16 +76,15 @@ fun TimeIntervalPickerDialog(
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(32.dp)
                         .clickable { onDismiss() }
                 )
                 Text(
                     text = stringResource(id = R.string.select_time_interval),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -148,7 +147,6 @@ private fun TimeIntervalSelector(
                             Modifier
                                 .align(Alignment.CenterVertically)
                                 .size(32.dp),
-                            tint = MaterialTheme.colors.secondary
                         )
                         Text(
                             text = stringResource(id = item.name),
@@ -156,8 +154,7 @@ private fun TimeIntervalSelector(
                                 .weight(1f)
                                 .padding(start = 12.dp)
                                 .align(Alignment.CenterVertically),
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colors.secondary
+                            fontSize = 18.sp
                         )
                         RadioButton(
                             selected = (item.icon == selectedOption.value.icon),

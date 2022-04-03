@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +8,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,25 +30,26 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.TimeIntervalControllerView
 
-
 @Composable
 fun WeeklyStatisticScreen(navController: NavController, weeklyStatisticViewModel: WeeklyStatisticViewModel) {
     val textColor = MaterialTheme.colors.secondary
 
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    LazyColumn(Modifier.fillMaxSize()) {
         item {
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 androidx.compose.material3.Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
                         .clickable {
                             navController.popBackStack()
                         }
@@ -58,7 +60,7 @@ fun WeeklyStatisticScreen(navController: NavController, weeklyStatisticViewModel
                     fontSize = 24.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp)
+                        .padding(start = 12.dp)
                         .weight(1f)
                 )
             }

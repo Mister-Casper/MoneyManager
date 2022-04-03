@@ -49,19 +49,20 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     if (initViewModel.isMoveNext.value)
         navController.navigate(Screen.MoneyManagerScreen.route)
 
-    Column(Modifier.fillMaxSize().padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(start = 4.dp, top = 4.dp, end = 4.dp)) {
         Text(
             text = stringResource(id = R.string.add_account),
             fontSize = 24.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            color = MaterialTheme.colors.secondary
         )
 
         Text(
             text = stringResource(id = R.string.choose_a_name),
             fontSize = 14.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            color = MaterialTheme.colors.secondary
         )
 
         TextField(
@@ -73,7 +74,6 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
@@ -84,7 +84,6 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 20.dp),
-            color = MaterialTheme.colors.secondary
         )
 
         val source = remember { MutableInteractionSource() }
@@ -101,7 +100,6 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
             trailingIcon = {
                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
@@ -114,8 +112,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
             fontSize = 14.sp,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 20.dp),
-            color = MaterialTheme.colors.secondary
+                .padding(top = 20.dp)
         )
 
         TextField(
@@ -127,7 +124,6 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
@@ -137,8 +133,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
             fontSize = 14.sp,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 20.dp),
-            color = MaterialTheme.colors.secondary
+                .padding(top = 20.dp)
         )
 
         TextField(
@@ -150,10 +145,9 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
-            placeholder = { Text(text = "0")},
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number,imeAction = ImeAction.Next)
+            placeholder = { Text(text = "0") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
         )
 
         Button(

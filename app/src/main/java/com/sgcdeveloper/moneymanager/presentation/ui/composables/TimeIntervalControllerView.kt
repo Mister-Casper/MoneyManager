@@ -33,8 +33,7 @@ fun RowScope.TimeIntervalControllerView (onLeftClick:()->Unit,onRightClick:()->U
             .weight(1f)
             .align(Alignment.CenterVertically),
         textAlign = TextAlign.Center,
-        fontSize = 22.sp,
-        color = MaterialTheme.colors.secondary
+        fontSize = 22.sp
     )
     RepeatingButton(onClick = onRightClick, enabled = isEnable ){
         Icon(

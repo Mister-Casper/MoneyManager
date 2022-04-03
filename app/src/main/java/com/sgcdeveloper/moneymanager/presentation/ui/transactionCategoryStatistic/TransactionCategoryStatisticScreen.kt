@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -58,24 +59,26 @@ fun TransactionCategoryStatisticScreen(
 
     CheckDataFromAddTransactionScreen(navController, statisticViewModel)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
                 .fillMaxSize()
         ) {
             Box(Modifier.fillMaxWidth()) {
-                Row {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(top = 16.dp, bottom = 16.dp)
+                ) {
                     androidx.compose.material3.Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "",
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .size(40.dp)
+                            .size(32.dp)
+                            .padding(start = 12.dp)
                             .clickable {
                                 navController.popBackStack()
                             }
@@ -86,14 +89,13 @@ fun TransactionCategoryStatisticScreen(
                         fontSize = 24.sp,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
+                            .padding(start = 12.dp)
                             .weight(1f)
                     )
                 }
                 Row(
                     Modifier.align(Alignment.CenterEnd)
                 ) {
-                    Spacer(modifier = Modifier.width(12.dp))
                     Icon(
                         painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
@@ -102,6 +104,7 @@ fun TransactionCategoryStatisticScreen(
                             .size(32.dp)
                             .clickable { statisticViewModel.onEvent(StatisticEvent.ShowSelectTimeIntervalDialog) }
                     )
+                    Spacer(modifier = Modifier.width(12.dp))
                 }
             }
             Row(Modifier.fillMaxWidth()) {
@@ -228,8 +231,8 @@ fun TransactionCategoryItem(
                         .padding(start = 16.dp)
                         .align(Alignment.CenterVertically)
                 ) {
-                    Text(text = item.category, fontSize = 16.sp, color = white)
-                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                    Text(text = item.category, fontSize = 16.sp)
+                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
             }
             Column(modifier = Modifier.align(Alignment.CenterEnd)) {
@@ -239,7 +242,7 @@ fun TransactionCategoryItem(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     modifier = Modifier.align(Alignment.End),
-                    color = Color(item.moneyColor)
+                    color = if(item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
                 )
                 Text(
                     text = item.count,

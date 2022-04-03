@@ -2,15 +2,19 @@ package com.sgcdeveloper.moneymanager.presentation.ui.addWallet
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -46,7 +50,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             defaultCurrency = addWalletViewModel.walletCurrency.value,
             onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.ChangeCurrency(it))
-            }){
+            }) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
@@ -90,54 +94,61 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         item {
             Column {
-                Row {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(top = 8.dp, bottom = 8.dp)
+                ) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .size(40.dp)
+                            .size(32.dp)
                             .clickable {
                                 dialogBackOpen.value = true
                                 navController.popBackStack()
-                            }
+                            },
+                        tint = MaterialTheme.colors.onBackground
                     )
                     Text(
                         text = stringResource(id = R.string.add_wallet),
-                        color = MaterialTheme.colors.secondary,
                         fontSize = 20.sp,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp)
+                            .padding(start = 2.dp)
                             .weight(1f)
                     )
                     if (addWalletViewModel.isEditingMode.value) {
                         Icon(
                             painter = painterResource(id = R.drawable.delete_icon),
                             contentDescription = "",
-                            tint = MaterialTheme.colors.secondary,
+                            tint = MaterialTheme.colors.onBackground,
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
-                                .padding(end = 4.dp)
-                                .size(48.dp)
+                                .padding(end = 2.dp)
+                                .size(40.dp)
                                 .clickable {
                                     addWalletViewModel.onEvent(WalletEvent.ShowDeleteWalletDialog)
                                 }
                         )
                     }
-                    Button(onClick = {
-                        addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                        navController.popBackStack()
-                    }, enabled = addWalletViewModel.walletName.value.isNotEmpty()) {
+                    Button(
+                        onClick = {
+                            addWalletViewModel.onEvent(WalletEvent.InsertWallet)
+                            navController.popBackStack()
+                        },
+                        enabled = addWalletViewModel.walletName.value.isNotEmpty(),
+                        modifier = Modifier.padding(end = 12.dp)
+                    ) {
                         Text(
                             text = stringResource(id = R.string.save),
                             Modifier.align(Alignment.CenterVertically),
-                            color = if (addWalletViewModel.walletName.value.isNotEmpty()) white else MaterialTheme.colors.secondary
+                            color = if (addWalletViewModel.walletName.value.isNotEmpty()) white else MaterialTheme.colors.onBackground
                         )
                     }
                 }
@@ -163,7 +174,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 8.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
-                    colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                     singleLine = true,
                     trailingIcon = {
                         androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
@@ -177,7 +187,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 4.dp),
-                    color = MaterialTheme.colors.secondary
+                    color = MaterialTheme.colors.onBackground
                 )
 
                 TextField(
@@ -192,7 +202,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 8.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
-                    colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
                 )
@@ -203,7 +212,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 4.dp),
-                    color = MaterialTheme.colors.secondary
+                    color = MaterialTheme.colors.onBackground
                 )
                 ColorPicker(40.dp, addWalletViewModel.walletColor.value) {
                     addWalletViewModel.onEvent(WalletEvent.ChangeColor(it))
@@ -215,7 +224,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(top = 4.dp),
-                    color = MaterialTheme.colors.secondary
+                    color = MaterialTheme.colors.onBackground
                 )
                 WalletIconPicker(40.dp, addWalletViewModel.walletIcon.value) {
                     addWalletViewModel.onEvent(WalletEvent.ChangeIcon(it))

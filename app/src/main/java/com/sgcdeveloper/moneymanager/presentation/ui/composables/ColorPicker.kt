@@ -36,7 +36,7 @@ fun ColorPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
                         modifier = Modifier
                             .background(color)
                             .size(size)
-                            .border(BorderStroke(2.dp, MaterialTheme.colors.secondary))
+                            .border(BorderStroke(2.dp, MaterialTheme.colors.onBackground))
                     )
                 } else
                     Box(

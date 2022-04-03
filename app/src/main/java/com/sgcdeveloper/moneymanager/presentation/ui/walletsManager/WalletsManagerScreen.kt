@@ -13,7 +13,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -61,25 +61,24 @@ fun WalletsManagerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 50.dp)
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp),
+            .padding(bottom = 50.dp),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp)
+                .background(MaterialTheme.colors.surface)
+                .padding(top = 16.dp, bottom = 16.dp)
         ) {
             Row(
                 Modifier
                     .align(Alignment.CenterStart)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
                         .clickable {
                             homeViewModel.save()
                             navController.popBackStack()
@@ -87,17 +86,16 @@ fun WalletsManagerScreen(
                 )
                 Text(
                     text = stringResource(id = R.string.manage_wallets),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 12.dp)
+                        .padding(start = 12.dp),
+                    color = MaterialTheme.colors.onBackground
                 )
             }
             Icon(
                 painter = painterResource(id = R.drawable.add_icon),
                 contentDescription = "",
-                tint = MaterialTheme.colors.secondary,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 12.dp)
@@ -136,6 +134,7 @@ private fun VerticalReorderList(
         state = state.listState,
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 8.dp)
             .then(Modifier.reorderable(state, onMove = onMove, canDragOver = canDragOver))
     ) {
         items(items, { it.walletId }) { item ->
@@ -174,20 +173,17 @@ private fun VerticalReorderList(
                 ) {
                     AutoSizeText(
                         text = item.name,
-                        color = MaterialTheme.colors.secondary,
                         suggestedFontSizes = listOf(16.sp, 14.sp, 12.sp)
                     )
 
                     AutoSizeText(
                         text = item.formattedMoney,
-                        color = MaterialTheme.colors.secondary,
                         suggestedFontSizes = listOf(14.sp, 12.sp, 10.sp),
                     )
                 }
                 Icon(
                     painter = painterResource(id = R.drawable.edit_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .size(40.dp)
                         .padding(start = 4.dp)
@@ -198,7 +194,6 @@ private fun VerticalReorderList(
                 Icon(
                     painter = painterResource(id = R.drawable.delete_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .size(40.dp)
                         .padding(start = 4.dp)
@@ -209,7 +204,6 @@ private fun VerticalReorderList(
                 Icon(
                     painter = painterResource(id = R.drawable.list_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .size(40.dp)
                         .padding(start = 4.dp)

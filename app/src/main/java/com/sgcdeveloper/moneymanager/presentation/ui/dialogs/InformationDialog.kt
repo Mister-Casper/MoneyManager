@@ -7,7 +7,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
 fun InformationDialog(information: String,  onCancel: () -> Unit) {
@@ -15,11 +14,11 @@ fun InformationDialog(information: String,  onCancel: () -> Unit) {
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,
         title = {
-            Text(information, color = MaterialTheme.colors.secondary)
+            Text(information)
         },
         dismissButton = {
             Button(onClick = onCancel) {
-                Text(text = stringResource(id = R.string.cancel), color = white)
+                Text(text = stringResource(id = R.string.cancel))
             }
         },
         confirmButton = {}

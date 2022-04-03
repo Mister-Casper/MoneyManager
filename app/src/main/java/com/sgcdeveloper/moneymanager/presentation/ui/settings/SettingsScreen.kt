@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.presentation.ui.settings
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,6 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
-import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialog
 import java.time.DayOfWeek
 import java.time.format.TextStyle
@@ -74,56 +74,58 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         item {
-            Row(Modifier.padding(top = 4.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
                         .clickable {
                             navController.popBackStack()
                         }
                 )
                 Text(
                     text = stringResource(id = R.string.settings),
-                    color = MaterialTheme.colors.secondary,
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 4.dp)
+                        .padding(start = 12.dp)
                 )
             }
             MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
                 Text(
                     text = stringResource(id = R.string.account),
                     Modifier.align(Alignment.CenterStart),
-                    color = white,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colors.onBackground
                 )
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            if(darkThemeViewModel.isExistRates()) {
+            if (darkThemeViewModel.isExistRates()) {
                 MenuItem(Modifier.clickable { navController.navigate(Screen.ExchangeRatesScreen.route) }) {
                     Text(
                         text = stringResource(id = R.string.exchange_rate),
                         Modifier.align(Alignment.CenterStart),
-                        color = white,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowRight,
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 }
@@ -132,8 +134,8 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 Text(
                     text = stringResource(id = R.string.dark_mode),
                     Modifier.align(Alignment.CenterStart),
-                    color = white,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colors.onBackground
                 )
                 Switch(
                     modifier = Modifier.align(Alignment.CenterEnd),
@@ -145,23 +147,22 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 Column(Modifier.align(Alignment.CenterStart)) {
                     Text(
                         text = stringResource(id = R.string.first_day),
-                        color = white,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                     Text(
                         text = darkThemeViewModel.firstDayOfWeek.value.getDisplayName(
                             TextStyle.FULL,
                             Locale.getDefault()
                         ),
-                        color = white,
                         fontWeight = FontWeight.Light,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
@@ -169,20 +170,19 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 Column(Modifier.align(Alignment.CenterStart)) {
                     Text(
                         text = stringResource(id = R.string.startup_screen),
-                        color = white,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                     Text(
                         text = stringResource(id = darkThemeViewModel.defaultStartupScreen.value.resourceId),
-                        color = white,
                         fontWeight = FontWeight.Light,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
@@ -190,20 +190,19 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 Column(Modifier.align(Alignment.CenterStart)) {
                     Text(
                         text = stringResource(id = R.string.startup_transaction_type),
-                        color = white,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                     Text(
                         text = stringResource(id = darkThemeViewModel.defaultStartupTransactionType.value.stringRes),
-                        color = white,
                         fontWeight = FontWeight.Light,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
@@ -211,13 +210,12 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 Text(
                     text = stringResource(id = R.string.password_settings),
                     Modifier.align(Alignment.CenterStart),
-                    color = white,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colors.onBackground
                 )
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
@@ -235,11 +233,11 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 }
             }) {
                 Column(Modifier.fillMaxWidth()) {
-                    Text(text = stringResource(id = R.string.leave_feedback), color = white)
+                    Text(text = stringResource(id = R.string.leave_feedback), color = MaterialTheme.colors.onBackground)
                     Text(
                         text = stringResource(id = R.string.leave_feedback_description),
                         fontSize = 14.sp,
-                        color = white
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
             }
@@ -256,11 +254,11 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                 }
             }) {
                 Column(Modifier.fillMaxWidth()) {
-                    Text(text = stringResource(id = R.string.other_projects), color = white)
+                    Text(text = stringResource(id = R.string.other_projects), color = MaterialTheme.colors.onBackground)
                     Text(
                         text = stringResource(id = R.string.other_projects_description),
                         fontSize = 14.sp,
-                        color = white
+                        color = MaterialTheme.colors.onBackground
                     )
                 }
             }
@@ -281,16 +279,15 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             }) {
                 Text(
                     text = stringResource(id = R.string.share_app),
-                    color = white,
                     fontSize = 20.sp,
                     modifier = Modifier.align(
                         Alignment.CenterStart
-                    )
+                    ),
+                    color = MaterialTheme.colors.onBackground
                 )
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
@@ -303,8 +300,8 @@ fun MenuItem(modifier: Modifier = Modifier, context: @Composable BoxScope.() -> 
     Card(
         modifier
             .fillMaxWidth()
-            .padding(6.dp)
-            .padding(top = 6.dp, bottom = 6.dp)
+            .padding(4.dp)
+            .padding(start = 4.dp, end = 4.dp)
     ) {
         Box(
             modifier = Modifier

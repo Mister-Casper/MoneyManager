@@ -29,7 +29,7 @@ fun StringSelectorDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
         title = {
-            Text(text = title, color = MaterialTheme.colors.secondary)
+            Text(text = title)
         },
         text = {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
@@ -52,8 +52,7 @@ fun StringSelectorDialog(
                                 fontSize = 18.sp,
                                 modifier = Modifier
                                     .padding(start = 16.dp)
-                                    .align(Alignment.CenterVertically),
-                                color = MaterialTheme.colors.secondary
+                                    .align(Alignment.CenterVertically)
                             )
                         }
                     }

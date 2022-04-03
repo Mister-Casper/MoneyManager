@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -44,12 +44,12 @@ fun ExchangeRatesScreen(navController: NavController, addWalletViewModel: AddWal
                         .padding(top = 4.dp)
                         .align(Alignment.CenterStart)) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.Filled.ArrowBackIosNew,
                         contentDescription = "",
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
-                            .size(40.dp)
+                            .size(32.dp)
                             .clickable {
                                 navController.popBackStack()
                             }

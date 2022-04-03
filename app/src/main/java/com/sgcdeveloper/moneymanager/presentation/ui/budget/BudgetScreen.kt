@@ -11,7 +11,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -63,44 +63,50 @@ fun BudgetScreen(
     }
 
     Column(Modifier.fillMaxWidth()) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.surface)
+                .padding(top = 16.dp, bottom = 16.dp)
+        ) {
             Row(Modifier.align(Alignment.CenterStart)) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .padding(start = 12.dp)
+                        .size(20.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Text(
                     text = stringResource(id = R.string.budget_view),
-                    color = MaterialTheme.colors.secondary,
+                    color = MaterialTheme.colors.onBackground,
                     fontSize = 24.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp)
+                        .padding(start = 12.dp)
                         .weight(1f)
                 )
             }
-            Row(Modifier.align(Alignment.CenterEnd)) {
+            Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
                 Icon(
                     painter = painterResource(id = R.drawable.edit_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
                         .clickable { navController.navigate(Screen.AddBudgetScreen(budget.budgetEntry).route) }
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.delete_icon),
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(40.dp)
+                        .size(32.dp)
                         .clickable { budgetScreenViewModel.showDeleteBudgetDialog() })
             }
         }
@@ -110,7 +116,7 @@ fun BudgetScreen(
                 .padding(12.dp)
         ) {
             item {
-                Text(text = budget.budgetName, fontSize = 24.sp, color = MaterialTheme.colors.secondary)
+                Text(text = budget.budgetName, fontSize = 24.sp)
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -118,27 +124,23 @@ fun BudgetScreen(
                 ) {
                     Text(
                         text = stringResource(id = R.string.spent),
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterStart)
                     )
                     Text(
                         text = stringResource(id = budget.leftStrRes, ""),
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        color = MaterialTheme.colors.secondary
+                        modifier = Modifier.align(Alignment.CenterEnd)
                     )
                 }
                 Box(Modifier.fillMaxWidth()) {
                     Text(
                         text = budget.spent,
                         Modifier.align(Alignment.CenterStart),
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.secondary
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = budget.left,
                         Modifier.align(Alignment.CenterEnd),
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.secondary
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -163,15 +165,13 @@ fun BudgetScreen(
                             text = stringResource(id = R.string.budget_category),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Light,
-                            modifier = Modifier.weight(0.3f),
-                            color = MaterialTheme.colors.secondary
+                            modifier = Modifier.weight(0.3f)
                         )
                         Text(
                             text = budget.categoryDescription,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,
-                            modifier = Modifier.weight(0.7f),
-                            color = MaterialTheme.colors.secondary
+                            modifier = Modifier.weight(0.7f)
                         )
                     }
                     Row(Modifier.fillMaxWidth()) {
@@ -349,8 +349,8 @@ fun TransactionCategoryItem(
                         .padding(start = 16.dp)
                         .align(Alignment.CenterVertically)
                 ) {
-                    Text(text = item.category, fontSize = 16.sp, color = white)
-                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = white)
+                    Text(text = item.category, fontSize = 16.sp)
+                    Text(text = item.percent + " %", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
             }
             Column(modifier = Modifier.align(Alignment.CenterEnd)) {

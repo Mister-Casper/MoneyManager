@@ -9,7 +9,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,33 +37,37 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 4.dp, top = 4.dp, end = 4.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
-            Box(Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 12.dp, bottom = 12.dp)
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .size(40.dp)
-                        .clickable { navController.popBackStack() }
+                        .size(32.dp)
+                        .clickable { navController.popBackStack() },
+                    tint = MaterialTheme.colors.onBackground
                 )
                 Row(Modifier.align(Alignment.CenterEnd)) {
                     Icon(
                         painter = painterResource(id = R.drawable.edit_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .size(40.dp)
-                            .clickable { navController.navigate(Screen.AddWallet(walletViewModel.wallet).route) }
+                            .clickable { navController.navigate(Screen.AddWallet(walletViewModel.wallet).route) },
+                        tint = MaterialTheme.colors.onBackground
                     )
                     Icon(
                         painter = painterResource(id = R.drawable.statistic_icon),
                         contentDescription = "",
-                        tint = MaterialTheme.colors.secondary,
+                        tint = MaterialTheme.colors.onBackground,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .size(40.dp)
@@ -95,8 +99,7 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                                 text = stringResource(id = R.string.overview),
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(top = 12.dp),
-                                fontSize = 18.sp,
-                                color = white
+                                fontSize = 18.sp
                             )
                             Row(
                                 Modifier
@@ -106,12 +109,10 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                                 Text(
                                     text = stringResource(id = R.string.income),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = walletViewModel.income.value,
-                                    color = white
+                                    text = walletViewModel.income.value
                                 )
                             }
                             Row(
@@ -122,8 +123,7 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                                 Text(
                                     text = stringResource(id = R.string.expense),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(text = walletViewModel.expense.value, color = red)
                             }
@@ -135,12 +135,10 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                                 Text(
                                     text = stringResource(id = R.string.transfer),
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.weight(1f),
-                                    color = white
+                                    modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = walletViewModel.transfers.value,
-                                    color = white
+                                    text = walletViewModel.transfers.value
                                 )
                             }
                         }

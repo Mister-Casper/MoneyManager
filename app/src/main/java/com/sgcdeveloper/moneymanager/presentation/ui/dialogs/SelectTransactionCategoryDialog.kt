@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -38,16 +38,15 @@ fun SelectTransactionCategoryDialog(
         title = {
             Row(Modifier.fillMaxWidth()) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
+                        .size(32.dp)
                         .clickable { onDismiss() }
                 )
                 Text(
                     text = stringResource(id = R.string.select_category),
-                    color = MaterialTheme.colors.secondary,
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -82,7 +81,7 @@ private fun CategorySelector(
             Button(
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
-                    contentColor = if (isShowIncomeCategories.value) white else MaterialTheme.colors.secondary
+                    contentColor = if (isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
                 onClick = {isShowIncomeCategories.value = true}
             ) {
@@ -91,7 +90,7 @@ private fun CategorySelector(
             Button(
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = if (!isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
-                    contentColor = if (!isShowIncomeCategories.value) white else MaterialTheme.colors.secondary
+                    contentColor = if (!isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
                 onClick = {isShowIncomeCategories.value = false}
             ) {
@@ -130,7 +129,6 @@ private fun CategorySelector(
                     }
                     Text(
                         text = stringResource(id = item.description),
-                        color = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .weight(1f),

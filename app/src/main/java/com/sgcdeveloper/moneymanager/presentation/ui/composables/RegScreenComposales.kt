@@ -104,7 +104,6 @@ fun ColumnScope.InputField(
             .align(Alignment.CenterHorizontally)
             .padding(top = 12.dp, start = padding, end = padding)
             .fillMaxWidth(),
-        colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
         keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(
             onNext = { focusManager?.moveFocus(FocusDirection.Down) }
@@ -131,7 +130,6 @@ fun SignInGoogle(registrationViewModel: RegistrationViewModel) {
             .padding(top = 20.dp)
     ) {
         Divider(
-            color = MaterialTheme.colors.secondary,
             thickness = 2.dp,
             modifier = Modifier
                 .weight(1f)
@@ -142,12 +140,10 @@ fun SignInGoogle(registrationViewModel: RegistrationViewModel) {
             modifier = Modifier
                 .weight(1f)
                 .align(Alignment.CenterVertically),
-            color = MaterialTheme.colors.secondary,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
         )
         Divider(
-            color = MaterialTheme.colors.secondary,
             thickness = 2.dp,
             modifier = Modifier
                 .weight(1f)
@@ -160,7 +156,6 @@ fun SignInGoogle(registrationViewModel: RegistrationViewModel) {
     }
 
     Divider(
-        color = MaterialTheme.colors.secondary,
         thickness = 1.dp,
         modifier = Modifier.padding(top = 16.dp)
     )
@@ -203,7 +198,7 @@ fun SignInGoogleButton(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(id = R.string.sign_in_with_google), color = MaterialTheme.colors.secondary
+                    text = stringResource(id = R.string.sign_in_with_google)
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
