@@ -8,7 +8,7 @@
         <item name="colorSecondaryVariant">@color/blue</item>
         <item name="colorOnSecondary">@color/blue</item>
 
-        <item name="android:navigationBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
         <item name="android:dialogTheme">@style/Theme.DialogFullScreen</item>
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
 @Composable
@@ -105,7 +106,8 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                             )
                             Text(
                                 text = stringResource(id = R.string.log_in),
-                                modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignUp) }
+                                modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignUp) },
+                                color = blue
                             )
                         }
                     }

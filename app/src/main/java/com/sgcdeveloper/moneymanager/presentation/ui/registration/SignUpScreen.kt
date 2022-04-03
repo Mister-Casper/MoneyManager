@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
+import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
 @Composable
@@ -141,7 +142,8 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                             )
                             Text(
                                 text = stringResource(id = R.string.login_here),
-                                modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignIn) }
+                                modifier = Modifier.clickable { registrationViewModel.onEvent(RegistrationEvent.MoveToSignIn) },
+                                color = blue
                             )
                         }
                     }
