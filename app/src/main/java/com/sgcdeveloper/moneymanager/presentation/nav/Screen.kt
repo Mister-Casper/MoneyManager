@@ -1,6 +1,5 @@
 package com.sgcdeveloper.moneymanager.presentation.nav
 
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
@@ -10,6 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.TransactionScreen
+import com.sgcdeveloper.moneymanager.util.gson
 import com.sgcdeveloper.moneymanager.util.toSafeJson
 
 sealed class Screen(val route: String) {
@@ -24,37 +24,37 @@ sealed class Screen(val route: String) {
     object WalletsManagerScreen : Screen("WalletsManagerScreen")
     object BudgetManagerScreen : Screen("BudgetManagerScreen")
 
-    class BudgetScreen(budget: BaseBudget.BudgetItem?) : Screen("BudgetScreen/" + Gson().toSafeJson(budget))
-    class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + Gson().toSafeJson(wallet))
+    class BudgetScreen(budget: BaseBudget.BudgetItem?) : Screen("BudgetScreen/" + gson.toSafeJson(budget))
+    class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + gson.toSafeJson(wallet))
     class AddTransaction(wallet: Wallet? = null) :
-        Screen("AddTransaction/" + Gson().toSafeJson(wallet))
+        Screen("AddTransaction/" + gson.toSafeJson(wallet))
 
     class AddRecurringTransaction(recurringTransaction: RecurringTransaction? = null) :
-        Screen("AddRecurringTransaction/" + Gson().toSafeJson(recurringTransaction))
+        Screen("AddRecurringTransaction/" + gson.toSafeJson(recurringTransaction))
 
     class EditTransaction(transaction: Transaction? = null) :
-        Screen("EditTransaction/" + Gson().toSafeJson(transaction))
+        Screen("EditTransaction/" + gson.toSafeJson(transaction))
 
     class TimeIntervalTransactions(wallet: Wallet? = null) :
-        Screen("TimeIntervalTransactions/" + Gson().toSafeJson(wallet))
+        Screen("TimeIntervalTransactions/" + gson.toSafeJson(wallet))
 
     class AddBudgetScreen(budget: BudgetEntry? = null) :
-        Screen("AddBudgetScreen/" + Gson().toSafeJson(budget))
+        Screen("AddBudgetScreen/" + gson.toSafeJson(budget))
 
     class WeeklyStatisticScreen(wallet: Wallet? = null, transactionType: TransactionType? = null) :
-        Screen("WeeklyStatisticScreen/" + Gson().toSafeJson(wallet) + "/" + Gson().toSafeJson(transactionType))
+        Screen("WeeklyStatisticScreen/" + gson.toSafeJson(wallet) + "/" + gson.toSafeJson(transactionType))
 
     class TransactionCategoryTransactions(wallet: Wallet? = null, category: TransactionCategory? = null) :
-        Screen("TransactionCategoryTransactions/" + Gson().toSafeJson(category) + "/" + Gson().toSafeJson(wallet))
+        Screen("TransactionCategoryTransactions/" + gson.toSafeJson(category) + "/" + gson.toSafeJson(wallet))
 
     class TransactionCategoryStatisticScreen(defaultScreen: TransactionScreen? = null) :
-        Screen("TransactionCategoryStatisticScreen/" + Gson().toSafeJson(defaultScreen))
+        Screen("TransactionCategoryStatisticScreen/" + gson.toSafeJson(defaultScreen))
 
     class TransactionCategoryForWalletStatisticScreen(wallet: Wallet? = null) :
-        Screen("TransactionCategoryForWalletStatisticScreen/" + Gson().toSafeJson(wallet))
+        Screen("TransactionCategoryForWalletStatisticScreen/" + gson.toSafeJson(wallet))
 
-    class WalletScreen(wallet: Wallet?) : Screen("WalletScreen/" + Gson().toSafeJson(wallet))
+    class WalletScreen(wallet: Wallet?) : Screen("WalletScreen/" + gson.toSafeJson(wallet))
 
     class TimeIntervalBudgetManager(period: BudgetPeriod? = null) :
-        Screen("TimeIntervalBudgetManager/" + Gson().toSafeJson(period))
+        Screen("TimeIntervalBudgetManager/" + gson.toSafeJson(period))
 }

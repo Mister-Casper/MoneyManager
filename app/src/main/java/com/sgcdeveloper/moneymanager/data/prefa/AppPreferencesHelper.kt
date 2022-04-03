@@ -3,10 +3,10 @@ package com.sgcdeveloper.moneymanager.data.prefa
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
+import com.sgcdeveloper.moneymanager.util.gson
 import java.time.DayOfWeek
 import javax.inject.Inject
 
@@ -55,11 +55,11 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
 
     fun getDefaultCurrency():Currency{
         val json = prefs.getString(DEFAULT_CURRENCY, null)
-        return Gson().fromJson(json, Currency::class.java)
+        return gson.fromJson(json, Currency::class.java)
     }
 
     fun setDefaultCurrency(currency: Currency){
-        val json = Gson().toJson(currency)
+        val json = gson.toJson(currency)
         prefs.edit().putString(DEFAULT_CURRENCY, json).apply()
     }
 

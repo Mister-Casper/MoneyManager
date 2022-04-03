@@ -4,7 +4,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -82,13 +81,13 @@ class SyncHelper @Inject constructor(
             return true
         val loginStatus = userDocument.getString(AppPreferencesHelper.LOGIN_STATUS)
         if (loginStatus != null)
-            appPreferencesHelper.setLoginStatus(Gson().fromJson(loginStatus, LoginStatus::class.java))
+            appPreferencesHelper.setLoginStatus(gson.fromJson(loginStatus, LoginStatus::class.java))
         val userName = userDocument.getString(AppPreferencesHelper.USER_NAME)
         if (userName != null)
             appPreferencesHelper.setUserName(userName)
         val defaultCurrency = userDocument.getString(AppPreferencesHelper.DEFAULT_CURRENCY)
         if (defaultCurrency != null)
-            appPreferencesHelper.setDefaultCurrency(Gson().fromJson(defaultCurrency, Currency::class.java))
+            appPreferencesHelper.setDefaultCurrency(gson.fromJson(defaultCurrency, Currency::class.java))
         val walletId = userDocument.getLong(AppPreferencesHelper.DEFAULT_WALLET_ID)
         if (walletId != null)
             appPreferencesHelper.setDefaultWalletId(walletId)
@@ -125,8 +124,8 @@ class SyncHelper @Inject constructor(
                 val settingsData = hashMapOf(
                     AppPreferencesHelper.LAST_SYNC_TIME to time,
                     AppPreferencesHelper.USER_NAME to appPreferencesHelper.getUserNAme(),
-                    AppPreferencesHelper.LOGIN_STATUS to Gson().toJson(appPreferencesHelper.getLoginStatus()),
-                    AppPreferencesHelper.DEFAULT_CURRENCY to Gson().toJson(appPreferencesHelper.getDefaultCurrency()),
+                    AppPreferencesHelper.LOGIN_STATUS to gson.toJson(appPreferencesHelper.getLoginStatus()),
+                    AppPreferencesHelper.DEFAULT_CURRENCY to gson.toJson(appPreferencesHelper.getDefaultCurrency()),
                     AppPreferencesHelper.DEFAULT_WALLET_ID to appPreferencesHelper.getDefaultWalletId(),
                     AppPreferencesHelper.FIRST_DAY_OF_WEEK to appPreferencesHelper.getFirstDayOfWeek().value,
                     AppPreferencesHelper.IS_DARK_THEME to appPreferencesHelper.getIsDarkTheme(),

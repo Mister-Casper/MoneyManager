@@ -23,7 +23,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.gson.Gson
 import com.kobakei.ratethisapp.RateThisApp
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -80,6 +79,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.Weekl
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
+import com.sgcdeveloper.moneymanager.util.gson
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -218,7 +218,7 @@ class MainActivity : FragmentActivity() {
                             val addTransactionViewModel: AddTransactionViewModel by viewModels()
 
                             val wallet =
-                                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+                                gson.fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
 
                             if (wallet != null) {
                                 addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
@@ -231,7 +231,7 @@ class MainActivity : FragmentActivity() {
                             val addTransactionViewModel: AddTransactionViewModel by viewModels()
 
                             val recurringTransaction =
-                                Gson().fromJson(
+                                gson.fromJson(
                                     it.arguments?.getString("transaction"),
                                     RecurringTransaction::class.java
                                 )
@@ -256,7 +256,7 @@ class MainActivity : FragmentActivity() {
                             val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
 
                             val transaction =
-                                Gson().fromJson(
+                                gson.fromJson(
                                     backStackEntry.arguments?.getString("transaction"),
                                     Transaction::class.java
                                 )
@@ -271,7 +271,7 @@ class MainActivity : FragmentActivity() {
                             val addWalletViewModel: AddWalletViewModel by viewModels()
 
                             val wallet =
-                                Gson().fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
+                                gson.fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
                             if (wallet != null)
                                 addWalletViewModel.onEvent(WalletEvent.SetWallet(wallet))
                             AddWalletScreen(navController, addWalletViewModel)
@@ -282,7 +282,7 @@ class MainActivity : FragmentActivity() {
                             val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
-                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
                                 timeIntervalTransactionsViewModel.onEvent(
                                     TimeIntervalTransactionEvent.SetDefaultWallet(
@@ -339,7 +339,7 @@ class MainActivity : FragmentActivity() {
                             TransactionCategoryStatisticScreen(
                                 statisticViewModel,
                                 navController,
-                                Gson().fromJson(
+                                gson.fromJson(
                                     backStackEntry.arguments?.getString("screen"),
                                     TransactionScreen::class.java
                                 )
@@ -348,7 +348,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.TransactionCategoryForWalletStatisticScreen(null).route + "{wallet}") { backStackEntry ->
                             val statisticViewModel: StatisticViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
-                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
                                 statisticViewModel.onEvent(StatisticEvent.SetWallet(wallet))
                             TransactionCategoryStatisticScreen(
@@ -363,13 +363,13 @@ class MainActivity : FragmentActivity() {
                             val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
 
                             val category =
-                                Gson().fromJson(
+                                gson.fromJson(
                                     backStackEntry.arguments?.getString("category"),
                                     TransactionCategory::class.java
                                 )
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
-                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
                                 timeIntervalTransactionsViewModel.onEvent(
                                     TimeIntervalTransactionEvent.SetDefaultWallet(
@@ -431,7 +431,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
                             val walletViewModel: WalletViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
-                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
+                            val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
                                 walletViewModel.onEvent(ShowWalletEvent.SetShowWallet(wallet))
                             WalletScreen(walletViewModel, navController)
@@ -445,8 +445,8 @@ class MainActivity : FragmentActivity() {
                             val weeklyStatisticViewModel: WeeklyStatisticViewModel by viewModels()
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
-                            val wallet = Gson().fromJson(walletJson, Wallet::class.java)
-                            val type = Gson().fromJson(
+                            val wallet = gson.fromJson(walletJson, Wallet::class.java)
+                            val type = gson.fromJson(
                                 backStackEntry.arguments?.getString("type"),
                                 TransactionType::class.java
                             )
@@ -468,7 +468,7 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.AddBudgetScreen(null).route + "{budget}") {
                             val addBudgetViewModel: AddBudgetViewModel by viewModels()
-                            val budget = Gson().fromJson(it.arguments?.getString("budget"), BudgetEntry::class.java)
+                            val budget = gson.fromJson(it.arguments?.getString("budget"), BudgetEntry::class.java)
                             if (budget != null)
                                 addBudgetViewModel.onEvent(AddBudgetEvent.SetDefaultBudget(budget))
                             AddBudgetScreen(addBudgetViewModel, navController)
@@ -481,7 +481,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.BudgetScreen(null).route + "{budget}") {
                             val budgetScreenViewModel: BudgetScreenViewModel by viewModels()
                             val budgetJson = it.arguments?.getString("budget")
-                            val budget = Gson().fromJson(budgetJson, BaseBudget.BudgetItem::class.java)
+                            val budget = gson.fromJson(budgetJson, BaseBudget.BudgetItem::class.java)
                             BudgetScreen(budgetScreenViewModel, budget, navController)
                         }
                         composable(Screen.BudgetManagerScreen.route) {
@@ -491,7 +491,7 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.TimeIntervalBudgetManager(null).route + "{period}") {
                             val timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel by viewModels()
-                            val period = Gson().fromJson(it.arguments?.getString("period"), BudgetPeriod::class.java)
+                            val period = gson.fromJson(it.arguments?.getString("period"), BudgetPeriod::class.java)
                             if (period != null)
                                 timeIntervalBudgetManagerViewModel.loadBudgets(period)
                             TimeIntervalBudgetManager(navController, timeIntervalBudgetManagerViewModel)

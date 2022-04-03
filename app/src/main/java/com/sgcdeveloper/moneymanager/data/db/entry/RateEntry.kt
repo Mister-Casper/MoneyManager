@@ -2,8 +2,8 @@ package com.sgcdeveloper.moneymanager.data.db.entry
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import com.sgcdeveloper.moneymanager.util.gson
 
 @Entity
 class RateEntry(
@@ -14,7 +14,7 @@ class RateEntry(
     fun toObject(): HashMap<String, Any> {
         return hashMapOf(
             "id" to id,
-            "currency" to Gson().toJson(currency),
+            "currency" to gson.toJson(currency),
             "rate" to rate
         )
     }
@@ -23,7 +23,7 @@ class RateEntry(
         fun getRateByHashMap(data: MutableMap<String, Any>): RateEntry {
             return RateEntry(
                 data["id"] as Long,
-                Gson().fromJson(data["currency"] as String, Currency::class.java),
+                gson.fromJson(data["currency"] as String, Currency::class.java),
                 data["rate"] as Double
             )
         }

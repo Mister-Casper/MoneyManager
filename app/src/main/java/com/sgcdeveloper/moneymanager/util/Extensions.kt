@@ -75,3 +75,5 @@ fun Transaction.getMoneyColor(walletId:Long):Color{
             Color.Unspecified
     }
 }
+
+val gson = Gson()

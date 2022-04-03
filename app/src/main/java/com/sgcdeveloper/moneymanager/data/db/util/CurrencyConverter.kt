@@ -1,19 +1,18 @@
 package com.sgcdeveloper.moneymanager.data.db.util
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import com.sgcdeveloper.moneymanager.util.gson
 
 class CurrencyConverter {
-
     @TypeConverter
     fun toStr(currency: Currency): String {
-       return Gson().toJson(currency)
+       return gson.toJson(currency)
     }
 
     @TypeConverter
     fun toCurrency(currency: String): Currency {
-        return Gson().fromJson(currency, Currency::class.java)
+        return gson.fromJson(currency, Currency::class.java)
     }
 
 }

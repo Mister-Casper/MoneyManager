@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Unspecified
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -191,20 +193,18 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                                 Text(
                                     text = item.category,
                                     fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = white
+                                    fontWeight = FontWeight.Medium
                                 )
                                 Text(
                                     text = item.count,
                                     fontSize = 14.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = white
+                                    fontWeight = FontWeight.Medium
                                 )
                             }
                             Text(
                                 text = item.money,
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                color = Color(item.moneyColor)
+                                color = if (item.moneyColor != Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onSurface
                             )
                         }
                     }

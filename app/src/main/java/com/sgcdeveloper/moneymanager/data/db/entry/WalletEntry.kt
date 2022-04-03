@@ -4,9 +4,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
+import com.sgcdeveloper.moneymanager.util.gson
 
 @Entity
 data class WalletEntry(
@@ -26,7 +26,7 @@ data class WalletEntry(
             "isDefault" to isDefault,
             "name" to name,
             "money" to money,
-            "currency" to Gson().toJson(currency),
+            "currency" to gson.toJson(currency),
             "color" to color,
             "icon" to icon,
             "order" to order
@@ -45,7 +45,7 @@ data class WalletEntry(
                 data["isDefault"] as Boolean,
                 data["name"] as String,
                 data["money"] as Double,
-                Gson().fromJson(data["currency"] as String, Currency::class.java),
+                gson.fromJson(data["currency"] as String, Currency::class.java),
                 (data["color"] as Long).toInt(),
                 data["icon"] as String,
                 order as Long
