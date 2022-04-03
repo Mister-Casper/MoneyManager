@@ -222,5 +222,8 @@
     <string name="next_occurrence">Next occurrence: </string>
 
     <string name="no_data_text">No transactions</string>
+    <string name="welcome_page_title_1">Welcome to Money Manager!</string>
+    <string name="welcome_page_massage_1">Money Manager is the one place for bill planning, budgeting and keeping track of your finances</string>
+    <string name="skip">skip</string>
 
 </resources>
