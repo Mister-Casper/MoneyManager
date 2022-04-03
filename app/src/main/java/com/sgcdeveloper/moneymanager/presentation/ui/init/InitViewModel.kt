@@ -78,6 +78,7 @@ open class InitViewModel @Inject constructor(
 
         runBlocking {
             moneyManagerRepository.deleteAllWallets()
+            moneyManagerRepository.deleteAllRecurringTransactions()
             moneyManagerRepository.deleteAllTransactions()
             moneyManagerRepository.deleteAllRates()
 
