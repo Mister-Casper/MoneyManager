@@ -122,7 +122,7 @@
 
     <string name="show_more">Показать больше</string>
     <string name="expense_structure">Структура трат</string>
-    <string name="income_structure">Структура дохода</string>
+    <string name="income_structure">Структура доходов</string>
 
     <string name="none" />
     <string name="structure">Структура</string>

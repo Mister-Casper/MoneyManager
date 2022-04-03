@@ -139,6 +139,7 @@ fun AddRecurringTransactionsItem(onClick: () -> Unit) {
                 .align(
                     Alignment.CenterVertically
                 )
+                .size(40.dp)
                 .border(2.dp, gray, RoundedCornerShape(6.dp)),
             tint = white
         )
