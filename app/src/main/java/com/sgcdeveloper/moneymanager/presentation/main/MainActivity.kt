@@ -58,7 +58,6 @@ import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalB
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
-import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
@@ -74,6 +73,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.util.MyEnterPinActivity
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.ShowWalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.walletScreen.WalletViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.walletsManager.WalletsManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
@@ -212,7 +212,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.AccountSettings.route) {
                             val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
                             val registrationViewModel: RegistrationViewModel by viewModels()
-                            AccountSettings(navController, accountSettingsViewModel,registrationViewModel)
+                            AccountSettings(navController, accountSettingsViewModel, registrationViewModel)
                         }
                         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
                             val addTransactionViewModel: AddTransactionViewModel by viewModels()
@@ -459,11 +459,8 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.WalletsManagerScreen.route) {
-                           // val homeVIewModel: HomeViewModel by viewModels()
-                            //WalletsManagerScreen(homeVIewModel, navController)
-                            WelcomeScreen{
-
-                            }
+                            val homeVIewModel: HomeViewModel by viewModels()
+                            WalletsManagerScreen(homeVIewModel, navController)
                         }
                         composable(Screen.ExchangeRatesScreen.route) {
                             val addWalletViewModel: AddWalletViewModel by viewModels()
