@@ -28,10 +28,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
-import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
-import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
-import com.sgcdeveloper.moneymanager.domain.model.Transaction
-import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
@@ -77,10 +74,12 @@ import com.sgcdeveloper.moneymanager.presentation.ui.walletsManager.WalletsManag
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticScreenEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.weeklyStatisticScreen.WeeklyStatisticViewModel
+import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import com.sgcdeveloper.moneymanager.util.gson
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 
@@ -222,6 +221,8 @@ class MainActivity : FragmentActivity() {
 
                             if (wallet != null) {
                                 addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
+                                addTransactionViewModel.isMustBeRecurring = false
+                                addTransactionViewModel.recurringInterval.value = RecurringInterval.None
                             }
                             AddTransactionScreen(addTransactionViewModel, navController)
 
@@ -250,6 +251,14 @@ class MainActivity : FragmentActivity() {
                         composable("AddRecurringTransaction/") {
                             val addTransactionViewModel: AddTransactionViewModel by viewModels()
                             addTransactionViewModel.isMustBeRecurring = true
+                            addTransactionViewModel.recurringInterval.value = RecurringInterval.Daily(
+                                _lastTransactionDate = null,
+                                _isForever = true,
+                                _endDate = Date(LocalDateTime.now()),
+                                _repeatIInterval = 1,
+                                times = 1,
+                                type = RecurringEndType.Forever
+                            )
                             AddTransactionScreen(addTransactionViewModel, navController)
                         }
                         composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
