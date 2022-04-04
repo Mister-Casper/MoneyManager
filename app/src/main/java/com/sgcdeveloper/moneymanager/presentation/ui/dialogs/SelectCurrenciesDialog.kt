@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -49,7 +50,8 @@ fun SelectCurrenciesDialog(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(32.dp)
-                        .clickable { onDismiss() }
+                        .clickable { onDismiss() },
+                    tint = MaterialTheme.colors.onSurface
                 )
                 Text(
                     text = stringResource(id = R.string.select_currency),
@@ -135,6 +137,7 @@ private fun RadioGroup(
                     onClick = {
                         onAdd(item)
                     },
+                    style = TextStyle(color = MaterialTheme.colors.onSurface),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

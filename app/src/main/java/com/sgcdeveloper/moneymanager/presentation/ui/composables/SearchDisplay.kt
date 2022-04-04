@@ -15,6 +15,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.sgcdeveloper.moneymanager.R
@@ -123,6 +124,7 @@ fun SearchTextField(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     BasicTextField(
+                        textStyle = TextStyle(color = MaterialTheme.colors.onSurface),
                         value = query,
                         onValueChange = onQueryChange,
                         modifier = Modifier

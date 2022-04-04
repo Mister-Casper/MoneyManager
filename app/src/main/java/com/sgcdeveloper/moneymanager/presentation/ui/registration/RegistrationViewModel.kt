@@ -53,7 +53,8 @@ open class RegistrationViewModel @Inject constructor(
     val isPasswordConfirmError = mutableStateOf(false)
     val showLoadingDialog = mutableStateOf(false)
 
-    val navigationRoute = mutableStateOf("")
+    val navigationRoute =
+        mutableStateOf(if (appPreferencesHelper.getLoginStatus() == LoginStatus.Initing) Screen.Init.route else if (appPreferencesHelper.getLoginStatus() == LoginStatus.Registering) Screen.SignIn.route else Screen.MoneyManagerScreen.route)
 
     private var googleSignInClient: GoogleSignInClient
 

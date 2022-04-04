@@ -56,13 +56,6 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
                             .padding(start = 8.dp)
                     )
                 }
-                Button(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    onClick = { onAdd(Rate(currency, rate.toDouble())) },
-                    enabled = rate.isDouble() && rate.toDouble() > 0
-                ) {
-                    Text(text = stringResource(id = R.string.save), color = white)
-                }
             }
         },
         text = {
@@ -121,6 +114,12 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
                 Text(text = stringResource(id = R.string.cancel), color = white)
             }
         },
-        confirmButton = {}
+        confirmButton = {
+            Button(onClick = { onAdd(Rate(currency, rate.toDouble())) },
+                enabled = rate.isDouble() && rate.toDouble() > 0
+            ) {
+                Text(text = stringResource(id = R.string.save), color = white)
+            }
+        }
     )
 }
