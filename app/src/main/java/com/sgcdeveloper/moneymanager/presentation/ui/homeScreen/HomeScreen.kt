@@ -46,6 +46,15 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 color = MaterialTheme.colors.onBackground,
                 fontSize = 24.sp,
             )
+            Row(Modifier.align(Alignment.CenterEnd).padding(end = 48.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.calculator_icon),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable { navController.navigate(Screen.Calculators.route) }
+                )
+            }
             Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
                 Icon(
                     painter = painterResource(id = R.drawable.settings_icon),
