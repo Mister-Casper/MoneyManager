@@ -130,6 +130,12 @@
     <string name="transactions_count">%1$d транзакций</string>
 
     <string name="dashboard">Панель управления</string>
+    <string name="calculator_menu">Калькулятор</string>
+    <string name="tip_calculator">Калькулятор чаевых</string>
+    <string name="interest_calculator">Калькулятор процентов</string>
+    <string name="credit_card_payoff_calculator">Калькулятор выплат по кредиту</string>
+    <string name="loan_calculator">Кредитный калькулятор</string>
+    <string name="discount_and_tax_calculator">Калькулятор скидок и налогов</string>
 
     <string name="settings">Настройки</string>
     <string name="account">Учетная запись</string>
