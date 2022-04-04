@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.sgcdeveloper.moneymanager.data.db.AppDatabase
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.repository.AuthRepositoryImpl
 import com.sgcdeveloper.moneymanager.data.repository.CurrencyRepositoryImpl
 import com.sgcdeveloper.moneymanager.data.repository.MoneyManagerRepositoryImpl
@@ -32,7 +33,7 @@ class AppModule {
     fun provideAuthRepository(authRepository: AuthRepositoryImpl): AuthRepository = authRepository
 
     @Provides
-    fun provideCurrencyRepository(): CurrencyRepository = CurrencyRepositoryImpl()
+    fun provideCurrencyRepository(appPreferencesHelper: AppPreferencesHelper): CurrencyRepository = CurrencyRepositoryImpl(appPreferencesHelper)
 
     @Provides
     fun provideMoneyManagerRepository(appDatabase: AppDatabase): MoneyManagerRepository =

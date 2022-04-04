@@ -15,7 +15,7 @@ class GetAvailableRates @Inject constructor(
 ) {
     operator fun invoke(): LiveData<List<Rate>> {
         return Transformations.map(moneyManagerRepository.getRates()) {
-            it.map { Rate(it.currency, it.rate) } + Rate(appPreferencesHelper.getDefaultCurrency(), 1.0)
+            it.map { Rate(it.currency, it.rate) } + Rate(appPreferencesHelper.getDefaultCurrency()!!, 1.0)
         }
     }
 

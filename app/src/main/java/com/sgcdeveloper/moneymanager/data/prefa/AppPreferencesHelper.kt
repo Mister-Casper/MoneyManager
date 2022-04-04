@@ -53,8 +53,8 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putBoolean(IS_OLD,isDark).apply()
     }
 
-    fun getDefaultCurrency():Currency{
-        val json = prefs.getString(DEFAULT_CURRENCY, null)
+    fun getDefaultCurrency():Currency?{
+        val json = prefs.getString(DEFAULT_CURRENCY, null) ?: return null
         return gson.fromJson(json, Currency::class.java)
     }
 

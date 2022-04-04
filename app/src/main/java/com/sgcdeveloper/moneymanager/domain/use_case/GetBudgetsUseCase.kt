@@ -54,9 +54,9 @@ class GetBudgetsUseCase @Inject constructor(
                                 budgetTImeInterval,
                                 context.getString(
                                     R.string.total_budget,
-                                    getFormattedMoney(appPreferencesHelper.getDefaultCurrency().code, spents.sum()),
+                                    getFormattedMoney(appPreferencesHelper.getDefaultCurrency()!!.code, spents.sum()),
                                     getFormattedMoney(
-                                        appPreferencesHelper.getDefaultCurrency().code,
+                                        appPreferencesHelper.getDefaultCurrency()!!.code,
                                         periodBudget.value.sumOf { it.amount }
                                     )
                                 ),
@@ -86,16 +86,16 @@ class GetBudgetsUseCase @Inject constructor(
                                 color = budget.color,
                                 budgetName = budget.budgetName,
                                 spent = getFormattedMoney(
-                                    appPreferencesHelper.getDefaultCurrency().code,
+                                    appPreferencesHelper.getDefaultCurrency()!!.code,
                                     spent
                                 ),
                                 left = getFormattedMoney(
-                                    appPreferencesHelper.getDefaultCurrency().code,
+                                    appPreferencesHelper.getDefaultCurrency()!!.code,
                                     kotlin.math.abs(left)
                                 ),
                                 budgetValue = budget.amount,
                                 budget = getFormattedMoney(
-                                    appPreferencesHelper.getDefaultCurrency().code,
+                                    appPreferencesHelper.getDefaultCurrency()!!.code,
                                     budget.amount
                                 ),
                                 leftStrRes = leftStrRes,
@@ -116,7 +116,7 @@ class GetBudgetsUseCase @Inject constructor(
                                 endPeriod = budgetTImeInterval.getEndDate().toDateString(),
                                 spendCategories = getCategoriesStatistic.getExpenseCategoriesStatistic(
                                     transactions,
-                                    appPreferencesHelper.getDefaultCurrency(),
+                                    appPreferencesHelper.getDefaultCurrency()!!,
                                     budgetTImeInterval,
                                     budget.categories
                                 ),
@@ -208,7 +208,7 @@ class GetBudgetsUseCase @Inject constructor(
                     timeIntervalTransactions.key.toFloat(),
                     df.format(sum).toFloat(),
                     getFormattedMoney(
-                        appPreferencesHelper.getDefaultCurrency().code,
+                        appPreferencesHelper.getDefaultCurrency()!!.code,
                         sum
                     ),
                     Date(timeIntervalController.getStartDate().epochMillis + timeIntervalTransactions.key * timeIntervalController.getGraphTimeInterval()).toDateString()
@@ -233,7 +233,7 @@ class GetBudgetsUseCase @Inject constructor(
             val finalEntries = List((dividerCount - 1 - maxX).toInt()) {
                 BudgetGraphEntry(
                     maxX + it.toFloat() + 1, maxY, getFormattedMoney(
-                        appPreferencesHelper.getDefaultCurrency().code,
+                        appPreferencesHelper.getDefaultCurrency()!!.code,
                         maxY.toDouble()
                     ), Date(startDate.epochMillis + (maxX.toLong() + it.toLong() + 1) * step).toDateString()
                 )
@@ -241,7 +241,7 @@ class GetBudgetsUseCase @Inject constructor(
             return@async List(minX.toInt()) {
                 BudgetGraphEntry(
                     it.toFloat(), 0f, getFormattedMoney(
-                        appPreferencesHelper.getDefaultCurrency().code,
+                        appPreferencesHelper.getDefaultCurrency()!!.code,
                         0.0
                     ), Date(startDate.epochMillis + it.toLong() * step).toDateString()
                 )

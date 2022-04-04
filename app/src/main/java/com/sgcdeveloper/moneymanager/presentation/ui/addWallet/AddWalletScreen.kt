@@ -47,7 +47,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
             currencies = addWalletViewModel.currencies,
-            defaultCurrency = addWalletViewModel.walletCurrency.value,
+            defaultCurrency = addWalletViewModel.walletCurrency.value!!,
             onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.ChangeCurrency(it))
             }) {
@@ -167,7 +167,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                 }
 
                 TextField(
-                    value = addWalletViewModel.walletCurrency.value.name,
+                    value = addWalletViewModel.walletCurrency.value!!.name,
                     onValueChange = {},
                     readOnly = true,
                     modifier = Modifier

@@ -1,12 +1,13 @@
 package com.sgcdeveloper.moneymanager.data.repository
 
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import java.util.*
 import java.util.Currency.getInstance
 import javax.inject.Inject
 
-class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
+class CurrencyRepositoryImpl @Inject constructor(private val appPreferencesHelper: AppPreferencesHelper) : CurrencyRepository {
 
     private val currencyLocales: MutableMap<Locale, Currency> = mutableMapOf()
 
@@ -27,7 +28,10 @@ class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
     }
 
     override fun getDefaultCurrency(): Currency {
-        return currencyLocales[Locale.getDefault()] ?: getUICurrency(getInstance(Locale.US), Locale.US)
+        if(appPreferencesHelper.getDefaultCurrency() != null)
+            return appPreferencesHelper.getDefaultCurrency()!!
+        val locale = Locale.getDefault()
+        return getUICurrency(getInstance(locale), locale)
     }
 
     private fun getUICurrency(currency: java.util.Currency, locale: Locale): Currency {

@@ -46,6 +46,7 @@ open class AccountSettingsViewModel @Inject constructor(
                     appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(defaultSettings.firstDayOfWeek))
                     moneyManagerRepository.deleteAllWallets()
                     moneyManagerRepository.deleteAllRecurringTransactions()
+                    moneyManagerRepository.deleteAllBudgets()
                     moneyManagerRepository.deleteAllTransactions()
                     moneyManagerRepository.deleteAllRates()
                     WalletSingleton.setWallet(null)

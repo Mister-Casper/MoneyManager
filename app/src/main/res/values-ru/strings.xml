@@ -12,7 +12,7 @@
     <string name="sign_up_to_save">Зарегистрируйтесь, чтобы сохранить ваши данные</string>
     <string name="sign_up">Войти</string>
     <string name="log_in">Зарегестрироваться</string>
-    <string name="comtimue">Continue without creating an account</string>
+    <string name="comtimue">Продолжить без регистрации</string>
     <string name="or">ИЛИ</string>
     <string name="dont_have_account">Нет аккаунта?</string>
     <string name="have_account">Есть аккаунт?</string>

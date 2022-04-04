@@ -58,7 +58,7 @@ open class AddWalletViewModel @Inject constructor(
     val defaultCurrency = currencyRepository.getDefaultCurrency()
 
     init {
-        wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value, order = 0)
+        wallet.value = Wallet(icon = walletIcon.value, currency = walletCurrency.value!!, order = 0)
         formatMoney(walletMoney.value)
         getAvailableRates().observeForever {
             availableCurrencies = it.map { it.currency }
@@ -152,7 +152,7 @@ open class AddWalletViewModel @Inject constructor(
 
     private fun formatMoney(money: String) {
         val formatter =
-            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(walletCurrency.value.code)!!)
+            NumberFormat.getCurrencyInstance(GetWallets.getLocalFromISO(walletCurrency.value!!.code)!!)
         this.wallet.value =
             this.wallet.value!!.copy(formattedMoney = formatter.format(money.toDoubleOrNull() ?: 0))
     }
