@@ -14,6 +14,8 @@ import com.sgcdeveloper.moneymanager.util.toSafeJson
 
 sealed class Screen(val route: String) {
     object SignIn : Screen("SignIn")
+    object Calculators : Screen("Calculators")
+    object Calculator : Screen("Calculator")
     object SignUp : Screen("SignUp")
     object Init : Screen("Init")
     object Settings : Screen("Settings")
