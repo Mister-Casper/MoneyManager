@@ -31,8 +31,8 @@
     <string name="passwords_bot_matches">Пароли не совпадают</string>
     <string name="sign_in_with_google">Войти с Google</string>
     <string name="add_account">Добавить аккаунт</string>
-    <string name="choose_a_name">Выберите название для вашего аккаунта.</string>
-    <string name="choose_a_default_currency">Выберите валюту по умолчанию для вашего аккаунта.</string>
+    <string name="choose_a_name">Введите имя пользователя.</string>
+    <string name="choose_a_default_currency">Выберите валюту по умолчанию</string>
     <string name="money_default">Сколько денег в этом кошельке?</string>
     <string name="next">Далее</string>
     <string name="check_internet">Проверьте подключение к интернету.</string>
@@ -42,7 +42,7 @@
     <string name="select_currency">Выберите валюту</string>
 
     <string name="wallet_number">Кошелек %1$d</string>
-    <string name="choose_a_default_wallet_name">Выберите имя для вашего кошелька по умолчанию.</string>
+    <string name="choose_a_default_wallet_name">Введите имя для вашего кошелька</string>
 
     <string name="wallet">Кошелек</string>
     <string name="add_wallet">Добавить кошелек</string>

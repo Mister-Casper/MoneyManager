@@ -282,7 +282,7 @@ open class AddTransactionViewModel @Inject constructor(
     }
 
     fun clear() {
-        currentScreenName.value = app.getString(R.string.expense)
+        showScreen(appPreferencesHelper.getStartupTransactionType())
         transactionDate.value = Date(LocalDateTime.now())
         transactionAmount.value = ""
         formattedTransactionAmount.value = ""

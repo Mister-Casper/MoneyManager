@@ -88,7 +88,7 @@ class GetWallets @Inject constructor(
         wallets.forEach { wallet ->
             money += if (rates.map { it.currency }.contains(wallet.currency)) {
                 val rateMoney = wallet.money / rates.find { it.currency == wallet.currency }!!.rate
-                df.format(rateMoney).toDouble()
+                rateMoney
             } else {
                 wallet.money
             }
