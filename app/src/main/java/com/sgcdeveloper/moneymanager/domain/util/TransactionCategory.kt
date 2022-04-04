@@ -122,10 +122,15 @@ open class TransactionCategory(
     }
 
     companion object {
-        private val allItems by lazy { (IncomeCategory.getItems() + ExpenseCategory.getAllItems()).associateBy { it.id } }
+        private val allItems by lazy {
+            (listOf(
+                None,
+                Transfers,
+            ) + IncomeCategory.getItems() + ExpenseCategory.getAllItems()).associateBy { it.id }
+        }
 
         fun findById(id: Int): TransactionCategory {
-            return allItems[id]!!
+            return allItems[id] ?: throw Exception("Cant find TransactionCategory by id = $id")
         }
 
         fun getById(id: Int): TransactionCategory {
