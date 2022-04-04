@@ -129,7 +129,7 @@ open class TransactionCategory(
         }
 
         fun getById(id: Int): TransactionCategory {
-            return getItems().find { it.id == id }!!
+            return getItems().find { it.id == id } ?: throw Exception("Cant find TransactionCategory by id = $id")
         }
 
         fun getItems(): List<TransactionCategory> {
