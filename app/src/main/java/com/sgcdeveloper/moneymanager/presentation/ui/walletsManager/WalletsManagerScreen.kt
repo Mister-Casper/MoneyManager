@@ -188,7 +188,7 @@ private fun VerticalReorderList(
                         .size(40.dp)
                         .padding(start = 4.dp)
                         .clickable {
-                            navController.navigate(Screen.WalletScreen(item).route)
+                            navController.navigate(Screen.AddWallet(item).route)
                         }
                 )
                 Icon(
