@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -84,7 +85,9 @@ private fun MainScreenNavigationConfigurations(
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
             val homeViewModel: HomeViewModel by (LocalContext.current as MainActivity).viewModels()
-            homeViewModel.loadBudgets()
+            LaunchedEffect(Unit){
+                homeViewModel.loadBudgets()
+            }
             HomeScreen(homeViewModel, globalNavController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
