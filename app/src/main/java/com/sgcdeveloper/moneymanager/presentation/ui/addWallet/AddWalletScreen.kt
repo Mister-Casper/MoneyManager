@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addWallet
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -56,7 +57,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     } else if (dialog.value is DialogState.DeleteWalletDialog) {
         DeleteWalletDialog(addWalletViewModel.wallet.value!!, {
             addWalletViewModel.onEvent(WalletEvent.DeleteWallet)
-            navController.popBackStack(route = BottomMoneyManagerNavigationScreens.Home.route, inclusive = false)
+            moveBack(navController)
         }, {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         })
@@ -111,7 +112,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                             .size(32.dp)
                             .clickable {
                                 dialogBackOpen.value = true
-                                navController.popBackStack()
+
                             },
                         tint = MaterialTheme.colors.onBackground
                     )
@@ -235,4 +236,17 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     BackHandler {
         dialogBackOpen.value = true
     }
+}
+
+fun moveBack(navController: NavController){
+    Log.e("QWE",navController.backQueue
+        .dropLast(1)
+        .last().destination.route!!)
+    if (navController.backQueue
+            .dropLast(1)
+            .last().destination.route!! == "WalletScreen/{wallet}"
+    )
+        navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
+    else
+        navController.popBackStack()
 }
