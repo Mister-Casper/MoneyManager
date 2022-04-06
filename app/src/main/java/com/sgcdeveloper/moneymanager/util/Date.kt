@@ -114,5 +114,23 @@ data class Date(val epochMillis: Long) {
     companion object {
         @SuppressLint("ConstantLocale")
         private val dateStringFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy").withLocale(Locale.getDefault())
+
+        fun LocalDate.toDateString(): String {
+            return dateStringFormatter.format(this)
+        }
+
+        fun LocalDate.getDay(): String {
+            return this.dayOfMonth.toString()
+        }
+
+        fun LocalDate.getDayName(): String {
+            return this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
+        }
+
+        fun LocalDate.getMonthString(): String {
+            return this.month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                .uppercase() + " " + this.year.toString()
+        }
+
     }
 }

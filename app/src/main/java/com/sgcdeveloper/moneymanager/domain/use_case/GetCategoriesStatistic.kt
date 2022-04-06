@@ -11,9 +11,6 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.getMoneyColor
 import com.sgcdeveloper.moneymanager.util.toRoundString
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import javax.inject.Inject
 
 class GetCategoriesStatistic @Inject constructor(private val context: Context) {
@@ -21,32 +18,32 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
     suspend fun getExpenseStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
-    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
-        return@async getCategoriesStatistic(
+    ): List<CategoryStatistic>  {
+        return getCategoriesStatistic(
             wallet.currency,
             wallet.walletId,
             transactions.map { it.transactionEntry }
         ) { return@getCategoriesStatistic it.transactionType == TransactionType.Expense || (it.transactionType == TransactionType.Transfer && it.fromWalletId == wallet.walletId) }
-    }.await()
+    }
 
     suspend fun getIncomeStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
-    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
-        return@async getCategoriesStatistic(
+    ): List<CategoryStatistic>  {
+        return getCategoriesStatistic(
             wallet.currency, wallet.walletId, transactions.map { it.transactionEntry },
         ) { return@getCategoriesStatistic it.transactionType == TransactionType.Income || (it.transactionType == TransactionType.Transfer && it.toWalletId == wallet.walletId) }
-    }.await()
+    }
 
     suspend fun getCategoriesStatistic(
         currency: Currency,
         walletId: Long,
         transaction: List<Transaction>,
         filter: (it: Transaction) -> Boolean = { true }
-    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
+    ): List<CategoryStatistic>  {
         var maxSum = 0.0
 
-        return@async transaction.filter { filter(it) }
+        return transaction.filter { filter(it) }
             .groupBy { it.category.icon }.values.map { oneCategoryTransactions ->
                 val firstTransaction = oneCategoryTransactions[0]
                 var sum = 0.0
@@ -75,21 +72,21 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
                     it.percent = (it.sum / maxSum * 100).toRoundString()
                 }
             }.sortedByDescending { it.sum }
-    }.await()
+    }
 
     suspend fun getExpenseCategoriesStatistic(
         transaction: List<Transaction>,
         currency: Currency,
         timeIntervalController: TimeIntervalController,
         filterCategories: List<TransactionCategory.ExpenseCategory>
-    ): List<CategoryStatistic> = CoroutineScope(Dispatchers.IO).async {
+    ): List<CategoryStatistic> {
         val filterCategoriesId = filterCategories.map { it.id }
 
-        return@async getCategoriesStatistic(currency, 0, transaction) {
+        return getCategoriesStatistic(currency, 0, transaction) {
             timeIntervalController.isInInterval(it.date) && filterCategoriesId.contains(
                 it.category.id
             )
         }
-    }.await()
+    }
 
 }

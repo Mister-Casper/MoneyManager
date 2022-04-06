@@ -5,11 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
-import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -28,8 +26,6 @@ open class WalletViewModel @Inject constructor(
     val expense = mutableStateOf("")
     val transfers = mutableStateOf("")
 
-    var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
-
     var transactionsStatistic = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
 
     private var loadingJob: Job?= null
@@ -40,26 +36,17 @@ open class WalletViewModel @Inject constructor(
                 wallet = showWalletEvent.wallet
                 loadingJob?.cancel()
                 loadingJob = viewModelScope.launch {
-                    transactionItems.value = walletsUseCases.getTransactionItems(wallet)
+                    val stats = walletsUseCases.getTransactionItems.getStats(wallet)
 
-                    income.value = app.getString(R.string.transactions_count,
-                        transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                            .filter { it.transactionEntry.transactionType == TransactionType.Income }.size
-                    )
-                    expense.value = app.getString(R.string.transactions_count,
-                        transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                            .filter { it.transactionEntry.transactionType == TransactionType.Expense }.size
-                    )
-                    transfers.value = app.getString(R.string.transactions_count,
-                        transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>()
-                            .filter { it.transactionEntry.transactionType == TransactionType.Transfer }.size
-                    )
+                    income.value = app.getString(R.string.transactions_count, stats.first)
+                    expense.value = app.getString(R.string.transactions_count, stats.second)
+                    transfers.value = app.getString(R.string.transactions_count, stats.third)
 
                     transactionsStatistic.value =
                         walletsUseCases.getCategoriesStatistic.getCategoriesStatistic(
                             wallet.currency,
                             wallet.walletId,
-                            transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>().map { it.transactionEntry }
+                            walletsUseCases.getTransactionItems.getEntries(wallet)
                         )
                 }
             }

@@ -131,36 +131,35 @@ class GetBudgetsUseCase @Inject constructor(
                 return@async budgets
         }.await()
 
-    private suspend fun getBudgetTransactions(
+    private fun getBudgetTransactions(
         transactions: List<Transaction>,
         budget: BudgetEntry,
         timeIntervalController: TimeIntervalController
-    ): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
-        return@async transactions.filter {
+    ): List<Transaction> {
+        return transactions.filter {
             timeIntervalController.isInInterval(it.date) && budget.categories.map { budget -> budget.id }
                 .contains(it.category.id) && it.transactionType == TransactionType.Expense
         }
-    }.await()
+    }
 
-    private suspend fun getSpent(
+    private fun getSpent(
         transactions: List<Transaction>,
         budget: BudgetEntry,
         timeIntervalController: TimeIntervalController
-    ): Double = CoroutineScope(Dispatchers.IO).async {
-        return@async getBudgetTransactions(transactions, budget, timeIntervalController).sumOf { it.value }
-    }.await()
+    ): Double {
+        return getBudgetTransactions(transactions, budget, timeIntervalController).sumOf { it.value }
+    }
 
-    private suspend fun getStartDate(now: Date, firstDay: DayOfWeek): Date = CoroutineScope(Dispatchers.IO).async {
+    private fun getStartDate(now: Date, firstDay: DayOfWeek): Date {
         val dif = if (firstDay == now.getAsLocalDate().dayOfWeek)
             0
         else
             kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDay.value + 7)
-        return@async Date(now.getAsLocalDate().minusDays(dif.toLong()))
-    }.await()
+        return Date(now.getAsLocalDate().minusDays(dif.toLong()))
+    }
 
-    private suspend fun getTimeIntervalCController(period: BudgetPeriod, now: Date): TimeIntervalController =
-        CoroutineScope(Dispatchers.IO).async {
-            return@async when (period) {
+    private fun getTimeIntervalCController(period: BudgetPeriod, now: Date): TimeIntervalController {
+            return when (period) {
                 Daily -> {
                     TimeIntervalController.DailyController(now)
                 }
@@ -178,13 +177,13 @@ class GetBudgetsUseCase @Inject constructor(
                     TimeIntervalController.YearlyController(now.getAsLocalDate())
                 }
             }
-        }.await()
+        }
 
-    private suspend fun getBudgetGraph(
+    private fun getBudgetGraph(
         transactions: List<Transaction>,
         budget: BudgetEntry,
         timeIntervalController: TimeIntervalController
-    ): List<BudgetGraphEntry> = CoroutineScope(Dispatchers.IO).async {
+    ): List<BudgetGraphEntry> {
         val budgetTransactions = getBudgetTransactions(transactions, budget, timeIntervalController)
         var sum = 0.0
         var index = 0
@@ -198,7 +197,7 @@ class GetBudgetsUseCase @Inject constructor(
                     endIntervalDate =
                         Date(timeIntervalController.getStartDate().epochMillis + timeIntervalController.getGraphTimeInterval())
                 }
-        return@async getZeroEntries(
+        return getZeroEntries(
             budgetTransactions.groupBy {
                 index = isInTimeInterval(index, supportTimeIIntervalController, it)
                 index
@@ -218,15 +217,14 @@ class GetBudgetsUseCase @Inject constructor(
             timeIntervalController.getStartDate(),
             timeIntervalController.getGraphTimeInterval()
         )
-    }.await()
+    }
 
-    private suspend fun getZeroEntries(
+    private fun getZeroEntries(
         entries: List<BudgetGraphEntry>,
         dividerCount: Int,
         startDate: Date,
         step: Long
-    ): List<BudgetGraphEntry> =
-        CoroutineScope(Dispatchers.IO).async {
+    ): List<BudgetGraphEntry> {
             val maxX = entries.maxOfOrNull { it.x } ?: -1f
             val minX = entries.minOfOrNull { it.x } ?: 0f
             val maxY = entries.maxOfOrNull { it.y } ?: 0f
@@ -238,7 +236,7 @@ class GetBudgetsUseCase @Inject constructor(
                     ), Date(startDate.epochMillis + (maxX.toLong() + it.toLong() + 1) * step).toDateString()
                 )
             }
-            return@async List(minX.toInt()) {
+            return List(minX.toInt()) {
                 BudgetGraphEntry(
                     it.toFloat(), 0f, getFormattedMoney(
                         appPreferencesHelper.getDefaultCurrency()!!.code,
@@ -246,19 +244,19 @@ class GetBudgetsUseCase @Inject constructor(
                     ), Date(startDate.epochMillis + it.toLong() * step).toDateString()
                 )
             } + entries + finalEntries
-        }.await()
+        }
 
-    private suspend fun isInTimeInterval(
+    private fun isInTimeInterval(
         index: Int,
         supportTimeIIntervalController: TimeIntervalController,
         transaction: Transaction
-    ): Int = CoroutineScope(Dispatchers.IO).async {
-        return@async when {
+    ): Int {
+        return when {
             supportTimeIIntervalController.isInInterval(transaction.date) -> index
             else -> {
                 supportTimeIIntervalController.moveNext()
                 isInTimeInterval(index + 1, supportTimeIIntervalController, transaction)
             }
         }
-    }.await()
+    }
 }

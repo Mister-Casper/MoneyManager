@@ -31,7 +31,6 @@ class GetRecurringTransactionsUseCase @Inject constructor(
     private val insertWallet: InsertWallet,
     private val getWallets: GetWallets
 ) {
-
     suspend operator fun invoke(): List<BaseRecurringTransaction> = CoroutineScope(Dispatchers.IO).async {
         return@async moneyManagerRepository.getRecurringTransactionsOnce().map {
             val lastDate = (it.recurringInterval.lastTransactionDate ?: it.transactionEntry.date).getAsLocalDate()
@@ -51,44 +50,43 @@ class GetRecurringTransactionsUseCase @Inject constructor(
         } + listOf(AddRecurringTransaction)
     }.await()
 
-    private suspend fun getNextTransactionDate(
+    private fun getNextTransactionDate(
         date: LocalDate,
         recurringTransactionEntry: RecurringTransactionEntry
-    ): LocalDate =
-        CoroutineScope(Dispatchers.IO).async {
-            return@async when (recurringTransactionEntry.recurringInterval) {
-                is RecurringInterval.Daily -> {
-                    date.plusDays(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
-                }
-                is RecurringInterval.Monthly -> {
-                    val newDate =
-                        date.plusMonths(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
-                    if (recurringTransactionEntry.recurringInterval.sameDay == -1) {
-                        newDate.withDayOfMonth(newDate.lengthOfMonth())
-                    } else {
-                        newDate.withDayOfMonth(
-                            kotlin.math.min(
-                                recurringTransactionEntry.recurringInterval.sameDay,
-                                newDate.lengthOfMonth()
-                            )
-                        )
-                    }
-                }
-                RecurringInterval.None -> throw Exception("Impossible shit exception")
-                is RecurringInterval.Weekly -> {
-                    var nextDay = date
-                    nextDay = nextDay.plusDays(1)
-                    while (!recurringTransactionEntry.recurringInterval.days.contains(nextDay.dayOfWeek)) {
-                        nextDay = nextDay.plusDays(1)
-                    }
-                    nextDay
-                }
-                is RecurringInterval.Yearly -> {
-                    date.plusYears(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
-                }
-                else -> throw Exception("Impossible shit exception")
+    ): LocalDate {
+        return when (recurringTransactionEntry.recurringInterval) {
+            is RecurringInterval.Daily -> {
+                date.plusDays(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
             }
-        }.await()
+            is RecurringInterval.Monthly -> {
+                val newDate =
+                    date.plusMonths(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
+                if (recurringTransactionEntry.recurringInterval.sameDay == -1) {
+                    newDate.withDayOfMonth(newDate.lengthOfMonth())
+                } else {
+                    newDate.withDayOfMonth(
+                        kotlin.math.min(
+                            recurringTransactionEntry.recurringInterval.sameDay,
+                            newDate.lengthOfMonth()
+                        )
+                    )
+                }
+            }
+            RecurringInterval.None -> throw Exception("Impossible shit exception")
+            is RecurringInterval.Weekly -> {
+                var nextDay = date
+                nextDay = nextDay.plusDays(1)
+                while (!recurringTransactionEntry.recurringInterval.days.contains(nextDay.dayOfWeek)) {
+                    nextDay = nextDay.plusDays(1)
+                }
+                nextDay
+            }
+            is RecurringInterval.Yearly -> {
+                date.plusYears(recurringTransactionEntry.recurringInterval.repeatInterval.toLong())
+            }
+            else -> throw Exception("Impossible shit exception")
+        }
+    }
 
     suspend fun loadTransactions() = withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
         val recurringTransactions = moneyManagerRepository.getRecurringTransactionsOnce().toMutableList()
@@ -169,15 +167,14 @@ class GetRecurringTransactionsUseCase @Inject constructor(
         }
     }
 
-    private suspend fun isAvailableDate(date: Date, recurringInterval: RecurringInterval): Boolean =
-        CoroutineScope(Dispatchers.IO).async {
-            return@async when (recurringInterval.recurring) {
-                None -> throw Exception("")
-                Daily -> true
-                Weekly -> recurringInterval.days.contains(date.getAsLocalDate().dayOfWeek)
-                Monthly -> true
-                Yearly -> true
-            }
-        }.await()
+    private fun isAvailableDate(date: Date, recurringInterval: RecurringInterval): Boolean {
+        return when (recurringInterval.recurring) {
+            None -> throw Exception("")
+            Daily -> true
+            Weekly -> recurringInterval.days.contains(date.getAsLocalDate().dayOfWeek)
+            Monthly -> true
+            Yearly -> true
+        }
+    }
 
 }

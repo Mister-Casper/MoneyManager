@@ -10,19 +10,36 @@ import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getCurrencyFormatter
 import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
+import com.sgcdeveloper.moneymanager.util.Date.Companion.getDay
+import com.sgcdeveloper.moneymanager.util.Date.Companion.getDayName
+import com.sgcdeveloper.moneymanager.util.Date.Companion.getMonthString
+import com.sgcdeveloper.moneymanager.util.Date.Companion.toDateString
 import com.sgcdeveloper.moneymanager.util.getMoneyColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.time.LocalDate
 import javax.inject.Inject
 
 class GetTransactionItems @Inject constructor(
     private val context: Context,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val getTransactionsUseCase:GetTransactionsUseCase
+    private val getTransactionsUseCase: GetTransactionsUseCase
 ) {
     suspend operator fun invoke(wallet: Wallet): List<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
         return@async convertTransactionsToItems(wallet, getTransactionsUseCase(wallet))
+    }.await()
+
+    suspend fun getStats(wallet: Wallet): Triple<Int, Int, Int> = CoroutineScope(Dispatchers.IO).async {
+        val transactions = getTransactionsUseCase(wallet)
+        val income = transactions.filter { it.transactionType == TransactionType.Income }.count()
+        val expense = transactions.filter { it.transactionType == TransactionType.Expense }.count()
+        val transfer = transactions.filter { it.transactionType == TransactionType.Transfer }.count()
+        return@async Triple(income, expense, transfer)
+    }.await()
+
+    suspend fun getEntries(wallet: Wallet): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
+        return@async getTransactionsUseCase(wallet)
     }.await()
 
     suspend fun getTimeIntervalTransactions(
@@ -39,24 +56,26 @@ class GetTransactionItems @Inject constructor(
     private suspend fun getWalletTransactions(
         wallet: Wallet, timeIntervalController: TimeIntervalController,
         transactionCategory: TransactionCategory? = null
-    ): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
-        return@async getTransactionsUseCase(wallet)
+    ): List<Transaction> {
+        return getTransactionsUseCase(wallet)
             .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.id == transactionCategory.id) }
-    }.await()
+    }
 
     private suspend fun convertTransactionsToItems(
         wallet: Wallet,
         transactions: List<Transaction>
-    ): MutableList<BaseTransactionItem> = CoroutineScope(Dispatchers.IO).async {
+    ): MutableList<BaseTransactionItem> {
         val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.name }
         val items = mutableListOf<BaseTransactionItem>()
-        transactions.groupBy { it.date.toDateString() }.values.forEach { oneDayTransactions ->
-            val date = oneDayTransactions.first().date
+        transactions.groupBy {
+            val date = it.date.getAsLocalDate()
+            StringDate(date, date.toDateString())
+        }.forEach { (stringDate, oneDayTransactions) ->
             items.add(
                 BaseTransactionItem.TransactionHeader(
-                    date.getDay(),
-                    date.getDayName(),
-                    date.getMonth(),
+                    stringDate.date.getDay(),
+                    stringDate.date.getDayName(),
+                    stringDate.date.getMonthString(),
                     getTransactionsMoney(wallet, oneDayTransactions),
                 )
             )
@@ -82,24 +101,23 @@ class GetTransactionItems @Inject constructor(
                 )
             }
         }
-        return@async items
-    }.await()
+        return items
+    }
 
-    private suspend fun getTransactionsMoney(wallet: Wallet, transactions: List<Transaction>): String =
-        CoroutineScope(Dispatchers.IO).async {
-            return@async getFormattedMoney(wallet, transactions.sumOf {
-                when (it.transactionType) {
-                    TransactionType.Income -> it.value
-                    TransactionType.Expense -> -it.value
-                    else -> {
-                        if (wallet.walletId == it.fromWalletId)
-                            -it.value
-                        else
-                            it.value
-                    }
+    private fun getTransactionsMoney(wallet: Wallet, transactions: List<Transaction>): String {
+        return getFormattedMoney(wallet, transactions.sumOf {
+            when (it.transactionType) {
+                TransactionType.Income -> it.value
+                TransactionType.Expense -> -it.value
+                else -> {
+                    if (wallet.walletId == it.fromWalletId)
+                        -it.value
+                    else
+                        it.value
                 }
-            })
-        }.await()
+            }
+        })
+    }
 
     companion object {
         fun getFormattedMoney(wallet: Wallet, money: Double): String {
@@ -124,4 +142,6 @@ class GetTransactionItems @Inject constructor(
         } else
             context.getString(transactionEntry.category.description)
     }
+
+    class StringDate(val date: LocalDate, val string: String)
 }
