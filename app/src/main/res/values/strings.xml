@@ -228,8 +228,22 @@
     <string name="next_occurrence">Next occurrence: </string>
 
     <string name="no_data_text">No transactions</string>
+
+    <string name="skip">skip</string>
     <string name="welcome_page_title_1">Welcome to Money Manager!</string>
     <string name="welcome_page_massage_1">Money Manager is the one place for bill planning, budgeting and keeping track of your finances</string>
-    <string name="skip">skip</string>
+    <string name="welcome_page_title_2">Budgets</string>
+    <string name="welcome_page_massage_2">"Set budget limits and control your spending"</string>
+    <string name="welcome_page_title_3">Transactions</string>
+    <string name="welcome_page_massage_3">Enter your daily expenses and always be aware of where you spend your money</string>
+    <string name="welcome_page_title_4">Wallets</string>
+    <string name="welcome_page_massage_4">"Use multiple wallets for easy tracking of money "</string>
+    <string name="welcome_page_massage_5">"Always be aware of what you are spending money on "</string>
+    <string name="welcome_page_title_5">Expenses</string>
+    <string name="welcome_page_title_6">Recurring transactions</string>
+    <string name="welcome_page_massage_6">"Easily add your recurring transactions like your subscriptions "</string>
+    <string name="welcome_page_title_7">Incomes</string>
+    <string name="welcome_page_massage_7">"Find ways to earn more with earnings statistics "</string>
+
 
 </resources>

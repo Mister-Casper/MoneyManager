@@ -47,7 +47,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     }
 
     if (initViewModel.isMoveNext.value)
-        navController.navigate(Screen.MoneyManagerScreen.route)
+        navController.navigate(Screen.Welcome.route)
 
     Column(
         Modifier

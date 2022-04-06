@@ -55,6 +55,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalB
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
@@ -207,6 +208,11 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.MoneyManagerScreen.route) {
                             darkThemeViewModel.init()
                             MoneyManagerScreen(navController, darkThemeViewModel)
+                        }
+                        composable(Screen.Welcome.route){
+                            WelcomeScreen {
+                                navController.navigate(Screen.MoneyManagerScreen.route)
+                            }
                         }
                         composable(Screen.AccountSettings.route) {
                             val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
