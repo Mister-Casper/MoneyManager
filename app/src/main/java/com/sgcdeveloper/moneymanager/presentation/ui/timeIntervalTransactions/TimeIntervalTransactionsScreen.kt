@@ -231,7 +231,6 @@ fun TimeIntervalTransactionsScreen(
     }
 
     BackHandler {
-        transactionsViewModel.clear()
         navController.popBackStack()
     }
 }

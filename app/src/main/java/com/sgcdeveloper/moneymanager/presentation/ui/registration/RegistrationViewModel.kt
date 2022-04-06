@@ -160,30 +160,12 @@ open class RegistrationViewModel @Inject constructor(
                 isPasswordConfirmError.value = false
             }
             is RegistrationEvent.MoveToSignIn -> {
-                clear()
                 navigationRoute.value = Screen.SignIn.route
             }
             is RegistrationEvent.MoveToSignUp -> {
-                clear()
                 navigationRoute.value = Screen.SignUp.route
             }
         }
-    }
-
-    private fun clear() {
-        showLoadingDialog.value = false
-        isSignInError.value = false
-        isInternetConnection.value = true
-        name.value = ""
-        login.value = ""
-        password.value = ""
-        passwordVisibility.value = false
-        confirmPassword.value = ""
-        confirmPasswordVisibility.value = false
-        isEmailError.value = false
-        isLoginError.value = false
-        isPasswordError.value = false
-        isPasswordConfirmError.value = false
     }
 
     private fun updateLogInStatus(loginStatus: LoginStatus) {

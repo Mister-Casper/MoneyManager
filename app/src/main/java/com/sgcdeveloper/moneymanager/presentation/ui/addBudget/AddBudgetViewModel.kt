@@ -139,18 +139,4 @@ open class AddBudgetViewModel @Inject constructor(
     private fun checkIsCanBeSaved(): Boolean {
         return (budgetAmount.value.isNotEmpty() && transactionCategories.isNotEmpty() && budgetName.value.isNotEmpty())
     }
-
-    fun clear() {
-        budgetStartDate.value = Date(LocalDateTime.now())
-        formattedBudgetAmount.value = ""
-        budgetAmount.value = ""
-        budgetName.value = ""
-        isBudgetCanBeSaved.value = false
-        dialogState.value = DialogState.NoneDialogState
-        isTransactionFromWallet = true
-        transactionId = 0L
-        transactionCategories.clear()
-        colorBudget.value = wallet_color_1.toArgb()
-        budgetPeriod.value = BudgetPeriod.Weekly
-    }
 }

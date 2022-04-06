@@ -89,7 +89,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                         .padding(start = 12.dp)
                         .size(32.dp)
                         .clickable {
-                            addBudgetViewModel.clear()
                             navController.popBackStack()
                         }
                 )
@@ -104,7 +103,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 Button(
                     onClick = {
                         addBudgetViewModel.onEvent(AddBudgetEvent.InsertBudget)
-                        addBudgetViewModel.clear()
                         if (!navController.popBackStack(Screen.BudgetManagerScreen.route, false))
                             navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
                     }, enabled = addBudgetViewModel.isBudgetCanBeSaved.value,
@@ -203,7 +201,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
     }
 
     BackHandler {
-        addBudgetViewModel.clear()
         navController.popBackStack()
     }
 }

@@ -66,7 +66,6 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
     } else if (dialog.value is DialogState.DeleteTransactionDialog) {
         DeleteWalletDialog(null, {
             addTransactionViewModel.onEvent(AddTransactionEvent.DeleteTransaction)
-            addTransactionViewModel.clear()
             navController.popBackStack()
         }, {
             addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
@@ -90,7 +89,6 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             },
             dialogOpen = {
                 dialogBackOpen.value = false
-                addTransactionViewModel.clear()
                 navController.popBackStack()
             }
         )

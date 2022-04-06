@@ -117,9 +117,4 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
         return formatter.format(money)
     }
 
-    fun clear() {
-        timeInterval.value = TimeIntervalController.DailyController()
-        dialog.value = DialogState.NoneDialogState
-    }
-
 }

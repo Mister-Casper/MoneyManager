@@ -32,13 +32,6 @@ open class MainViewModel
     var isShowSelectStartupScreenDialog by mutableStateOf(false)
     var isShowStartupTransactionTypeDialog by mutableStateOf(false)
 
-    fun init() {
-        isDarkTheme.value = appPreferencesHelper.getIsDarkTheme()
-        firstDayOfWeek.value = appPreferencesHelper.getFirstDayOfWeek()
-        defaultStartupScreen.value = appPreferencesHelper.getStartupScreen()
-        defaultStartupTransactionType.value = appPreferencesHelper.getStartupTransactionType()
-    }
-
     fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 
     fun setIsDark(isDark: Boolean) {

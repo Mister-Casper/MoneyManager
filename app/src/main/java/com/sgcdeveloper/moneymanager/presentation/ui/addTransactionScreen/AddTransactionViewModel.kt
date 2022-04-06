@@ -204,7 +204,6 @@ open class AddTransactionViewModel @Inject constructor(
                         recurringTransactionId
                     )
                 }
-                clear()
             }
             is AddTransactionEvent.ShowDeleteTransactionDialog -> {
                 dialogState.value = DialogState.DeleteTransactionDialog
@@ -279,25 +278,5 @@ open class AddTransactionViewModel @Inject constructor(
                 app.getString(R.string.income)
             else -> app.getString(R.string.transfer)
         }
-    }
-
-    fun clear() {
-        showScreen(appPreferencesHelper.getStartupTransactionType())
-        transactionDate.value = Date(LocalDateTime.now())
-        transactionAmount.value = ""
-        formattedTransactionAmount.value = ""
-        transactionDescription.value = ""
-        transactionExpenseCategory.value = TransactionCategory.None
-        transactionIncomeCategory.value = TransactionCategory.None
-        transactionFromWallet.value = null
-        transactionToWallet.value = null
-        isTransactionCanBeSaved.value = false
-        dialogState.value = DialogState.NoneDialogState
-        isTransactionFromWallet = true
-        transactionId = 0L
-        recurringTransactionId = 0L
-        recurringInterval.value = RecurringInterval.None
-        isRecurringMode = true
-        isMustBeRecurring = false
     }
 }

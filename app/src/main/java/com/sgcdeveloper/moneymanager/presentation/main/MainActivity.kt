@@ -6,14 +6,12 @@ import android.os.CancellationSignal
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -48,13 +46,11 @@ import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.WalletEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreenViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManager
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManagerViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
@@ -108,7 +104,7 @@ class MainActivity : FragmentActivity() {
         syncHelper.syncLocalData()
         FirebaseApp.initializeApp(this)
         setContent {
-            val darkThemeViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+            val darkThemeViewModel:MainViewModel = hiltViewModel()
 
             val navController = rememberAnimatedNavController()
 
@@ -136,8 +132,6 @@ class MainActivity : FragmentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     AnimatedNavHost(navController = navController, startDestination = Screen.SignIn.route) {
-                        val registrationViewModel: RegistrationViewModel by viewModels()
-
                         composable(
                             Screen.SignIn.route,
                             enterTransition = {
@@ -162,7 +156,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignInScreen(registrationViewModel = registrationViewModel)
+                            SignInScreen(hiltViewModel())
                         }
                         composable(
                             Screen.SignUp.route,
@@ -189,7 +183,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignUpScreen(navController = navController, registrationViewModel = registrationViewModel)
+                            SignUpScreen(navController = navController,hiltViewModel())
                         }
                         composable(Screen.Init.route, enterTransition = {
                             slideInVertically(
@@ -202,12 +196,10 @@ class MainActivity : FragmentActivity() {
                                 animationSpec = tween(100)
                             )
                         }) {
-                            val initViewModel: InitViewModel by viewModels()
-                            InitScreen(initViewModel, navController)
+                            InitScreen(hiltViewModel(), navController)
                         }
                         composable(Screen.MoneyManagerScreen.route) {
-                            darkThemeViewModel.init()
-                            MoneyManagerScreen(navController, darkThemeViewModel)
+                            MoneyManagerScreen(navController, hiltViewModel())
                         }
                         composable(Screen.Welcome.route){
                             WelcomeScreen {
@@ -215,12 +207,10 @@ class MainActivity : FragmentActivity() {
                             }
                         }
                         composable(Screen.AccountSettings.route) {
-                            val accountSettingsViewModel: AccountSettingsViewModel by viewModels()
-                            val registrationViewModel: RegistrationViewModel by viewModels()
-                            AccountSettings(navController, accountSettingsViewModel, registrationViewModel)
+                            AccountSettings(navController, hiltViewModel(), hiltViewModel())
                         }
                         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
-                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+                            val addTransactionViewModel = hiltViewModel<AddTransactionViewModel>()
 
                             val wallet =
                                 gson.fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
@@ -235,7 +225,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.AddRecurringTransaction(null).route + "{transaction}") {
-                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+                            val addTransactionViewModel: AddTransactionViewModel  = hiltViewModel()
 
                             val recurringTransaction =
                                 gson.fromJson(
@@ -255,7 +245,7 @@ class MainActivity : FragmentActivity() {
                             it.arguments?.putString("transaction", "")
                         }
                         composable("AddRecurringTransaction/") {
-                            val addTransactionViewModel: AddTransactionViewModel by viewModels()
+                            val addTransactionViewModel: AddTransactionViewModel  = hiltViewModel()
                             addTransactionViewModel.isMustBeRecurring = true
                             addTransactionViewModel.recurringInterval.value = RecurringInterval.Daily(
                                 _lastTransactionDate = null,
@@ -268,7 +258,7 @@ class MainActivity : FragmentActivity() {
                             AddTransactionScreen(addTransactionViewModel, navController)
                         }
                         composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
-                            val addTransactionViewModel: AddTransactionViewModel by (LocalContext.current as MainActivity).viewModels()
+                            val addTransactionViewModel: AddTransactionViewModel = hiltViewModel()
 
                             val transaction =
                                 gson.fromJson(
@@ -283,7 +273,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("transaction", "")
                         }
                         composable(Screen.AddWallet(null).route + "{wallet}") { backStackEntry ->
-                            val addWalletViewModel: AddWalletViewModel by viewModels()
+                            val addWalletViewModel: AddWalletViewModel = hiltViewModel()
 
                             val wallet =
                                 gson.fromJson(backStackEntry.arguments?.getString("wallet"), Wallet::class.java)
@@ -294,7 +284,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TimeIntervalTransactions(null).route + "{wallet}") { backStackEntry ->
-                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
+                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel = hiltViewModel()
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
@@ -350,9 +340,8 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
-                            val statisticViewModel: StatisticViewModel by viewModels()
                             TransactionCategoryStatisticScreen(
-                                statisticViewModel,
+                                hiltViewModel(),
                                 navController,
                                 gson.fromJson(
                                     backStackEntry.arguments?.getString("screen"),
@@ -361,7 +350,7 @@ class MainActivity : FragmentActivity() {
                             )
                         }
                         composable(Screen.TransactionCategoryForWalletStatisticScreen(null).route + "{wallet}") { backStackEntry ->
-                            val statisticViewModel: StatisticViewModel by viewModels()
+                            val statisticViewModel: StatisticViewModel = hiltViewModel()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
@@ -375,7 +364,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable("TransactionCategoryTransactions/" + "{category}" + "/" + "{wallet}") { backStackEntry ->
-                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel by viewModels()
+                            val timeIntervalTransactionsViewModel: TimeIntervalTransactionsViewModel = hiltViewModel()
 
                             val category =
                                 gson.fromJson(
@@ -444,13 +433,13 @@ class MainActivity : FragmentActivity() {
                             SettingsScreen(navController, darkThemeViewModel)
                         }
                         composable(Screen.Calculators.route) {
-                            CalculatorsScreen(navController, darkThemeViewModel)
+                            CalculatorsScreen(navController, hiltViewModel())
                         }
                         composable(Screen.Calculator.route) {
-                            CalculatorScreen(navController, darkThemeViewModel)
+                            CalculatorScreen(navController, hiltViewModel())
                         }
                         composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
-                            val walletViewModel: WalletViewModel by viewModels()
+                            val walletViewModel: WalletViewModel = hiltViewModel()
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
                             if (wallet != null)
@@ -459,11 +448,10 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.PasswordSettings.route) {
-                            val passwordSettingsViewModel: PasswordSettingsViewModel by viewModels()
-                            PasswordSettings(navController, passwordSettingsViewModel)
+                            PasswordSettings(navController, hiltViewModel())
                         }
                         composable("WeeklyStatisticScreen/" + "{wallet}" + "/" + "{type}") { backStackEntry ->
-                            val weeklyStatisticViewModel: WeeklyStatisticViewModel by viewModels()
+                            val weeklyStatisticViewModel: WeeklyStatisticViewModel = hiltViewModel()
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
@@ -480,15 +468,13 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.WalletsManagerScreen.route) {
-                            val homeVIewModel: HomeViewModel by viewModels()
-                            WalletsManagerScreen(homeVIewModel, navController)
+                            WalletsManagerScreen(hiltViewModel(), navController)
                         }
                         composable(Screen.ExchangeRatesScreen.route) {
-                            val addWalletViewModel: AddWalletViewModel by viewModels()
-                            ExchangeRatesScreen(navController, addWalletViewModel)
+                            ExchangeRatesScreen(navController, hiltViewModel())
                         }
                         composable(Screen.AddBudgetScreen(null).route + "{budget}") {
-                            val addBudgetViewModel: AddBudgetViewModel by viewModels()
+                            val addBudgetViewModel: AddBudgetViewModel = hiltViewModel()
                             val budget = gson.fromJson(it.arguments?.getString("budget"), BudgetEntry::class.java)
                             if (budget != null)
                                 addBudgetViewModel.onEvent(AddBudgetEvent.SetDefaultBudget(budget))
@@ -496,22 +482,20 @@ class MainActivity : FragmentActivity() {
                             it.arguments?.putString("budget", "")
                         }
                         composable("AddBudgetScreen/") {
-                            val addBudgetViewModel: AddBudgetViewModel by viewModels()
-                            AddBudgetScreen(addBudgetViewModel, navController)
+                            AddBudgetScreen(hiltViewModel(), navController)
                         }
                         composable(Screen.BudgetScreen(null).route + "{budget}") {
-                            val budgetScreenViewModel: BudgetScreenViewModel by viewModels()
                             val budgetJson = it.arguments?.getString("budget")
                             val budget = gson.fromJson(budgetJson, BaseBudget.BudgetItem::class.java)
-                            BudgetScreen(budgetScreenViewModel, budget, navController)
+                            BudgetScreen(hiltViewModel(), budget, navController)
                         }
                         composable(Screen.BudgetManagerScreen.route) {
-                            val homeViewModel: HomeViewModel by viewModels()
+                            val homeViewModel: HomeViewModel = hiltViewModel()
                             homeViewModel.loadBudgets()
                             BudgetManagerScreen(homeViewModel, navController)
                         }
                         composable(Screen.TimeIntervalBudgetManager(null).route + "{period}") {
-                            val timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel by viewModels()
+                            val timeIntervalBudgetManagerViewModel: TimeIntervalBudgetManagerViewModel = hiltViewModel()
                             val period = gson.fromJson(it.arguments?.getString("period"), BudgetPeriod::class.java)
                             if (period != null)
                                 timeIntervalBudgetManagerViewModel.loadBudgets(period)
@@ -520,7 +504,7 @@ class MainActivity : FragmentActivity() {
                         }
                     }
 
-                    val registrationViewModel: RegistrationViewModel by viewModels()
+                    val registrationViewModel: RegistrationViewModel = hiltViewModel()
                     if (registrationViewModel.navigationRoute.value.isNotEmpty()) {
                         navController.navigate(registrationViewModel.navigationRoute.value)
                         registrationViewModel.navigationRoute.value = ""
