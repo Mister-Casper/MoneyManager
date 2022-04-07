@@ -6,6 +6,7 @@ import android.os.CancellationSignal
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
@@ -131,6 +132,7 @@ class MainActivity : FragmentActivity() {
                 Surface(
                     color = MaterialTheme.colors.background,
                 ) {
+                    val registrationViewModel: RegistrationViewModel by viewModels()
                     AnimatedNavHost(navController = navController, startDestination = Screen.SignIn.route) {
                         composable(
                             Screen.SignIn.route,
@@ -156,7 +158,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignInScreen(hiltViewModel())
+                            SignInScreen(registrationViewModel)
                         }
                         composable(
                             Screen.SignUp.route,
@@ -183,7 +185,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignUpScreen(navController = navController,hiltViewModel())
+                            SignUpScreen(navController = navController,registrationViewModel)
                         }
                         composable(Screen.Init.route, enterTransition = {
                             slideInVertically(
@@ -504,7 +506,6 @@ class MainActivity : FragmentActivity() {
                         }
                     }
 
-                    val registrationViewModel: RegistrationViewModel = hiltViewModel()
                     if (registrationViewModel.navigationRoute.value.isNotEmpty()) {
                         navController.navigate(registrationViewModel.navigationRoute.value)
                         registrationViewModel.navigationRoute.value = ""

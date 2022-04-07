@@ -141,7 +141,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     Button(
                         onClick = {
                             addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                            navController.popBackStack()
+                            moveBack(navController)
                         },
                         enabled = addWalletViewModel.walletName.value.isNotEmpty(),
                         modifier = Modifier.padding(end = 12.dp)
