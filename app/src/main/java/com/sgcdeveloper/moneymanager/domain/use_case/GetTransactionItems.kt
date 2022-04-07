@@ -143,5 +143,13 @@ class GetTransactionItems @Inject constructor(
             context.getString(transactionEntry.category.description)
     }
 
-    class StringDate(val date: LocalDate, val string: String)
+    class StringDate(val date: LocalDate, val string: String){
+        override fun hashCode(): Int {
+            return string.hashCode()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return string == (other as StringDate).string
+        }
+    }
 }
