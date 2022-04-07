@@ -230,4 +230,20 @@
 
     <string name="no_data_text">Нет транзакций</string>
 
+    <string name="skip">Пропустить</string>
+    <string name="welcome_page_title_1">Добро пожаловать в Менджер финансов!</string>
+    <string name="welcome_page_massage_1">Менджер финансов - это единое место для планирования счетов, составления бюджета и отслеживания ваших финансов.</string>
+    <string name="welcome_page_title_2">Бюджеты</string>
+    <string name="welcome_page_massage_2">Установите лимиты бюджета и контролируйте свои расходы</string>
+    <string name="welcome_page_title_3">Транзакции</string>
+    <string name="welcome_page_massage_3">Записывайте свои ежедневные расходы и всегда будьте в курсе, куда вы тратите свои деньги</string>
+    <string name="welcome_page_title_4">Кошельки</string>
+    <string name="welcome_page_massage_4">Используйте несколько кошельков для удобного контроля финансов</string>
+    <string name="welcome_page_massage_5">Всегда знайте, на что вы тратите деньги</string>
+    <string name="welcome_page_title_5">Траты</string>
+    <string name="welcome_page_title_6">Повторяющиеся транзакции</string>
+    <string name="welcome_page_massage_6">Легко добавляйте повторяющиеся транзакции, такие как подписки</string>
+    <string name="welcome_page_title_7">Доходы</string>
+    <string name="welcome_page_massage_7">Найдите способы заработать больше с помощью статистики доходов</string>
+
 </resources>
