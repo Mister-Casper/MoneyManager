@@ -8,7 +8,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,9 +28,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletDashboard
 
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
-    val wallets = remember { homeViewModel.wallets }.observeAsState()
-    val budgets = remember { homeViewModel.budgets }
-    val recurringTransactions = remember { homeViewModel.recurringTransactions }
+    val state = remember { homeViewModel.state }.value
 
     Column(Modifier.fillMaxWidth()) {
         Box(
@@ -70,19 +67,18 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 .padding(bottom = 56.dp,start = 12.dp, end = 12.dp)
         ) {
             item {
-                if (wallets.value != null)
-                    WalletDashboard(wallets.value!!, {
-                        if (it is AddNewWallet) {
-                            navController.navigate(Screen.AddWallet(it).route)
-                        } else {
-                            navController.navigate(Screen.WalletScreen(it).route)
-                        }
-                    }, {
-                        navController.navigate(Screen.WalletsManagerScreen.route)
-                    })
+                WalletDashboard(state.wallets, {
+                    if (it is AddNewWallet) {
+                        navController.navigate(Screen.AddWallet(it).route)
+                    } else {
+                        navController.navigate(Screen.WalletScreen(it).route)
+                    }
+                }, {
+                    navController.navigate(Screen.WalletsManagerScreen.route)
+                })
             }
             item {
-                BudgetDashboard(budgets, {
+                BudgetDashboard(state.budgets, {
                     if (it is BaseBudget.AddNewBudget) {
                         navController.navigate(Screen.AddBudgetScreen().route)
                     } else if (it is BaseBudget.BudgetItem) {
@@ -93,7 +89,7 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 }
             }
             item {
-                RecurringTransactionsDashboard(recurringTransactions) {
+                RecurringTransactionsDashboard(state.recurringTransactions) {
                     if (it is RecurringTransaction) {
                         navController.navigate(Screen.AddRecurringTransaction(it).route)
                     } else if (it is AddRecurringTransaction) {

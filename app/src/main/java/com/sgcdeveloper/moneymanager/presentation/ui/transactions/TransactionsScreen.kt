@@ -30,15 +30,14 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
-    val wallet = remember { transactionsViewModel.wallet }
-    val transactions = remember { transactionsViewModel.transactionItems }
-    val dialog = remember { transactionsViewModel.dialog }
+    val state = remember { transactionsViewModel.state }.value
 
-    if (dialog.value is DialogState.WalletPickerDialog) {
-        WalletPickerDialog(transactionsViewModel.wallets.value, wallet.value, {
+    if (state.dialogState is DialogState.WalletPickerDialog) {
+        WalletPickerDialog(state.wallets, state.wallet, {
             transactionsViewModel.onEvent(TransactionEvent.ChangeWallet(it))
         }, {
             transactionsViewModel.onEvent(TransactionEvent.CloseDialog)
@@ -46,8 +45,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             navController.navigate(Screen.AddWallet(it).route)
         })
     }
-
-    CheckDataFromAddTransactionScreen(navController, transactionsViewModel)
+    state.wallet?.let {
+        CheckDataFromAddTransactionScreen(navController, transactionsViewModel, state.wallet.walletId)
+    }
 
     Box(
         modifier = Modifier
@@ -70,9 +70,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    wallet.value?.let {
+                    state.wallet?.let {
                         Text(
-                            text = wallet.value!!.name,
+                            text = state.wallet.name,
                             fontSize = 24.sp,
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
@@ -85,7 +85,10 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
+                Row(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.list_icon),
                         contentDescription = "",
@@ -95,7 +98,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             .clickable {
                                 navController.navigate(
                                     Screen.TimeIntervalTransactions(
-                                        wallet.value
+                                        state.wallet
                                     ).route
                                 )
                             }
@@ -119,9 +122,9 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         .size(32.dp)
                         .align(Alignment.CenterVertically)
                 )
-                wallet.value?.let {
+                state.wallet?.let {
                     Text(
-                        text = stringResource(id = R.string.balance, wallet.value!!.formattedMoney),
+                        text = stringResource(id = R.string.balance, state.wallet.formattedMoney),
                         Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = 8.dp),
@@ -134,8 +137,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 modifier = Modifier.padding(top = 16.dp)
             )
             LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
-                items(transactions.value.size) {
-                    val transactionItem = transactions.value[it]
+                items(state.transactions.size) {
+                    val transactionItem = state.transactions[it]
                     if (transactionItem is BaseTransactionItem.TransactionHeader) {
                         TransactionHeader(transactionItem)
                     } else if (transactionItem is BaseTransactionItem.TransactionItem) {
@@ -148,7 +151,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             }
         }
 
-        if (transactionsViewModel.isEmpty.value) {
+        if (state.isEmpty) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(Modifier.align(Alignment.Center)) {
                     Row(
@@ -182,7 +185,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(wallet.value).route) },
+            onClick = { navController.navigate(Screen.AddTransaction(state.wallet).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)
@@ -283,14 +286,14 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
 }
 
 @Composable
-fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TransactionsViewModel) {
+fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TransactionsViewModel,walletId:Long) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
-        if (transactionsViewModel.wallet.value!!.walletId == 0L) {
-            transactionsViewModel.loadTransactions()
+        if (walletId == 0L) {
+            transactionsViewModel.loadTransactions(WalletSingleton.wallet.value!!)
             return
         }
         if (secondScreenResult != -1L) {

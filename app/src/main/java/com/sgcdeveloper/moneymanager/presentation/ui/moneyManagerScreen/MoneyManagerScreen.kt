@@ -1,29 +1,25 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen
 
 import androidx.activity.compose.BackHandler
-import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.sgcdeveloper.moneymanager.presentation.main.MainActivity
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsViewModel
 
 @Composable
 fun MoneyManagerScreen(globalNavController: NavHostController,mainViewModel:MainViewModel) {
@@ -84,19 +80,17 @@ private fun MainScreenNavigationConfigurations(
         startDestination = mainViewModel.defaultStartupScreen.value.route,
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
-            val homeViewModel: HomeViewModel by (LocalContext.current as MainActivity).viewModels()
+            val homeViewModel: HomeViewModel = hiltViewModel()
             LaunchedEffect(Unit){
                 homeViewModel.loadBudgets()
             }
             HomeScreen(homeViewModel, globalNavController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
-            val transactionsViewModel: TransactionsViewModel by (LocalContext.current as MainActivity).viewModels()
-            TransactionsScreen(transactionsViewModel, globalNavController)
+            TransactionsScreen(hiltViewModel(), globalNavController)
         }
         composable(BottomMoneyManagerNavigationScreens.Statistic.route) {
-            val statisticViewModel: StatisticViewModel by (LocalContext.current as MainActivity).viewModels()
-            StatisticScreen(statisticViewModel, globalNavController)
+            StatisticScreen(hiltViewModel(), globalNavController)
         }
     }
 }

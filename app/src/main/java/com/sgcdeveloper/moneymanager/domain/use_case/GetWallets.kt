@@ -48,6 +48,10 @@ class GetWallets @Inject constructor(
         }
     }
 
+    suspend fun getUIWalletsOnce(): List<Wallet> {
+        return transformWallets(moneyManagerRepository.getAsyncWallets()).plus(AddNewWallet(currencyRepository.getDefaultCurrency()))
+    }
+
     suspend fun getWallet(id: Long): Wallet {
           return transformWallet(moneyManagerRepository.getWallet(id))
     }

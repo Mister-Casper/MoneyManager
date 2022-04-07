@@ -2,9 +2,9 @@ package com.sgcdeveloper.moneymanager.presentation.ui.homeScreen
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.BaseRecurringTransaction
@@ -13,10 +13,13 @@ import com.sgcdeveloper.moneymanager.domain.use_case.GetBudgetsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.burnoutcrew.reorderable.ItemPosition
 import org.burnoutcrew.reorderable.move
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,31 +29,32 @@ open class HomeViewModel @Inject constructor(
     private val getBudgetsUseCase: GetBudgetsUseCase,
     private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
 ) : AndroidViewModel(app) {
-    lateinit var wallets: LiveData<List<Wallet>>
-    var existWallets = mutableStateListOf<Wallet>()
-    var budgets = mutableStateListOf<BaseBudget>()
-    var recurringTransactions = mutableStateListOf<BaseRecurringTransaction>()
+    val state = mutableStateOf(HomeState())
     private var loadBudgetsJob: Job? = null
 
     init {
-        viewModelScope.launch {
-            wallets = walletsUseCases.getWallets.getUIWallets()
-            walletsUseCases.getWallets().observeForever {
-                existWallets.clear()
-                existWallets.addAll(it.toMutableStateList())
+        walletsUseCases.getWallets().observeForever {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    state.value = state.value.copy(
+                        wallets = walletsUseCases.getWallets.getUIWalletsOnce(),
+                    )
+                    state.value.existWallets.clear()
+                    state.value.existWallets.addAll(it)
+                }
             }
         }
     }
 
     fun save() {
         viewModelScope.launch {
-            existWallets.mapIndexed { ix, wallet -> wallet.also { wallet.order = ix.toLong() } }
-            walletsUseCases.insertWallet.insertWallets(existWallets)
+            state.value.existWallets.mapIndexed { ix, wallet -> wallet.also { wallet.order = ix.toLong() } }
+            walletsUseCases.insertWallet.insertWallets(state.value.existWallets)
         }
     }
 
     fun move(from: ItemPosition, to: ItemPosition) {
-        existWallets.move(from.index, to.index)
+        state.value.existWallets.move(from.index, to.index)
     }
 
     fun deleteWallet(wallet: Wallet) {
@@ -62,10 +66,21 @@ open class HomeViewModel @Inject constructor(
     fun loadBudgets() {
         loadBudgetsJob?.cancel()
         loadBudgetsJob = viewModelScope.launch {
-            budgets.clear()
-            recurringTransactions.clear()
-            budgets.addAll(getBudgetsUseCase())
-            recurringTransactions.addAll(getRecurringTransactionsUseCase())
+            withContext(Dispatchers.IO) {
+                val budgets = getBudgetsUseCase()
+                val transactions = getRecurringTransactionsUseCase()
+                state.value = state.value.copy(
+                    budgets = budgets,
+                    recurringTransactions = transactions
+                )
+            }
         }
     }
 }
+
+data class HomeState(
+    val wallets: List<Wallet> = Collections.emptyList(),
+    val existWallets: SnapshotStateList<Wallet> = mutableStateListOf(),
+    val budgets: List<BaseBudget> = Collections.emptyList(),
+    val recurringTransactions: List<BaseRecurringTransaction> = Collections.emptyList()
+)

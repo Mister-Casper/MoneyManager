@@ -30,7 +30,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 
 @Composable
 fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavController) {
-    val budgets = remember { homeViewModel.budgets }
+    val budgets = remember { homeViewModel.state }.value.budgets
 
     Box(
         modifier = Modifier

@@ -3,7 +3,6 @@ package com.sgcdeveloper.moneymanager.presentation.ui.statistic
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -19,8 +18,10 @@ import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -30,34 +31,18 @@ open class StatisticViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
-    val wallet = mutableStateOf(WalletSingleton.wallet.value)
 
-    var wallets: LiveData<List<Wallet>> = walletsUseCases.getWallets.getAllUIWallets()
-    var timeInterval = mutableStateOf<TimeIntervalController>(TimeIntervalController.MonthlyController())
-
-    var transactionItems = mutableStateOf<List<BaseTransactionItem>>(Collections.emptyList())
-    val isEmpty = mutableStateOf(false)
-    val description = mutableStateOf(timeInterval.value.getDescription())
-    val income = mutableStateOf("")
-    val expense = mutableStateOf("")
-    val total = mutableStateOf("")
-
-    val dialog = mutableStateOf<DialogState>(DialogState.NoneDialogState)
-
-    var expenseStruct = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
-    var expenseEntries = mutableStateOf<List<PieEntry>>(Collections.emptyList())
-    val expenseColors = mutableStateOf<List<Int>>(Collections.emptyList())
-
-    var incomeStruct = mutableStateOf<List<CategoryStatistic>>(Collections.emptyList())
-    var incomeEntries = mutableStateOf<List<PieEntry>>(Collections.emptyList())
-    val incomeColors = mutableStateOf<List<Int>>(Collections.emptyList())
+    val state = mutableStateOf(StatisticState())
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
-    private var loadingJob: Job?= null
+    private var loadingJob: Job? = null
 
     init {
-        wallets.observeForever {
+        walletsUseCases.getWallets.getAllUIWallets().observeForever {
+            state.value = state.value.copy(
+                wallets = it
+            )
             val savedWalletId = appPreferencesHelper.getDefaultWalletId()
             if (WalletSingleton.wallet.value == null) {
                 val savedWallet = it.find { wallet -> wallet.walletId == savedWalletId }
@@ -66,13 +51,12 @@ open class StatisticViewModel @Inject constructor(
                 } else if (it.isNotEmpty()) {
                     WalletSingleton.setWallet(it[1])
                 }
-            }else{
+            } else {
                 loadTransactions(WalletSingleton.wallet.value!!)
             }
         }
         WalletSingleton.addObserver(object : WalletChangerListener {
             override fun walletChanged(newWallet: Wallet?) {
-                wallet.value = newWallet
                 if (newWallet != null)
                     loadTransactions(newWallet)
             }
@@ -82,32 +66,32 @@ open class StatisticViewModel @Inject constructor(
     fun onEvent(transactionEvent: StatisticEvent) {
         when (transactionEvent) {
             is StatisticEvent.ChangeWalletById -> {
-                if (wallets.value != null) {
-                    WalletSingleton.setWallet(wallets.value!!.find { it.walletId == transactionEvent.walletId }!!)
-                    appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
-                }
+                WalletSingleton.setWallet(state.value.wallets.find { it.walletId == transactionEvent.walletId }!!)
+                appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
             is StatisticEvent.ShowWalletPickerDialog -> {
-                dialog.value = DialogState.WalletPickerDialog(WalletSingleton.wallet.value)
+                state.value = state.value.copy(
+                    dialogState = DialogState.WalletPickerDialog(WalletSingleton.wallet.value)
+                )
             }
             is StatisticEvent.ChangeTimeInterval -> {
-                timeInterval.value = transactionEvent.timeIntervalController
-                description.value = timeInterval.value.getDescription()
+                state.value = state.value.copy(timeIntervalController = transactionEvent.timeIntervalController)
                 loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.MoveBack -> {
-                timeInterval.value.moveBack()
+                state.value.timeIntervalController.moveBack()
                 loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.MoveNext -> {
-                timeInterval.value.moveNext()
+                state.value.timeIntervalController.moveNext()
                 loadTransactions(WalletSingleton.wallet.value!!)
             }
             is StatisticEvent.ShowSelectTimeIntervalDialog -> {
-                dialog.value = DialogState.SelectTimeIntervalDialog(timeInterval.value)
+                state.value =
+                    state.value.copy(dialogState = DialogState.SelectTimeIntervalDialog(state.value.timeIntervalController))
             }
             StatisticEvent.CloseDialog -> {
-                dialog.value = DialogState.NoneDialogState
+                state.value = state.value.copy(dialogState = DialogState.NoneDialogState)
             }
             is StatisticEvent.SetWallet -> {
                 WalletSingleton.setWallet(transactionEvent.wallet)
@@ -116,41 +100,63 @@ open class StatisticViewModel @Inject constructor(
         }
     }
 
-    fun loadTransactions(wallet: Wallet) {
+    fun loadTransactions(
+        wallet: Wallet
+    ) {
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
-            description.value = timeInterval.value.getDescription()
-            transactionItems.value =
-                walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
+            withContext(Dispatchers.IO) {
+                val transactions = walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
                     wallet,
-                    timeInterval.value
+                    state.value.timeIntervalController
                 )
-            isEmpty.value = transactionItems.value.isEmpty()
-
-            val incomeMoney = transactionItems.value.getIncome(wallet)
-            val expenseMoney = transactionItems.value.getExpense(wallet)
-            val totalMoney = incomeMoney + expenseMoney
-
-            income.value = getFormattedMoney(wallet,incomeMoney)
-            expense.value = getFormattedMoney(wallet,expenseMoney)
-            total.value = getFormattedMoney(wallet,totalMoney)
-
-            expenseStruct.value =
-                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
-                    transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    wallet
+                val income = transactions.getIncome(wallet)
+                val expense = transactions.getExpense(wallet)
+                val expenseStruct =
+                    walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
+                        transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                        wallet
+                    )
+                val incomeStruct =
+                    walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
+                        transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                        wallet
+                    )
+                state.value = state.value.copy(
+                    wallet = wallet,
+                    description = state.value.timeIntervalController.getDescription(),
+                    transactions = transactions,
+                    isEmpty = state.value.transactions.isEmpty(),
+                    income = getFormattedMoney(wallet, income),
+                    expense = getFormattedMoney(wallet, expense),
+                    total = getFormattedMoney(wallet, income + expense),
+                    expenseStruct = expenseStruct,
+                    expenseColors = expenseStruct.map { it.color },
+                    expenseEntries = expenseStruct.map { it.pieEntry },
+                    incomeStruct = incomeStruct,
+                    incomeColors = incomeStruct.map { it.color },
+                    incomeEntries = incomeStruct.map { it.pieEntry }
                 )
-            expenseColors.value = expenseStruct.value.map { it.color }
-            expenseEntries.value = expenseStruct.value.map { it.pieEntry }
-
-            incomeStruct.value =
-                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
-                    transactionItems.value.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                    wallet
-                )
-            incomeColors.value = incomeStruct.value.map { it.color }
-            incomeEntries.value = incomeStruct.value.map { it.pieEntry }
+            }
         }
     }
-
 }
+
+data class StatisticState(
+    val dialogState: DialogState = DialogState.NoneDialogState,
+    val wallets: List<Wallet> = Collections.emptyList(),
+    val wallet: Wallet? = null,
+    val timeIntervalController: TimeIntervalController = TimeIntervalController.MonthlyController(),
+    val transactions: List<BaseTransactionItem> = Collections.emptyList(),
+    val isEmpty: Boolean = false,
+    val description: String = timeIntervalController.getDescription(),
+    val income: String = "",
+    val expense: String = "",
+    val total: String = "",
+    val expenseStruct: List<CategoryStatistic> = Collections.emptyList(),
+    val expenseEntries: List<PieEntry> = Collections.emptyList(),
+    val expenseColors: List<Int> = Collections.emptyList(),
+    val incomeStruct: List<CategoryStatistic> = Collections.emptyList(),
+    val incomeEntries: List<PieEntry> = Collections.emptyList(),
+    val incomeColors: List<Int> = Collections.emptyList()
+)

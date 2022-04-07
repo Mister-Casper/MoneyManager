@@ -42,17 +42,16 @@ fun StatisticScreen(
     statisticViewModel: StatisticViewModel,
     navController: NavController
 ) {
-    val wallet = remember { statisticViewModel.wallet }
-    val dialog = remember { statisticViewModel.dialog }
+    val state = remember { statisticViewModel.state }.value
 
-    if (dialog.value is DialogState.SelectTimeIntervalDialog) {
-        TimeIntervalPickerDialog(statisticViewModel.timeInterval.value, {
+    if (state.dialogState is DialogState.SelectTimeIntervalDialog) {
+        TimeIntervalPickerDialog(state.timeIntervalController, {
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
         }, statisticViewModel.isDarkTheme())
-    } else if (dialog.value is DialogState.WalletPickerDialog) {
-        WalletPickerDialog(statisticViewModel.wallets.value, wallet.value, {
+    } else if (state.dialogState is DialogState.WalletPickerDialog) {
+        WalletPickerDialog(state.wallets, state.wallet, {
             statisticViewModel.onEvent(StatisticEvent.SetWallet(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
@@ -60,10 +59,13 @@ fun StatisticScreen(
             navController.navigate(Screen.AddWallet(it).route)
         })
     }
+    state.wallet?.let {
+        CheckDataFromAddTransactionScreen(navController, statisticViewModel, state.wallet.walletId)
+    }
 
-    CheckDataFromAddTransactionScreen(navController, statisticViewModel)
-
-    Box(modifier = Modifier.fillMaxSize() .padding(bottom = 56.dp)) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = 56.dp)) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -82,11 +84,13 @@ fun StatisticScreen(
                                 ?.savedStateHandle
                                 ?.set("wallet_id", -1L)
                         }) {
-                    if (wallet.value != null) {
+                    if (state.wallet != null) {
                         Text(
-                            text = wallet.value!!.name,
+                            text = state.wallet.name,
                             fontSize = 24.sp,
-                            modifier = Modifier.align(Alignment.CenterVertically).padding(start = 12.dp),
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 12.dp),
                         )
                     }
                     Icon(
@@ -95,7 +99,10 @@ fun StatisticScreen(
                         Modifier.align(Alignment.CenterVertically)
                     )
                 }
-                Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
+                Row(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 12.dp)) {
                     Icon(
                         painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
@@ -117,8 +124,8 @@ fun StatisticScreen(
                 TimeIntervalControllerView(
                     { statisticViewModel.onEvent(StatisticEvent.MoveBack) },
                     { statisticViewModel.onEvent(StatisticEvent.MoveNext) },
-                    statisticViewModel.timeInterval.value.isCanMove(),
-                    statisticViewModel.description.value
+                    state.timeIntervalController.isCanMove(),
+                    state.description
                 )
             }
             LazyColumn(
@@ -150,7 +157,7 @@ fun StatisticScreen(
                                     modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = statisticViewModel.income.value
+                                    text = state.income
                                 )
                             }
                             Row(
@@ -163,7 +170,7 @@ fun StatisticScreen(
                                     fontWeight = FontWeight.Medium,
                                     modifier = Modifier.weight(1f)
                                 )
-                                Text(text = statisticViewModel.expense.value, color = red)
+                                Text(text = state.expense, color = red)
                             }
                             Row(
                                 Modifier
@@ -176,7 +183,7 @@ fun StatisticScreen(
                                     modifier = Modifier.weight(1f)
                                 )
                                 Text(
-                                    text = statisticViewModel.total.value
+                                    text = state.total
                                 )
                             }
                             Divider(
@@ -188,9 +195,9 @@ fun StatisticScreen(
                                 .fillMaxWidth()
                                 .clickable {
                                     TimeInternalSingleton.timeIntervalController =
-                                        statisticViewModel.timeInterval.value
+                                        state.timeIntervalController
                                     navController.navigate(
-                                        Screen.TimeIntervalTransactions(wallet.value).route
+                                        Screen.TimeIntervalTransactions(state.wallet).route
                                     )
                                 }) {
                                 Row(
@@ -222,15 +229,15 @@ fun StatisticScreen(
                 item {
                     StatisticPieChart(
                         stringResource(id = R.string.expense_structure),
-                        statisticViewModel.expenseEntries.value,
-                        statisticViewModel.expenseColors.value,
+                        state.expenseEntries,
+                        state.expenseColors,
                         {
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Expense).route)
                         },
                         onWeeklyStatisticClick = {
                             navController.navigate(
                                 Screen.WeeklyStatisticScreen(
-                                    statisticViewModel.wallet.value,
+                                    state.wallet,
                                     TransactionType.Expense
                                 ).route
                             )
@@ -241,15 +248,15 @@ fun StatisticScreen(
                 item {
                     StatisticPieChart(
                         stringResource(id = R.string.income_structure),
-                        statisticViewModel.incomeEntries.value,
-                        statisticViewModel.incomeColors.value,
+                        state.incomeEntries,
+                        state.incomeColors,
                         {
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Income).route)
                         },
                         onWeeklyStatisticClick = {
                             navController.navigate(
                                 Screen.WeeklyStatisticScreen(
-                                    statisticViewModel.wallet.value,
+                                    state.wallet,
                                     TransactionType.Income
                                 ).route
                             )
@@ -262,7 +269,7 @@ fun StatisticScreen(
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(wallet.value).route) },
+            onClick = { navController.navigate(Screen.AddTransaction(state.wallet).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)
@@ -283,14 +290,15 @@ fun StatisticScreen(
 @Composable
 fun CheckDataFromAddTransactionScreen(
     navController: NavController,
-    statisticViewModel: StatisticViewModel
+    statisticViewModel: StatisticViewModel,
+    walletId: Long
 ) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
-        if (statisticViewModel.wallet.value!!.walletId == 0L) {
+        if (walletId == 0L) {
             statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
             return
         }

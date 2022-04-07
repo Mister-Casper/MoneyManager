@@ -40,7 +40,7 @@ fun WalletsManagerScreen(
     homeViewModel: HomeViewModel,
     navController: NavController
 ) {
-    val wallets = remember { homeViewModel.existWallets }
+    val wallets = remember { homeViewModel.state }.value.existWallets
     var showDeleteWalletDialog by remember { mutableStateOf<Wallet?>(null) }
 
     if (showDeleteWalletDialog != null) {
@@ -101,7 +101,7 @@ fun WalletsManagerScreen(
                     .padding(end = 12.dp)
                     .size(32.dp)
                     .clickable {
-                        navController.navigate(Screen.AddWallet(wallets.last()).route)
+                        navController.navigate(Screen.AddWallet(homeViewModel.state.value.wallets.last()).route)
                     }
             )
         }

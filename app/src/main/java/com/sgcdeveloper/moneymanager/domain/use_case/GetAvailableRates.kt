@@ -19,9 +19,21 @@ class GetAvailableRates @Inject constructor(
         }
     }
 
+    suspend fun getAsync(): List<Rate> {
+        return (moneyManagerRepository.getRatesOnce().map {
+            Rate(it.currency, it.rate)
+        } + Rate(appPreferencesHelper.getDefaultCurrency()!!, 1.0))
+    }
+
     fun getBaseRates(): LiveData<List<BaseRate>> {
         return Transformations.map(moneyManagerRepository.getRates()) {
             it.map { BaseRate(it.currency, it.rate.deleteUselessZero()) }
+        }
+    }
+
+    suspend fun getBaseRatesAsync(): List<BaseRate> {
+        return moneyManagerRepository.getRatesOnce().map {
+              BaseRate(it.currency, it.rate.deleteUselessZero())
         }
     }
 }

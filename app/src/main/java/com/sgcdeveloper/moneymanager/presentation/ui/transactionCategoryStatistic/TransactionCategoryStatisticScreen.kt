@@ -46,18 +46,20 @@ fun TransactionCategoryStatisticScreen(
     navController: NavController,
     defaultScreen: TransactionScreen
 ) {
+    val state = remember { statisticViewModel.state }.value
     val currentScreen = rememberSaveable { mutableStateOf(defaultScreen) }
-    val dialog = remember { statisticViewModel.dialog }
 
-    if (dialog.value is DialogState.SelectTimeIntervalDialog) {
-        TimeIntervalPickerDialog(statisticViewModel.timeInterval.value, {
+    if (state.dialogState is DialogState.SelectTimeIntervalDialog) {
+        TimeIntervalPickerDialog(state.timeIntervalController, {
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
         }, statisticViewModel.isDarkTheme())
     }
 
-    CheckDataFromAddTransactionScreen(navController, statisticViewModel)
+    state.wallet?.let {
+        CheckDataFromAddTransactionScreen(navController, statisticViewModel, state.wallet.walletId)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -111,8 +113,8 @@ fun TransactionCategoryStatisticScreen(
                 TimeIntervalControllerView(
                     { statisticViewModel.onEvent(StatisticEvent.MoveBack) },
                     { statisticViewModel.onEvent(StatisticEvent.MoveNext) },
-                    statisticViewModel.timeInterval.value.isCanMove(),
-                    statisticViewModel.description.value
+                    state.timeIntervalController.isCanMove(),
+                    state.description
                 )
             }
             Row(Modifier.fillMaxWidth()) {
@@ -134,21 +136,21 @@ fun TransactionCategoryStatisticScreen(
                     item {
                         StatisticPieChart(
                             stringResource(id = R.string.expense_structure),
-                            statisticViewModel.expenseEntries.value,
-                            statisticViewModel.expenseColors.value,
+                            state.expenseEntries,
+                            state.expenseColors,
                             { }, false,
                             {
                                 navController.navigate(
                                     Screen.WeeklyStatisticScreen(
-                                        statisticViewModel.wallet.value,
+                                        state.wallet,
                                         TransactionType.Expense
                                     ).route
                                 )
                             }
                         )
                     }
-                    items(statisticViewModel.expenseStruct.value.size) {
-                        val incomeCategory = statisticViewModel.expenseStruct.value[it]
+                    items(state.expenseStruct.size) {
+                        val incomeCategory = state.expenseStruct[it]
                         TransactionCategoryItem(incomeCategory, navController, statisticViewModel)
                         Divider(modifier = Modifier.fillMaxSize())
                     }
@@ -158,20 +160,20 @@ fun TransactionCategoryStatisticScreen(
                     item {
                         StatisticPieChart(
                             stringResource(id = R.string.income_structure),
-                            statisticViewModel.incomeEntries.value,
-                            statisticViewModel.incomeColors.value,
+                            state.incomeEntries,
+                            state.incomeColors,
                             { }, false,{
                                 navController.navigate(
                                     Screen.WeeklyStatisticScreen(
-                                        statisticViewModel.wallet.value,
+                                        state.wallet,
                                         TransactionType.Income
                                     ).route
                                 )
                             }
                         )
                     }
-                    items(statisticViewModel.incomeStruct.value.size) {
-                        val incomeCategory = statisticViewModel.incomeStruct.value[it]
+                    items(state.incomeStruct.size) {
+                        val incomeCategory = state.incomeStruct[it]
                         TransactionCategoryItem(incomeCategory, navController, statisticViewModel)
                         Divider(modifier = Modifier.fillMaxSize())
                     }
@@ -193,7 +195,7 @@ fun TransactionCategoryItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                TimeInternalSingleton.timeIntervalController = statisticViewModel.timeInterval.value
+                TimeInternalSingleton.timeIntervalController = statisticViewModel.state.value.timeIntervalController
                 navController.navigate(
                     Screen.TransactionCategoryTransactions(
                         WalletSingleton.wallet.value,
@@ -257,14 +259,15 @@ fun TransactionCategoryItem(
 @Composable
 fun CheckDataFromAddTransactionScreen(
     navController: NavController,
-    statisticViewModel: StatisticViewModel
+    statisticViewModel: StatisticViewModel,
+    walletId:Long
 ) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")
 
     secondScreenResult?.let {
-        if (statisticViewModel.wallet.value!!.walletId == 0L) {
+        if (walletId == 0L) {
             statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
             return
         }
