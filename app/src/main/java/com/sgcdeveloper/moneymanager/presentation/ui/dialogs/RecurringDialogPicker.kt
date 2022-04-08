@@ -32,6 +32,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Recurring.*
 import com.sgcdeveloper.moneymanager.domain.model.RecurringEndType
 import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
+import com.sgcdeveloper.moneymanager.domain.util.CreateRecurringInterval
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -65,52 +66,7 @@ fun RecurringDialogPicker(
     val recurringList = values()
     var selectedRecurring by remember { mutableStateOf(defaultRecurringInterval.recurring) }
 
-    fun getEndDate(): Date {
-        return when (selectedRecurring) {
-            None -> throw Exception()
-            Daily -> {
-                if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
-                    until
-                } else {
-                    Date(date.getAsLocalDate().plusDays((times.toLong()) * repeatInterval.toInt() - 1))
-                }
-            }
-            Weekly -> {
-                if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
-                    until
-                } else {
-                    var happened = 0
-                    var i = 0L
-                    var endDate = date.getAsLocalDate()
-                    while (happened != times.toInt()) {
-                        if (selectedDay.contains(endDate.dayOfWeek))
-                            happened++
-                        endDate = endDate.plusDays(1)
-                        i++
-                    }
-                    Date(endDate)
-                }
-            }
-            Monthly -> {
-                if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
-                    until
-                } else {
-                    if (isSameDay != -1) {
-                        val endDate = date.getAsLocalDate().plusMonths(times.toLong())
-                        endDate.withDayOfMonth(endDate.lengthOfMonth())
-                    }
-                    Date(date.getAsLocalDate().plusMonths(times.toLong()))
-                }
-            }
-            Yearly -> {
-                if (selectedRecurringType == RecurringEndType.Until || selectedRecurringType == RecurringEndType.Forever) {
-                    until
-                } else {
-                    Date(date.getAsLocalDate().plusYears(times.toLong()))
-                }
-            }
-        }
-    }
+    val createRecurringInterval = CreateRecurringInterval()
 
     fun isCanDone(): Boolean {
         if (selectedRecurring == None)
@@ -122,46 +78,6 @@ fun RecurringDialogPicker(
         if (selectedRecurringType == RecurringEndType.For && (!times.isDigitsOnly() || times.isEmpty()))
             return false
         return true
-    }
-
-    fun getRecurringInterval(): RecurringInterval {
-        return when (selectedRecurring) {
-            None -> RecurringInterval.None
-            Daily -> RecurringInterval.Daily(
-                null,
-                selectedRecurringType == RecurringEndType.Forever,
-                getEndDate(),
-                repeatInterval.toInt(),
-                times.toInt(),
-                selectedRecurringType
-            )
-            Weekly -> RecurringInterval.Weekly(
-                selectedDay,
-                null,
-                selectedRecurringType == RecurringEndType.Forever,
-                getEndDate(),
-                repeatInterval.toInt(),
-                times.toInt(),
-                selectedRecurringType
-            )
-            Monthly -> RecurringInterval.Monthly(
-                isSameDay,
-                null,
-                selectedRecurringType == RecurringEndType.Forever,
-                getEndDate(),
-                repeatInterval.toInt(),
-                times.toInt(),
-                selectedRecurringType
-            )
-            Yearly -> RecurringInterval.Yearly(
-                null,
-                selectedRecurringType == RecurringEndType.Forever,
-                getEndDate(),
-                repeatInterval.toInt(),
-                times.toInt(),
-                selectedRecurringType
-            )
-        }
     }
 
     AlertDialog(
@@ -467,7 +383,20 @@ fun RecurringDialogPicker(
             }
         },
         confirmButton = {
-            Button(onClick = { onAdd(getRecurringInterval()) }, enabled = isCanDone()) {
+            Button(onClick = {
+                onAdd(
+                    createRecurringInterval.invoke(
+                        selectedRecurring,
+                        selectedRecurringType,
+                        until,
+                        date,
+                        times.toLong(),
+                        repeatInterval.toLong(),
+                        selectedDay,
+                        isSameDay
+                    )
+                )
+            }, enabled = isCanDone()) {
                 Text(text = stringResource(id = R.string.done), color = white)
             }
         },

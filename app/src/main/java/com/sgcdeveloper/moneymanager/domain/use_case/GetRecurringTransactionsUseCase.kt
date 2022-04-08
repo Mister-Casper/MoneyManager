@@ -93,6 +93,7 @@ class GetRecurringTransactionsUseCase @Inject constructor(
         if (recurringTransactions.isEmpty())
             return@withContext
         val newRecurringTransactions = mutableListOf<RecurringTransactionEntry>()
+        val deleteRecurrings = mutableListOf<RecurringTransactionEntry>()
         val newTransactions = mutableListOf<TransactionEntry>()
         recurringTransactions.forEach { transaction ->
             val firstTransactionDate =
@@ -109,16 +110,20 @@ class GetRecurringTransactionsUseCase @Inject constructor(
                 )
             )
 
+            if (newTransactionDate >= transaction.recurringInterval.endDate && !transaction.recurringInterval.isForever) {
+                deleteRecurrings.add(transaction)
+            }
+
             while (newTransactionDate <= now) {
-                if (newTransactionDate > transaction.recurringInterval.endDate && !transaction.recurringInterval.isForever) {
-                    newRecurringTransactions.remove(transaction)
+                if (newTransactionDate >= transaction.recurringInterval.endDate && !transaction.recurringInterval.isForever) {
+                    deleteRecurrings.add(transaction)
                     break
                 }
                 val newTransaction = transaction.transactionEntry.copy(date = newTransactionDate)
                 newTransactions.add(newTransaction)
                 newTransactionDate = Date(getNextTransactionDate(newTransactionDate.getAsLocalDate(), transaction))
             }
-            if (recurringTransactions.contains(transaction))
+            if (!deleteRecurrings.contains(transaction))
                 newRecurringTransactions.add(transaction.copy(recurringInterval = transaction.recurringInterval.apply {
                     this.lastTransactionDate = newTransactionDate
                 }))

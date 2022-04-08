@@ -22,11 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
+import com.sgcdeveloper.moneymanager.domain.util.CreateRecurringInterval
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
+import com.sgcdeveloper.moneymanager.util.Date
 
 @Composable
 fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navController: NavController) {
@@ -37,10 +40,20 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
     val signalBack = remember { addTransactionViewModel.back }
     val wallets = addTransactionViewModel.wallets.observeAsState()
 
+    val createRecurringInterval = CreateRecurringInterval()
+
     if (dialog.value is DialogState.DatePickerDialog) {
         DatePicker(
             defaultDate = addTransactionViewModel.transactionDate.value,
-            onDateSelected = { addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionDate(it)) },
+            onDateSelected = {
+                if (addTransactionViewModel.recurringInterval.value != RecurringInterval.None) {
+                    addTransactionViewModel.recurringInterval.value = createRecurringInterval.updateDate(
+                        addTransactionViewModel.recurringInterval.value,
+                        Date(it)
+                    )
+                }
+                addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionDate(it))
+            },
             onDismissRequest = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
             }, addTransactionViewModel.isDarkTheme()
