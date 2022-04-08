@@ -3,9 +3,9 @@
 
     <string name="home">Home</string>
     <string name="statistic">Statistic</string>
-    <string name="transaction">Trasaction</string>
+    <string name="transaction">Transaction</string>
 
-    <string name="loading">Loading!</string>
+    <string name="loading">Loading…</string>
     <string name="confirm_action">"Confirm action</string>
     <string name="exit_without_saving">"Are you sure you want to exit without saving?</string>
 

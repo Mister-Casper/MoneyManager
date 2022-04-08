@@ -135,14 +135,6 @@ open class RegistrationViewModel @Inject constructor(
                     showLoadingDialog.value = false
                 })
             }
-            is RegistrationEvent.SignInWithGoogleForExistAccount -> {
-                val signInIntent = googleSignInClient.signInIntent
-                _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser, userName ->
-                    GlobalScope.launch {
-                        syncHelper.syncServerData()
-                    }
-                }, {})
-            }
             is RegistrationEvent.ChangeName -> {
                 name.value = registrationEvent.newName
                 isLoginError.value = false
