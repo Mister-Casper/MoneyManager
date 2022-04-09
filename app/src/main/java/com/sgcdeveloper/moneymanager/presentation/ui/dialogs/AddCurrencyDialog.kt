@@ -21,7 +21,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.model.Rate
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
-import com.sgcdeveloper.moneymanager.util.isDouble
+import com.sgcdeveloper.moneymanager.util.isRealDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 
 @Composable
@@ -116,7 +116,7 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
         },
         confirmButton = {
             Button(onClick = { onAdd(Rate(currency, rate.toDouble())) },
-                enabled = rate.isDouble() && rate.toDouble() > 0
+                enabled = rate.isRealDouble() && rate.toDouble() > 0
             ) {
                 Text(text = stringResource(id = R.string.save), color = white)
             }

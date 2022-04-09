@@ -9,12 +9,21 @@ import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import kotlin.math.roundToInt
 
+fun String.isRealDouble(): Boolean {
+    val maybeDouble = this.toDoubleOrNull()
+    return ((maybeDouble != null))
+}
+
 fun String.isDouble(): Boolean {
     val maybeDouble = this.toDoubleOrNull()
-    return (maybeDouble != null)
+    val newline = System.getProperty("line.separator")
+    val hasNewline: Boolean = this.contains(newline)
+    return ((maybeDouble != null) && !hasNewline) || this.isEmpty()
 }
 
 fun String.isWillBeDouble(): Boolean {
+    if(!this.isDouble())
+        return false
     val a1 = this.split(".").size
     val a2 = this.split(",").size == 1
     val a3 = this.split("-").size == 1

@@ -253,7 +253,7 @@ open class AddTransactionViewModel @Inject constructor(
     }
 
     private fun checkIsCanBeSaved(): Boolean {
-        if (!transactionAmount.value.isDouble())
+        if (!transactionAmount.value.isRealDouble())
             return false
         if (!(transactionFromWallet.value != null))
             return false

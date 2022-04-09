@@ -23,7 +23,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addWallet.AddWalletViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.rememberMutableStateListOf
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
-import com.sgcdeveloper.moneymanager.util.isDouble
+import com.sgcdeveloper.moneymanager.util.isRealDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 
 @Composable
@@ -69,7 +69,7 @@ fun ExchangeRatesScreen(navController: NavController, addWalletViewModel: AddWal
                         addWalletViewModel.saveRates(rates)
                         navController.popBackStack()
                     },
-                    enabled = rates.none { rate -> !(rate.rate.isDouble() && rate.rate.toDouble() > 0) }
+                    enabled = rates.none { rate -> !(rate.rate.isRealDouble() && rate.rate.toDouble() > 0) }
                 ) {
                     androidx.compose.material.Text(text = stringResource(id = R.string.save), color = white)
                 }
