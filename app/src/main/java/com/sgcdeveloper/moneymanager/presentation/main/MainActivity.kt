@@ -11,6 +11,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -30,7 +31,6 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.MoneyManagerTheme
@@ -333,7 +333,7 @@ class MainActivity : FragmentActivity() {
                             }
                             timeIntervalTransactionsViewModel.onEvent(
                                 TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
-                                    TransactionCategory.All
+                                    All(LocalContext.current)
                                 )
                             )
 

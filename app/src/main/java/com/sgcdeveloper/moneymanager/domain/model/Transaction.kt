@@ -1,6 +1,5 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 

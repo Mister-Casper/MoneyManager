@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 
 @Composable
-fun CategoryPicker(addTransactionViewModel: AddTransactionViewModel,transactionCategory:TransactionCategory) {
+fun CategoryPicker(addTransactionViewModel: AddTransactionViewModel, transactionCategory: TransactionCategory) {
     val source = remember { MutableInteractionSource() }
 
     if (source.collectIsPressedAsState().value) {
@@ -27,7 +27,7 @@ fun CategoryPicker(addTransactionViewModel: AddTransactionViewModel,transactionC
 
     Row(Modifier.fillMaxWidth()) {
         TextField(
-            value = stringResource(id = transactionCategory.description),
+            value = transactionCategory.description,
             onValueChange = {},
             readOnly = true,
             modifier = Modifier

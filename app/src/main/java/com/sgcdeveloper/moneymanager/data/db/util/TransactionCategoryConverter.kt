@@ -1,18 +1,25 @@
 package com.sgcdeveloper.moneymanager.data.db.util
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class TransactionCategoryConverter {
+@ProvidedTypeConverter
+class TransactionCategoryConverter @Inject constructor(private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase) {
+
+    val categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id } }
 
     @TypeConverter
     fun toStr(transactionCategory: TransactionCategory): Int {
-        return transactionCategory.id
+        return transactionCategory.id.toInt()
     }
 
     @TypeConverter
     fun toCurrency(transactionCategoryId: Int): TransactionCategory {
-        return TransactionCategory.findById(transactionCategoryId)
+        return categories[transactionCategoryId.toLong()]!!
     }
 
 }

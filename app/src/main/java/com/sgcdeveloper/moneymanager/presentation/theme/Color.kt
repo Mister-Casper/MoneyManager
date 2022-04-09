@@ -63,3 +63,30 @@ val wallet_colors = listOf(
     wallet_color_23,
     wallet_color_24
 )
+
+val wallets_map = mapOf(
+    "wallet_color_1" to wallet_color_1,
+    "wallet_color_2" to wallet_color_2,
+    "wallet_color_3" to wallet_color_3,
+    "wallet_color_4" to wallet_color_4,
+    "wallet_color_5" to wallet_color_5,
+    "wallet_color_6" to wallet_color_6,
+    "wallet_color_7" to wallet_color_7,
+    "wallet_color_8" to wallet_color_8,
+    "wallet_color_9" to wallet_color_9,
+    "wallet_color_10" to wallet_color_10,
+    "wallet_color_11" to wallet_color_11,
+    "wallet_color_12" to wallet_color_12,
+    "wallet_color_13" to wallet_color_13,
+    "wallet_color_14" to wallet_color_14,
+    "wallet_color_15" to wallet_color_15,
+    "wallet_color_16" to wallet_color_16,
+    "wallet_color_17" to wallet_color_17,
+    "wallet_color_18" to wallet_color_18,
+    "wallet_color_19" to wallet_color_19,
+    "wallet_color_20" to wallet_color_20,
+    "wallet_color_21" to wallet_color_21,
+    "wallet_color_22" to wallet_color_22,
+    "wallet_color_23" to wallet_color_23,
+    "wallet_color_24" to wallet_color_24
+)

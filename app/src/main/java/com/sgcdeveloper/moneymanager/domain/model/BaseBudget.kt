@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 sealed class BaseBudget {
     class BudgetHeader(
@@ -21,7 +20,7 @@ sealed class BaseBudget {
         val budgetEntry: BudgetEntry,
         val color: Int,
         val budgetName: String,
-        val categories: List<TransactionCategory.ExpenseCategory>,
+        val categories: List<TransactionCategory>,
         val spent: String,
         val left: String,
         @StringRes val leftStrRes: Int,

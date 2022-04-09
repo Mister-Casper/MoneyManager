@@ -10,6 +10,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import kotlinx.coroutines.*
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class SyncHelper @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
+    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) {
 
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
@@ -60,8 +62,9 @@ class SyncHelper @Inject constructor(
         val recurrings =
             if (userDocument.get("recurrings") != null) userDocument.get("recurrings") as List<MutableMap<String, Any>> else Collections.emptyList()
         GlobalScope.launch {
+            val categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
-            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(task) })
+            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(categories,task) })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
             moneyManagerRepository.insertBudgets(budgets.map { budget -> BudgetEntry.getBudgetByHashMap(budget) })
             runBlocking {

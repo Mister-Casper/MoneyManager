@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.getCurrencyFormatter
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date.Companion.getDay
 import com.sgcdeveloper.moneymanager.util.Date.Companion.getDayName
@@ -140,7 +140,7 @@ class GetTransactionItems @Inject constructor(
         return if (transactionEntry.transactionType == TransactionType.Transfer) {
             wallets[walletFromId] + " -> " + wallets[walletToId]
         } else
-            context.getString(transactionEntry.category.description)
+            transactionEntry.category.description
     }
 
     class StringDate(val date: LocalDate, val string: String){

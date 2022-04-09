@@ -1,7 +1,6 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
 import com.github.mikephil.charting.data.PieEntry
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 
 data class CategoryStatistic(
     var pieEntry: PieEntry = PieEntry(0f),

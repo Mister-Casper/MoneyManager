@@ -4,8 +4,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.sgcdeveloper.moneymanager.data.db.util.ListConverter
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.util.Date
 
@@ -14,7 +14,7 @@ class BudgetEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val budgetName: String,
     val amount: Double,
-    val categories: List<TransactionCategory.ExpenseCategory>,
+    val categories: List<TransactionCategory>,
     val color: Int = wallet_color_1.toArgb(),
     val date: Date,
     val period: BudgetPeriod
@@ -32,7 +32,7 @@ class BudgetEntry(
     }
 
     companion object {
-        val listConverter = ListConverter()
+        lateinit var listConverter:ListConverter
 
         fun getBudgetByHashMap(data: MutableMap<String, Any>): BudgetEntry {
             return BudgetEntry(

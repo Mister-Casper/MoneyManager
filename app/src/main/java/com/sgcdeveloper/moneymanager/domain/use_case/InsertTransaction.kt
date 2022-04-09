@@ -4,12 +4,9 @@ import android.content.Context
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.RecurringTransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
-import com.sgcdeveloper.moneymanager.domain.model.Recurring
-import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
-import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.SyncHelper
@@ -41,8 +38,8 @@ class InsertTransaction @Inject constructor(
         var toWalletId = 0L
         if (toWallet != null && transactionType == TransactionType.Transfer)
             toWalletId = toWallet.walletId
-        val newCategory = if (category == TransactionCategory.None)
-            TransactionCategory.Transfers
+        val newCategory = if (category.id == None(context).id)
+            Transfers(context)
         else
             category
 

@@ -8,12 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
-import com.sgcdeveloper.moneymanager.domain.model.Recurring
-import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
-import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.*
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_DESCRIPTION_SIZE
@@ -29,10 +27,14 @@ import javax.inject.Inject
 open class AddTransactionViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
-    private val appPreferencesHelper: AppPreferencesHelper
+    private val appPreferencesHelper: AppPreferencesHelper,
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) : AndroidViewModel(app) {
 
     lateinit var wallets: LiveData<List<Wallet>>
+
+    lateinit var incomeItems:List<TransactionCategory>
+    lateinit var expenseItems:List<TransactionCategory>
 
     val currentScreen = mutableStateOf(TransactionScreen.Expense)
     val currentScreenName = mutableStateOf(app.getString(R.string.expense))
@@ -41,8 +43,8 @@ open class AddTransactionViewModel @Inject constructor(
     val transactionAmount = mutableStateOf("")
     val formattedTransactionAmount = mutableStateOf("")
     val transactionDescription = mutableStateOf("")
-    val transactionIncomeCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
-    val transactionExpenseCategory = mutableStateOf<TransactionCategory>(TransactionCategory.None)
+    val transactionIncomeCategory = mutableStateOf<TransactionCategory>(None(app))
+    val transactionExpenseCategory = mutableStateOf<TransactionCategory>(None(app))
     val transactionFromWallet = MutableLiveData<Wallet>()
     val transactionToWallet = MutableLiveData<Wallet>()
 
@@ -65,6 +67,8 @@ open class AddTransactionViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets.getUIWallets()
+            incomeItems = getTransactionCategoriesUseCase.getIncomeItems()
+            expenseItems = getTransactionCategoriesUseCase.getExpenseItems()
         }
         showScreen(appPreferencesHelper.getStartupTransactionType())
     }
@@ -153,7 +157,7 @@ open class AddTransactionViewModel @Inject constructor(
             }
             is AddTransactionEvent.ChangeTransactionCategory -> {
                 val category = addTransactionEvent.category
-                if (category is TransactionCategory.IncomeCategory) {
+                if (!category.isExpense) {
                     currentScreen.value = TransactionScreen.Income
                     transactionIncomeCategory.value = category
                 } else {
@@ -188,7 +192,7 @@ open class AddTransactionViewModel @Inject constructor(
                     when (currentScreen.value) {
                         TransactionScreen.Expense -> transactionExpenseCategory.value
                         TransactionScreen.Income -> transactionIncomeCategory.value
-                        else -> TransactionCategory.None
+                        else -> None(app)
                     }
                 viewModelScope.launch {
                     walletsUseCases.insertTransaction(
@@ -260,10 +264,10 @@ open class AddTransactionViewModel @Inject constructor(
                 (transactionToWallet.value != null && transactionToWallet.value?.walletId != transactionFromWallet.value?.walletId)
             }
             TransactionScreen.Income -> {
-                (transactionIncomeCategory.value != TransactionCategory.None)
+                (transactionIncomeCategory.value != None(app))
             }
             TransactionScreen.Expense -> {
-                (transactionExpenseCategory.value != TransactionCategory.None)
+                (transactionExpenseCategory.value != None(app))
             }
         }
     }

@@ -9,17 +9,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.InsertBudget
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel
 import com.sgcdeveloper.moneymanager.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -28,7 +30,8 @@ open class AddBudgetViewModel @Inject constructor(
     private val app: Application,
     private val insertBudget: InsertBudget,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) : AndroidViewModel(app) {
 
     val budgetStartDate = mutableStateOf(Date(LocalDateTime.now()))
@@ -36,18 +39,24 @@ open class AddBudgetViewModel @Inject constructor(
     val formattedBudgetAmount = mutableStateOf("")
     val budgetName = mutableStateOf("")
     val defaultCurrency = currencyRepository.getDefaultCurrency()
+    lateinit var expenseItems:List<TransactionCategory>
 
     val isBudgetCanBeSaved = mutableStateOf(false)
 
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
-    val transactionCategories = mutableStateListOf<TransactionCategory.ExpenseCategory>()
+    val transactionCategories = mutableStateListOf<TransactionCategory>()
     val colorBudget = mutableStateOf(wallet_color_1.toArgb())
     val budgetPeriod = mutableStateOf(BudgetPeriod.Weekly)
 
-    var isTransactionFromWallet = true
     var transactionId = 0L
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
+
+    init {
+        viewModelScope.launch {
+            expenseItems = getTransactionCategoriesUseCase.getAllExpenseItems()
+        }
+    }
 
     fun onEvent(addBudgetEvent: AddBudgetEvent) {
         when (addBudgetEvent) {
@@ -130,10 +139,11 @@ open class AddBudgetViewModel @Inject constructor(
     }
 
     fun getTransactionCategories(context: Context): String {
-        if (transactionCategories.size == TransactionCategory.ExpenseCategory.getAllItems().size) {
+        val categories = runBlocking { getTransactionCategoriesUseCase.getAllExpenseItems()}
+        if (transactionCategories.size == categories.size) {
             return context.getString(R.string.all_category)
         }
-        return transactionCategories.joinToString(separator = ", ") { context.getString(it.description) }
+        return transactionCategories.joinToString(separator = ", ") { it.description }
     }
 
     private fun checkIsCanBeSaved(): Boolean {

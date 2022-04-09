@@ -2,8 +2,8 @@ package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
 import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.Transaction
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import java.time.LocalDate
 
 sealed class AddTransactionEvent {

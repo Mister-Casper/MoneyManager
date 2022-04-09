@@ -18,24 +18,27 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.model.AllExpense
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
 fun SelectExpenseCategoryDialog(
-    defaultCategories: List<TransactionCategory.ExpenseCategory>,
-    onAdd: (categories: List<TransactionCategory.ExpenseCategory>) -> Unit = {},
+    expenseItems: List<TransactionCategory>,
+    defaultCategories: List<TransactionCategory>,
+    onAdd: (categories: List<TransactionCategory>) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
-    var items = if (defaultCategories.contains(TransactionCategory.ExpenseCategory.AllExpense))
-            TransactionCategory.ExpenseCategory.getAllItems()
-        else
-            defaultCategories
+    var items = if (defaultCategories.containsAll(expenseItems))
+        expenseItems
+    else
+        defaultCategories
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
@@ -69,7 +72,7 @@ fun SelectExpenseCategoryDialog(
             }
         },
         text = {
-            CategorySelector(defaultCategories) {
+            CategorySelector(expenseItems,defaultCategories) {
                 items = it
             }
         },
@@ -78,12 +81,13 @@ fun SelectExpenseCategoryDialog(
 
 @Composable
 private fun CategorySelector(
-    defaultCategory: List<TransactionCategory.ExpenseCategory>,
-    onAdd: (category: List<TransactionCategory.ExpenseCategory>) -> Unit,
+    items:List<TransactionCategory>,
+    defaultCategory: List<TransactionCategory>,
+    onAdd: (category: List<TransactionCategory>) -> Unit,
 ) {
+    val context = LocalContext.current
     val selectedOption = rememberMutableStateListOf<Int>()
-    selectedOption.addAll((defaultCategory.map { it.id }))
-    val items = TransactionCategory.ExpenseCategory.getAllItems()
+    selectedOption.addAll((defaultCategory.map { it.id.toInt() }))
 
     Column(Modifier.fillMaxWidth()) {
         LazyColumn {
@@ -93,25 +97,25 @@ private fun CategorySelector(
                     Modifier
                         .padding(4.dp)
                         .clickable {
-                            if (item == TransactionCategory.ExpenseCategory.AllExpense) {
-                                if (item.id in selectedOption) {
+                            if (item.id == AllExpense(context).id) {
+                                if (item.id.toInt() in selectedOption) {
                                     selectedOption.clear()
                                 } else {
-                                    selectedOption.addAll(items.map { it.id })
+                                    selectedOption.addAll(items.map { it.id.toInt() })
                                 }
                             } else {
-                                selectedOption.remove(TransactionCategory.ExpenseCategory.AllExpense.id)
-                                if (item.id in selectedOption) {
-                                    selectedOption.removeAll { it == item.id }
+                                selectedOption.remove(AllExpense(context).id.toInt())
+                                if (item.id.toInt() in selectedOption) {
+                                    selectedOption.removeAll { it == item.id.toInt() }
                                 } else {
-                                    selectedOption.add(item.id)
+                                    selectedOption.add(item.id.toInt())
                                 }
                             }
                             onAdd(
                                 selectedOption
                                     .toSet()
                                     .toList()
-                                    .map { TransactionCategory.findById(it) as TransactionCategory.ExpenseCategory}
+                                    .map { items.find {item->item.id == it.toLong()} as TransactionCategory }
                             )
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -135,7 +139,7 @@ private fun CategorySelector(
                         }
                     }
                     Text(
-                        text = stringResource(id = item.description),
+                        text =  item.description,
                         color = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .padding(start = 12.dp)
@@ -143,7 +147,7 @@ private fun CategorySelector(
                         fontSize = 18.sp
                     )
                     RadioButton(
-                        selected = (selectedOption.contains(item.id)),
+                        selected = (selectedOption.contains(item.id.toInt())),
                         onClick = null
                     )
                 }

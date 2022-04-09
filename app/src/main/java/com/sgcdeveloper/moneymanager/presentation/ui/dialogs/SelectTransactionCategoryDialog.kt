@@ -21,12 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
 fun SelectTransactionCategoryDialog(
+    incomeItems: List<TransactionCategory>,
+    expenseItems: List<TransactionCategory>,
     isIncome: Boolean,
     defaultCategory: TransactionCategory? = null,
     onAdd: (category: TransactionCategory) -> Unit = {},
@@ -56,7 +58,7 @@ fun SelectTransactionCategoryDialog(
             }
         },
         text = {
-            CategorySelector(isIncome, defaultCategory) {
+            CategorySelector(incomeItems, expenseItems, isIncome, defaultCategory) {
                 onAdd(it)
                 onDismiss()
             }
@@ -66,6 +68,8 @@ fun SelectTransactionCategoryDialog(
 
 @Composable
 private fun CategorySelector(
+    incomeItems: List<TransactionCategory>,
+    expenseItems: List<TransactionCategory>,
     isIncome: Boolean,
     defaultCategory: TransactionCategory? = null,
     onAdd: (category: TransactionCategory) -> Unit,
@@ -74,8 +78,7 @@ private fun CategorySelector(
     val selectedOption = remember {
         mutableStateOf(defaultCategory)
     }
-    val items =
-        if (isShowIncomeCategories.value) TransactionCategory.IncomeCategory.getItems() else TransactionCategory.ExpenseCategory.getItems()
+    val items = if (isShowIncomeCategories.value) incomeItems else expenseItems
 
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth()) {
@@ -84,7 +87,7 @@ private fun CategorySelector(
                     backgroundColor = if (isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
                     contentColor = if (isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = {isShowIncomeCategories.value = true}
+                onClick = { isShowIncomeCategories.value = true }
             ) {
                 Text(text = stringResource(id = R.string.income))
             }
@@ -93,7 +96,7 @@ private fun CategorySelector(
                     backgroundColor = if (!isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
                     contentColor = if (!isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = {isShowIncomeCategories.value = false}
+                onClick = { isShowIncomeCategories.value = false }
             ) {
                 Text(text = stringResource(id = R.string.expense))
             }
@@ -129,7 +132,7 @@ private fun CategorySelector(
                         }
                     }
                     Text(
-                        text = stringResource(id = item.description),
+                        text = item.description,
                         modifier = Modifier
                             .padding(start = 12.dp)
                             .weight(1f),

@@ -2,9 +2,9 @@ package com.sgcdeveloper.moneymanager.domain.use_case
 
 import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.util.Date
 import com.sgcdeveloper.moneymanager.util.SyncHelper
@@ -15,7 +15,7 @@ class InsertBudget @Inject constructor(private val moneyManagerRepository: Money
         id:Long,
         budgetName: String,
         amount: String,
-        categories: List<TransactionCategory.ExpenseCategory>,
+        categories: List<TransactionCategory>,
         color: Int = wallet_color_1.toArgb(),
         date: Date,
         period: BudgetPeriod

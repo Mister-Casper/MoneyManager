@@ -27,3 +27,9 @@ val MIGRATION_4_5: Migration = object : Migration(4, 5) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `RecurringTransactionEntry` (`id` INTEGER PRIMARY KEY NOT NULL, `transactionEntry` TEXT NOT NULL, `recurringInterval` TEXT NOT NULL,`fromWalletId` INTEGER NOT NULL,`toWalletId` INTEGER NOT NULL)")
     }
 }
+
+val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+      //  database.execSQL("CREATE TABLE IF NOT EXISTS `TransactionCategoryEntry` (`id` INTEGER PRIMARY KEY NOT NULL, `color` TEXT NOT NULL, `icon` TEXT NOT NULL,`description` TEXT NOT NULL,`isDefault` INTEGER NOT NULL, 'isExpense' INTEGER NOT NULL)")
+    }
+}

@@ -7,15 +7,14 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.getMoneyColor
 import com.sgcdeveloper.moneymanager.util.toRoundString
 import javax.inject.Inject
 
-class GetCategoriesStatistic @Inject constructor(private val context: Context) {
+class GetCategoriesStatistic @Inject constructor(private val context: Context,private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase) {
 
-    suspend fun getExpenseStatistic(
+    fun getExpenseStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
     ): List<CategoryStatistic>  {
@@ -26,7 +25,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
         ) { return@getCategoriesStatistic it.transactionType == TransactionType.Expense || (it.transactionType == TransactionType.Transfer && it.fromWalletId == wallet.walletId) }
     }
 
-    suspend fun getIncomeStatistic(
+    fun getIncomeStatistic(
         transactions: List<BaseTransactionItem.TransactionItem>,
         wallet: Wallet
     ): List<CategoryStatistic>  {
@@ -35,12 +34,13 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
         ) { return@getCategoriesStatistic it.transactionType == TransactionType.Income || (it.transactionType == TransactionType.Transfer && it.toWalletId == wallet.walletId) }
     }
 
-    suspend fun getCategoriesStatistic(
+    fun getCategoriesStatistic(
         currency: Currency,
         walletId: Long,
         transaction: List<Transaction>,
         filter: (it: Transaction) -> Boolean = { true }
     ): List<CategoryStatistic>  {
+
         var maxSum = 0.0
 
         return transaction.filter { filter(it) }
@@ -58,7 +58,7 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
 
                 CategoryStatistic(
                     sum = sum,
-                    category = context.getString(firstTransaction.category.description),
+                    category = firstTransaction.category.description,
                     categoryEntry = firstTransaction.category,
                     color = firstTransaction.category.color,
                     moneyColor = firstTransaction.getMoneyColor(walletId).toArgb(),
@@ -74,11 +74,11 @@ class GetCategoriesStatistic @Inject constructor(private val context: Context) {
             }.sortedByDescending { it.sum }
     }
 
-    suspend fun getExpenseCategoriesStatistic(
+    fun getExpenseCategoriesStatistic(
         transaction: List<Transaction>,
         currency: Currency,
         timeIntervalController: TimeIntervalController,
-        filterCategories: List<TransactionCategory.ExpenseCategory>
+        filterCategories: List<TransactionCategory>
     ): List<CategoryStatistic> {
         val filterCategoriesId = filterCategories.map { it.id }
 

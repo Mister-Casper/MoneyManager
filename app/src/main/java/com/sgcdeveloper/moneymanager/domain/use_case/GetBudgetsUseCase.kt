@@ -13,7 +13,6 @@ import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Compani
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets.Companion.df
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod
 import com.sgcdeveloper.moneymanager.domain.util.BudgetPeriod.*
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,8 @@ class GetBudgetsUseCase @Inject constructor(
     private val context: Context,
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val getCategoriesStatistic: GetCategoriesStatistic
+    private val getCategoriesStatistic: GetCategoriesStatistic,
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) {
 
     suspend operator fun invoke(
@@ -40,6 +40,7 @@ class GetBudgetsUseCase @Inject constructor(
             val budgets: MutableList<BaseBudget> = mutableListOf()
             val transactions = getTransactionsUseCase().sortedBy { it.date.epochMillis }
             val budgetEntries = moneyManagerRepository.getAsyncWBudgets()
+            val categories = getTransactionCategoriesUseCase.getAllExpenseItems()
             budgetEntries.sortedBy { it.period.ordinal }.groupBy { it.period }
                 .filter { period == null || it.key.ordinal == period.ordinal }.forEach { periodBudget ->
                     val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
@@ -71,14 +72,10 @@ class GetBudgetsUseCase @Inject constructor(
                         val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
                         val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
                         val categoryDescription =
-                            if (budget.categories.size == TransactionCategory.ExpenseCategory.getAllItems().size)
+                            if (budget.categories.size == categories.size)
                                 context.getString(R.string.all_category)
                             else
-                                budget.categories.filter { it.id != 0 }.joinToString(separator = ", ") {
-                                    context.getString(
-                                        TransactionCategory.ExpenseCategory.getStringRes(it)
-                                    )
-                                }
+                                budget.categories.filter { it.id != 0L }.joinToString(separator = ", ") {it.description}
 
                         budgets.add(
                             BaseBudget.BudgetItem(

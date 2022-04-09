@@ -59,7 +59,9 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             }, addTransactionViewModel.isDarkTheme()
         )
     } else if (dialog.value is DialogState.CategoryPickerDialog) {
-        SelectTransactionCategoryDialog(isIncome = addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
+        SelectTransactionCategoryDialog(incomeItems = addTransactionViewModel.incomeItems,
+            expenseItems = addTransactionViewModel.expenseItems,
+            isIncome = addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
             defaultCategory = addTransactionViewModel.getDefaultTransactionCategory(),
             onAdd = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionCategory(it))

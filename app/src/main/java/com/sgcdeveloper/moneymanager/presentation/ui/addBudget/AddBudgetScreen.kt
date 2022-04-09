@@ -42,7 +42,7 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
     val context = LocalContext.current
 
     if (dialog.value is DialogState.SelectExpenseCategoryDialog) {
-        SelectExpenseCategoryDialog(addBudgetViewModel.transactionCategories, {
+        SelectExpenseCategoryDialog(addBudgetViewModel.expenseItems,addBudgetViewModel.transactionCategories, {
             addBudgetViewModel.onEvent(AddBudgetEvent.ChangeExpenseCategories(it))
         }, {
             addBudgetViewModel.onEvent(AddBudgetEvent.CloseDialog)

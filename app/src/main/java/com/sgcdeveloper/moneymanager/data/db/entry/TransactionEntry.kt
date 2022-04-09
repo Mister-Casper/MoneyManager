@@ -2,7 +2,7 @@ package com.sgcdeveloper.moneymanager.data.db.entry
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 
@@ -15,7 +15,7 @@ data class TransactionEntry(
     val transactionType: TransactionType,
     val fromWalletId: Long,
     val toWalletId: Long = 0,
-    val category:TransactionCategory
+    val category: TransactionCategory
 ){
     fun toObject(): HashMap<String, Any> {
         return hashMapOf(
@@ -31,7 +31,7 @@ data class TransactionEntry(
     }
 
     companion object{
-        fun getTaskByHashMap(data: MutableMap<String, Any>): TransactionEntry {
+        fun getTaskByHashMap(categories:Map<Int,TransactionCategory>,data: MutableMap<String, Any>): TransactionEntry {
             return TransactionEntry(
                 data["id"] as Long,
                 Date(data["date"] as Long),
@@ -40,7 +40,7 @@ data class TransactionEntry(
                 TransactionType.getByOrdinal((data["transactionType"] as Long).toInt()),
                 data["fromWalletId"] as Long,
                 data["toWalletId"] as Long,
-                TransactionCategory.getById((data["category"] as Long).toInt()),
+                categories[(data["category"] as Long).toInt()]!!,
             )
         }
     }

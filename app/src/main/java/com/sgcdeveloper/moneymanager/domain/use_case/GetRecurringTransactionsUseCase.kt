@@ -184,7 +184,7 @@ class GetRecurringTransactionsUseCase @Inject constructor(
 
     private fun isAvailableDate(date: Date, recurringInterval: RecurringInterval): Boolean {
         return when (recurringInterval.recurring) {
-            None -> throw Exception("")
+            Recurring.None -> throw Exception("")
             Daily -> true
             Weekly -> recurringInterval.days.contains(date.getAsLocalDate().dayOfWeek)
             Monthly -> true

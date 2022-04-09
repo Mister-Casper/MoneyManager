@@ -7,12 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
+import com.sgcdeveloper.moneymanager.domain.model.All
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
+import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
-import com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
@@ -77,9 +78,9 @@ open class TimeIntervalTransactionsViewModel @Inject constructor(
                 dialog.value = DialogState.NoneDialogState
             }
             is TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter -> {
-                if (!(transactionEvent.category is TransactionCategory.All)) {
+                if (!(transactionEvent.category.id == All(app).id)) {
                     transactionCategoryFilter.value = transactionEvent.category
-                    title.value = app.getString(transactionEvent.category.description)
+                    title.value = transactionEvent.category.description
                 } else {
                     transactionCategoryFilter.value = null
                     title.value = app.getString(R.string.transactions)

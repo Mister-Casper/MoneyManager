@@ -8,8 +8,8 @@ import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.data.db.util.*
 
 @Database(
-    entities = [WalletEntry::class, TransactionEntry::class, RateEntry::class, BudgetEntry::class, RecurringTransactionEntry::class],
-    version = 5
+    entities = [WalletEntry::class, TransactionEntry::class, RateEntry::class, BudgetEntry::class, RecurringTransactionEntry::class, TransactionCategoryEntry::class],
+    version = 6
 )
 @TypeConverters(
     CurrencyConverter::class,
@@ -25,4 +25,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun rateDao(): RateDao
     abstract fun budgetDao(): BudgetDao
     abstract fun recurringTransactionDao(): RecurringTransactionDao
+    abstract fun transactionCategoryDao(): TransactionCategoryDao
 }
