@@ -6,12 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.BaseRecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.use_case.GetBudgetsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
+import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,12 +29,24 @@ open class HomeViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
     private val getBudgetsUseCase: GetBudgetsUseCase,
-    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase
+    private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
     val state = mutableStateOf(HomeState())
     private var loadBudgetsJob: Job? = null
 
     init {
+        walletsUseCases.getWallets.getAllUIWallets().observeForever {
+            val savedWalletId = appPreferencesHelper.getDefaultWalletId()
+            if (WalletSingleton.wallet.value == null) {
+                val savedWallet = it.find { wallet -> wallet.walletId == savedWalletId }
+                if (savedWalletId != -1L && savedWallet != null) {
+                    WalletSingleton.setWallet(savedWallet)
+                } else if (it.isNotEmpty()) {
+                    WalletSingleton.setWallet(it[1])
+                }
+            }
+        }
         walletsUseCases.getWallets().observeForever {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {

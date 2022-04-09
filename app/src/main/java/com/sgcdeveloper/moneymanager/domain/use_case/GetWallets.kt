@@ -29,6 +29,10 @@ class GetWallets @Inject constructor(
         }
     }
 
+    fun getWallets(): List<Wallet> {
+        return transformWallets(moneyManagerRepository.getWalletsOnce())
+    }
+
     fun getAllUIWallets(): LiveData<List<Wallet>> {
         return Transformations.switchMap(moneyManagerRepository.getWallets()) { wallets ->
             Transformations.map(moneyManagerRepository.getRates()) { rates ->

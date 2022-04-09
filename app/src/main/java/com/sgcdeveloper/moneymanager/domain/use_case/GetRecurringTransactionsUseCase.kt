@@ -5,11 +5,8 @@ import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.data.db.entry.RateEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.RecurringTransactionEntry
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
-import com.sgcdeveloper.moneymanager.domain.model.AddRecurringTransaction
-import com.sgcdeveloper.moneymanager.domain.model.BaseRecurringTransaction
+import com.sgcdeveloper.moneymanager.domain.model.*
 import com.sgcdeveloper.moneymanager.domain.model.Recurring.*
-import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
-import com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
@@ -137,37 +134,50 @@ class GetRecurringTransactionsUseCase @Inject constructor(
     private suspend fun insertTransactions(
         transactions: List<TransactionEntry>
     ) {
-        transactions.forEach { transaction ->
-            updateWalletMoney(
-                transaction.transactionType,
-                transaction.value,
-                transaction.fromWalletId,
-                transaction.toWalletId
-            )
-        }
-    }
-
-    private suspend fun updateWalletMoney(
-        transactionType: TransactionType,
-        amount: Double,
-        fromWalletId: Long,
-        toWalletId: Long?
-    ) {
         val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.currency.code }
+        val walletsMap = getWallets.getWallets().associateBy { it.walletId }.toMutableMap()
         val rates = moneyManagerRepository.getRatesOnce() + RateEntry(0, currencyRepository.getDefaultCurrency(), 1.0)
 
-        val fromWallet = getWallets.getWallet(fromWalletId)
-        when (transactionType) {
+        transactions.forEach { transaction ->
+            val fromWallet = walletsMap[transaction.fromWalletId]!!
+            val toWallet = walletsMap[transaction.toWalletId]
+
+            val walletsResult = updateWalletMoney(
+                transaction.transactionType,
+                transaction.value,
+                fromWallet,
+                toWallet,
+                rates,
+                wallets
+            )
+
+            walletsResult.forEach {
+                walletsMap[it.walletId] = it
+            }
+        }
+
+        insertWallet.insertWallets(walletsMap.toList().map { it.second })
+    }
+
+    private fun updateWalletMoney(
+        transactionType: TransactionType,
+        amount: Double,
+        fromWallet: Wallet,
+        toWallet: Wallet?,
+        rates:List<RateEntry>,
+        wallets:Map<Long,String>
+    ): List<Wallet> {
+        return when (transactionType) {
             TransactionType.Expense -> {
-                insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
+                listOf(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
             }
             TransactionType.Income -> {
-                insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString()))
+                listOf(fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString()))
             }
             TransactionType.Transfer -> {
-                val toWallet = getWallets.getWallet(toWalletId!!)
-                insertWallet(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString()))
-                insertWallet(toWallet.copy(money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[fromWalletId] }!!.rate).toString()))
+                listOf(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString())) + (toWallet!!.copy(
+                    money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[fromWallet.walletId] }!!.rate).toString()
+                ))
             }
         }
     }
