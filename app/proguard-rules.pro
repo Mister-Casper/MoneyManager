@@ -34,8 +34,10 @@
 -keep class com.sgcdeveloper.moneymanager.domain.model.Recurring
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringEndType
 -keep class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver
+-keep class com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 -keep class com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 -keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper { <fields>; }
 -keepclassmembers class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
