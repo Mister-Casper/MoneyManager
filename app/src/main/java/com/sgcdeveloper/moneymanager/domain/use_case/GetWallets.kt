@@ -29,8 +29,8 @@ class GetWallets @Inject constructor(
         }
     }
 
-    fun getWallets(): List<Wallet> {
-        return transformWallets(moneyManagerRepository.getWalletsOnce())
+    suspend fun getWallets(): List<Wallet> {
+        return transformWallets(moneyManagerRepository.getAsyncWallets())
     }
 
     fun getAllUIWallets(): LiveData<List<Wallet>> {
