@@ -98,14 +98,17 @@ class MainActivity : FragmentActivity() {
             val intent = MyEnterPinActivity.getIntent(this, false)
             startActivityForResult(intent, REQUEST_CODE)
         }
-        pref.setIsOld(true)
+        if (pref.getIsOld()) {
+            pref.setLoginStatus(LoginStatus.None)
+            pref.setIsOld(false)
+        }
 
         initGoogleAuthListener()
         super.onCreate(savedInstanceState)
         syncHelper.syncLocalData()
         FirebaseApp.initializeApp(this)
         setContent {
-            val darkThemeViewModel:MainViewModel = hiltViewModel()
+            val darkThemeViewModel: MainViewModel = hiltViewModel()
 
             val navController = rememberAnimatedNavController()
 
@@ -185,7 +188,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignUpScreen(navController = navController,registrationViewModel)
+                            SignUpScreen(navController = navController, registrationViewModel)
                         }
                         composable(Screen.Init.route, enterTransition = {
                             slideInVertically(
@@ -203,7 +206,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(navController, hiltViewModel())
                         }
-                        composable(Screen.Welcome.route){
+                        composable(Screen.Welcome.route) {
                             WelcomeScreen {
                                 navController.navigate(Screen.MoneyManagerScreen.route)
                             }
@@ -227,7 +230,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.AddRecurringTransaction(null).route + "{transaction}") {
-                            val addTransactionViewModel: AddTransactionViewModel  = hiltViewModel()
+                            val addTransactionViewModel: AddTransactionViewModel = hiltViewModel()
 
                             val recurringTransaction =
                                 gson.fromJson(
@@ -247,7 +250,7 @@ class MainActivity : FragmentActivity() {
                             it.arguments?.putString("transaction", "")
                         }
                         composable("AddRecurringTransaction/") {
-                            val addTransactionViewModel: AddTransactionViewModel  = hiltViewModel()
+                            val addTransactionViewModel: AddTransactionViewModel = hiltViewModel()
                             addTransactionViewModel.isMustBeRecurring = true
                             addTransactionViewModel.recurringInterval.value = RecurringInterval.Daily(
                                 _lastTransactionDate = null,
