@@ -13,7 +13,7 @@ import javax.inject.Inject
 @ProvidedTypeConverter
 class ListConverter  @Inject constructor(private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase) {
 
-    val categories = runBlocking { getTransactionCategoriesUseCase.getAllExpenseItems().associateBy { it.id.toInt() } }
+    val categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() } }
 
     @TypeConverter
     fun fromString(value: String?): List<TransactionCategory> {

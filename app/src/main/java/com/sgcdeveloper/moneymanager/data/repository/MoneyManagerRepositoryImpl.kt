@@ -166,24 +166,4 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
     override suspend fun removeRecurringTransactions(walletId: Long) {
         appDatabase.recurringTransactionDao().removeRecurringTransactions(walletId)
     }
-
-    override suspend fun getTransactionCategories(): List<TransactionCategoryEntry> {
-        return appDatabase.transactionCategoryDao().getTransactionCategories()
-    }
-
-    override suspend fun insertTransactionCategory(transaction: TransactionCategoryEntry): Long {
-        return appDatabase.transactionCategoryDao().insertTransactionCategory(transaction)
-    }
-
-    override suspend fun removeTransactionCategoryEntry(id: Long) {
-        appDatabase.transactionCategoryDao().removeTransactionCategoryEntry(id)
-    }
-
-    override suspend fun deleteAllTransactionCategoryEntry() {
-        appDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
-    }
-
-    override suspend fun insertTransactionCategoryEntries(transactions: List<TransactionCategoryEntry>) {
-        appDatabase.transactionCategoryDao().insertTransactionCategoryEntries(transactions)
-    }
 }

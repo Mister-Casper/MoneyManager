@@ -34,11 +34,13 @@
 -keep class com.sgcdeveloper.moneymanager.domain.model.Recurring
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringEndType
 -keep class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver
+-keep class com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
+-keepclassmembers class com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry { <fields>; }
 -keepclassmembers class com.sgcdeveloper.moneymanager.data.util.RecurringIntervalSaver { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 -keep class com.sgcdeveloper.moneymanager.domain.model.RecurringTransaction
--keep class com.sgcdeveloper.moneymanager.domain.util.TransactionCategory
--keepclassmembers class com.sgcdeveloper.moneymanager.domain.util.TransactionCategory { <fields>; }
+-keep class com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
+-keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.TransactionCategory { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.util.Date
 -keepclassmembers class com.sgcdeveloper.moneymanager.util.Date { <fields>; }
 
@@ -48,3 +50,9 @@
     public static ** valueOf(java.lang.String);
 }
 -keep class kotlin.Metadata { *; }
+-verbose
+-keepattributes InnerClasses
+-keep class **.R
+-keep class **.R$* {
+    <fields>;
+}

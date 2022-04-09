@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -23,7 +24,8 @@ class SyncHelper @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
     private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
-    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
+    private val TransactionCategoriesDatabase: TransactionCategoriesDatabase
 ) {
 
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
