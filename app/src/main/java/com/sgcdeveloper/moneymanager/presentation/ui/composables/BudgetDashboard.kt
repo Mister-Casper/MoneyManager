@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
 import com.sgcdeveloper.moneymanager.presentation.theme.gray
-import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -147,7 +147,7 @@ fun AddBudgetItem(onClick: () -> Unit) {
                 )
                 .size(40.dp)
                 .border(2.dp, gray, RoundedCornerShape(6.dp)),
-            tint = white
+            tint = MaterialTheme.colors.onSurface
         )
 
         Text(

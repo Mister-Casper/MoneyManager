@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit = {
                 Modifier.align(
                     Alignment.CenterHorizontally
                 ),
-                tint = white
+                tint = MaterialTheme.colors.onSurface
             )
         } else {
             Column(modifier = Modifier.background(Color(wallet.color))) {

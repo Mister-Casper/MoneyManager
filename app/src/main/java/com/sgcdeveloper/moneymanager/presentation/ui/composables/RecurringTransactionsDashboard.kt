@@ -141,7 +141,7 @@ fun AddRecurringTransactionsItem(onClick: () -> Unit) {
                 )
                 .size(40.dp)
                 .border(2.dp, gray, RoundedCornerShape(6.dp)),
-            tint = white
+            tint = MaterialTheme.colors.onSurface
         )
 
         Text(
