@@ -509,6 +509,9 @@ class MainActivity : FragmentActivity() {
                             TimeIntervalBudgetManager(navController, timeIntervalBudgetManagerViewModel)
                             it.arguments?.putString("period", "")
                         }
+                        composable(Screen.TransactionCategoriesSettingsScreen.route){
+                            TransactionCategoriesSettings(navController,hiltViewModel())
+                        }
                     }
 
                     if (registrationViewModel.navigationRoute.value.isNotEmpty()) {

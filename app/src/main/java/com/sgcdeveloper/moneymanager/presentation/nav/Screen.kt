@@ -17,6 +17,7 @@ sealed class Screen(val route: String) {
     object Welcome : Screen("Welcome")
     object Settings : Screen("Settings")
     object AccountSettings : Screen("AccountSettings")
+    object TransactionCategoriesSettingsScreen : Screen("TransactionCategoriesSettings")
     object PasswordSettings : Screen("PasswordSettings")
     object ExchangeRatesScreen : Screen("ExchangeRatesScreen")
     object MoneyManagerScreen : Screen("Home")

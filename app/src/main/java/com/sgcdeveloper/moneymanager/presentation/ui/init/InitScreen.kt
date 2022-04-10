@@ -41,7 +41,7 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     val dialogState = remember { initViewModel.dialogState }
 
     val focusManager = LocalFocusManager.current
-    
+
     if (dialogState.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(initViewModel.currencies, initViewModel.currency.value, {
             initViewModel.onEvent(InitEvent.ChangeCurrency(it))

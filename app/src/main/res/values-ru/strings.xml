@@ -160,6 +160,7 @@
     <string name="other_projects_description"> Мы будем рады, если вы ознакомитесь с другими нашими проектами </string>
     <string name="share_app">Поделитесь этим приложением</string>
     <string name="check_this_app">Привет, взгляни на это отличное приложение: %1$s</string>
+    <string name="transaction_categories">Категории транзакций</string>
 
     <string name="sure">Конечно!</string>
     <string name="later">Позже</string>

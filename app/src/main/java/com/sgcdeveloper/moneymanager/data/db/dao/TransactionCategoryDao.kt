@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.data.db.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -8,6 +9,9 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 
 @Dao
 interface TransactionCategoryDao {
+
+    @Query("SELECT * FROM TransactionCategoryEntry")
+    fun getTransactionCategoriesLive(): LiveData<List<TransactionCategoryEntry>>
 
     @Query("SELECT * FROM TransactionCategoryEntry")
     suspend fun getTransactionCategories(): List<TransactionCategoryEntry>
