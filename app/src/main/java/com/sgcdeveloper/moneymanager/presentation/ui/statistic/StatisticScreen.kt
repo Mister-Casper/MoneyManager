@@ -302,7 +302,7 @@ fun CheckDataFromAddTransactionScreen(
             statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
             return
         }
-        if (secondScreenResult != -1L) {
+        if (it != -1L) {
             statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
         }
     }
