@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.dialogs
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -104,6 +105,7 @@ private fun WalletSelector(
     onAdd: (wallet: Wallet) -> Unit,
     onAddNewWallet: (newWallet: Wallet) -> Unit = {}
 ) {
+    val context = LocalContext.current
     var selectedOption by remember {
         mutableStateOf(defaultWallet)
     }
@@ -116,7 +118,7 @@ private fun WalletSelector(
                         onAddNewWallet(item)
                     }
                 } else {
-                    ExistWalletItem(item, selectedOption) {
+                    ExistWalletItem(context,item, selectedOption) {
                         selectedOption = item
                         onAdd(item)
                     }
@@ -127,9 +129,7 @@ private fun WalletSelector(
 }
 
 @Composable
-fun ExistWalletItem(item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
-    val context = LocalContext.current
-
+fun ExistWalletItem(context:Context,item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
     Row(
         Modifier
             .padding(4.dp)

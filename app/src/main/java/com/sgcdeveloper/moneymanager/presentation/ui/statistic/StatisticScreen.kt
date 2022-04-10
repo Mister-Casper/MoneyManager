@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -308,13 +309,14 @@ fun CheckDataFromAddTransactionScreen(
         ?.savedStateHandle
         ?.get<Long>("wallet_id")
 
-    secondScreenResult?.let {
-        if (walletId == 0L) {
-            statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
-            return
-        }
-        if (it != -1L) {
-            statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
+    LaunchedEffect(Unit) {
+        secondScreenResult?.let {
+            if (walletId == 0L) {
+                statisticViewModel.loadTransactions(WalletSingleton.wallet.value!!)
+            }
+            if (it != -1L) {
+                statisticViewModel.onEvent(StatisticEvent.ChangeWalletById(it))
+            }
         }
     }
 }
