@@ -19,14 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.data.LineData
@@ -51,6 +52,7 @@ fun BudgetScreen(
     navController: NavController
 ) {
     val dialog = budgetScreenViewModel.dialogState.value
+    val context = LocalContext.current
 
     if (dialog is DialogState.DeleteDialog) {
         DeleteDialog(dialog.massage, {
@@ -90,9 +92,13 @@ fun BudgetScreen(
                         .weight(1f)
                 )
             }
-            Row(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp)) {
+            Row(
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 12.dp)
+            ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.edit_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.edit_icon)),
                     contentDescription = "",
                     tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
@@ -101,7 +107,7 @@ fun BudgetScreen(
                         .clickable { navController.navigate(Screen.AddBudgetScreen(budget.budgetEntry).route) }
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.delete_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.delete_icon)),
                     contentDescription = "",
                     tint = MaterialTheme.colors.onBackground,
                     modifier = Modifier
@@ -308,6 +314,7 @@ fun TransactionCategoryItem(
     item: CategoryStatistic,
     navController: NavController
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -334,7 +341,7 @@ fun TransactionCategoryItem(
                 ) {
                     Box(modifier = Modifier.background(Color(item.color))) {
                         androidx.compose.material.Icon(
-                            painter = painterResource(id = item.icon),
+                            painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.Center)

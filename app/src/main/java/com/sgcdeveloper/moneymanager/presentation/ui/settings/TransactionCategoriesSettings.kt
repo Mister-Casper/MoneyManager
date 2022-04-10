@@ -21,7 +21,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -81,7 +83,7 @@ fun TransactionCategoriesSettings(
                         .padding(start = 12.dp)
                 )
             }
-            Icon(painter = painterResource(id = R.drawable.add_icon),
+            Icon(painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.add_icon)),
                 contentDescription = "Add new transaction category",
                 modifier = Modifier
                     .align(

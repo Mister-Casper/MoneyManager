@@ -13,10 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -24,6 +26,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 @Composable
 fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
     val source = remember { MutableInteractionSource() }
+    val context = LocalContext.current
 
     if (source.collectIsPressedAsState().value) {
         addTransactionViewModel.onEvent(AddTransactionEvent.ShowChangeDateDialog)
@@ -48,17 +51,21 @@ fun DatePicker(addTransactionViewModel: AddTransactionViewModel) {
             colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary),
             singleLine = true,
             trailingIcon = {
-                Icon(painter = painterResource(id = R.drawable.edit_calendar_icon), "", Modifier.size(32.dp))
+                Icon(
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.edit_calendar_icon)),
+                    "",
+                    Modifier.size(32.dp)
+                )
             }, interactionSource = source
         )
-        if(addTransactionViewModel.isRecurringMode) {
+        if (addTransactionViewModel.isRecurringMode) {
             Column(
                 Modifier
                     .align(Alignment.Bottom)
                     .padding(start = 4.dp)
                     .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowRepeatIntervalDialog) }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.repeat_icon),
+                    painter =     rememberImagePainter(ContextCompat.getDrawable(context,R.drawable.repeat_icon)),
                     "",
                     Modifier
                         .size(32.dp)

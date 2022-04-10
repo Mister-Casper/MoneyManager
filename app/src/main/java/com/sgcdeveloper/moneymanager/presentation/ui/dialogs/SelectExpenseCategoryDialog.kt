@@ -19,10 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.AllExpense
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
@@ -72,7 +73,7 @@ fun SelectExpenseCategoryDialog(
             }
         },
         text = {
-            CategorySelector(expenseItems,defaultCategories) {
+            CategorySelector(expenseItems, defaultCategories) {
                 items = it
             }
         },
@@ -81,7 +82,7 @@ fun SelectExpenseCategoryDialog(
 
 @Composable
 private fun CategorySelector(
-    items:List<TransactionCategory>,
+    items: List<TransactionCategory>,
     defaultCategory: List<TransactionCategory>,
     onAdd: (category: List<TransactionCategory>) -> Unit,
 ) {
@@ -115,7 +116,7 @@ private fun CategorySelector(
                                 selectedOption
                                     .toSet()
                                     .toList()
-                                    .map { items.find {item->item.id == it.toLong()} as TransactionCategory }
+                                    .map { items.find { item -> item.id == it.toLong() } as TransactionCategory }
                             )
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -129,7 +130,7 @@ private fun CategorySelector(
                     ) {
                         Box(modifier = Modifier.background(Color(item.color))) {
                             androidx.compose.material.Icon(
-                                painter = painterResource(id = item.icon),
+                                painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                                 contentDescription = "",
                                 Modifier
                                     .align(Alignment.Center)
@@ -139,7 +140,7 @@ private fun CategorySelector(
                         }
                     }
                     Text(
-                        text =  item.description,
+                        text = item.description,
                         color = MaterialTheme.colors.secondary,
                         modifier = Modifier
                             .padding(start = 12.dp)

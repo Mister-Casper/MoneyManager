@@ -13,13 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -40,6 +43,7 @@ fun TimeIntervalTransactionsScreen(
 ) {
     val transactions = remember { transactionsViewModel.transactionItems }
     val dialog = remember { transactionsViewModel.dialog }
+    val context = LocalContext.current
 
     if (dialog.value is DialogState.SelectTimeIntervalDialog) {
         TimeIntervalPickerDialog(transactionsViewModel.timeInterval.value, {
@@ -82,7 +86,7 @@ fun TimeIntervalTransactionsScreen(
                         .weight(1f)
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.edit_calendar_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.edit_calendar_icon)),
                     contentDescription = "",
                     tint = MaterialTheme.colors.secondary,
                     modifier = Modifier

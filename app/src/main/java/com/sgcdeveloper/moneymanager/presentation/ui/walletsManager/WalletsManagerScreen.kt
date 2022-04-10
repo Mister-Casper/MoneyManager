@@ -19,11 +19,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -42,6 +45,7 @@ fun WalletsManagerScreen(
 ) {
     val wallets = remember { homeViewModel.state }.value.existWallets
     var showDeleteWalletDialog by remember { mutableStateOf<Wallet?>(null) }
+    val context = LocalContext.current
 
     if (showDeleteWalletDialog != null) {
         if (showDeleteWalletDialog!!.isDefault) {
@@ -94,7 +98,7 @@ fun WalletsManagerScreen(
                 )
             }
             Icon(
-                painter = painterResource(id = R.drawable.add_icon),
+                painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.add_icon)),
                 contentDescription = "",
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -130,6 +134,8 @@ private fun VerticalReorderList(
     navController: NavController,
     onDelete: (wallet: Wallet) -> Unit
 ) {
+    val context = LocalContext.current
+
     LazyColumn(
         state = state.listState,
         modifier = Modifier
@@ -157,7 +163,7 @@ private fun VerticalReorderList(
                 ) {
                     Box(modifier = Modifier.background(Color(item.color))) {
                         Icon(
-                            painter = painterResource(id = item.icon),
+                            painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.Center)
@@ -182,7 +188,7 @@ private fun VerticalReorderList(
                     )
                 }
                 Icon(
-                    painter = painterResource(id = R.drawable.edit_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.edit_icon)),
                     contentDescription = "",
                     modifier = Modifier
                         .size(40.dp)
@@ -192,7 +198,7 @@ private fun VerticalReorderList(
                         }
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.delete_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.delete_icon)),
                     contentDescription = "",
                     modifier = Modifier
                         .size(40.dp)

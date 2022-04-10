@@ -15,13 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -35,6 +37,7 @@ import com.sgcdeveloper.moneymanager.util.WalletSingleton
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
     val state = remember { transactionsViewModel.state }.value
+    val context = LocalContext.current
 
     if (state.dialogState is DialogState.WalletPickerDialog) {
         WalletPickerDialog(state.wallets, state.wallet, {
@@ -88,9 +91,10 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 Row(
                     Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)) {
+                        .padding(end = 12.dp)
+                ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.list_icon),
+                        painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.list_icon)),
                         contentDescription = "",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -105,7 +109,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     )
                     Spacer(modifier = Modifier.padding(start = 12.dp))
                     Icon(
-                        painter = painterResource(id = R.drawable.settings_icon),
+                        painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.settings_icon)),
                         contentDescription = "",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -116,7 +120,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             }
             Row(Modifier.padding(top = 4.dp, start = 12.dp)) {
                 Icon(
-                    painter = painterResource(id = R.drawable.balance_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.balance_icon)),
                     contentDescription = "",
                     Modifier
                         .size(32.dp)
@@ -160,7 +164,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     ) {
                         Spacer(modifier = Modifier.weight(1f))
                         Icon(
-                            painter = painterResource(id = R.drawable.empty_icon),
+                            painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.empty_icon)),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.CenterVertically)
@@ -194,7 +198,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             colors = ButtonDefaults.buttonColors(backgroundColor = blue)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.add_icon),
+                painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.add_icon)),
                 contentDescription = "",
                 tint = white,
                 modifier = Modifier.size(1000.dp)
@@ -238,6 +242,8 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
 
 @Composable
 fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: NavController) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -256,7 +262,7 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
             ) {
                 Box(modifier = Modifier.background(Color(item.color))) {
                     Icon(
-                        painter = painterResource(id = item.icon),
+                        painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                         contentDescription = "",
                         Modifier
                             .align(Alignment.Center)
@@ -286,7 +292,11 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
 }
 
 @Composable
-fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TransactionsViewModel,walletId:Long) {
+fun CheckDataFromAddTransactionScreen(
+    navController: NavController,
+    transactionsViewModel: TransactionsViewModel,
+    walletId: Long
+) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")

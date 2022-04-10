@@ -16,10 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -78,6 +80,7 @@ private fun CategorySelector(
         mutableStateOf(defaultCategory)
     }
     val items = if (isShowIncomeCategories.value) incomeItems else expenseItems
+    val context = LocalContext.current
 
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth()) {
@@ -121,7 +124,7 @@ private fun CategorySelector(
                     ) {
                         Box(modifier = Modifier.background(Color(item.color))) {
                             androidx.compose.material.Icon(
-                                painter = painterResource(id = item.icon),
+                                painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                                 contentDescription = "",
                                 Modifier
                                     .align(Alignment.Center)

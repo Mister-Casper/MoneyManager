@@ -15,9 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -26,6 +29,8 @@ import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
 fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit = {}) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .size(120.dp)
@@ -47,7 +52,7 @@ fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit = {
         } else {
             Column(modifier = Modifier.background(Color(wallet.color))) {
                 Icon(
-                    painter = painterResource(id = wallet.icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, wallet.icon)),
                     contentDescription = "wallet icon",
                     Modifier
                         .align(Alignment.CenterHorizontally)
@@ -55,8 +60,16 @@ fun ColumnScope.WalletCard(wallet: Wallet, onClick: (wallet: Wallet) -> Unit = {
                         .padding(top = 4.dp),
                     tint = white
                 )
-                AutoSizeText( text = wallet.name, suggestedFontSizes = listOf(20.sp,18.sp,16.sp,14.sp,12.sp,10.sp,8.sp,6.sp,4.sp),color = white)
-                AutoSizeText(text = wallet.formattedMoney, suggestedFontSizes = listOf(22.sp,20.sp,18.sp,16.sp,14.sp,12.sp,10.sp,8.sp,6.sp,4.sp),color = white)
+                AutoSizeText(
+                    text = wallet.name,
+                    suggestedFontSizes = listOf(20.sp, 18.sp, 16.sp, 14.sp, 12.sp, 10.sp, 8.sp, 6.sp, 4.sp),
+                    color = white
+                )
+                AutoSizeText(
+                    text = wallet.formattedMoney,
+                    suggestedFontSizes = listOf(22.sp, 20.sp, 18.sp, 16.sp, 14.sp, 12.sp, 10.sp, 8.sp, 6.sp, 4.sp),
+                    color = white
+                )
             }
         }
     }

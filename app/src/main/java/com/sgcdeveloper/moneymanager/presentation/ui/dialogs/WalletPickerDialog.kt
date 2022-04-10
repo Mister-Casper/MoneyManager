@@ -18,12 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
@@ -51,8 +53,8 @@ fun WalletPickerDialog(
             .wrapContentHeight()
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
-                   if(offset.y <= ywOffset)
-                       onDismiss()
+                    if (offset.y <= ywOffset)
+                        onDismiss()
                 }
             }
             .customDialogModifier(),
@@ -126,6 +128,8 @@ private fun WalletSelector(
 
 @Composable
 fun ExistWalletItem(item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .padding(4.dp)
@@ -143,7 +147,7 @@ fun ExistWalletItem(item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
         ) {
             Box(modifier = Modifier.background(Color(item.color))) {
                 Icon(
-                    painter = painterResource(id = item.icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                     contentDescription = "",
                     Modifier
                         .align(Alignment.Center)
@@ -176,6 +180,8 @@ fun ExistWalletItem(item: Wallet, selectedItem: Wallet?, onClick: () -> Unit) {
 
 @Composable
 fun AddWalletItem(onClick: () -> Unit) {
+    val context = LocalContext.current
+
     Row(
         Modifier
             .padding(4.dp)
@@ -194,7 +200,7 @@ fun AddWalletItem(onClick: () -> Unit) {
         ) {
             Box {
                 Icon(
-                    painter = painterResource(id = R.drawable.add_icon),
+                    painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.add_icon)),
                     contentDescription = "add new wallet",
                     Modifier.align(
                         Alignment.Center

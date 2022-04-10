@@ -50,6 +50,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManager
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManagerViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.calculator.CalculatorScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen

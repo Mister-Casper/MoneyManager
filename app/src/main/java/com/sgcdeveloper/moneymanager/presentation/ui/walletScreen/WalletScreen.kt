@@ -18,12 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -35,6 +36,7 @@ import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 @Composable
 fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController) {
     val allText = LocalContext.current.getString(R.string.all)
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -58,7 +60,7 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                 )
                 Row(Modifier.align(Alignment.CenterEnd)) {
                     Icon(
-                        painter = painterResource(id = R.drawable.edit_icon),
+                        painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.edit_icon)),
                         contentDescription = "",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
@@ -67,7 +69,7 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                         tint = MaterialTheme.colors.onBackground
                     )
                     Icon(
-                        painter = painterResource(id = R.drawable.statistic_icon),
+                        painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.statistic_icon)),
                         contentDescription = "",
                         tint = MaterialTheme.colors.onBackground,
                         modifier = Modifier
@@ -175,7 +177,7 @@ fun WalletScreen(walletViewModel: WalletViewModel, navController: NavController)
                             ) {
                                 Box(modifier = Modifier.background(Color(item.color))) {
                                     androidx.compose.material.Icon(
-                                        painter = painterResource(id = item.icon),
+                                        painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
                                         contentDescription = "",
                                         Modifier
                                             .align(Alignment.Center)
