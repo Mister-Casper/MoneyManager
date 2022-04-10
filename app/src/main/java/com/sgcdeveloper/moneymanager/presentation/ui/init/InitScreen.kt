@@ -84,7 +84,6 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    initViewModel.onEvent(InitEvent.ShowChangeCurrencyDialog)
                     focusManager.moveFocus(FocusDirection.Down)
                 })
         )

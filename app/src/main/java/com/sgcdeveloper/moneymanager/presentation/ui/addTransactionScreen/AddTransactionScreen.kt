@@ -70,7 +70,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             onAdd = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionCategory(it))
                 focusManager.moveFocus(FocusDirection.Down)
-                addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true))
+                addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
             },
             onDismiss = { addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog) })
     } else if (dialog.value is DialogState.WalletPickerDialog) {

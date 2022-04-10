@@ -37,10 +37,11 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
+import com.sgcdeveloper.moneymanager.presentation.ui.composables.IconPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
-import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletIconPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
+import com.sgcdeveloper.moneymanager.util.wallet_icons
 
 @OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
@@ -170,7 +171,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     "",
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions (onNext = {
-                        addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
                         focusManager.moveFocus(FocusDirection.Down)
                     })
                 )
@@ -245,7 +245,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .padding(top = 4.dp),
                     color = MaterialTheme.colors.onBackground
                 )
-                WalletIconPicker(40.dp, addWalletViewModel.walletIcon.value) {
+                IconPicker(wallet_icons,40.dp, addWalletViewModel.walletIcon.value) {
                     addWalletViewModel.onEvent(WalletEvent.ChangeIcon(it))
                 }
             }

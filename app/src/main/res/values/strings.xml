@@ -246,5 +246,10 @@
     <string name="welcome_page_title_7">Incomes</string>
     <string name="welcome_page_massage_7">"Find ways to earn more with earnings statistics "</string>
 
+    <string name="add_category">Add category</string>
+    <string name="category_description">Category description</string>
+    <string name="category_color">Category color</string>
+    <string name="category_icon">Category icon</string>
+
 
 </resources>

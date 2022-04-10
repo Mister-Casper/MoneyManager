@@ -24,7 +24,6 @@ fun ColumnScope.DescriptionItem(addTransactionViewModel: AddTransactionViewModel
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = {
             focusManager.moveFocus(FocusDirection.Down)
-            addTransactionViewModel.onEvent(AddTransactionEvent.ShowTransactionCategoryPickerDialog)
         })
     )
 }

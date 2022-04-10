@@ -19,11 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.sgcdeveloper.moneymanager.util.wallet_icons
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
+fun IconPicker(icons:List<Int>,size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit) {
     val selectedItem = remember { mutableStateOf(selected) }
 
     LazyVerticalGrid(
@@ -32,10 +31,10 @@ fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit
         // Костыль чтобы не конфликтовали LazyColumn и LazyVerticalGrid
         modifier = Modifier.heightIn(0.dp, 30000.dp)
     ) {
-        items(wallet_icons.size) {
-            val icon = wallet_icons[it]
+        items(icons.size) {
+            val icon = icons[it]
             Box(modifier = Modifier.padding(2.dp)) {
-                if (selectedItem.value == wallet_icons[it]) {
+                if (selectedItem.value == icons[it]) {
                     Box(
                         modifier = Modifier
                             .size(size)
@@ -53,7 +52,7 @@ fun WalletIconPicker(size: Dp, selected: Int = 0, nSelected: (item: Int) -> Unit
                             .size(size)
                             .clickable {
                                 nSelected(it)
-                                selectedItem.value = wallet_icons[it]
+                                selectedItem.value = icons[it]
                             }
                     ) {
                         Icon(

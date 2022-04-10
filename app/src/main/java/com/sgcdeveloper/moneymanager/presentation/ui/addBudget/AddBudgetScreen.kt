@@ -161,7 +161,6 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            addBudgetViewModel.onEvent(AddBudgetEvent.ShowTransactionCategoryPickerDialog)
                             focusManager.moveFocus(FocusDirection.Down)
                         })
                 )
