@@ -92,8 +92,6 @@ open class InitViewModel @Inject constructor(
                 order = 1
             )
             moneyManagerRepository.insertWallet(firstWallet)
-
-            syncHelper.syncServerData()
         }
     }
 

@@ -31,6 +31,5 @@ class InsertBudget @Inject constructor(private val moneyManagerRepository: Money
                 period = period
             )
         )
-        syncHelper.syncServerData()
     }
 }

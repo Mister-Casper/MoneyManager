@@ -63,9 +63,7 @@ class InsertTransaction @Inject constructor(
             cancelTransaction(moneyManagerRepository.getTransaction(transactionId))
         updateWalletMoney(transactionType, amount.toDouble(), fromWallet.walletId, toWallet?.walletId)
 
-        val newTransactionId = moneyManagerRepository.insertTransaction(transactionEntry)
-        syncHelper.syncServerData()
-        return newTransactionId
+        return moneyManagerRepository.insertTransaction(transactionEntry)
     }
 
     private suspend fun insertRecurringTransaction(
@@ -88,7 +86,6 @@ class InsertTransaction @Inject constructor(
     suspend fun deleteTransaction(transactionId: Long) {
         cancelTransaction(moneyManagerRepository.getTransaction(transactionId))
         moneyManagerRepository.removeTransaction(transactionId)
-        syncHelper.syncServerData()
     }
 
     suspend fun deleteRecurringTransaction(recurringTransactionId: Long) {
@@ -134,10 +131,9 @@ class InsertTransaction @Inject constructor(
         insertWallet.insertWallets(newWallets)
         moneyManagerRepository.removeWalletTransactions(walletId)
         moneyManagerRepository.removeWallet(walletId)
-        syncHelper.syncServerData()
     }
 
-    suspend fun cancelTransaction(transaction: TransactionEntry) {
+    private suspend fun cancelTransaction(transaction: TransactionEntry) {
         updateWalletMoney(
             transaction.transactionType, -transaction.value, transaction.fromWalletId, transaction.toWalletId
         )

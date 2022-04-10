@@ -77,6 +77,8 @@ import com.sgcdeveloper.moneymanager.util.SyncHelper
 import com.sgcdeveloper.moneymanager.util.TimeInternalSingleton
 import com.sgcdeveloper.moneymanager.util.gson
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -561,6 +563,13 @@ class MainActivity : FragmentActivity() {
 
             } catch (e: ApiException) {
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        GlobalScope.launch {
+            syncHelper.syncServerData()
         }
     }
 }
