@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.domain.model
 import android.content.Context
 import androidx.compose.ui.graphics.toArgb
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_17
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_18
 import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_24
@@ -13,7 +14,8 @@ open class TransactionCategory(
     val color: Int,
     val description: String,
     val isDefault: Boolean,
-    val isExpense: Boolean
+    val isExpense: Boolean,
+    var entry:TransactionCategoryEntry
 )
 
 class AllExpense(context: Context) :
@@ -23,7 +25,8 @@ class AllExpense(context: Context) :
         wallet_color_24.toArgb(),
         context.getString(R.string.all_category),
         true,
-        true
+        true,
+        TransactionCategoryEntry(order = -6)
     )
 
 class None(context: Context) : TransactionCategory(
@@ -32,7 +35,8 @@ class None(context: Context) : TransactionCategory(
     wallet_color_17.toArgb(),
     context.getString(R.string.none),
     true,
-    false
+    false,
+    TransactionCategoryEntry(order = -6)
 )
 
 class Transfers(context: Context) : TransactionCategory(
@@ -41,7 +45,8 @@ class Transfers(context: Context) : TransactionCategory(
     wallet_color_24.toArgb(),
     context.getString(R.string.transfers),
     true,
-    false
+    false,
+    TransactionCategoryEntry(order = -6)
 )
 
 class All(context: Context) : TransactionCategory(
@@ -50,5 +55,6 @@ class All(context: Context) : TransactionCategory(
     wallet_color_18.toArgb(),
     context.getString(R.string.all),
     true,
-    false
+    false,
+    TransactionCategoryEntry(order = -6)
 )

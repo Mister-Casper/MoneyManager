@@ -1,9 +1,11 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,9 +24,13 @@ import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import org.burnoutcrew.reorderable.*
 
 @Composable
-fun TransactionCategoriesSettings(navController: NavController,transactionCategoriesSettingsViewModel: TransactionCategoriesSettingsViewModel) {
+fun TransactionCategoriesSettings(
+    navController: NavController,
+    transactionCategoriesSettingsViewModel: TransactionCategoriesSettingsViewModel
+) {
     val isShowIncomeCategories = remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize()) {
@@ -42,6 +48,7 @@ fun TransactionCategoriesSettings(navController: NavController,transactionCatego
                     .size(32.dp)
                     .padding(start = 12.dp)
                     .clickable {
+                        transactionCategoriesSettingsViewModel.save()
                         navController.popBackStack()
                     }
             )
@@ -74,44 +81,75 @@ fun TransactionCategoriesSettings(navController: NavController,transactionCatego
                 Text(text = stringResource(id = R.string.expense))
             }
         }
+        val state: ReorderableState = rememberReorderState()
         val items =
             if (isShowIncomeCategories.value) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
-        LazyColumn {
-            items(items.size) {
-                val item = items[it]
-                Row(
-                    Modifier
-                        .padding(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(4.dp)
-                            .align(Alignment.CenterVertically),
-                        shape = RoundedCornerShape(8.dp),
-                    ) {
-                        Box(modifier = Modifier.background(Color(item.color))) {
-                            Icon(
-                                painter = painterResource(id = item.icon),
-                                contentDescription = "",
-                                Modifier
-                                    .align(Alignment.Center)
-                                    .size(32.dp),
-                                tint = white
+        LazyColumn(
+            state = state.listState, modifier = Modifier
+                .padding(top = 8.dp)
+                .then(
+                    Modifier.reorderable(
+                        state,
+                        onMove = { from, to ->
+                            transactionCategoriesSettingsViewModel.move(
+                                isShowIncomeCategories.value,
+                                from,
+                                to
                             )
+                        },
+                        canDragOver = { true })
+                )
+        ) {
+            items(items, { it.id }) { item ->
+                Box(
+                    Modifier
+                        .draggedItem(state.offsetByKey(item.id))
+                        .padding(4.dp),
+                ) {
+                    Row(Modifier.align(Alignment.CenterStart)) {
+                        Card(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(4.dp)
+                                .align(Alignment.CenterVertically),
+                            shape = RoundedCornerShape(8.dp),
+                        ) {
+                            Box(modifier = Modifier.background(Color(item.color))) {
+                                Icon(
+                                    painter = painterResource(id = item.icon),
+                                    contentDescription = "",
+                                    Modifier
+                                        .align(Alignment.Center)
+                                        .size(32.dp),
+                                    tint = white
+                                )
+                            }
                         }
+                        Text(
+                            text = item.description,
+                            modifier = Modifier
+                                .padding(start = 12.dp)
+                                .weight(1f),
+                            fontSize = 18.sp
+                        )
                     }
-                    Text(
-                        text = item.description,
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .weight(1f),
-                        fontSize = 18.sp
-                    )
+                    Row(Modifier.align(Alignment.CenterEnd)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.list_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(start = 4.dp)
+                                .detectReorder(state)
+                        )
+                    }
                 }
             }
         }
     }
 
+    BackHandler {
+        transactionCategoriesSettingsViewModel.save()
+        navController.popBackStack()
+    }
 }

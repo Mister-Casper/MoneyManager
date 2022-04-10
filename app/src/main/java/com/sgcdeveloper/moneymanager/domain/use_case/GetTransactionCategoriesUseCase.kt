@@ -16,19 +16,19 @@ class GetTransactionCategoriesUseCase @Inject constructor(
 ) {
 
     suspend fun getAllItems(): List<TransactionCategory> {
-        return listOf(None(context), Transfers(context)) + getAllExpenseItems() + getIncomeItems()
+        return listOf(None(context), Transfers(context)) + getCategoryTransactions()
     }
 
-    suspend fun getAllExpenseItems():List<TransactionCategory>{
+    suspend fun getAllExpenseItems(): List<TransactionCategory> {
         return listOf(AllExpense(context)) + getCategoryTransactions().filter { it.isExpense }
     }
 
-    suspend fun getExpenseItems():List<TransactionCategory>{
-        return getCategoryTransactions().filter { it.isExpense }
+    suspend fun getExpenseItems(): List<TransactionCategory> {
+        return getCategoryTransactions().filter { it.isExpense }.sortedBy { it.entry.order }
     }
 
-    suspend fun getIncomeItems():List<TransactionCategory>{
-        return getCategoryTransactions().filter { !it.isExpense }
+    suspend fun getIncomeItems(): List<TransactionCategory> {
+        return getCategoryTransactions().filter { !it.isExpense }.sortedBy { it.entry.order }
     }
 
     private suspend fun getCategoryTransactions(): List<TransactionCategory> {
@@ -39,7 +39,7 @@ class GetTransactionCategoriesUseCase @Inject constructor(
                 context.getString(context.resources.getIdentifier(it.description, "string", context.packageName))
             else it.description
 
-            TransactionCategory(it.id, icon, color, description,it.isDefault == 1,it.isExpense == 1)
+            TransactionCategory(it.id, icon, color, description, it.isDefault == 1, it.isExpense == 1, it)
         }
     }
 }

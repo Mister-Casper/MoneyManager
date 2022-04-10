@@ -8,7 +8,7 @@ data class TransactionCategoryEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val color: String = "wallet_color_1",
     val icon: String = "food_icon",
-    val description: String,
+    val description: String = "",
     val isDefault: Int = 0,
     val isExpense: Int = 0,
     val order:Int = 0

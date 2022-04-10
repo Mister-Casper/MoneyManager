@@ -10,6 +10,8 @@ import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.burnoutcrew.reorderable.ItemPosition
+import org.burnoutcrew.reorderable.move
 import javax.inject.Inject
 
 
@@ -20,8 +22,8 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) : AndroidViewModel(app) {
 
-    val incomeCategories:SnapshotStateList<TransactionCategory> = mutableStateListOf()
-    val expenseCategories:SnapshotStateList<TransactionCategory> = mutableStateListOf()
+    val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
+    val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
@@ -34,6 +36,29 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         }
     }
 
+    fun move(isIncome: Boolean, from: ItemPosition, to: ItemPosition) {
+        if (isIncome)
+            incomeCategories.move(from.index, to.index)
+        else
+            expenseCategories.move(from.index, to.index)
+    }
 
+    fun save() {
+        viewModelScope.launch {
+            incomeCategories.mapIndexed { ix, category ->
+                category.also {
+                    category.entry = category.entry.copy(order = ix)
+                }
+            }
+            expenseCategories.mapIndexed { ix, category ->
+                category.also {
+                    category.entry = category.entry.copy(order = ix)
+                }
+            }
+
+            transactionCategoriesDatabase.transactionCategoryDao()
+                .insertTransactionCategoryEntries((incomeCategories + expenseCategories).map { it.entry })
+        }
+    }
 
 }
