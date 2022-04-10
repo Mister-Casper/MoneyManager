@@ -14,13 +14,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
-import coil.compose.rememberImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -45,7 +43,6 @@ val pages = listOf(
 fun WelcomeScreen(onSkip: () -> Unit) {
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     Column(Modifier.fillMaxSize()) {
         Box(Modifier.fillMaxWidth()) {
@@ -81,7 +78,7 @@ fun WelcomeScreen(onSkip: () -> Unit) {
                         .weight(1f)
                 ) {
                     Icon(
-                        painter = rememberImagePainter(ContextCompat.getDrawable(context, page.iconId)),
+                        painter = painterResource(id = page.iconId),
                         contentDescription = "welcome icon",
                         tint = Color.Unspecified,
                         modifier = Modifier.align(
@@ -91,9 +88,7 @@ fun WelcomeScreen(onSkip: () -> Unit) {
                 }
                 Text(
                     text = stringResource(id = page.massageId),
-                    Modifier
-                        .padding(start = 32.dp, end = 32.dp)
-                        .align(Alignment.CenterHorizontally),
+                    Modifier.padding(start = 32.dp, end = 32.dp).align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center
                 )
             }

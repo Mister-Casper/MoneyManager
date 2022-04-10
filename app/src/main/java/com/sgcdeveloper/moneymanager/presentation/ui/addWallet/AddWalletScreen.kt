@@ -24,17 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -53,7 +51,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     val signalBack = remember { addWalletViewModel.back }
 
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
 
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
@@ -137,7 +134,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     )
                     if (addWalletViewModel.isEditingMode.value) {
                         Icon(
-                            painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.delete_icon)),
+                            painter = painterResource(id = R.drawable.delete_icon),
                             contentDescription = "",
                             tint = MaterialTheme.colors.onBackground,
                             modifier = Modifier
@@ -173,7 +170,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     false,
                     "",
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = {
+                    keyboardActions = KeyboardActions (onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
                     })
                 )
@@ -248,7 +245,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .padding(top = 4.dp),
                     color = MaterialTheme.colors.onBackground
                 )
-                IconPicker(wallet_icons, 40.dp, addWalletViewModel.walletIcon.value) {
+                IconPicker(wallet_icons,40.dp, addWalletViewModel.walletIcon.value) {
                     addWalletViewModel.onEvent(WalletEvent.ChangeIcon(it))
                 }
             }

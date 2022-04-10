@@ -13,13 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
-import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 
@@ -98,7 +96,6 @@ fun SearchTextField(
 ) {
 
     val focusRequester = remember { FocusRequester() }
-    val context = LocalContext.current
 
     Surface(
         modifier = modifier
@@ -168,12 +165,7 @@ fun SearchTextField(
                         query.text.isNotEmpty() -> {
                             IconButton(onClick = onClearQuery) {
                                 Icon(
-                                    painter = rememberImagePainter(
-                                        ContextCompat.getDrawable(
-                                            context,
-                                            R.drawable.cancel_icon
-                                        )
-                                    ),
+                                    painter = painterResource(id = R.drawable.cancel_icon),
                                     contentDescription = null
                                 )
                             }

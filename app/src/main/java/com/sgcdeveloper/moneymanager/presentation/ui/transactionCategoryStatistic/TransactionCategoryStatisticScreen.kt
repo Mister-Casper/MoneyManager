@@ -17,15 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.CategoryStatistic
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
@@ -51,7 +49,6 @@ fun TransactionCategoryStatisticScreen(
 ) {
     val state = remember { statisticViewModel.state }.value
     val currentScreen = rememberSaveable { mutableStateOf(defaultScreen) }
-    val context = LocalContext.current
 
     if (state.dialogState is DialogState.SelectTimeIntervalDialog) {
         TimeIntervalPickerDialog(state.timeIntervalController, {
@@ -103,12 +100,7 @@ fun TransactionCategoryStatisticScreen(
                     Modifier.align(Alignment.CenterEnd)
                 ) {
                     Icon(
-                        painter = rememberImagePainter(
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.edit_calendar_icon
-                            )
-                        ),
+                        painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
                         tint = MaterialTheme.colors.secondary,
                         modifier = Modifier
@@ -171,7 +163,7 @@ fun TransactionCategoryStatisticScreen(
                             stringResource(id = R.string.income_structure),
                             state.incomeEntries,
                             state.incomeColors,
-                            { }, false, {
+                            { }, false,{
                                 navController.navigate(
                                     Screen.WeeklyStatisticScreen(
                                         state.wallet,
@@ -200,8 +192,6 @@ fun TransactionCategoryItem(
     navController: NavController,
     statisticViewModel: StatisticViewModel
 ) {
-    val context = LocalContext.current
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -229,7 +219,7 @@ fun TransactionCategoryItem(
                 ) {
                     Box(modifier = Modifier.background(Color(item.color))) {
                         Icon(
-                            painter = rememberImagePainter(ContextCompat.getDrawable(context, item.icon)),
+                            painter = painterResource(id = item.icon),
                             contentDescription = "",
                             Modifier
                                 .align(Alignment.Center)
@@ -255,7 +245,7 @@ fun TransactionCategoryItem(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     modifier = Modifier.align(Alignment.End),
-                    color = if (item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
+                    color = if(item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
                 )
                 Text(
                     text = item.count,
@@ -271,7 +261,7 @@ fun TransactionCategoryItem(
 fun CheckDataFromAddTransactionScreen(
     navController: NavController,
     statisticViewModel: StatisticViewModel,
-    walletId: Long
+    walletId:Long
 ) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle

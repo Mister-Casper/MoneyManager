@@ -14,14 +14,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.sgcdeveloper.moneymanager.R
@@ -46,7 +44,6 @@ fun StatisticScreen(
     navController: NavController
 ) {
     val state = remember { statisticViewModel.state }.value
-    val context = LocalContext.current
 
     if (state.dialogState is DialogState.SelectTimeIntervalDialog) {
         TimeIntervalPickerDialog(state.timeIntervalController, {
@@ -67,11 +64,9 @@ fun StatisticScreen(
         CheckDataFromAddTransactionScreen(navController, statisticViewModel, state.wallet.walletId)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 56.dp)
-    ) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = 56.dp)) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -108,15 +103,9 @@ fun StatisticScreen(
                 Row(
                     Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
-                ) {
+                        .padding(end = 12.dp)) {
                     Icon(
-                        painter = rememberImagePainter(
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.edit_calendar_icon
-                            )
-                        ),
+                        painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
                         modifier = Modifier
                             .size(32.dp)
@@ -124,7 +113,7 @@ fun StatisticScreen(
                     )
                     Spacer(modifier = Modifier.padding(start = 12.dp))
                     Icon(
-                        painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.settings_icon)),
+                        painter = painterResource(id = R.drawable.settings_icon),
                         contentDescription = "",
                         modifier = Modifier
                             .size(32.dp)
@@ -290,7 +279,7 @@ fun StatisticScreen(
             colors = ButtonDefaults.buttonColors(backgroundColor = blue)
         ) {
             Icon(
-                painter = rememberImagePainter(ContextCompat.getDrawable(context, R.drawable.add_icon)),
+                painter = painterResource(id = R.drawable.add_icon),
                 contentDescription = "",
                 tint = white,
                 modifier = Modifier.size(1000.dp)
