@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
+
 @Composable
 fun SignInError(isError: Boolean) {
     if (isError) {
@@ -77,7 +77,7 @@ fun ColumnScope.PasswordInputField(
             }
         },
         visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions =  KeyboardOptions(keyboardType = KeyboardType.Password,imeAction = ImeAction.Next),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
     )
 }
 
@@ -88,11 +88,12 @@ fun ColumnScope.InputField(
     label: String,
     isError: Boolean,
     errorText: String,
-    focusManager: FocusManager?=null,
+    focusManager: FocusManager? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions =  KeyboardOptions(imeAction = ImeAction.Next),
-    padding: Dp = 10.dp
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+    padding: Dp = 10.dp,
+    keyboardActions: KeyboardActions = KeyboardActions {  }
 ) {
     TextField(
         singleLine = true,
@@ -105,11 +106,9 @@ fun ColumnScope.InputField(
             .padding(top = 12.dp, start = padding, end = padding)
             .fillMaxWidth(),
         keyboardOptions = keyboardOptions,
-        keyboardActions = KeyboardActions(
-            onNext = { focusManager?.moveFocus(FocusDirection.Down) }
-        ),
         trailingIcon = trailingIcon,
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
+        keyboardActions = keyboardActions
     )
 
     if (isError) {

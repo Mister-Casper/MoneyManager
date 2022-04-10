@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,9 +40,12 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
     val defaultWalletName = remember { initViewModel.defaultWalletName }
     val dialogState = remember { initViewModel.dialogState }
 
+    val focusManager = LocalFocusManager.current
+    
     if (dialogState.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(initViewModel.currencies, initViewModel.currency.value, {
             initViewModel.onEvent(InitEvent.ChangeCurrency(it))
+            focusManager.moveFocus(FocusDirection.Down)
             initViewModel.onEvent(InitEvent.CloseDialog)
         }, {
             initViewModel.onEvent(InitEvent.CloseDialog)
@@ -75,7 +81,12 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .padding(top = 12.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth(),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    initViewModel.onEvent(InitEvent.ShowChangeCurrencyDialog)
+                    focusManager.moveFocus(FocusDirection.Down)
+                })
         )
 
         Text(
@@ -104,7 +115,8 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
             trailingIcon = {
                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
             },
-            interactionSource = source
+            interactionSource = source,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         )
 
         Text(
@@ -147,7 +159,10 @@ fun InitScreen(initViewModel: InitViewModel, navController: NavController) {
                 .fillMaxWidth(),
             singleLine = true,
             placeholder = { Text(text = "0") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {initViewModel.onEvent(InitEvent.Next)}
+            )
         )
 
         Button(

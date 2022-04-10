@@ -16,6 +16,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
     val wallets = addTransactionViewModel.wallets.observeAsState()
 
     val createRecurringInterval = CreateRecurringInterval()
+    val focusManager = LocalFocusManager.current
 
     if (dialog.value is DialogState.DatePickerDialog) {
         DatePicker(
@@ -53,6 +56,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     )
                 }
                 addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionDate(it))
+                focusManager.moveFocus(FocusDirection.Down)
             },
             onDismissRequest = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
@@ -65,6 +69,8 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             defaultCategory = addTransactionViewModel.getDefaultTransactionCategory(),
             onAdd = {
                 addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionCategory(it))
+                focusManager.moveFocus(FocusDirection.Down)
+                addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true))
             },
             onDismiss = { addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog) })
     } else if (dialog.value is DialogState.WalletPickerDialog) {

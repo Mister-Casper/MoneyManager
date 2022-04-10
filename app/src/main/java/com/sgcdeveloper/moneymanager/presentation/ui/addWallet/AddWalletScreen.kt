@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -22,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -38,12 +42,14 @@ import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletCard
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletIconPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.*
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletViewModel) {
     val dialog = remember { addWalletViewModel.dialogState }
     val dialogBackOpen = remember { addWalletViewModel.backDialog }
     val signalBack = remember { addWalletViewModel.back }
+
+    val focusManager = LocalFocusManager.current
 
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
@@ -51,6 +57,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
             defaultCurrency = addWalletViewModel.walletCurrency.value!!,
             onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.ChangeCurrency(it))
+                focusManager.moveFocus(FocusDirection.Down)
             }) {
             addWalletViewModel.onEvent(WalletEvent.CloseDialog)
         }
@@ -154,12 +161,18 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     }
                 }
                 WalletCard(wallet = addWalletViewModel.wallet.value!!, onClick = {})
+
                 InputField(
                     addWalletViewModel.walletName.value,
                     { addWalletViewModel.onEvent(WalletEvent.ChangeWalletName(it)) },
                     stringResource(id = R.string.wallet_name),
                     false,
-                    ""
+                    "",
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions (onNext = {
+                        addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
+                        focusManager.moveFocus(FocusDirection.Down)
+                    })
                 )
                 val source = remember { MutableInteractionSource() }
 
@@ -179,7 +192,8 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     trailingIcon = {
                         androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
                     },
-                    interactionSource = source
+                    interactionSource = source,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
 
                 Text(
@@ -190,6 +204,8 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .padding(top = 4.dp),
                     color = MaterialTheme.colors.onBackground
                 )
+
+                val keyboardController = LocalSoftwareKeyboardController.current
 
                 TextField(
                     value = addWalletViewModel.walletMoney.value,
@@ -204,7 +220,9 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                         .padding(top = 8.dp, start = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() })
                 )
 
                 Text(
@@ -238,10 +256,12 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     }
 }
 
-fun moveBack(navController: NavController){
-    Log.e("QWE",navController.backQueue
-        .dropLast(1)
-        .last().destination.route!!)
+fun moveBack(navController: NavController) {
+    Log.e(
+        "QWE", navController.backQueue
+            .dropLast(1)
+            .last().destination.route!!
+    )
     if (navController.backQueue
             .dropLast(1)
             .last().destination.route!! == "WalletScreen/{wallet}"

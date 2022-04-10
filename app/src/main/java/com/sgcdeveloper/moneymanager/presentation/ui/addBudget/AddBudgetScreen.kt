@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,9 +17,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,13 +42,14 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectExpenseCategoryDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialog
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavController) {
     val dialog = remember { addBudgetViewModel.dialogState }
     val context = LocalContext.current
 
     if (dialog.value is DialogState.SelectExpenseCategoryDialog) {
-        SelectExpenseCategoryDialog(addBudgetViewModel.expenseItems,addBudgetViewModel.transactionCategories, {
+        SelectExpenseCategoryDialog(addBudgetViewModel.expenseItems, addBudgetViewModel.transactionCategories, {
             addBudgetViewModel.onEvent(AddBudgetEvent.ChangeExpenseCategories(it))
         }, {
             addBudgetViewModel.onEvent(AddBudgetEvent.CloseDialog)
@@ -68,6 +75,8 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
             addBudgetViewModel.onEvent(AddBudgetEvent.CloseDialog)
         }
     }
+
+    val focusManager = LocalFocusManager.current
 
     LazyColumn(
         Modifier
@@ -125,22 +134,40 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                     stringResource(id = R.string.budget_name),
                     false,
                     "",
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                 )
 
+                val focusManager = LocalFocusManager.current
                 TextField(
                     value = addBudgetViewModel.budgetAmount.value,
                     onValueChange = { addBudgetViewModel.onEvent(AddBudgetEvent.ChangeBudgetAmount(it)) },
                     placeholder = { Text(text = "0") },
-                    label = { Text(stringResource(id = R.string.amount, addBudgetViewModel.formattedBudgetAmount.value)) },
+                    label = {
+                        Text(
+                            stringResource(
+                                id = R.string.amount,
+                                addBudgetViewModel.formattedBudgetAmount.value
+                            )
+                        )
+                    },
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                         .align(Alignment.CenterHorizontally),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            addBudgetViewModel.onEvent(AddBudgetEvent.ShowTransactionCategoryPickerDialog)
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                 )
 
                 val source = remember { MutableInteractionSource() }
+                val keyboardController = LocalSoftwareKeyboardController.current
 
                 if (source.collectIsPressedAsState().value) {
                     addBudgetViewModel.onEvent(AddBudgetEvent.ShowTransactionCategoryPickerDialog)
@@ -156,6 +183,12 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                             .padding(top = 12.dp, start = 10.dp, end = 10.dp)
                             .fillMaxWidth(),
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = { keyboardController?.hide() }),
                         trailingIcon = {
                             androidx.compose.material.Icon(imageVector = Icons.Filled.KeyboardArrowDown, "")
                         }, placeholder = {

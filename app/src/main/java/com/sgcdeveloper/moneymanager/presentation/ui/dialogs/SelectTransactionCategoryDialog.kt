@@ -60,7 +60,6 @@ fun SelectTransactionCategoryDialog(
         text = {
             CategorySelector(incomeItems, expenseItems, isIncome, defaultCategory) {
                 onAdd(it)
-                onDismiss()
             }
         },
         confirmButton = {})

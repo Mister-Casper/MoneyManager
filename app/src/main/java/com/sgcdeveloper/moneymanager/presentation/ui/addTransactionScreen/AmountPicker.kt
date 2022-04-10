@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.sgcdeveloper.moneymanager.R
@@ -28,7 +29,7 @@ fun ColumnScope.AmountPicker(addTransactionViewModel: AddTransactionViewModel) {
             .fillMaxWidth()
             .padding(top = 12.dp, start = 10.dp, end = 10.dp)
             .align(Alignment.CenterHorizontally),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
         colors = TextFieldDefaults.textFieldColors(textColor = MaterialTheme.colors.secondary)
     )
 }
