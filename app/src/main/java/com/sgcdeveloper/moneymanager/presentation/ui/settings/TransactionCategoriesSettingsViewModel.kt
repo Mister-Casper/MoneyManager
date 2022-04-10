@@ -66,6 +66,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     }
 
     fun showAddTransactionCategoryDialog(category: TransactionCategory,isExpense:Boolean) {
+        save()
         dialogState.value = DialogState.AddTransactionCategoryDialog(category,isExpense)
     }
 
@@ -85,5 +86,6 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
             transactionCategoriesDatabase.transactionCategoryDao().insertTransactionCategory(category.copy(order = order))
         }
     }
+
 
 }

@@ -166,6 +166,31 @@ fun TransactionCategoriesSettings(
                         )
                     }
                     Row(Modifier.align(Alignment.CenterEnd)) {
+                        if (!item.isDefault) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.delete_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(start = 4.dp)
+                                    .clickable {
+
+                                    }
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.edit_icon),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(start = 4.dp)
+                                    .clickable {
+                                        transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
+                                            item,
+                                            !isShowIncomeCategories.value
+                                        )
+                                    }
+                            )
+                        }
                         Icon(
                             painter = painterResource(id = R.drawable.list_icon),
                             contentDescription = "",
