@@ -7,7 +7,8 @@ import java.util.*
 import java.util.Currency.getInstance
 import javax.inject.Inject
 
-class CurrencyRepositoryImpl @Inject constructor(private val appPreferencesHelper: AppPreferencesHelper) : CurrencyRepository {
+class CurrencyRepositoryImpl @Inject constructor(private val appPreferencesHelper: AppPreferencesHelper) :
+    CurrencyRepository {
 
     private val currencyLocales: MutableMap<Locale, Currency> = mutableMapOf()
 
@@ -28,10 +29,15 @@ class CurrencyRepositoryImpl @Inject constructor(private val appPreferencesHelpe
     }
 
     override fun getDefaultCurrency(): Currency {
-        if(appPreferencesHelper.getDefaultCurrency() != null)
+        if (appPreferencesHelper.getDefaultCurrency() != null)
             return appPreferencesHelper.getDefaultCurrency()!!
         val locale = Locale.getDefault()
-        return getUICurrency(getInstance(locale), locale)
+        val currency = try {
+            getInstance(locale)
+        }catch (ex:IllegalAccessException){
+            getInstance(Locale.US)
+        }
+        return getUICurrency(currency, locale)
     }
 
     private fun getUICurrency(currency: java.util.Currency, locale: Locale): Currency {
