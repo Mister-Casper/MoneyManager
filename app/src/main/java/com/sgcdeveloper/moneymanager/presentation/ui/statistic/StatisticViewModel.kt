@@ -18,10 +18,8 @@ import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import com.sgcdeveloper.moneymanager.util.getExpense
 import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -105,39 +103,37 @@ open class StatisticViewModel @Inject constructor(
     ) {
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val transactions = walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
-                    wallet,
-                    state.value.timeIntervalController
+            val transactions = walletsUseCases.getTransactionItems.getTimeIntervalTransactions(
+                wallet,
+                state.value.timeIntervalController
+            )
+            val income = transactions.getIncome(wallet)
+            val expense = transactions.getExpense(wallet)
+            val expenseStruct =
+                walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
+                    transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                    wallet
                 )
-                val income = transactions.getIncome(wallet)
-                val expense = transactions.getExpense(wallet)
-                val expenseStruct =
-                    walletsUseCases.getCategoriesStatistic.getExpenseStatistic(
-                        transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                        wallet
-                    )
-                val incomeStruct =
-                    walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
-                        transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
-                        wallet
-                    )
-                state.value = state.value.copy(
-                    wallet = wallet,
-                    description = state.value.timeIntervalController.getDescription(),
-                    transactions = transactions,
-                    isEmpty = state.value.transactions.isEmpty(),
-                    income = getFormattedMoney(wallet, income),
-                    expense = getFormattedMoney(wallet, expense),
-                    total = getFormattedMoney(wallet, income + expense),
-                    expenseStruct = expenseStruct,
-                    expenseColors = expenseStruct.map { it.color },
-                    expenseEntries = expenseStruct.map { it.pieEntry },
-                    incomeStruct = incomeStruct,
-                    incomeColors = incomeStruct.map { it.color },
-                    incomeEntries = incomeStruct.map { it.pieEntry }
+            val incomeStruct =
+                walletsUseCases.getCategoriesStatistic.getIncomeStatistic(
+                    transactions.filterIsInstance<BaseTransactionItem.TransactionItem>(),
+                    wallet
                 )
-            }
+            state.value = state.value.copy(
+                wallet = wallet,
+                description = state.value.timeIntervalController.getDescription(),
+                transactions = transactions,
+                isEmpty = state.value.transactions.isEmpty(),
+                income = getFormattedMoney(wallet, income),
+                expense = getFormattedMoney(wallet, expense),
+                total = getFormattedMoney(wallet, income + expense),
+                expenseStruct = expenseStruct,
+                expenseColors = expenseStruct.map { it.color },
+                expenseEntries = expenseStruct.map { it.pieEntry },
+                incomeStruct = incomeStruct,
+                incomeColors = incomeStruct.map { it.color },
+                incomeEntries = incomeStruct.map { it.pieEntry }
+            )
         }
     }
 }
