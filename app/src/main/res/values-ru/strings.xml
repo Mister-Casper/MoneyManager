@@ -232,7 +232,7 @@
 
     <string name="skip">Пропустить</string>
     <string name="welcome_page_title_1">Добро пожаловать в Менджер финансов!</string>
-    <string name="welcome_page_massage_1">Менджер финансов - это единое место для планирования счетов, составления бюджета и отслеживания ваших финансов.</string>
+    <string name="welcome_page_massage_1">Менджер финансов - это единое место для планирования счетов, составления бюджета и отслеживания ваших финансов</string>
     <string name="welcome_page_title_2">Бюджеты</string>
     <string name="welcome_page_massage_2">Установите лимиты бюджета и контролируйте свои расходы</string>
     <string name="welcome_page_title_3">Транзакции</string>
