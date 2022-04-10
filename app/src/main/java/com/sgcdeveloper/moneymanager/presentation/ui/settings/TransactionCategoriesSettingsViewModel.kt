@@ -2,12 +2,15 @@ package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.burnoutcrew.reorderable.ItemPosition
@@ -24,6 +27,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
 
     val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
+    val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
@@ -58,6 +62,27 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
 
             transactionCategoriesDatabase.transactionCategoryDao()
                 .insertTransactionCategoryEntries((incomeCategories + expenseCategories).map { it.entry })
+        }
+    }
+
+    fun showAddTransactionCategoryDialog(category: TransactionCategory,isExpense:Boolean) {
+        dialogState.value = DialogState.AddTransactionCategoryDialog(category,isExpense)
+    }
+
+    fun closeDialog() {
+        dialogState.value = DialogState.NoneDialogState
+    }
+
+    fun insertNewCategory(isIncome:Boolean,category: TransactionCategoryEntry) {
+        viewModelScope.launch {
+            val order = if(category.id == 0L){
+                if(isIncome)
+                    incomeCategories.maxOf { it.order }
+                else
+                    expenseCategories.maxOf { it.order }
+            }else
+                category.order
+            transactionCategoriesDatabase.transactionCategoryDao().insertTransactionCategory(category.copy(order = order))
         }
     }
 

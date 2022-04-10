@@ -99,6 +99,7 @@ open class InitViewModel @Inject constructor(
 
     companion object {
         const val MAX_USER_NAME_LENGTH = 24
+        const val MAX_CUSTOM_CATEGORY_LENGTH= 20
         const val MAX_MONEY_LENGTH = 16
         const val MAX_WALLET_NAME_LENGTH = 12
         const val MAX_RATE_LENGTH = 9

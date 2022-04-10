@@ -16,14 +16,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.AddTransactionCategoryDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import org.burnoutcrew.reorderable.*
 
 @Composable
@@ -32,34 +36,64 @@ fun TransactionCategoriesSettings(
     transactionCategoriesSettingsViewModel: TransactionCategoriesSettingsViewModel
 ) {
     val isShowIncomeCategories = remember { mutableStateOf(false) }
+    val dialogState = remember { transactionCategoriesSettingsViewModel.dialogState }.value
+    val context = LocalContext.current
+    val state: ReorderableState = rememberReorderState()
+    val items =
+        if (isShowIncomeCategories.value) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
+
+    if (dialogState is DialogState.AddTransactionCategoryDialog) {
+        AddTransactionCategoryDialog(dialogState.category, dialogState.isExpense, {
+            transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories.value, it)
+            transactionCategoriesSettingsViewModel.closeDialog()
+        }, {
+            transactionCategoriesSettingsViewModel.closeDialog()
+        })
+    }
 
     Column(Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.surface)
-                .padding(top = 16.dp, bottom = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBackIosNew,
-                contentDescription = "",
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .size(32.dp)
-                    .padding(start = 12.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart)
+                    .background(MaterialTheme.colors.surface)
+                    .padding(top = 16.dp, bottom = 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(32.dp)
+                        .padding(start = 12.dp)
+                        .clickable {
+                            transactionCategoriesSettingsViewModel.save()
+                            navController.popBackStack()
+                        }
+                )
+                Text(
+                    text = stringResource(id = R.string.transaction_categories_title),
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colors.onBackground,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(start = 12.dp)
+                )
+            }
+            Icon(painter = painterResource(id = R.drawable.add_icon),
+                contentDescription = "Add new transaction category",
+                modifier = Modifier
+                    .align(
+                        Alignment.CenterEnd
+                    )
+                    .padding(end = 12.dp)
                     .clickable {
-                        transactionCategoriesSettingsViewModel.save()
-                        navController.popBackStack()
-                    }
-            )
-            Text(
-                text = stringResource(id = R.string.transaction_categories),
-                fontSize = 22.sp,
-                color = MaterialTheme.colors.onBackground,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(start = 12.dp)
-            )
+                        transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
+                            None(context),
+                            !isShowIncomeCategories.value
+                        )
+                    })
         }
         Row(Modifier.fillMaxWidth()) {
             Button(
@@ -81,9 +115,6 @@ fun TransactionCategoriesSettings(
                 Text(text = stringResource(id = R.string.expense))
             }
         }
-        val state: ReorderableState = rememberReorderState()
-        val items =
-            if (isShowIncomeCategories.value) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
         LazyColumn(
             state = state.listState, modifier = Modifier
                 .padding(top = 8.dp)
@@ -129,6 +160,7 @@ fun TransactionCategoriesSettings(
                             text = item.description,
                             modifier = Modifier
                                 .padding(start = 12.dp)
+                                .align(Alignment.CenterVertically)
                                 .weight(1f),
                             fontSize = 18.sp
                         )

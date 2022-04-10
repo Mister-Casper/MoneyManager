@@ -16,7 +16,8 @@ open class TransactionCategory(
     val description: String,
     val isDefault: Boolean,
     val isExpense: Boolean,
-    var entry: TransactionCategoryEntry
+    var entry: TransactionCategoryEntry,
+    val order:Int,
 ) {
     fun copy(
         id: Long = this.id,
@@ -25,9 +26,10 @@ open class TransactionCategory(
         description: String = this.description,
         isDefault: Boolean = this.isDefault,
         isExpense: Boolean = this.isExpense,
-        entry: TransactionCategoryEntry = this.entry
+        entry: TransactionCategoryEntry = this.entry,
+        order: Int = this.order
     ): TransactionCategory {
-        return TransactionCategory(id, icon, color, description, isDefault, isExpense, entry)
+        return TransactionCategory(id, icon, color, description, isDefault, isExpense, entry, order)
     }
 }
 
@@ -39,7 +41,8 @@ class AllExpense(context: Context) :
         context.getString(R.string.all_category),
         true,
         true,
-        TransactionCategoryEntry(order = -6)
+        TransactionCategoryEntry(order = -6),
+        -6
     )
 
 class None(context: Context) : TransactionCategory(
@@ -49,7 +52,8 @@ class None(context: Context) : TransactionCategory(
     context.getString(R.string.none),
     false,
     false,
-    TransactionCategoryEntry(order = -6)
+    TransactionCategoryEntry(order = -6),
+    -6
 )
 
 class Transfers(context: Context) : TransactionCategory(
@@ -59,7 +63,8 @@ class Transfers(context: Context) : TransactionCategory(
     context.getString(R.string.transfers),
     true,
     false,
-    TransactionCategoryEntry(order = -6)
+    TransactionCategoryEntry(order = -6),
+    -6
 )
 
 class All(context: Context) : TransactionCategory(
@@ -69,5 +74,6 @@ class All(context: Context) : TransactionCategory(
     context.getString(R.string.all),
     true,
     false,
-    TransactionCategoryEntry(order = -6)
+    TransactionCategoryEntry(order = -6),
+    -6
 )

@@ -8,6 +8,7 @@ import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Transfers
 import com.sgcdeveloper.moneymanager.presentation.theme.wallets_map
+import com.sgcdeveloper.moneymanager.util.isDouble
 import javax.inject.Inject
 
 class GetTransactionCategoriesUseCase @Inject constructor(
@@ -34,12 +35,12 @@ class GetTransactionCategoriesUseCase @Inject constructor(
     private suspend fun getCategoryTransactions(): List<TransactionCategory> {
         return moneyManagerRepository.transactionCategoryDao().getTransactionCategories().map {
             val icon = context.resources.getIdentifier(it.icon, "drawable", context.packageName)
-            val color = wallets_map[it.color]!!.toArgb()
+            val color = if (it.color.isDouble()) it.color.toInt() else wallets_map[it.color]!!.toArgb()
             val description = if (it.isDefault == 1)
                 context.getString(context.resources.getIdentifier(it.description, "string", context.packageName))
             else it.description
 
-            TransactionCategory(it.id, icon, color, description, it.isDefault == 1, it.isExpense == 1, it)
+            TransactionCategory(it.id, icon, color, description, it.isDefault == 1, it.isExpense == 1, it, it.order)
         }
     }
 }
