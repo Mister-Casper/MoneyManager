@@ -265,7 +265,7 @@ class MainActivity : FragmentActivity() {
                             )
                             AddTransactionScreen(addTransactionViewModel, navController)
                         }
-                        composable(Screen.EditTransaction(null).route + "{transaction}") { backStackEntry ->
+                        composable("EditTransaction/{transaction}") { backStackEntry ->
                             val addTransactionViewModel: AddTransactionViewModel = hiltViewModel()
 
                             val transaction =

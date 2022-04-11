@@ -61,7 +61,6 @@ open class AccountSettingsViewModel @Inject constructor(
                     moneyManagerRepository.deleteAllTransactions()
                     moneyManagerRepository.deleteAllRates()
                     WalletSingleton.setWallet(null)
-                    transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     navController.popBackStack(Screen.SignUp.route, true)
                     ProcessPhoenix.triggerRebirth(app)
                 }

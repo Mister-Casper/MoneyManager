@@ -71,6 +71,7 @@ class SyncHelper @Inject constructor(
                 val categoryEntries =
                     categories.map { category -> TransactionCategoryEntry.getTransactionCategoryEntry(category) }
                 runBlocking {
+                    transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     transactionCategoriesDatabase.transactionCategoryDao()
                         .insertTransactionCategoryEntries(categoryEntries)
                 }
