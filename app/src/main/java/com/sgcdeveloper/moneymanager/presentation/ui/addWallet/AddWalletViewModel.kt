@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseRate
@@ -116,6 +117,7 @@ open class AddWalletViewModel @Inject constructor(
                 this.wallet.value = this.wallet.value!!.copy(icon = wallet_icons[walletEvent.icon])
             }
             is WalletEvent.InsertWallet -> {
+                FirebaseAnalytics.getInstance(app).logEvent("insert_wallet",null)
                 viewModelScope.launch {
                     wallet.value = wallet.value!!.copy(money = walletMoney.value)
                     walletsUseCases.insertWallet(wallet.value!!)

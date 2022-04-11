@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -18,8 +19,6 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.util.Network.checkInternetConnection
 import com.sgcdeveloper.moneymanager.util.SyncHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -79,6 +78,7 @@ open class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.SignIn -> {
                 showLoadingDialog.value = true
                 authRepository.signIn(registrationEvent) { it, username ->
+                    FirebaseAnalytics.getInstance(app).logEvent("signed_in",null)
                     if (!it) {
                         isSignInError.value = true
                         showLoadingDialog.value = false
@@ -103,6 +103,7 @@ open class RegistrationViewModel @Inject constructor(
                 else {
                     showLoadingDialog.value = true
                     authRepository.signUp(registrationEvent) { it, username ->
+                        FirebaseAnalytics.getInstance(app).logEvent("created_an_account",null)
                         if (checkInternetConnection()) {
                             if (it) {
                                 appPreferencesHelper.setUserName(username)
@@ -116,11 +117,13 @@ open class RegistrationViewModel @Inject constructor(
                 }
             }
             is RegistrationEvent.Skip -> {
+                FirebaseAnalytics.getInstance(app).logEvent("continue_without_registration",null)
                 updateLogInStatus(LoginStatus.Initing)
             }
             is RegistrationEvent.SignInWithGoogle -> {
                 val signInIntent = googleSignInClient.signInIntent
                 _onGoogleSignIn.value = GoogleSignInEvent(signInIntent, { isNewUser, userName ->
+                    FirebaseAnalytics.getInstance(app).logEvent("signed_in_google",null)
                     showLoadingDialog.value = true
                     syncHelper.syncLocalData(true) {
                         if (it) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
@@ -194,6 +195,7 @@ open class AddTransactionViewModel @Inject constructor(
                 updateFormattedAMount()
             }
             is AddTransactionEvent.InsertTransaction -> {
+                FirebaseAnalytics.getInstance(app).logEvent("add_transaction",null)
                 val category =
                     when (currentScreen.value) {
                         TransactionScreen.Expense -> transactionExpenseCategory.value

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
@@ -85,6 +86,7 @@ open class AddBudgetViewModel @Inject constructor(
                 dialogState.value = DialogState.NoneDialogState
             }
             is AddBudgetEvent.InsertBudget -> {
+                FirebaseAnalytics.getInstance(app).logEvent("add_budget",null)
                 viewModelScope.launch {
                     insertBudget(
                         transactionId,
