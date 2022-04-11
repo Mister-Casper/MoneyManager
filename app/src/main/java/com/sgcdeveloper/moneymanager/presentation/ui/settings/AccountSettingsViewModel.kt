@@ -38,6 +38,15 @@ open class AccountSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             syncHelper.syncServerData {
                 viewModelScope.launch {
+                    val auth = FirebaseAuth.getInstance()
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken("241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com")
+                        .requestEmail()
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(app, gso)
+                    auth.signOut()
+                    googleSignInClient.signOut()
+                    
                     appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
                     appPreferencesHelper.setUserPassword(false)
                     appPreferencesHelper.setDefaultWalletId(-1L)
@@ -55,15 +64,6 @@ open class AccountSettingsViewModel @Inject constructor(
                     transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     navController.popBackStack(Screen.SignUp.route, true)
                     ProcessPhoenix.triggerRebirth(app)
-
-                    val auth = FirebaseAuth.getInstance()
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken("241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com")
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(app, gso)
-                    auth.signOut()
-                    googleSignInClient.signOut()
                 }
             }
         }

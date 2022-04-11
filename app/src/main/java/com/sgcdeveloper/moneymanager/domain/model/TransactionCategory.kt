@@ -35,7 +35,7 @@ open class TransactionCategory(
 
 class AllExpense(context: Context) :
     TransactionCategory(
-        33,
+        0,
         R.drawable.infinity_icon,
         wallet_color_24.toArgb(),
         context.getString(R.string.all_category),
@@ -57,7 +57,7 @@ class None(context: Context) : TransactionCategory(
 )
 
 class Transfers(context: Context) : TransactionCategory(
-    1,
+    0,
     R.drawable.transfer_icon,
     wallet_color_24.toArgb(),
     context.getString(R.string.transfers),
@@ -68,7 +68,7 @@ class Transfers(context: Context) : TransactionCategory(
 )
 
 class All(context: Context) : TransactionCategory(
-    32,
+    0,
     R.drawable.transfer_icon,
     wallet_color_18.toArgb(),
     context.getString(R.string.all),

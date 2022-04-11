@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.util
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -75,6 +76,8 @@ class SyncHelper @Inject constructor(
                 }
             }
             val userCategories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+            Log.e("QWE",userCategories.toString())
+            BudgetEntry.listConverter.categories = userCategories
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
             moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(userCategories,task) })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
