@@ -26,7 +26,9 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.AddTransactionCategoryDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import org.burnoutcrew.reorderable.*
 
@@ -49,6 +51,13 @@ fun TransactionCategoriesSettings(
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()
         })
+    } else if (dialogState is DialogState.DeleteTransactionCategoryDialogState){
+        DeleteWalletDialog(null, {
+            transactionCategoriesSettingsViewModel.deleteCategory(dialogState.transactionCategory)
+            transactionCategoriesSettingsViewModel.closeDialog()
+        }, {
+            transactionCategoriesSettingsViewModel.closeDialog()
+        }, R.string.are_ur_sure_you_want_to_delete_category)
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -174,7 +183,7 @@ fun TransactionCategoriesSettings(
                                     .size(40.dp)
                                     .padding(start = 4.dp)
                                     .clickable {
-
+                                        transactionCategoriesSettingsViewModel.showDeleteTransactionCategoryDialog(item)
                                     }
                             )
                             Icon(

@@ -14,6 +14,7 @@ sealed class DialogState {
     class DeleteDialog(val massage: String) : DialogState()
     class RecurringDialog(val defaultRecurring: RecurringInterval) : DialogState()
     class AddTransactionCategoryDialog(val category: TransactionCategory,val isExpense: Boolean):DialogState()
+    class DeleteTransactionCategoryDialogState(val transactionCategory: TransactionCategory) : DialogState()
 
     object StringSelectorDialogState : DialogState()
     object SelectCurrenciesDialogState : DialogState()

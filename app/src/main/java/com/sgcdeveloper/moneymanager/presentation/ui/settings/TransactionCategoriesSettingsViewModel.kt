@@ -65,25 +65,37 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         }
     }
 
-    fun showAddTransactionCategoryDialog(category: TransactionCategory,isExpense:Boolean) {
+    fun showAddTransactionCategoryDialog(category: TransactionCategory, isExpense: Boolean) {
         save()
-        dialogState.value = DialogState.AddTransactionCategoryDialog(category,isExpense)
+        dialogState.value = DialogState.AddTransactionCategoryDialog(category, isExpense)
     }
 
     fun closeDialog() {
         dialogState.value = DialogState.NoneDialogState
     }
 
-    fun insertNewCategory(isIncome:Boolean,category: TransactionCategoryEntry) {
+    fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) {
         viewModelScope.launch {
-            val order = if(category.id == 0L){
-                if(isIncome)
+            val order = if (category.id == 0L) {
+                if (isIncome)
                     incomeCategories.maxOf { it.order }
                 else
                     expenseCategories.maxOf { it.order }
-            }else
+            } else
                 category.order
-            transactionCategoriesDatabase.transactionCategoryDao().insertTransactionCategory(category.copy(order = order))
+            transactionCategoriesDatabase.transactionCategoryDao()
+                .insertTransactionCategory(category.copy(order = order))
+        }
+    }
+
+    fun showDeleteTransactionCategoryDialog(item: TransactionCategory) {
+        dialogState.value = DialogState.DeleteTransactionCategoryDialogState(item)
+    }
+
+    fun deleteCategory(transactionCategory: TransactionCategory) {
+        viewModelScope.launch {
+            transactionCategoriesDatabase.transactionCategoryDao()
+                .removeTransactionCategoryEntry(transactionCategory.id)
         }
     }
 
