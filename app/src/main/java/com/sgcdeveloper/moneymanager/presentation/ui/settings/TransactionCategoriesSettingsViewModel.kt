@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
@@ -76,6 +77,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     }
 
     fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) {
+        FirebaseAnalytics.getInstance(app).logEvent("insert_transaction_category",null)
         viewModelScope.launch {
             val order = if (category.id == 0L) {
                 if (isIncome)
