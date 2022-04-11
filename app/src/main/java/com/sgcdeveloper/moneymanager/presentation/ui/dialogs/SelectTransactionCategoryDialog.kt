@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,13 +21,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
 @Composable
 fun SelectTransactionCategoryDialog(
+    navController: NavController,
     incomeItems: List<TransactionCategory>,
     expenseItems: List<TransactionCategory>,
     isIncome: Boolean,
@@ -34,11 +38,16 @@ fun SelectTransactionCategoryDialog(
     onAdd: (category: TransactionCategory) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
+    val isShowIncomeCategories = remember { mutableStateOf(isIncome) }
+
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
         title = {
-            Row(Modifier.fillMaxWidth()) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+            ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBackIosNew,
                     contentDescription = "",
@@ -54,11 +63,24 @@ fun SelectTransactionCategoryDialog(
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .padding(start = 8.dp)
+                        .weight(1f)
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.list_icon),
+                    contentDescription = "Categories",
+                    tint = MaterialTheme.colors.onSurface,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(40.dp)
+                        .clickable {
+                            navController.navigate(Screen.TransactionCategoriesSettingsScreen(isShowIncomeCategories.value.toString()).route)
+                        }
                 )
             }
         },
         text = {
-            CategorySelector(incomeItems, expenseItems, isIncome, defaultCategory) {
+            CategorySelector(incomeItems, expenseItems, isShowIncomeCategories, defaultCategory) {
                 onAdd(it)
             }
         },
@@ -69,11 +91,10 @@ fun SelectTransactionCategoryDialog(
 private fun CategorySelector(
     incomeItems: List<TransactionCategory>,
     expenseItems: List<TransactionCategory>,
-    isIncome: Boolean,
+    isShowIncomeCategories: MutableState<Boolean>,
     defaultCategory: TransactionCategory? = null,
     onAdd: (category: TransactionCategory) -> Unit,
 ) {
-    val isShowIncomeCategories = remember { mutableStateOf(isIncome) }
     val selectedOption = remember {
         mutableStateOf(defaultCategory)
     }

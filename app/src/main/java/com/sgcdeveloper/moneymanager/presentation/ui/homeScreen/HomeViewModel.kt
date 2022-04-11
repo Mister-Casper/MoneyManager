@@ -80,14 +80,12 @@ open class HomeViewModel @Inject constructor(
     fun loadBudgets() {
         loadBudgetsJob?.cancel()
         loadBudgetsJob = viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val budgets = getBudgetsUseCase()
-                val transactions = getRecurringTransactionsUseCase()
-                state.value = state.value.copy(
-                    budgets = budgets,
-                    recurringTransactions = transactions
-                )
-            }
+            val budgets = getBudgetsUseCase()
+            val transactions = getRecurringTransactionsUseCase()
+            state.value = state.value.copy(
+                budgets = budgets,
+                recurringTransactions = transactions
+            )
         }
     }
 }

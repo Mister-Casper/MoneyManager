@@ -11,6 +11,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -509,8 +510,13 @@ class MainActivity : FragmentActivity() {
                             TimeIntervalBudgetManager(navController, timeIntervalBudgetManagerViewModel)
                             it.arguments?.putString("period", "")
                         }
-                        composable(Screen.TransactionCategoriesSettingsScreen.route){
-                            TransactionCategoriesSettings(navController,hiltViewModel())
+                        composable("TransactionCategoriesSettings/{isIncome}") {
+                            val vm: TransactionCategoriesSettingsViewModel = hiltViewModel()
+                            LaunchedEffect(Unit) {
+                                val isIncome = it.arguments?.getString("isIncome", true.toString())!!
+                                vm.isShowIncomeCategories.value = isIncome.toBoolean()
+                            }
+                            TransactionCategoriesSettings(navController, vm)
                         }
                     }
 

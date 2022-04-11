@@ -12,10 +12,8 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 
@@ -82,14 +80,12 @@ open class TransactionsViewModel @Inject constructor(
     fun loadTransactions(newWallet: Wallet) {
         loadTransactionJob?.cancel()
         loadTransactionJob = viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val transactions = walletsUseCases.getTransactionItems(newWallet)
-                state.value = state.value.copy(
-                    wallet = newWallet,
-                    transactions = transactions,
-                    isEmpty = transactions.isEmpty()
-                )
-            }
+            val transactions = walletsUseCases.getTransactionItems(newWallet)
+            state.value = state.value.copy(
+                wallet = newWallet,
+                transactions = transactions,
+                isEmpty = transactions.isEmpty()
+            )
         }
     }
 }

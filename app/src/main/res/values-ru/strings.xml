@@ -247,4 +247,10 @@
     <string name="welcome_page_title_7">Доходы</string>
     <string name="welcome_page_massage_7">Найдите способы заработать больше с помощью статистики доходов</string>
 
+    <string name="add_category">Добавить</string>
+    <string name="category_description">Название</string>
+    <string name="category_color">Цвет</string>
+    <string name="category_icon">Иконка</string>
+    <string name="transaction_categories_title">Категории</string>
+
 </resources>

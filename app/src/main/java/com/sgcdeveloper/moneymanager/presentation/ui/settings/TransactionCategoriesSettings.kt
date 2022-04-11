@@ -11,7 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +25,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
-import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.AddTransactionEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.AddTransactionCategoryDialog
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import org.burnoutcrew.reorderable.*
 
@@ -37,27 +34,20 @@ fun TransactionCategoriesSettings(
     navController: NavController,
     transactionCategoriesSettingsViewModel: TransactionCategoriesSettingsViewModel
 ) {
-    val isShowIncomeCategories = remember { mutableStateOf(false) }
     val dialogState = remember { transactionCategoriesSettingsViewModel.dialogState }.value
     val context = LocalContext.current
     val state: ReorderableState = rememberReorderState()
+    val isShowIncomeCategories = remember { transactionCategoriesSettingsViewModel.isShowIncomeCategories }.value
     val items =
-        if (isShowIncomeCategories.value) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
+        if (isShowIncomeCategories) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
 
     if (dialogState is DialogState.AddTransactionCategoryDialog) {
         AddTransactionCategoryDialog(dialogState.category, dialogState.isExpense, {
-            transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories.value, it)
+            transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
             transactionCategoriesSettingsViewModel.closeDialog()
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()
         })
-    } else if (dialogState is DialogState.DeleteTransactionCategoryDialogState){
-        DeleteWalletDialog(null, {
-            transactionCategoriesSettingsViewModel.deleteCategory(dialogState.transactionCategory)
-            transactionCategoriesSettingsViewModel.closeDialog()
-        }, {
-            transactionCategoriesSettingsViewModel.closeDialog()
-        }, R.string.are_ur_sure_you_want_to_delete_category)
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -97,29 +87,30 @@ fun TransactionCategoriesSettings(
                         Alignment.CenterEnd
                     )
                     .padding(end = 12.dp)
+                    .size(40.dp)
                     .clickable {
                         transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
                             None(context),
-                            !isShowIncomeCategories.value
+                            !isShowIncomeCategories
                         )
                     })
         }
         Row(Modifier.fillMaxWidth()) {
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
-                    contentColor = if (isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
+                    backgroundColor = if (isShowIncomeCategories) blue else MaterialTheme.colors.background,
+                    contentColor = if (isShowIncomeCategories) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = { isShowIncomeCategories.value = true }
+                onClick = { transactionCategoriesSettingsViewModel.isShowIncomeCategories.value = true }
             ) {
                 Text(text = stringResource(id = R.string.income))
             }
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (!isShowIncomeCategories.value) blue else MaterialTheme.colors.background,
-                    contentColor = if (!isShowIncomeCategories.value) white else MaterialTheme.colors.onBackground
+                    backgroundColor = if (!isShowIncomeCategories) blue else MaterialTheme.colors.background,
+                    contentColor = if (!isShowIncomeCategories) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = { isShowIncomeCategories.value = false }
+                onClick = { transactionCategoriesSettingsViewModel.isShowIncomeCategories.value = false }
             ) {
                 Text(text = stringResource(id = R.string.expense))
             }
@@ -132,7 +123,6 @@ fun TransactionCategoriesSettings(
                         state,
                         onMove = { from, to ->
                             transactionCategoriesSettingsViewModel.move(
-                                isShowIncomeCategories.value,
                                 from,
                                 to
                             )
@@ -141,12 +131,12 @@ fun TransactionCategoriesSettings(
                 )
         ) {
             items(items, { it.id }) { item ->
-                Box(
+                Row(
                     Modifier
                         .draggedItem(state.offsetByKey(item.id))
                         .padding(4.dp),
                 ) {
-                    Row(Modifier.align(Alignment.CenterStart)) {
+                    Row(Modifier.align(Alignment.CenterVertically).weight(1f)) {
                         Card(
                             modifier = Modifier
                                 .size(48.dp)
@@ -174,18 +164,8 @@ fun TransactionCategoriesSettings(
                             fontSize = 18.sp
                         )
                     }
-                    Row(Modifier.align(Alignment.CenterEnd)) {
+                    Row(Modifier.align(Alignment.CenterVertically)) {
                         if (!item.isDefault) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.delete_icon),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .padding(start = 4.dp)
-                                    .clickable {
-                                        transactionCategoriesSettingsViewModel.showDeleteTransactionCategoryDialog(item)
-                                    }
-                            )
                             Icon(
                                 painter = painterResource(id = R.drawable.edit_icon),
                                 contentDescription = "",
@@ -195,7 +175,7 @@ fun TransactionCategoriesSettings(
                                     .clickable {
                                         transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
                                             item,
-                                            !isShowIncomeCategories.value
+                                            !isShowIncomeCategories
                                         )
                                     }
                             )

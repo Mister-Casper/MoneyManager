@@ -17,7 +17,6 @@ sealed class Screen(val route: String) {
     object Welcome : Screen("Welcome")
     object Settings : Screen("Settings")
     object AccountSettings : Screen("AccountSettings")
-    object TransactionCategoriesSettingsScreen : Screen("TransactionCategoriesSettings")
     object PasswordSettings : Screen("PasswordSettings")
     object ExchangeRatesScreen : Screen("ExchangeRatesScreen")
     object MoneyManagerScreen : Screen("Home")
@@ -57,4 +56,7 @@ sealed class Screen(val route: String) {
 
     class TimeIntervalBudgetManager(period: BudgetPeriod? = null) :
         Screen("TimeIntervalBudgetManager/" + gson.toSafeJson(period))
+
+    class TransactionCategoriesSettingsScreen(val isIncome: String = "true") :
+        Screen("TransactionCategoriesSettings/$isIncome")
 }

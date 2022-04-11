@@ -28,6 +28,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
+    val isShowIncomeCategories = mutableStateOf(false)
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
@@ -40,8 +41,8 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         }
     }
 
-    fun move(isIncome: Boolean, from: ItemPosition, to: ItemPosition) {
-        if (isIncome)
+    fun move(from: ItemPosition, to: ItemPosition) {
+        if (isShowIncomeCategories.value)
             incomeCategories.move(from.index, to.index)
         else
             expenseCategories.move(from.index, to.index)

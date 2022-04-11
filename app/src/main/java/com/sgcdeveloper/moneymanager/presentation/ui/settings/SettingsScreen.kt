@@ -130,7 +130,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     )
                 }
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.TransactionCategoriesSettingsScreen.route) }) {
+            MenuItem(Modifier.clickable { navController.navigate(Screen.TransactionCategoriesSettingsScreen().route) }) {
                 Text(
                     text = stringResource(id = R.string.transaction_categories),
                     Modifier.align(Alignment.CenterStart),

@@ -25,7 +25,7 @@ class SyncHelper @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
     private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
-    private val TransactionCategoriesDatabase: TransactionCategoriesDatabase
+    private val transactionCategoriesDatabase: TransactionCategoriesDatabase
 ) {
 
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
@@ -61,12 +61,22 @@ class SyncHelper @Inject constructor(
             if (userDocument.get("rates") != null) userDocument.get("rates") as List<MutableMap<String, Any>> else Collections.emptyList()
         val budgets =
             if (userDocument.get("budgets") != null) userDocument.get("budgets") as List<MutableMap<String, Any>> else Collections.emptyList()
+        val categories =
+            if (userDocument.get("categories") != null) userDocument.get("categories") as List<MutableMap<String, Any>> else Collections.emptyList()
         val recurrings =
             if (userDocument.get("recurrings") != null) userDocument.get("recurrings") as List<MutableMap<String, Any>> else Collections.emptyList()
         GlobalScope.launch {
-            val categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+            if(categories.isNotEmpty()) {
+                val categoryEntries =
+                    categories.map { category -> TransactionCategoryEntry.getTransactionCategoryEntry(category) }
+                runBlocking {
+                    transactionCategoriesDatabase.transactionCategoryDao()
+                        .insertTransactionCategoryEntries(categoryEntries)
+                }
+            }
+            val userCategories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
             moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
-            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(categories,task) })
+            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(userCategories,task) })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
             moneyManagerRepository.insertBudgets(budgets.map { budget -> BudgetEntry.getBudgetByHashMap(budget) })
             runBlocking {
@@ -142,7 +152,8 @@ class SyncHelper @Inject constructor(
                     "transactions" to getTransactions(),
                     "rates" to getRate(),
                     "budgets" to getBudgets(),
-                    "recurrings" to getRecurrings()
+                    "recurrings" to getRecurrings(),
+                    "categories" to getCategories()
                 )
                 docRef.set(settingsData)
                 onFinish()
@@ -185,6 +196,14 @@ class SyncHelper @Inject constructor(
     private suspend fun getRecurrings(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
         moneyManagerRepository.getRecurringTransactionsOnce().forEach { rate ->
+            list.add(rate.toObject())
+        }
+        return list
+    }
+
+    private suspend fun getCategories(): List<MutableMap<String, Any>> {
+        val list: MutableList<MutableMap<String, Any>> = ArrayList()
+        transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategories().forEach { rate ->
             list.add(rate.toObject())
         }
         return list

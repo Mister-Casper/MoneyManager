@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.processphoenix.ProcessPhoenix
+import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -27,7 +28,8 @@ open class AccountSettingsViewModel @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val syncHelper: SyncHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val defaultSettings: DefaultSettings
+    private val defaultSettings: DefaultSettings,
+    private val transactionCategoriesDatabase: TransactionCategoriesDatabase
 ) : AndroidViewModel(app) {
 
     val userName = appPreferencesHelper.getUserNAme()
@@ -50,6 +52,7 @@ open class AccountSettingsViewModel @Inject constructor(
                     moneyManagerRepository.deleteAllTransactions()
                     moneyManagerRepository.deleteAllRates()
                     WalletSingleton.setWallet(null)
+                    transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     navController.popBackStack(Screen.SignUp.route, true)
                     ProcessPhoenix.triggerRebirth(app)
 

@@ -32,9 +32,9 @@ data class TransactionCategoryEntry(
                 data["color"] as String,
                 data["icon"] as String,
                 data["description"] as String,
-                data["isDefault"] as Int,
-                data["isExpense"] as Int,
-                data["order"] as Int
+                (data["isDefault"] as Long).toInt(),
+                (data["isExpense"] as Long).toInt(),
+                (data["order"] as Long).toInt()
             )
         }
     }
