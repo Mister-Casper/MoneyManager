@@ -51,12 +51,12 @@ class AppModule {
         transactionCategoriesDatabase:TransactionCategoriesDatabase
     ): AppDatabase {
         val get = GetTransactionCategoriesUseCase(context, transactionCategoriesDatabase)
-        BudgetEntry.listConverter = ListConverter(get)
+        BudgetEntry.listConverter = ListConverter(get,transactionCategoriesDatabase)
         return Room
             .databaseBuilder(app, AppDatabase::class.java, "ApplicationBD")
             .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
-            .addTypeConverter(ListConverter(get))
-            .addTypeConverter(TransactionEntryConverter(get))
+            .addTypeConverter(ListConverter(get,transactionCategoriesDatabase))
+            .addTypeConverter(TransactionEntryConverter(get,transactionCategoriesDatabase))
             .addTypeConverter(TransactionCategoryConverter(get,transactionCategoriesDatabase))
             .build()
     }

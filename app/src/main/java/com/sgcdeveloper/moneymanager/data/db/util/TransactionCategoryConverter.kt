@@ -11,7 +11,8 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @ProvidedTypeConverter
-class TransactionCategoryConverter @Inject constructor(private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,private val transactionCategoriesDatabase: TransactionCategoriesDatabase) {
+class TransactionCategoryConverter @Inject constructor(private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
+                                                       transactionCategoriesDatabase: TransactionCategoriesDatabase) {
 
      var categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id } }
 
