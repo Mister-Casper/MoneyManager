@@ -30,7 +30,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.composables.WalletDashboard
 fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
     val state = remember { homeViewModel.state }.value
 
-    Column(Modifier.fillMaxWidth()) {
+    Column(Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
