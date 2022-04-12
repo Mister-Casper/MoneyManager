@@ -89,7 +89,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 Row(
                     Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)) {
+                        .padding(end = 12.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.list_icon),
                         contentDescription = "",
@@ -186,7 +187,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(state.wallet).route) },
+            onClick = { if (state.wallet != null) navController.navigate(Screen.AddTransaction(state.wallet).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)
@@ -287,7 +288,11 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
 }
 
 @Composable
-fun CheckDataFromAddTransactionScreen(navController: NavController, transactionsViewModel: TransactionsViewModel,walletId:Long) {
+fun CheckDataFromAddTransactionScreen(
+    navController: NavController,
+    transactionsViewModel: TransactionsViewModel,
+    walletId: Long
+) {
     val secondScreenResult = navController.currentBackStackEntry
         ?.savedStateHandle
         ?.get<Long>("wallet_id")

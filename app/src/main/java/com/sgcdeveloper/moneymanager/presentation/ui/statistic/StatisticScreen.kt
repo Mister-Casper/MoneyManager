@@ -64,9 +64,11 @@ fun StatisticScreen(
         CheckDataFromAddTransactionScreen(navController, statisticViewModel, state.wallet.walletId)
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(bottom = 56.dp)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 56.dp)
+    ) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -103,7 +105,8 @@ fun StatisticScreen(
                 Row(
                     Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)) {
+                        .padding(end = 12.dp)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.edit_calendar_icon),
                         contentDescription = "",
@@ -270,7 +273,7 @@ fun StatisticScreen(
         }
 
         OutlinedButton(
-            onClick = { navController.navigate(Screen.AddTransaction(state.wallet).route) },
+            onClick = { if (state.wallet != null) navController.navigate(Screen.AddTransaction(state.wallet).route) },
             modifier = Modifier
                 .size(64.dp)
                 .padding(bottom = 8.dp, end = 8.dp)
