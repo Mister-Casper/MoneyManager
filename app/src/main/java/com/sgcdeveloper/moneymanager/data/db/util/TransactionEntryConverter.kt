@@ -35,8 +35,14 @@ class TransactionEntryConverter @Inject constructor(
     @TypeConverter
     fun toDate(transactionEntry: String): TransactionEntry {
         val entry = gson.fromJson(transactionEntry, TransactionEntry::class.java)
-        val category = categories[entry.category.id]
-            ?: throw Exception("Cant find transaction category with id = " + entry.category.id)
+        val category = try {
+            categories[entry.category.id]!!
+        } catch (ex: Exception) {
+            runBlocking {
+                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id }
+                categories[entry.category.id]!!
+            }
+        }
         return entry.copy(category = category)
     }
 

@@ -11,10 +11,12 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @ProvidedTypeConverter
-class TransactionCategoryConverter @Inject constructor(private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
-                                                       transactionCategoriesDatabase: TransactionCategoriesDatabase) {
+class TransactionCategoryConverter @Inject constructor(
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
+    transactionCategoriesDatabase: TransactionCategoriesDatabase
+) {
 
-     var categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id } }
+    var categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id } }
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
@@ -31,7 +33,14 @@ class TransactionCategoryConverter @Inject constructor(private val getTransactio
 
     @TypeConverter
     fun toCurrency(transactionCategoryId: Int): TransactionCategory {
-        return categories[transactionCategoryId.toLong()]!!
+        return try {
+            categories[transactionCategoryId.toLong()]!!
+        }catch (ex:Exception){
+            runBlocking {
+                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id }
+                categories[transactionCategoryId.toLong()]!!
+            }
+        }
     }
 
 }

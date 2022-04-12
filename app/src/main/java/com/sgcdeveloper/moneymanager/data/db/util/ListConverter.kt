@@ -32,7 +32,14 @@ class ListConverter @Inject constructor(
     @TypeConverter
     fun fromString(value: String?): List<TransactionCategory> {
         val listType: Type = object : TypeToken<List<Int>>() {}.type
-        return gson.fromJson<List<Int>>(value, listType).map { id: Int -> categories[id]!! }
+        return try {
+            gson.fromJson<List<Int>>(value, listType).map { id: Int -> categories[id]!! }
+        }catch (ex:Exception) {
+            runBlocking {
+                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+                gson.fromJson<List<Int>>(value, listType).map { id: Int -> categories[id]!! }
+            }
+        }
     }
 
     @TypeConverter
