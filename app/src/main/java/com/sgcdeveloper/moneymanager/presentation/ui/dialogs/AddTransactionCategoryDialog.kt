@@ -86,7 +86,7 @@ fun AddTransactionCategoryDialog(
                                 TransactionCategoryEntry(
                                     id = category.id,
                                     color = color.toString(),
-                                    icon = context.resources.getResourceName(icon),
+                                    icon = context.resources.getResourceEntryName(icon),
                                     description = description,
                                     isDefault = if (category.isDefault) 1 else 0,
                                     isExpense = if (isExpense) 1 else 0,

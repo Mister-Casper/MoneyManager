@@ -67,20 +67,31 @@ class SyncHelper @Inject constructor(
         val recurrings =
             if (userDocument.get("recurrings") != null) userDocument.get("recurrings") as List<MutableMap<String, Any>> else Collections.emptyList()
         GlobalScope.launch {
-            if(categories.isNotEmpty()) {
+            if (categories.isNotEmpty()) {
                 val categoryEntries =
                     categories.map { category -> TransactionCategoryEntry.getTransactionCategoryEntry(category) }
                 runBlocking {
                     transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     transactionCategoriesDatabase.transactionCategoryDao()
                         .insertTransactionCategoryEntries(categoryEntries)
+                    val userCategories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+                    Log.e("QWE", userCategories.toString())
+                    BudgetEntry.listConverter.categories = userCategories
+                    moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
+                    moneyManagerRepository.insertTransactions(transactions.map { task ->
+                        TransactionEntry.getTaskByHashMap(
+                            userCategories,
+                            task
+                        )
+                    })
                 }
-            }
-            val userCategories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
-            Log.e("QWE",userCategories.toString())
-            BudgetEntry.listConverter.categories = userCategories
-            moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
-            moneyManagerRepository.insertTransactions(transactions.map { task -> TransactionEntry.getTaskByHashMap(userCategories,task) })
+            } else
+                moneyManagerRepository.insertTransactions(transactions.map { task ->
+                    TransactionEntry.getTaskByHashMap(
+                        getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() },
+                        task
+                    )
+                })
             moneyManagerRepository.insertRates(rates.map { rate -> RateEntry.getRateByHashMap(rate) })
             moneyManagerRepository.insertBudgets(budgets.map { budget -> BudgetEntry.getBudgetByHashMap(budget) })
             runBlocking {
