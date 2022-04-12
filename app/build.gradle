@@ -16,8 +16,8 @@ android {
         applicationId "com.sgcdeveloper.moneymanager"
         minSdk 23
         targetSdk 31
-        versionCode 23
-        versionName "1.2.4"
+        versionCode 24
+        versionName "1.2.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

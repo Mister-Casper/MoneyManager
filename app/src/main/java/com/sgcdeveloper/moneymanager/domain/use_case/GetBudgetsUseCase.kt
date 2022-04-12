@@ -18,8 +18,10 @@ import com.sgcdeveloper.moneymanager.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import java.text.NumberFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -31,6 +33,8 @@ class GetBudgetsUseCase @Inject constructor(
     private val getCategoriesStatistic: GetCategoriesStatistic,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) {
+
+    private val nf = NumberFormat.getInstance(Locale.getDefault())
 
     suspend operator fun invoke(
         firstDate: Date = Date(LocalDate.now()),
@@ -68,7 +72,7 @@ class GetBudgetsUseCase @Inject constructor(
                         )
                     periodBudget.value.forEachIndexed { i, budget ->
                         val spent = spents[i]
-                        val progress = kotlin.math.min(1f, (spent / budget.amount).toFloat())
+                        val progress = kotlin.math.min(1.0, (spent / budget.amount))
                         val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
                         val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
                         val categoryDescription =
@@ -98,11 +102,11 @@ class GetBudgetsUseCase @Inject constructor(
                                 leftStrRes = leftStrRes,
                                 period = context.getString(periodBudget.key.periodNameRes),
                                 categories = budget.categories,
-                                progress = progress,
+                                progress = progress.toFloat(),
                                 progressPercent = df.format(
                                     kotlin.math.min(
-                                        100f,
-                                        (spent / budget.amount * 100).toFloat()
+                                        100.0,
+                                        (spent / budget.amount * 100)
                                     )
                                 )
                                     .toString(),
@@ -202,7 +206,7 @@ class GetBudgetsUseCase @Inject constructor(
                 sum += timeIntervalTransactions.value.sumOf { it.value }
                 BudgetGraphEntry(
                     timeIntervalTransactions.key.toFloat(),
-                    df.format(sum).toFloat(),
+                    nf.parse(df.format(sum))!!.toFloat(),
                     getFormattedMoney(
                         appPreferencesHelper.getDefaultCurrency()!!.code,
                         sum
