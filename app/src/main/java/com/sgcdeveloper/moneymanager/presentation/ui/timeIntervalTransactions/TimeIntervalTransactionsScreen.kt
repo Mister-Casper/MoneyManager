@@ -172,7 +172,10 @@ fun TimeIntervalTransactionsScreen(
                     } else if (transactionItem is BaseTransactionItem.TransactionItem) {
                         TransactionItem(
                             transactionItem,
-                            navController
+                            navController,
+                            false,
+                            {},
+                            {},
                         )
                     }
                 }

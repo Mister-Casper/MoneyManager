@@ -1,10 +1,10 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
 sealed class BaseTransactionItem {
-    class TransactionHeader(val dayNum: String, val dayName: String, val month: String, val money: String) :
+    data class TransactionHeader(val dayNum: String, val dayName: String, val month: String, val money: String) :
         BaseTransactionItem()
 
-    class TransactionItem(
+    data class TransactionItem(
         val transactionEntry: Transaction,
         val color: Int,
         val icon: Int,
@@ -12,6 +12,7 @@ sealed class BaseTransactionItem {
         val category: String,
         val moneyValue: Double,
         val money: String,
-        val moneyColor: Int
+        val moneyColor: Int,
+        var isSelection:Boolean = false
     ) : BaseTransactionItem()
 }

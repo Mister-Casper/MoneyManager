@@ -74,6 +74,38 @@ open class TransactionsViewModel @Inject constructor(
                 WalletSingleton.setWallet(state.value.wallets.find { it.walletId == transactionEvent.walletId }!!)
                 appPreferencesHelper.setDefaultWalletId(transactionEvent.walletId)
             }
+            is TransactionEvent.ChangeSelectionMode -> {
+                state.value = state.value.copy(
+                    isMultiSelectionMode = !state.value.isMultiSelectionMode
+                )
+                if (!state.value.isMultiSelectionMode) {
+                    state.value = state.value.copy(
+                        transactions = state.value.transactions.map {
+                            if (it is BaseTransactionItem.TransactionItem) {
+                                it.copy(
+                                    isSelection = false
+                                )
+                            } else it
+                        },
+                    )
+                }
+            }
+            is TransactionEvent.ChangeSelectionItemMode -> {
+                val newItems = mutableListOf<BaseTransactionItem>()
+                state.value.transactions.forEach {
+                    if (it is BaseTransactionItem.TransactionItem) {
+                        if (transactionEvent.itemId == it.transactionEntry.id) {
+                            newItems.add(it.copy(isSelection = !it.isSelection))
+                        } else
+                            newItems.add(it)
+                    } else
+                        newItems.add(it)
+                }
+                state.value = state.value.copy(
+                    transactions = newItems,
+                    selectedCount = newItems.filterIsInstance<BaseTransactionItem.TransactionItem>().count { it.isSelection }.toString()
+                )
+            }
         }
     }
 
@@ -95,5 +127,7 @@ data class TransactionsState(
     val wallet: Wallet? = null,
     val transactions: List<BaseTransactionItem> = Collections.emptyList(),
     val isEmpty: Boolean = false,
-    val dialogState: DialogState = DialogState.NoneDialogState
+    val dialogState: DialogState = DialogState.NoneDialogState,
+    val isMultiSelectionMode: Boolean = false,
+    val selectedCount: String = "0"
 )

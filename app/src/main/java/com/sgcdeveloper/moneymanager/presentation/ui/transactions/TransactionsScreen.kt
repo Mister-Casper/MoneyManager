@@ -1,7 +1,9 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.transactions
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -56,96 +58,125 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
             .padding(bottom = 56.dp)
     ) {
         Column(Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
-                    .padding(top = 16.dp, bottom = 16.dp)
-            ) {
-                Row(
-                    Modifier
-                        .align(Alignment.CenterStart)
-                        .clickable {
-                            transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
-                            navController.currentBackStackEntry
-                                ?.savedStateHandle
-                                ?.set("wallet_id", -1L)
-                        }) {
-                    state.wallet?.let {
-                        Text(
-                            text = state.wallet.name,
-                            fontSize = 24.sp,
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .padding(start = 12.dp)
+            if (!state.isMultiSelectionMode) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(top = 16.dp, bottom = 16.dp)
+                ) {
+                    Row(
+                        Modifier
+                            .align(Alignment.CenterStart)
+                            .clickable {
+                                transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
+                                navController.currentBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set("wallet_id", -1L)
+                            }) {
+                        state.wallet?.let {
+                            Text(
+                                text = state.wallet.name,
+                                fontSize = 24.sp,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(start = 12.dp)
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            "",
+                            Modifier.align(Alignment.CenterVertically)
                         )
                     }
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowDown,
-                        "",
-                        Modifier.align(Alignment.CenterVertically)
-                    )
+                    Row(
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(end = 12.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.list_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .size(32.dp)
+                                .clickable {
+                                    if (state.wallet != null)
+                                        navController.navigate(
+                                            Screen.TimeIntervalTransactions(
+                                                state.wallet
+                                            ).route
+                                        )
+                                }
+                        )
+                        Spacer(modifier = Modifier.padding(start = 12.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .size(32.dp)
+                                .clickable { navController.navigate(Screen.Settings.route) }
+                        )
+                    }
                 }
+                Row(Modifier.padding(top = 4.dp, start = 12.dp)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.balance_icon),
+                        contentDescription = "",
+                        Modifier
+                            .size(32.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                    state.wallet?.let {
+                        Text(
+                            text = stringResource(id = R.string.balance, state.wallet.formattedMoney),
+                            Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 8.dp),
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+                Divider(
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+            } else {
                 Row(
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface)
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.list_icon),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(32.dp)
-                            .clickable {
-                                if (state.wallet != null)
-                                    navController.navigate(
-                                        Screen.TimeIntervalTransactions(
-                                            state.wallet
-                                        ).route
-                                    )
-                            }
+                        painter = painterResource(id = R.drawable.cancel_icon),
+                        "",
+                        Modifier.align(Alignment.CenterVertically).size(32.dp).clickable{
+                            transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionMode)
+                        }
                     )
-                    Spacer(modifier = Modifier.padding(start = 12.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.settings_icon),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(32.dp)
-                            .clickable { navController.navigate(Screen.Settings.route) }
-                    )
-                }
-            }
-            Row(Modifier.padding(top = 4.dp, start = 12.dp)) {
-                Icon(
-                    painter = painterResource(id = R.drawable.balance_icon),
-                    contentDescription = "",
-                    Modifier
-                        .size(32.dp)
-                        .align(Alignment.CenterVertically)
-                )
-                state.wallet?.let {
                     Text(
-                        text = stringResource(id = R.string.balance, state.wallet.formattedMoney),
-                        Modifier
+                        text = state.selectedCount,
+                        fontSize = 26.sp,
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .weight(1f)
                             .align(Alignment.CenterVertically)
-                            .padding(start = 8.dp),
-                        fontSize = 18.sp
                     )
                 }
             }
-            Divider(
-                thickness = 1.dp,
-                modifier = Modifier.padding(top = 16.dp)
-            )
             LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
                 items(state.transactions.size) {
                     val transactionItem = state.transactions[it]
                     if (transactionItem is BaseTransactionItem.TransactionHeader) {
                         TransactionHeader(transactionItem)
                     } else if (transactionItem is BaseTransactionItem.TransactionItem) {
-                        TransactionItem(transactionItem, navController)
+                        TransactionItem(transactionItem, navController, state.isMultiSelectionMode, {
+                            transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionItemMode(it))
+                        }) {
+                            transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionMode)
+                        }
                     }
                 }
                 item {
@@ -239,12 +270,28 @@ fun TransactionHeader(header: BaseTransactionItem.TransactionHeader) {
     Divider(color = MaterialTheme.colors.background, thickness = 2.dp)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: NavController) {
+fun TransactionItem(
+    item: BaseTransactionItem.TransactionItem,
+    navController: NavController,
+    isMultiSelection: Boolean,
+    onChangedSelection: (id: Long) -> Unit,
+    changedSelectionMode: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate(Screen.EditTransaction(transaction = item.transactionEntry).route) }
+            .combinedClickable(
+                onClick = {
+                    if (isMultiSelection) onChangedSelection(item.transactionEntry.id)
+                    else navController.navigate(Screen.EditTransaction(transaction = item.transactionEntry).route)
+                },
+                onLongClick = {
+                    if (!isMultiSelection) onChangedSelection(item.transactionEntry.id)
+                    changedSelectionMode()
+                },
+            )
     ) {
         Row(
             Modifier
@@ -284,6 +331,9 @@ fun TransactionItem(item: BaseTransactionItem.TransactionItem, navController: Na
                 modifier = Modifier.align(Alignment.CenterVertically),
                 color = if (item.moneyColor != Color.Unspecified.toArgb()) Color(item.moneyColor) else MaterialTheme.colors.onBackground
             )
+            if (isMultiSelection) {
+                Checkbox(checked = item.isSelection, onCheckedChange = { onChangedSelection(item.transactionEntry.id) })
+            }
         }
     }
 }
