@@ -1,5 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.ui.vectormath64.length
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
@@ -32,6 +35,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialo
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.*
+import kotlin.math.log
 
 @Composable
 fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
@@ -101,24 +105,57 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     color = MaterialTheme.colors.secondary,
                     textAlign = TextAlign.Center,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
-                        .clickable { number.value = number.value + "/" }
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .clickable { number.value = number.value + " / " }
                 )
                 Text(
                     text = "*",
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
-                        .clickable { number.value = number.value + "*" }
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .clickable { number.value = number.value + " * " }
                 )
                 Text(
                     text = "=",
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.5f)
-                        .clickable { number.value = number.value + "=" }
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .clickable {
+                            val arrayNumber = number.value.split(" ")
+                            val listNumer = mutableListOf<Double>()
+                            val listStr = mutableListOf<String>()
+                            val index = 0
+                            for (i in arrayNumber) {
+                                Log.d(TAG, i)
+                                if (i != "+" && i != "-" && i != "/" && i != "*") {
+                                    listNumer.add(i.toDouble())
+                                } else {
+                                    listStr.add(i)
+                                }
+                            }
+                            for (i in listStr) {
+                                if (i == "-") {
+                                    listNumer[index + 1] = listNumer[index] - listNumer[index + 1]
+                                }
+                                if (i == "+"){
+                                    listNumer[index + 1] = listNumer[index] + listNumer[index + 1]
+                                }
+                                if (i == "*"){
+                                    listNumer[index + 1] = listNumer[index] * listNumer[index + 1]
+                                }
+                                if (i == "/"){
+                                    listNumer[index + 1] = listNumer[index] / listNumer[index + 1]
+                                }
+                            }
+                            Log.d(TAG, listNumer.toString())
+                            Log.d(TAG, listStr.toString())
+                            number.value = listNumer.last().toString()
+                        }
                 )
             }
         }
@@ -129,7 +166,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "1" }
                 )
                 Text(
@@ -137,7 +175,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "2" }
                 )
                 Text(
@@ -145,7 +184,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "3" }
                 )
                 Text(
@@ -153,8 +193,9 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
-                        .clickable { number.value = number.value + "-" }
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .clickable { number.value = number.value + " - " }
                 )
             }
         }
@@ -165,7 +206,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "4" }
                 )
                 Text(
@@ -173,7 +215,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "5" }
                 )
                 Text(
@@ -181,7 +224,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "6" }
                 )
                 Text(
@@ -189,8 +233,9 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
-                        .clickable { number.value = number.value + "+" }
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .clickable { number.value = number.value + " + " }
                 )
             }
         }
@@ -201,7 +246,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "7" }
                 )
                 Text(
@@ -209,7 +255,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "8" }
                 )
                 Text(
@@ -217,7 +264,8 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
+                    modifier = Modifier
+                        .weight(0.25f)
                         .clickable { number.value = number.value + "8" }
                 )
                 Text(
@@ -225,8 +273,9 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.25f)
-                        .clickable { number.value = number.value.drop(1) }
+                    modifier = Modifier
+                        .weight(0.25f)
+                        .clickable { number.value = number.value.dropLast(1) }
                 )
             }
         }
@@ -237,16 +286,18 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.5f)
+                    modifier = Modifier
+                        .weight(0.5f)
                         .clickable { number.value = number.value + "0" }
                 )
                 Text(
-                    text = ",",
+                    text = ".",
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
-                    modifier = Modifier.weight(0.5f)
-                        .clickable { number.value = number.value + "," }
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .clickable { number.value = number.value + "." }
                 )
             }
         }

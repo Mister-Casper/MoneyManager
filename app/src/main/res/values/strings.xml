@@ -130,7 +130,19 @@
     <string name="dashboard">Dashboard</string>
     <string name="calculator_menu">Сalculator</string>
     <string name="tip_calculator">Tip calculator</string>
-    <string name="interest_calculator">Interest calculator</string>
+    <string name="check">Check</string>
+    <string name="split">Split</string>
+    <string name="compute">Compute</string>
+    <string name="tip_amount">Tip amount</string>
+    <string name="Total_amount_receipt">Total amount of the receipt</string>
+    <string name="Check_tips">Check tips</string>
+    <string name="Every_payment">Every payment</string>
+    <string name="percent">%</string>
+
+    <string name="deposit_calculator">Deposit calculator</string>
+    <string name="main_account">Main account</string>
+    <string name="deposit">Deposit</string>
+    <string name="months">Months</string>
     <string name="credit_card_payoff_calculator">Сredit card payoff calculator</string>
     <string name="loan_calculator">Loan_calculator</string>
     <string name="discount_and_tax_calculator">Discount and tax calculator</string>

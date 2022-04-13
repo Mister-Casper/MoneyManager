@@ -434,6 +434,12 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.Calculator.route) {
                             CalculatorScreen(navController, darkThemeViewModel)
                         }
+                        composable(Screen.TipCalculator.route) {
+                            TipCalculatorScreen(navController, darkThemeViewModel)
+                        }
+                        composable(Screen.DepositCalculator.route) {
+                            DepositCalculatorScreen(navController, darkThemeViewModel)
+                        }
                         composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
                             val walletViewModel: WalletViewModel by viewModels()
                             val walletJson = backStackEntry.arguments?.getString("wallet")

@@ -132,7 +132,19 @@
     <string name="dashboard">Панель управления</string>
     <string name="calculator_menu">Калькулятор</string>
     <string name="tip_calculator">Калькулятор чаевых</string>
-    <string name="interest_calculator">Калькулятор процентов</string>
+    <string name="check">Чек</string>
+    <string name="compute">Посчитать</string>
+    <string name="tip_amount">Сумма чаевых</string>
+    <string name="Total_amount_receipt">Общая сумма чека</string>
+    <string name="Check_tips">Чаевые по чеку</string>
+    <string name="Every_payment">Каждые платёж</string>
+    <string name="split">Разделить на</string>
+    <string name="percent">%</string>
+
+    <string name="deposit_calculator">Калькулятор вкладов</string>
+    <string name="main_account">Основной счёт</string>
+    <string name="deposit">Депозит</string>
+    <string name="months">Месяцы</string>
     <string name="credit_card_payoff_calculator">Калькулятор выплат по кредиту</string>
     <string name="loan_calculator">Кредитный калькулятор</string>
     <string name="discount_and_tax_calculator">Калькулятор скидок и налогов</string>
