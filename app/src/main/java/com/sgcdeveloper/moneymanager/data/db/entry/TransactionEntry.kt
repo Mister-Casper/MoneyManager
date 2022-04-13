@@ -9,14 +9,14 @@ import com.sgcdeveloper.moneymanager.util.Date
 @Entity
 data class TransactionEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val date:Date,
+    val date: Date,
     val value: Double,
     val description: String,
     val transactionType: TransactionType,
     val fromWalletId: Long,
     val toWalletId: Long = 0,
     val category: TransactionCategory
-){
+) {
     fun toObject(): HashMap<String, Any> {
         return hashMapOf(
             "id" to id,
@@ -30,8 +30,11 @@ data class TransactionEntry(
         )
     }
 
-    companion object{
-        fun getTaskByHashMap(categories:Map<Int,TransactionCategory>,data: MutableMap<String, Any>): TransactionEntry {
+    companion object {
+        fun getTaskByHashMap(
+            categories: Map<Int, TransactionCategory>,
+            data: MutableMap<String, Any>
+        ): TransactionEntry {
             return TransactionEntry(
                 data["id"] as Long,
                 Date(data["date"] as Long),
@@ -40,7 +43,8 @@ data class TransactionEntry(
                 TransactionType.getByOrdinal((data["transactionType"] as Long).toInt()),
                 data["fromWalletId"] as Long,
                 data["toWalletId"] as Long,
-                categories[(data["category"] as Long).toInt()]!!,
+                categories[(data["category"] as Long).toInt()]
+                    ?: throw Exception("Cant find transaction category with id = " + data["category"] as Long),
             )
         }
     }

@@ -16,12 +16,12 @@ class TransactionCategoryConverter @Inject constructor(
     transactionCategoriesDatabase: TransactionCategoriesDatabase
 ) {
 
-    var categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id } }
+    var categories = runBlocking { getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id } }
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
             GlobalScope.launch {
-                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id }
+                categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id }
             }
         }
     }
@@ -37,7 +37,7 @@ class TransactionCategoryConverter @Inject constructor(
             categories[transactionCategoryId.toLong()]!!
         }catch (ex:Exception){
             runBlocking {
-                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id }
+                categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id }
                 categories[transactionCategoryId.toLong()]!!
             }
         }

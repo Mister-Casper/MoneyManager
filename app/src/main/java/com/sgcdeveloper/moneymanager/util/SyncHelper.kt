@@ -1,15 +1,16 @@
 package com.sgcdeveloper.moneymanager.util
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.db.entry.*
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
 import com.sgcdeveloper.moneymanager.domain.model.Currency
+import com.sgcdeveloper.moneymanager.domain.repository.CurrencyRepository
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
@@ -26,7 +27,8 @@ class SyncHelper @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository,
     private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
-    private val transactionCategoriesDatabase: TransactionCategoriesDatabase
+    private val transactionCategoriesDatabase: TransactionCategoriesDatabase,
+    private val currencyRepository: CurrencyRepository
 ) {
 
     fun syncLocalData(isAnyway: Boolean = false, isNewUser: (isNew: Boolean) -> Unit = {}) {
@@ -56,6 +58,8 @@ class SyncHelper @Inject constructor(
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun loadSyncData(userDocument: DocumentSnapshot): Boolean {
+        val gson = Gson()
+
         val wallets = userDocument.get("wallets") as List<MutableMap<String, Any>>
         val transactions = userDocument.get("transactions") as List<MutableMap<String, Any>>
         val rates =
@@ -74,8 +78,7 @@ class SyncHelper @Inject constructor(
                     transactionCategoriesDatabase.transactionCategoryDao().deleteAllTransactionCategoryEntry()
                     transactionCategoriesDatabase.transactionCategoryDao()
                         .insertTransactionCategoryEntries(categoryEntries)
-                    val userCategories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
-                    Log.e("QWE", userCategories.toString())
+                    val userCategories = getTransactionCategoriesUseCase.getConverterAllItems(categoryEntries).associateBy { it.id.toInt() }
                     BudgetEntry.listConverter.categories = userCategories
                     moneyManagerRepository.insertWallets(wallets.map { wallet -> WalletEntry.getWalletByHashMap(wallet) })
                     moneyManagerRepository.insertTransactions(transactions.map { task ->
@@ -88,7 +91,7 @@ class SyncHelper @Inject constructor(
             } else
                 moneyManagerRepository.insertTransactions(transactions.map { task ->
                     TransactionEntry.getTaskByHashMap(
-                        getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() },
+                        getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id.toInt() },
                         task
                     )
                 })
@@ -116,8 +119,11 @@ class SyncHelper @Inject constructor(
         if (userName != null)
             appPreferencesHelper.setUserName(userName)
         val defaultCurrency = userDocument.getString(AppPreferencesHelper.DEFAULT_CURRENCY)
-        if (defaultCurrency != null)
+        if (defaultCurrency != null && defaultCurrency != "null")
             appPreferencesHelper.setDefaultCurrency(gson.fromJson(defaultCurrency, Currency::class.java))
+        else if(defaultCurrency == "null"){
+            appPreferencesHelper.setDefaultCurrency(currencyRepository.getDefaultCurrency())
+        }
         val walletId = userDocument.getLong(AppPreferencesHelper.DEFAULT_WALLET_ID)
         if (walletId != null)
             appPreferencesHelper.setDefaultWalletId(walletId)

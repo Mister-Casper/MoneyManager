@@ -19,12 +19,12 @@ class ListConverter @Inject constructor(
     transactionCategoriesDatabase: TransactionCategoriesDatabase
 ) {
 
-    var categories = runBlocking { getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() } }
+    var categories = runBlocking { getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id.toInt() } }
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
             GlobalScope.launch {
-                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+                categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id.toInt() }
             }
         }
     }
@@ -36,7 +36,7 @@ class ListConverter @Inject constructor(
             gson.fromJson<List<Int>>(value, listType).map { id: Int -> categories[id]!! }
         }catch (ex:Exception) {
             runBlocking {
-                categories = getTransactionCategoriesUseCase.getAllItems().associateBy { it.id.toInt() }
+                categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id.toInt() }
                 gson.fromJson<List<Int>>(value, listType).map { id: Int -> categories[id]!! }
             }
         }
