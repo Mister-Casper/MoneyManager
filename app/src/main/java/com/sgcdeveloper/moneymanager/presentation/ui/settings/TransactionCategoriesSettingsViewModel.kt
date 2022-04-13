@@ -10,6 +10,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
+import com.sgcdeveloper.moneymanager.domain.use_case.DeleteTransactionCategoryUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,8 @@ import javax.inject.Inject
 open class TransactionCategoriesSettingsViewModel @Inject constructor(
     private val app: Application,
     private val transactionCategoriesDatabase: TransactionCategoriesDatabase,
-    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
+    private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
+    private val deleteTransactionCategoryUseCase: DeleteTransactionCategoryUseCase
 ) : AndroidViewModel(app) {
 
     private val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
@@ -44,6 +46,10 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
                 items.addAll(if (isShowIncomeCategories.value) incomeCategories else expenseCategories)
             }
         }
+    }
+
+    fun showDeleteCategoryDialog(item: TransactionCategory) {
+        dialogState.value = DialogState.DeleteTransactionCategoryDialogState(item)
     }
 
     fun changeCategory() {
@@ -105,14 +111,9 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         }
     }
 
-    fun showDeleteTransactionCategoryDialog(item: TransactionCategory) {
-        dialogState.value = DialogState.DeleteTransactionCategoryDialogState(item)
-    }
-
     fun deleteCategory(transactionCategory: TransactionCategory) {
         viewModelScope.launch {
-            transactionCategoriesDatabase.transactionCategoryDao()
-                .removeTransactionCategoryEntry(transactionCategory.id)
+            deleteTransactionCategoryUseCase(transactionCategory.id)
         }
     }
 

@@ -25,6 +25,9 @@ interface RecurringTransactionDao {
     @Query("DELETE FROM RecurringTransactionEntry WHERE id = :id")
     suspend fun removeRecurringTransaction(id: Long)
 
+    @Query("DELETE FROM RecurringTransactionEntry WHERE id in (:transactions)")
+    suspend fun removeRecurringTransaction(transactions: List<Int>)
+
     @Query("DELETE FROM RecurringTransactionEntry")
     suspend fun deleteAllRecurringTransactions()
 

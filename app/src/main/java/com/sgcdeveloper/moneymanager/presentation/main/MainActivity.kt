@@ -499,7 +499,6 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.BudgetManagerScreen.route) {
                             val homeViewModel: HomeViewModel = hiltViewModel()
-                            homeViewModel.loadBudgets()
                             BudgetManagerScreen(homeViewModel, navController)
                         }
                         composable(Screen.TimeIntervalBudgetManager(null).route + "{period}") {

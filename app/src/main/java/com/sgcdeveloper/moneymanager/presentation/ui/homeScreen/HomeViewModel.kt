@@ -10,6 +10,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.domain.model.BaseRecurringTransaction
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetBudgetsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetRecurringTransactionsUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
@@ -30,12 +31,14 @@ open class HomeViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val getBudgetsUseCase: GetBudgetsUseCase,
     private val getRecurringTransactionsUseCase: GetRecurringTransactionsUseCase,
-    private val appPreferencesHelper: AppPreferencesHelper
+    private val appPreferencesHelper: AppPreferencesHelper,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
     val state = mutableStateOf(HomeState())
     private var loadBudgetsJob: Job? = null
 
     init {
+        loadBudgets()
         walletsUseCases.getWallets.getAllUIWallets().observeForever {
             val savedWalletId = appPreferencesHelper.getDefaultWalletId()
             if (WalletSingleton.wallet.value == null) {
@@ -77,7 +80,12 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadBudgets() {
+    private fun loadBudgets() {
+        moneyManagerRepository.getRecurringTransactions().observeForever { loadData() }
+        moneyManagerRepository.getBudgets().observeForever { loadData() }
+    }
+
+    private fun loadData() {
         loadBudgetsJob?.cancel()
         loadBudgetsJob = viewModelScope.launch {
             val budgets = getBudgetsUseCase()

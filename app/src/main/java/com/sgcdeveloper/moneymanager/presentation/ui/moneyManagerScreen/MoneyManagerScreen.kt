@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,7 +16,6 @@ import androidx.navigation.compose.rememberNavController
 import com.sgcdeveloper.moneymanager.presentation.main.MainViewModel
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeScreen
-import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.transactions.TransactionsScreen
 
@@ -80,11 +78,7 @@ private fun MainScreenNavigationConfigurations(
         startDestination = mainViewModel.defaultStartupScreen.value.route,
     ) {
         composable(BottomMoneyManagerNavigationScreens.Home.route) {
-            val homeViewModel: HomeViewModel = hiltViewModel()
-            LaunchedEffect(Unit){
-                homeViewModel.loadBudgets()
-            }
-            HomeScreen(homeViewModel, globalNavController)
+            HomeScreen(hiltViewModel(), globalNavController)
         }
         composable(BottomMoneyManagerNavigationScreens.Transactions.route) {
             TransactionsScreen(hiltViewModel(), globalNavController)

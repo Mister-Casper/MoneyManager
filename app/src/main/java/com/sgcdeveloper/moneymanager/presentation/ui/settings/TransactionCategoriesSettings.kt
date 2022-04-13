@@ -27,6 +27,7 @@ import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.AddTransactionCategoryDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,6 +59,17 @@ fun TransactionCategoriesSettings(
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()
         })
+    } else if (dialogState is DialogState.DeleteTransactionCategoryDialogState) {
+        DeleteDialog(
+            massage = stringResource(
+                id = R.string.are_u_sure_delte_category,
+                dialogState.transactionCategory.description
+            ), onDelete = {
+                transactionCategoriesSettingsViewModel.deleteCategory(dialogState.transactionCategory)
+                transactionCategoriesSettingsViewModel.closeDialog()
+            }) {
+            transactionCategoriesSettingsViewModel.closeDialog()
+        }
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -179,6 +191,16 @@ fun TransactionCategoriesSettings(
                         )
                     }
                     Row(Modifier.align(Alignment.CenterVertically)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.delete_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .padding(start = 4.dp)
+                                .clickable {
+                                    transactionCategoriesSettingsViewModel.showDeleteCategoryDialog(item)
+                                }
+                        )
                         Icon(
                             painter = painterResource(id = R.drawable.edit_icon),
                             contentDescription = "",

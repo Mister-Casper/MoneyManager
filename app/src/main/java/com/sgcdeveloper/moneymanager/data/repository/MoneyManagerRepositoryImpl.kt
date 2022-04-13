@@ -59,6 +59,10 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         return appDatabase.transactionDao().getWalletTransactions(walletId)
     }
 
+    suspend fun getCategoryTransactions(categoryId: Long): List<TransactionEntry> {
+        return appDatabase.transactionDao().getTransactionsOnce().filter { it.category.id == categoryId }
+    }
+
     override suspend fun getTransaction(id: Long): TransactionEntry {
         return appDatabase.transactionDao().getTransaction(id)
     }
@@ -69,6 +73,10 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun removeTransaction(id: Long) {
         appDatabase.transactionDao().removeTransaction(id)
+    }
+
+    override suspend fun removeTransactions(transactions: List<Int>) {
+        appDatabase.transactionDao().removeTransactions(transactions)
     }
 
     override suspend fun removeWalletTransactions(walletId: Long) {
@@ -155,6 +163,10 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         appDatabase.recurringTransactionDao().removeRecurringTransaction(id)
     }
 
+    override suspend fun removeRecurringTransaction(transactions: List<Int>) {
+        appDatabase.recurringTransactionDao().removeRecurringTransaction(transactions)
+    }
+
     override suspend fun deleteAllRecurringTransactions() {
         appDatabase.recurringTransactionDao().deleteAllRecurringTransactions()
     }
@@ -165,5 +177,11 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
 
     override suspend fun removeRecurringTransactions(walletId: Long) {
         appDatabase.recurringTransactionDao().removeRecurringTransactions(walletId)
+    }
+
+    override suspend fun removeRecurringTransactionsWithCategoryId(categoryId: Long) {
+        val recurringTransaction = appDatabase.recurringTransactionDao().getRecurringTransactionsOnce()
+        appDatabase.recurringTransactionDao()
+            .removeRecurringTransaction(recurringTransaction.filter { it.transactionEntry.category.id == categoryId }.map { it.id.toInt() })
     }
 }

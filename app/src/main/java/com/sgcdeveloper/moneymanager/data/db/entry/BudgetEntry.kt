@@ -10,7 +10,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.wallet_color_1
 import com.sgcdeveloper.moneymanager.util.Date
 
 @Entity
-class BudgetEntry(
+data class BudgetEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val budgetName: String,
     val amount: Double,
