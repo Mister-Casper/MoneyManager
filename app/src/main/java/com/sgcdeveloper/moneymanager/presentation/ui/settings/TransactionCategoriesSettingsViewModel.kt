@@ -101,7 +101,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
             } else
                 category.order
             transactionCategoriesDatabase.transactionCategoryDao()
-                .insertTransactionCategory(category.copy(order = order))
+                .insertTransactionCategory(category.copy(order = order, isDefault = 0))
         }
     }
 
