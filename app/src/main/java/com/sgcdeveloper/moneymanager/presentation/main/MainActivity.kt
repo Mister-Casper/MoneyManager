@@ -521,7 +521,6 @@ class MainActivity : FragmentActivity() {
 
                     if (registrationViewModel.navigationRoute.value.isNotEmpty()) {
                         navController.navigate(registrationViewModel.navigationRoute.value)
-                        registrationViewModel.navigationRoute.value = ""
                     }
 
                     registrationViewModel.onGoogleSignIn.observe(this) {
