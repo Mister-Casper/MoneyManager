@@ -26,10 +26,12 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase
 ) : AndroidViewModel(app) {
 
-    val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
-    val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
+    private val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
+    private val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
     val isShowIncomeCategories = mutableStateOf(false)
+
+    val items: SnapshotStateList<TransactionCategory> = mutableStateListOf()
 
     init {
         transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
@@ -38,15 +40,27 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
                 incomeCategories.addAll(getTransactionCategoriesUseCase.getIncomeItems())
                 expenseCategories.clear()
                 expenseCategories.addAll(getTransactionCategoriesUseCase.getExpenseItems())
+                items.clear()
+                items.addAll(if (isShowIncomeCategories.value) incomeCategories else expenseCategories)
             }
         }
     }
 
+    fun changeCategory() {
+        save()
+        isShowIncomeCategories.value = !isShowIncomeCategories.value
+        items.clear()
+        items.addAll(if (isShowIncomeCategories.value) incomeCategories else expenseCategories)
+    }
+
     fun move(from: ItemPosition, to: ItemPosition) {
-        if (isShowIncomeCategories.value)
+        if (isShowIncomeCategories.value) {
+            items.move(from.index, to.index)
             incomeCategories.move(from.index, to.index)
-        else
+        } else {
+            items.move(from.index, to.index)
             expenseCategories.move(from.index, to.index)
+        }
     }
 
     fun save() {
@@ -77,7 +91,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     }
 
     fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) {
-        FirebaseAnalytics.getInstance(app).logEvent("insert_transaction_category",null)
+        FirebaseAnalytics.getInstance(app).logEvent("insert_transaction_category", null)
         viewModelScope.launch {
             val order = if (category.id == 0L) {
                 if (isIncome)

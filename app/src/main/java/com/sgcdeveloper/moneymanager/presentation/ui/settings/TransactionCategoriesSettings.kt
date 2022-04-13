@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,9 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.AddTransactionCategoryDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.burnoutcrew.reorderable.*
 
 @Composable
@@ -38,13 +42,19 @@ fun TransactionCategoriesSettings(
     val context = LocalContext.current
     val state: ReorderableState = rememberReorderState()
     val isShowIncomeCategories = remember { transactionCategoriesSettingsViewModel.isShowIncomeCategories }.value
-    val items =
-        if (isShowIncomeCategories) transactionCategoriesSettingsViewModel.incomeCategories else transactionCategoriesSettingsViewModel.expenseCategories
+    val items = remember { transactionCategoriesSettingsViewModel.items }
+    val scope = rememberCoroutineScope()
 
     if (dialogState is DialogState.AddTransactionCategoryDialog) {
         AddTransactionCategoryDialog(dialogState.category, dialogState.isExpense, {
-            transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
+            runBlocking {
+                transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
+            }
             transactionCategoriesSettingsViewModel.closeDialog()
+            scope.launch {
+                delay(250)
+                state.listState.animateScrollToItem(items.size+1)
+            }
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()
         })
@@ -101,7 +111,7 @@ fun TransactionCategoriesSettings(
                     backgroundColor = if (isShowIncomeCategories) blue else MaterialTheme.colors.background,
                     contentColor = if (isShowIncomeCategories) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = { transactionCategoriesSettingsViewModel.isShowIncomeCategories.value = true }
+                onClick = { transactionCategoriesSettingsViewModel.changeCategory() }
             ) {
                 Text(text = stringResource(id = R.string.income))
             }
@@ -110,7 +120,7 @@ fun TransactionCategoriesSettings(
                     backgroundColor = if (!isShowIncomeCategories) blue else MaterialTheme.colors.background,
                     contentColor = if (!isShowIncomeCategories) white else MaterialTheme.colors.onBackground
                 ), modifier = Modifier.weight(1f),
-                onClick = { transactionCategoriesSettingsViewModel.isShowIncomeCategories.value = false }
+                onClick = { transactionCategoriesSettingsViewModel.changeCategory() }
             ) {
                 Text(text = stringResource(id = R.string.expense))
             }
@@ -136,7 +146,11 @@ fun TransactionCategoriesSettings(
                         .draggedItem(state.offsetByKey(item.id))
                         .padding(4.dp),
                 ) {
-                    Row(Modifier.align(Alignment.CenterVertically).weight(1f)) {
+                    Row(
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f)
+                    ) {
                         Card(
                             modifier = Modifier
                                 .size(48.dp)
