@@ -98,11 +98,12 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             .align(Alignment.CenterVertically)
                             .size(32.dp)
                             .clickable {
-                                navController.navigate(
-                                    Screen.TimeIntervalTransactions(
-                                        state.wallet
-                                    ).route
-                                )
+                                if (state.wallet != null)
+                                    navController.navigate(
+                                        Screen.TimeIntervalTransactions(
+                                            state.wallet
+                                        ).route
+                                    )
                             }
                     )
                     Spacer(modifier = Modifier.padding(start = 12.dp))
