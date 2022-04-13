@@ -175,7 +175,7 @@ fun TimeIntervalTransactionsScreen(
                             navController,
                             false,
                             {},
-                            {},
+                            {}
                         )
                     }
                 }

@@ -1,5 +1,7 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.transactions
 
+import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,14 +12,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,9 +34,11 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.Typography
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DeleteWalletDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 import com.sgcdeveloper.moneymanager.util.WalletSingleton
+
 
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
@@ -47,7 +52,34 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         }, {
             navController.navigate(Screen.AddWallet(it).route)
         })
+    } else if (state.dialogState is DialogState.DeleteTransactionDialog) {
+        DeleteWalletDialog(
+            null,
+            {
+                transactionsViewModel.onEvent(TransactionEvent.DeleteSelectedTransactions)
+                transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionMode)
+                transactionsViewModel.onEvent(TransactionEvent.CloseDialog)
+            },
+            {
+                transactionsViewModel.onEvent(TransactionEvent.CloseDialog)
+            },
+            title = stringResource(
+                id = R.string.are_u_sure_delete_selected_transaction,
+                transactionsViewModel.state.value.selectedCount
+            )
+        )
     }
+
+    if (state.isShareSelectedTransactions) {
+        val transactionsText = transactionsViewModel.getSelectedTransactionsText()
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "plain/text"
+        intent.putExtra(Intent.EXTRA_TEXT, transactionsText)
+        LocalContext.current.startActivity(Intent.createChooser(intent, stringResource(id = R.string.transactions)))
+
+        transactionsViewModel.state.value = transactionsViewModel.state.value.copy(isShareSelectedTransactions = false, isMultiSelectionMode = false)
+    }
+
     state.wallet?.let {
         CheckDataFromAddTransactionScreen(navController, transactionsViewModel, state.wallet.walletId)
     }
@@ -147,14 +179,17 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colors.surface)
-                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+                        .padding(top = 15.dp, bottom = 14.dp, start = 16.dp, end = 16.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.cancel_icon),
                         "",
-                        Modifier.align(Alignment.CenterVertically).size(32.dp).clickable{
-                            transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionMode)
-                        }
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
+                            .clickable {
+                                transactionsViewModel.onEvent(TransactionEvent.ChangeSelectionMode)
+                            }
                     )
                     Text(
                         text = state.selectedCount,
@@ -164,6 +199,54 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                     )
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        "",
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
+                            .clickable {
+                                transactionsViewModel.onEvent(TransactionEvent.ShareSelectedTransactions)
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        "",
+                        Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
+                            .clickable {
+                                transactionsViewModel.onEvent(TransactionEvent.ShowDeleteSelectedTransactionsDialog)
+                            }
+                    )
+                    var expanded by remember { mutableStateOf(false) }
+                    Box(Modifier.align(Alignment.CenterVertically)) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dots_icon),
+                            contentDescription = "Show menu",
+                            Modifier
+                                .size(32.dp)
+                                .clickable { expanded = true }
+                        )
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                transactionsViewModel.onEvent(TransactionEvent.SelectAll)
+                            }) {
+                                Text(stringResource(id = R.string.select_all))
+                            }
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                transactionsViewModel.onEvent(TransactionEvent.ClearAll)
+                            }) {
+                                Text(stringResource(id = R.string.clear_selection))
+                            }
+                        }
+                    }
                 }
             }
             LazyColumn(Modifier.padding(start = 12.dp, end = 12.dp)) {
@@ -234,6 +317,10 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                 modifier = Modifier.size(1000.dp)
             )
         }
+    }
+
+    BackHandler {
+
     }
 }
 

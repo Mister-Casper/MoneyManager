@@ -10,4 +10,9 @@ sealed class TransactionEvent {
     object ChangeSelectionMode : TransactionEvent()
     object ShowWalletPickerDialog : TransactionEvent()
     object CloseDialog : TransactionEvent()
+    object ClearAll : TransactionEvent()
+    object SelectAll : TransactionEvent()
+    object ShowDeleteSelectedTransactionsDialog : TransactionEvent()
+    object ShareSelectedTransactions : TransactionEvent()
+    object DeleteSelectedTransactions : TransactionEvent()
 }

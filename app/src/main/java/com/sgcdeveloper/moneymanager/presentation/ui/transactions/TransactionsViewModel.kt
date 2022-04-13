@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
@@ -21,7 +22,8 @@ import javax.inject.Inject
 open class TransactionsViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
-    private val appPreferencesHelper: AppPreferencesHelper
+    private val appPreferencesHelper: AppPreferencesHelper,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
 
     var state = mutableStateOf(TransactionsState())
@@ -103,10 +105,60 @@ open class TransactionsViewModel @Inject constructor(
                 }
                 state.value = state.value.copy(
                     transactions = newItems,
-                    selectedCount = newItems.filterIsInstance<BaseTransactionItem.TransactionItem>().count { it.isSelection }.toString()
+                    selectedCount = newItems.filterIsInstance<BaseTransactionItem.TransactionItem>()
+                        .count { it.isSelection }.toString()
+                )
+            }
+            TransactionEvent.ClearAll -> {
+                selectAll(false)
+            }
+            TransactionEvent.SelectAll -> {
+                selectAll(true)
+            }
+            TransactionEvent.ShowDeleteSelectedTransactionsDialog -> {
+                state.value = state.value.copy(
+                    dialogState = DialogState.DeleteTransactionDialog
+                )
+            }
+            TransactionEvent.DeleteSelectedTransactions -> {
+                viewModelScope.launch {
+                    moneyManagerRepository.removeTransactions(getSelectedTransactions().map { it.transactionEntry.id.toInt() })
+                    loadTransactions(state.value.wallet!!)
+                }
+            }
+            TransactionEvent.ShareSelectedTransactions -> {
+                state.value = state.value.copy(
+                    isShareSelectedTransactions = true
                 )
             }
         }
+    }
+
+    fun getSelectedTransactionsText(): String {
+        return state.value.transactions.filterIsInstance<BaseTransactionItem.TransactionItem>()
+            .filter { it.isSelection }
+            .map { it.toString() }
+            .joinToString(separator = "\n") { it }
+    }
+
+    private fun getSelectedTransactions(): List<BaseTransactionItem.TransactionItem> {
+        return state.value.transactions.filterIsInstance<BaseTransactionItem.TransactionItem>()
+            .filter { it.isSelection }
+    }
+
+    private fun selectAll(isSelect: Boolean) {
+        val newItems = mutableListOf<BaseTransactionItem>()
+        state.value.transactions.forEach {
+            if (it is BaseTransactionItem.TransactionItem) {
+                newItems.add(it.copy(isSelection = isSelect))
+            } else
+                newItems.add(it)
+        }
+        state.value = state.value.copy(
+            transactions = newItems,
+            selectedCount = if (isSelect) newItems.count { it is BaseTransactionItem.TransactionItem }
+                .toString() else "0"
+        )
     }
 
     fun loadTransactions(newWallet: Wallet) {
@@ -129,5 +181,6 @@ data class TransactionsState(
     val isEmpty: Boolean = false,
     val dialogState: DialogState = DialogState.NoneDialogState,
     val isMultiSelectionMode: Boolean = false,
-    val selectedCount: String = "0"
+    val selectedCount: String = "0",
+    val isShareSelectedTransactions: Boolean = false
 )

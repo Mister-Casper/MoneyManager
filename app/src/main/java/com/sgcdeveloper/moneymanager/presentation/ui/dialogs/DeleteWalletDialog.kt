@@ -19,13 +19,17 @@ fun DeleteWalletDialog(
     wallet: Wallet? = null,
     onDelete: () -> Unit,
     onCancel: () -> Unit,
-    titleId: Int = R.string.are_u_sure_delete_wallet
+    titleId: Int = R.string.are_u_sure_delete_wallet,
+    title: String? = null
 ) {
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onCancel,
         title = {
-            Text(text = stringResource(id = titleId))
+            if (title != null)
+                Text(title)
+            else
+                Text(text = stringResource(id = titleId))
         },
         text = {
             wallet?.let {
