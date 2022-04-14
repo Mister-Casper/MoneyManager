@@ -275,5 +275,8 @@
 
     <string name="delete_user">УДАЛИТЬ</string>
     <string name="are_u_sure_delte_user">Вы точно хотите удалить ваш аккаунт? Все ваши данные будут навсегда удалены</string>
+    <string name="password_change">Изменение пароля</string>
+    <string name="password_changed">Пароль успешно изменён</string>
+    <string name="cant_change_password">При изменении пароля произошла ошибка</string>
 
 </resources>

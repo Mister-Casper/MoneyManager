@@ -274,5 +274,8 @@
 
     <string name="delete_user">DELETE USER</string>
     <string name="are_u_sure_delte_user">Are you sure you want to delete your account? All your data will be permanently deleted</string>
+    <string name="password_change">PASSWORD CHANGE</string>
+    <string name="password_changed">"Password changed successfully "</string>
+    <string name="cant_change_password">"An error occurred while changing the password "</string>
 
 </resources>
