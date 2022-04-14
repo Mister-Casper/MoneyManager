@@ -278,4 +278,10 @@
     <string name="password_changed">"Password changed successfully "</string>
     <string name="cant_change_password">"An error occurred while changing the password "</string>
 
+    <string name="forget_password">Forgot password?</string>
+    <string name="regain_access">Regain access</string>
+    <string name="regain_access_desription">Enter the email you used to register. We will send password recovery instructions to your email.</string>
+    <string name="send">SEND</string>
+    <string name="email_sent_error">No user found with this email.</string>
+
 </resources>

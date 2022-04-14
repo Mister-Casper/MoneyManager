@@ -55,6 +55,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.moneyManagerScreen.MoneyManagerScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegainAccess
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
@@ -171,7 +172,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignInScreen(registrationViewModel)
+                            SignInScreen(registrationViewModel,navController)
                         }
                         composable(
                             Screen.SignUp.route,
@@ -223,6 +224,9 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.AccountSettings.route) {
                             AccountSettings(navController, hiltViewModel(), hiltViewModel())
+                        }
+                        composable(Screen.RegainAccess.route) {
+                            RegainAccess(navController)
                         }
                         composable(Screen.AddTransaction(null).route + "{wallet}") { backStackEntry ->
                             val addTransactionViewModel = hiltViewModel<AddTransactionViewModel>()

@@ -25,13 +25,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
+import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignInScreen(registrationViewModel: RegistrationViewModel) {
+fun SignInScreen(registrationViewModel: RegistrationViewModel,navController:NavController) {
     val login = rememberSaveable { registrationViewModel.login }
 
     val password = rememberSaveable { registrationViewModel.password }
@@ -83,7 +85,10 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                         "",
                         focusManager,
                         passwordVisibility,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done
+                        ),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
                         })
@@ -113,12 +118,12 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
 
                     SignInGoogle(registrationViewModel)
 
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
                             .padding(top = 20.dp)
                     ) {
-                        Row(Modifier.align(Alignment.Center)) {
+                        Row(Modifier.align(Alignment.CenterHorizontally)) {
                             Text(
                                 text = stringResource(id = R.string.dont_have_account),
                             )
@@ -128,6 +133,15 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                                 color = blue
                             )
                         }
+                        Text(
+                            text = stringResource(id = R.string.forget_password),
+                            color = blue,
+                            modifier = Modifier
+                                .padding(top = 4.dp)
+                                .clickable {
+                                    navController.navigate(Screen.RegainAccess.route)
+                                }
+                        )
                     }
                 }
             }
@@ -136,7 +150,7 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
             text = stringResource(id = R.string.comtimue),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .clickable { registrationViewModel.onEvent(RegistrationEvent.Skip)}
+                .clickable { registrationViewModel.onEvent(RegistrationEvent.Skip) }
                 .padding(bottom = 32.dp),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp

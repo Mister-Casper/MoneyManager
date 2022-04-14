@@ -279,4 +279,10 @@
     <string name="password_changed">Пароль успешно изменён</string>
     <string name="cant_change_password">При изменении пароля произошла ошибка</string>
 
+    <string name="forget_password">Забыли пароль?</string>
+    <string name="regain_access">Восстановить доступ</string>
+    <string name="regain_access_desription">Введите адрес электронной почты, указанный при регистрации. Мы вышлем инструкции по восстановлению пароля на вашу электронную почту.</string>
+    <string name="send">ОТПРАВИТЬ</string>
+    <string name="email_sent_error">Пользователь с этим адресом электронной почты не найден.</string>
+
 </resources>
