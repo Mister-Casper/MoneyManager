@@ -39,7 +39,7 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         appDatabase.walletDao().insertWallets(wallets)
     }
 
-    override suspend fun getLastWalletOrder(): Long {
+    override suspend fun getLastWalletOrder(): Long? {
         return appDatabase.walletDao().getLastWalletOrder()
     }
 

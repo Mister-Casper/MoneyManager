@@ -35,5 +35,5 @@ interface WalletDao {
     suspend fun insertWallets(wallets: List<WalletEntry>)
 
     @Query("SELECT MAX(orderPosition) FROM WalletEntry")
-    suspend fun getLastWalletOrder() : Long
+    suspend fun getLastWalletOrder() : Long?
 }
