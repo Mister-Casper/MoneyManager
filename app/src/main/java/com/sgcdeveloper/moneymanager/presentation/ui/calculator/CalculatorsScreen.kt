@@ -106,7 +106,7 @@ fun CalculatorsScreen(navController: NavController, darkThemeViewModel: MainView
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
+            MenuItem(Modifier.clickable { navController.navigate(Screen.TipCalculator.route) }) {
                 Text(
                     text = stringResource(id = R.string.tip_calculator),
                     Modifier.align(Alignment.CenterStart),
@@ -120,9 +120,9 @@ fun CalculatorsScreen(navController: NavController, darkThemeViewModel: MainView
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
+            MenuItem(Modifier.clickable { navController.navigate(Screen.DepositCalculator.route) }) {
                 Text(
-                    text = stringResource(id = R.string.interest_calculator),
+                    text = stringResource(id = R.string.deposit_calculator),
                     Modifier.align(Alignment.CenterStart),
                     color = white,
                     fontSize = 20.sp
