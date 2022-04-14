@@ -135,6 +135,13 @@ class MainActivity : FragmentActivity() {
                     RateThisApp.onCreate(this)
                     RateThisApp.showRateDialogIfNeeded(this)
                 }
+                LaunchedEffect(Unit) {
+                    val loginStatus = pref.getLoginStatus()
+                    if (loginStatus == LoginStatus.Initing)
+                        navController.navigate(Screen.Init.route)
+                    else if (loginStatus == LoginStatus.None)
+                        navController.navigate(Screen.MoneyManagerScreen.route)
+                }
                 Surface(
                     color = MaterialTheme.colors.background,
                 ) {

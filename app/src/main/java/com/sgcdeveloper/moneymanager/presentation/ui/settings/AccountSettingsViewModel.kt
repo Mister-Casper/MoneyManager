@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.processphoenix.ProcessPhoenix
-import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
 import com.sgcdeveloper.moneymanager.data.prefa.LoginStatus
@@ -28,8 +28,7 @@ open class AccountSettingsViewModel @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val syncHelper: SyncHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
-    private val defaultSettings: DefaultSettings,
-    private val transactionCategoriesDatabase: TransactionCategoriesDatabase
+    private val defaultSettings: DefaultSettings
 ) : AndroidViewModel(app) {
 
     val userName = appPreferencesHelper.getUserNAme()
@@ -38,33 +37,51 @@ open class AccountSettingsViewModel @Inject constructor(
         viewModelScope.launch {
             syncHelper.syncServerData {
                 viewModelScope.launch {
-                    val auth = FirebaseAuth.getInstance()
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken("241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com")
-                        .requestEmail()
-                        .build()
-                    val googleSignInClient = GoogleSignIn.getClient(app, gso)
-                    auth.signOut()
-                    googleSignInClient.signOut()
-                    
-                    appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
-                    appPreferencesHelper.setUserPassword(false)
-                    appPreferencesHelper.setDefaultWalletId(-1L)
-                    appPreferencesHelper.setLastSyncTime(0L)
-                    appPreferencesHelper.setUserName("")
-                    appPreferencesHelper.setStartupTransactionType(defaultSettings.defaultTransactionType)
-                    appPreferencesHelper.setStartupScreen(BottomMoneyManagerNavigationScreens.Transactions)
-                    appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(defaultSettings.firstDayOfWeek))
-                    moneyManagerRepository.deleteAllWallets()
-                    moneyManagerRepository.deleteAllRecurringTransactions()
-                    moneyManagerRepository.deleteAllBudgets()
-                    moneyManagerRepository.deleteAllTransactions()
-                    moneyManagerRepository.deleteAllRates()
-                    WalletSingleton.setWallet(null)
+                    signOut()
+                    deleteData()
                     navController.popBackStack(Screen.SignUp.route, true)
                     ProcessPhoenix.triggerRebirth(app)
                 }
             }
         }
+    }
+
+    fun deleteUser() {
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.delete()
+        signOut()
+        FirebaseAnalytics.getInstance(app).logEvent("user_deleted", null)
+        viewModelScope.launch {
+            deleteData()
+        }
+        ProcessPhoenix.triggerRebirth(app)
+    }
+
+    private fun signOut(){
+        val auth = FirebaseAuth.getInstance()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("241755459365-s71ite0jght8evhihhu96kijdvu95sh0.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(app, gso)
+        auth.signOut()
+        googleSignInClient.signOut()
+    }
+
+    private suspend fun deleteData() {
+        appPreferencesHelper.setLoginStatus(LoginStatus.Registering)
+        appPreferencesHelper.setUserPassword(false)
+        appPreferencesHelper.setDefaultWalletId(-1L)
+        appPreferencesHelper.setLastSyncTime(0L)
+        appPreferencesHelper.setUserName("")
+        appPreferencesHelper.setStartupTransactionType(defaultSettings.defaultTransactionType)
+        appPreferencesHelper.setStartupScreen(BottomMoneyManagerNavigationScreens.Transactions)
+        appPreferencesHelper.setFirstDayOfWeek(DayOfWeek.of(defaultSettings.firstDayOfWeek))
+        moneyManagerRepository.deleteAllWallets()
+        moneyManagerRepository.deleteAllRecurringTransactions()
+        moneyManagerRepository.deleteAllBudgets()
+        moneyManagerRepository.deleteAllTransactions()
+        moneyManagerRepository.deleteAllRates()
+        WalletSingleton.setWallet(null)
     }
 }
