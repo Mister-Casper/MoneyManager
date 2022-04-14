@@ -257,4 +257,7 @@
     <string name="clear_selection">Clear selection</string>
     <string name="are_u_sure_delete_selected_transaction">Are you sure you want to delete %1$s transactions?</string>
 
+    <string name="no_budgets">No budgets</string>
+    <string name="tap_to_add_budget">Tap the + button to add your first budget.</string>
+
 </resources>

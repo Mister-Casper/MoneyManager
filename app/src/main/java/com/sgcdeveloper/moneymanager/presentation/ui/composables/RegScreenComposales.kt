@@ -61,7 +61,9 @@ fun ColumnScope.PasswordInputField(
     isError: Boolean,
     errorText: String,
     focusManager: FocusManager,
-    passwordVisibility: MutableState<Boolean>
+    passwordVisibility: MutableState<Boolean>,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+    keyboardActions: KeyboardActions = KeyboardActions {  }
 ) {
     InputField(
         value, onValueChange, label, isError, errorText, focusManager,
@@ -77,7 +79,8 @@ fun ColumnScope.PasswordInputField(
             }
         },
         visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
 

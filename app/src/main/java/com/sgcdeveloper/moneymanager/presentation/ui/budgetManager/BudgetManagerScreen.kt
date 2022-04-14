@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseBudget
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
+import com.sgcdeveloper.moneymanager.presentation.theme.Typography
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
@@ -66,15 +68,50 @@ fun BudgetManagerScreen(homeViewModel: HomeViewModel, navController: NavControll
                 }
             }
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(budgets.size) {
-                    val budget = budgets[it]
-                    if (budget is BaseBudget.BudgetHeader) {
-                        BudgetHeader(budget) {
-                            navController.navigate(Screen.TimeIntervalBudgetManager(budget.period).route)
+                if (budgets.size > 1) {
+                    items(budgets.size) {
+                        val budget = budgets[it]
+                        if (budget is BaseBudget.BudgetHeader) {
+                            BudgetHeader(budget) {
+                                navController.navigate(Screen.TimeIntervalBudgetManager(budget.period).route)
+                            }
+                        } else if (budget is BaseBudget.BudgetItem) {
+                            BudgetItem(budget) {
+                                navController.navigate(Screen.BudgetScreen(budget).route)
+                            }
                         }
-                    } else if (budget is BaseBudget.BudgetItem) {
-                        BudgetItem(budget) {
-                            navController.navigate(Screen.BudgetScreen(budget).route)
+                    }
+                }else {
+                    item {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Column(Modifier.align(Alignment.Center)) {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.empty_icon),
+                                        contentDescription = "",
+                                        Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .weight(2f)
+                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                                Text(
+                                    text = stringResource(id = R.string.no_budgets),
+                                    style = Typography.h5,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.tap_to_add_budget),
+                                    fontWeight = FontWeight.Thin,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                            }
                         }
                     }
                 }

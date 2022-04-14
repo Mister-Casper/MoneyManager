@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -11,10 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +29,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignInScreen(registrationViewModel: RegistrationViewModel) {
     val login = rememberSaveable { registrationViewModel.login }
@@ -58,8 +66,14 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                         stringResource(id = R.string.email_address),
                         false,
                         "",
-                        focusManager
+                        focusManager,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
+
+                    val keyboardController = LocalSoftwareKeyboardController.current
 
                     PasswordInputField(
                         password.value,
@@ -68,7 +82,11 @@ fun SignInScreen(registrationViewModel: RegistrationViewModel) {
                         false,
                         "",
                         focusManager,
-                        passwordVisibility
+                        passwordVisibility,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                        })
                     )
 
                     SignInError(isError.value)

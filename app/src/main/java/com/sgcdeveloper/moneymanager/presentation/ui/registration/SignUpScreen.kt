@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -12,10 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -24,6 +31,7 @@ import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(navController: NavController, registrationViewModel: RegistrationViewModel) {
     val name = rememberSaveable { registrationViewModel.name }
@@ -74,7 +82,11 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         stringResource(id = R.string.username),
                         isLoginError.value,
                         stringResource(id = R.string.login_is_too_shirt),
-                        focusManager
+                        focusManager,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
 
                     InputField(
@@ -83,7 +95,11 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         stringResource(id = R.string.email_address),
                         isEmailError.value,
                         stringResource(id = R.string.email_isnt_valid),
-                        focusManager
+                        focusManager,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
 
                     PasswordInputField(
@@ -93,8 +109,14 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         isPasswordError.value,
                         stringResource(id = R.string.password_short),
                         focusManager,
-                        passwordVisibility
+                        passwordVisibility,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        })
                     )
+
+                    val keyboardController = LocalSoftwareKeyboardController.current
 
                     PasswordInputField(
                         confirmPassword.value,
@@ -103,7 +125,11 @@ fun SignUpScreen(navController: NavController, registrationViewModel: Registrati
                         isPasswordConfirmError.value,
                         stringResource(id = R.string.passwords_bot_matches),
                         focusManager,
-                        confirmPasswordVisibility
+                        confirmPasswordVisibility,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                        })
                     )
 
                     SignInError(isError.value)
