@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialo
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.*
+
 
 @Composable
 fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
@@ -69,6 +71,17 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             stringResource(darkThemeViewModel.defaultStartupTransactionType.value.stringRes),
             { darkThemeViewModel.setStartupTransactionType(TransactionType.getByName(it as String, context)) },
             { darkThemeViewModel.isShowStartupTransactionTypeDialog = false })
+    }
+
+    if(darkThemeViewModel.csvPath != Uri.EMPTY){
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        sendIntent.putExtra(Intent.EXTRA_STREAM, darkThemeViewModel.csvPath)
+        sendIntent.type = "text/csv"
+
+        LocalContext.current.startActivity(Intent.createChooser(sendIntent, "CSV"))
+        darkThemeViewModel.csvPath = Uri.EMPTY
     }
 
     LazyColumn(
@@ -155,6 +168,58 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     checked = darkThemeViewModel.isDarkTheme.value,
                     onCheckedChange = { darkThemeViewModel.setIsDark(it) }
                 )
+            }
+            MenuItem(Modifier.clickable { darkThemeViewModel.saveCSV()}) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.csv_icon),
+                        contentDescription = "",
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.export_csv),
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f)
+                            .padding(start = 4.dp),
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "",
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+            }
+            MenuItem(Modifier.clickable { }) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.excel_icon),
+                        contentDescription = "",
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.export_excel),
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .weight(1f)
+                            .padding(start = 4.dp),
+                        fontSize = 20.sp,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "",
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
             }
             MenuItem(Modifier.clickable { darkThemeViewModel.isShowSelectFirstDayDialog = true }) {
                 Column(Modifier.align(Alignment.CenterStart)) {

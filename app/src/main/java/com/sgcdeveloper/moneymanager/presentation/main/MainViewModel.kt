@@ -1,15 +1,19 @@
 package com.sgcdeveloper.moneymanager.presentation.main
 
 import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.util.CSVCreator
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import javax.inject.Inject
@@ -20,7 +24,8 @@ open class MainViewModel
 @Inject constructor(
     private val app: Application,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val csvCreator: CSVCreator
 ) : AndroidViewModel(app) {
 
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
@@ -31,6 +36,8 @@ open class MainViewModel
     var isShowSelectFirstDayDialog by mutableStateOf(false)
     var isShowSelectStartupScreenDialog by mutableStateOf(false)
     var isShowStartupTransactionTypeDialog by mutableStateOf(false)
+
+    var csvPath by mutableStateOf(Uri.EMPTY)
 
     fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 
@@ -52,5 +59,11 @@ open class MainViewModel
     fun setStartupTransactionType(startupTransactionType: TransactionType) {
         this.defaultStartupTransactionType.value = startupTransactionType
         appPreferencesHelper.setStartupTransactionType(startupTransactionType)
+    }
+
+    fun saveCSV() {
+        viewModelScope.launch {
+            csvPath = csvCreator()
+        }
     }
 }

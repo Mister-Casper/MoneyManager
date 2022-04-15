@@ -284,4 +284,7 @@
     <string name="send">SEND</string>
     <string name="email_sent_error">No user found with this email.</string>
 
+    <string name="export_csv">Export CSV</string>
+    <string name="export_excel">Export Excel</string>
+
 </resources>

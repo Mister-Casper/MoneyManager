@@ -149,7 +149,7 @@ class SyncHelper @Inject constructor(
     }
 
     suspend fun syncServerData(onFinish: () -> Unit = {}) =
-        CoroutineScope(Dispatchers.IO).async {
+        withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             val db = FirebaseFirestore.getInstance()
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
@@ -180,7 +180,7 @@ class SyncHelper @Inject constructor(
                 onFinish()
 
             }
-        }.await()
+        }
 
     private suspend fun getWallets(): List<MutableMap<String, Any>> {
         val list: MutableList<MutableMap<String, Any>> = ArrayList()
