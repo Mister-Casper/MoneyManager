@@ -11,6 +11,7 @@ val dark_gray = Color(0xffababab)
 val dark_gray2 = Color(0xff1a1a1a)
 val light_blue = Color(0xff1e88e5)
 val red = Color(0xffff7861)
+val dark_blue = Color(0xff1c1c1c)
 
 val wallet_color_1 = Color(0xffb00404)
 val wallet_color_2 = Color(0xffF44336)

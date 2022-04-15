@@ -3,6 +3,7 @@ package com.sgcdeveloper.moneymanager.domain.util
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionsUseCase
@@ -68,8 +69,10 @@ class ExcelCreator @Inject constructor(
 
         try {
             workbook.write(qponFile)
+            FirebaseAnalytics.getInstance(context).logEvent("write_excel_successfully", null)
         } catch (e: IOException) {
             e.printStackTrace()
+            FirebaseAnalytics.getInstance(context).logEvent("write_excel_error", null)
         } finally {
             fileWriter.flush()
             fileWriter.close()

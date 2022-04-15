@@ -45,6 +45,8 @@
 -keepclassmembers class com.sgcdeveloper.moneymanager.domain.model.TransactionCategory { <fields>; }
 -keep class com.sgcdeveloper.moneymanager.util.Date
 -keepclassmembers class com.sgcdeveloper.moneymanager.util.Date { <fields>; }
+-keepclassmembers class com.sgcdeveloper.moneymanager.util.ReviewStatus { <fields>; }
+-keep class com.sgcdeveloper.moneymanager.util.ReviewStatus
 
 -keepclassmembers class * extends java.lang.Enum {
     <fields>;

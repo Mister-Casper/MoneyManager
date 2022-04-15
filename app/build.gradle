@@ -157,8 +157,6 @@ dependencies {
 
     implementation 'com.amirarcane.lock-screen:lockscreen:2.0.0'
 
-    implementation 'io.github.kobakei:ratethisapp:1.2.0'
-
     implementation 'com.jakewharton:process-phoenix:2.1.2'
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"

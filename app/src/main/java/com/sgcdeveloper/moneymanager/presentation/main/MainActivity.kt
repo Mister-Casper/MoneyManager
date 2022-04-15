@@ -1,6 +1,8 @@
 package com.sgcdeveloper.moneymanager.presentation.main
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CancellationSignal
 import androidx.activity.compose.setContent
@@ -22,9 +24,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.kobakei.ratethisapp.RateThisApp
 import com.sgcdeveloper.moneymanager.data.db.entry.BudgetEntry
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.data.prefa.DefaultSettings
@@ -51,6 +53,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManager
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManagerViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.RateUsDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.init.WelcomeScreen
@@ -98,6 +101,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val pref = AppPreferencesHelper(this, DefaultSettings())
+
         if (pref.getUserPassword() && savedInstanceState == null) {
             val intent = MyEnterPinActivity.getIntent(this, false)
             startActivityForResult(intent, REQUEST_CODE)
@@ -112,6 +116,7 @@ class MainActivity : FragmentActivity() {
         syncHelper.syncLocalData()
         FirebaseApp.initializeApp(this)
         setContent {
+            val context = LocalContext.current
             val darkThemeViewModel: MainViewModel = hiltViewModel()
 
             val navController = rememberAnimatedNavController()
@@ -128,14 +133,6 @@ class MainActivity : FragmentActivity() {
             }
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
-                if (pref.getLoginStatus() == LoginStatus.None && savedInstanceState == null) {
-                    val config =
-                        RateThisApp.Config(3, 5)
-                    config.setMessage(com.sgcdeveloper.moneymanager.R.string.get_feedback)
-                    RateThisApp.init(config)
-                    RateThisApp.onCreate(this)
-                    RateThisApp.showRateDialogIfNeeded(this)
-                }
                 LaunchedEffect(Unit) {
                     val loginStatus = pref.getLoginStatus()
                     if (loginStatus == LoginStatus.Initing)
@@ -172,7 +169,7 @@ class MainActivity : FragmentActivity() {
                                     animationSpec = tween(100)
                                 )
                             }) {
-                            SignInScreen(registrationViewModel,navController)
+                            SignInScreen(registrationViewModel, navController)
                         }
                         composable(
                             Screen.SignUp.route,
@@ -216,6 +213,33 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.MoneyManagerScreen.route) {
                             MoneyManagerScreen(navController, hiltViewModel())
+                            if (darkThemeViewModel.isNeedRateUs) {
+                                RateUsDialog({
+                                    darkThemeViewModel.rated()
+                                    darkThemeViewModel.isNeedRateUs = false
+                                    val uri: Uri = Uri.parse("market://details?id=$packageName")
+                                    val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+                                    goToMarket.addFlags(
+                                        Intent.FLAG_ACTIVITY_NO_HISTORY or
+                                                Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                                                Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                                    )
+                                    try {
+                                        startActivity(goToMarket)
+                                    } catch (e: ActivityNotFoundException) {
+                                        startActivity(
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse("http://play.google.com/store/apps/details?id=$packageName")
+                                            )
+                                        )
+                                    }
+                                    FirebaseAnalytics.getInstance(context).logEvent("get_review",null)
+                                }) {
+                                    FirebaseAnalytics.getInstance(context).logEvent("canceled_review",null)
+                                    darkThemeViewModel.isNeedRateUs = false
+                                }
+                            }
                         }
                         composable(Screen.Welcome.route) {
                             WelcomeScreen {

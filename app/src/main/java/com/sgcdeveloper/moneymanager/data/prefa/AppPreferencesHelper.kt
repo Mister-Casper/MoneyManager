@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
+import com.sgcdeveloper.moneymanager.util.Date
+import com.sgcdeveloper.moneymanager.util.ReviewStatus
 import com.sgcdeveloper.moneymanager.util.gson
 import java.time.DayOfWeek
 import javax.inject.Inject
@@ -103,6 +105,31 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putInt(STARTUP_TRANSACTION_TYPE,type.ordinal).apply()
     }
 
+    fun getFirstTimeOpen(): Date {
+        return Date(prefs.getLong(FIRST_OPEN_TIME,-1))
+    }
+
+    fun setFirstTimeOpen(firstOpenDate:Date){
+        prefs.edit().putLong(FIRST_OPEN_TIME,firstOpenDate.epochMillis).apply()
+    }
+
+    fun getTimesOpen(): Int {
+        return prefs.getInt(TIMES_OPEN,0)
+    }
+
+    fun setTimesOpen(timesOpen:Int){
+        prefs.edit().putInt(TIMES_OPEN,timesOpen).apply()
+    }
+
+    fun getReviewStatus(): ReviewStatus {
+        return ReviewStatus.values().find { it.id == prefs.getInt(REVIEW_STATUS,0) }!!
+    }
+
+    fun setReviewStatus(reviewStatus:ReviewStatus){
+        prefs.edit().putInt(REVIEW_STATUS,reviewStatus.id).apply()
+    }
+
+
     companion object {
         const val LOGIN_STATUS = "LOGIN_STATUS"
         const val USER_NAME = "USER_NAME"
@@ -115,5 +142,8 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val FIRST_DAY_OF_WEEK = "FIRST_DAY_OF_WEEK"
         const val STARTUP_SCREEN = "STARTUP_SCREEN"
         const val STARTUP_TRANSACTION_TYPE = "STARTUP_TRANSACTION_TYPE"
+        const val FIRST_OPEN_TIME = "FIRST_OPEN_TIME"
+        const val TIMES_OPEN = "TIMES_OPEN"
+        const val REVIEW_STATUS = "REVIEW_STATUS"
     }
 }

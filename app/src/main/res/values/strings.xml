@@ -175,7 +175,8 @@
     <string name="sure">Sure!</string>
     <string name="later">Later</string>
     <string name="alredy_done">Already done</string>
-    <string name="get_feedback">"Please give us a review if you want to support us or you need new functionality, I will add it in the next update.\n"</string>
+    <string name="get_feedback_title">We are working hard for a better user experience.</string>
+    <string name="get_feedback">"Please give us a review if you want to support us or you need new functionality, We will add it in the next update.\n"</string>
 
     <string name="select_date">Select date</string>
     <string name="start">Start</string>
@@ -294,5 +295,6 @@
     <string name="export_data_title_description">description</string>
     <string name="export_data_title_currency">currency</string>
     <string name="csv_title">id,date,type,category,money,description,currency</string>
+    <string name="send_rate">RATE</string>
 
 </resources>

@@ -13,6 +13,7 @@ import com.sgcdeveloper.moneymanager.domain.util.CSVCreator
 import com.sgcdeveloper.moneymanager.domain.util.ExcelCreator
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.nav.BottomMoneyManagerNavigationScreens
+import com.sgcdeveloper.moneymanager.util.RateUsDialogHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -27,7 +28,8 @@ open class MainViewModel
     private val appPreferencesHelper: AppPreferencesHelper,
     private val moneyManagerRepository: MoneyManagerRepository,
     private val csvCreator: CSVCreator,
-    private val excelCreator: ExcelCreator
+    private val excelCreator: ExcelCreator,
+    private val rateUsDialogHelper: RateUsDialogHelper
 ) : AndroidViewModel(app) {
 
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
@@ -41,6 +43,7 @@ open class MainViewModel
 
     var csvPath by mutableStateOf(Uri.EMPTY)
     var excelPath by mutableStateOf(Uri.EMPTY)
+    var isNeedRateUs = rateUsDialogHelper.isNeedShow
 
     fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 
@@ -74,5 +77,9 @@ open class MainViewModel
         viewModelScope.launch {
             excelPath = excelCreator()
         }
+    }
+
+    fun rated() {
+        rateUsDialogHelper.rated()
     }
 }
