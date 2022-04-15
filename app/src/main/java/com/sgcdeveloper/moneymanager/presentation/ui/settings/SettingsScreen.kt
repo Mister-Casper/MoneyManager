@@ -73,7 +73,7 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
             { darkThemeViewModel.isShowStartupTransactionTypeDialog = false })
     }
 
-    if(darkThemeViewModel.csvPath != Uri.EMPTY){
+    if (darkThemeViewModel.csvPath != Uri.EMPTY) {
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -82,6 +82,17 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
 
         LocalContext.current.startActivity(Intent.createChooser(sendIntent, "CSV"))
         darkThemeViewModel.csvPath = Uri.EMPTY
+    }
+
+    if (darkThemeViewModel.excelPath != Uri.EMPTY) {
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        sendIntent.putExtra(Intent.EXTRA_STREAM, darkThemeViewModel.excelPath)
+        sendIntent.type = "text/xls"
+
+        LocalContext.current.startActivity(Intent.createChooser(sendIntent, "CSV"))
+        darkThemeViewModel.excelPath = Uri.EMPTY
     }
 
     LazyColumn(
@@ -169,15 +180,16 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     onCheckedChange = { darkThemeViewModel.setIsDark(it) }
                 )
             }
-            MenuItem(Modifier.clickable { darkThemeViewModel.saveCSV()}) {
+            MenuItem(Modifier.clickable { darkThemeViewModel.saveCSV() }) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .align(Alignment.Center)) {
+                        .align(Alignment.Center)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.csv_icon),
                         contentDescription = "",
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier.align(Alignment.CenterVertically).size(32.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.export_csv),
@@ -195,15 +207,16 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     )
                 }
             }
-            MenuItem(Modifier.clickable { }) {
+            MenuItem(Modifier.clickable { darkThemeViewModel.saveExcel() }) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .align(Alignment.Center)) {
+                        .align(Alignment.Center)
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.excel_icon),
                         contentDescription = "",
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier.align(Alignment.CenterVertically).size(32.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.export_excel),

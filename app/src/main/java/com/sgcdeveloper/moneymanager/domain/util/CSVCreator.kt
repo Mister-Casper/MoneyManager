@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionsUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,7 @@ class CSVCreator @Inject constructor(
     private val moneyManagerRepository: MoneyManagerRepository
 ) {
 
-    private val CSV_HEADER = "id,date,type,category,money,description,currency"
+    private val CSV_HEADER = context.getString(R.string.csv_title)
 
     suspend operator fun invoke(): Uri = CoroutineScope(Dispatchers.IO).async {
         val transactions = getTransactionsUseCase()
@@ -33,8 +34,8 @@ class CSVCreator @Inject constructor(
             fileWriter.write(CSV_HEADER)
             fileWriter.write("\n")
 
-            transactions.forEach { transaction ->
-                fileWriter.write(transaction.id.toString())
+            transactions.forEachIndexed { index, transaction ->
+                fileWriter.write((transactions.size - index).toString())
                 fileWriter.write(",")
                 fileWriter.write(transaction.date.toDayMonthString())
                 fileWriter.write(",")

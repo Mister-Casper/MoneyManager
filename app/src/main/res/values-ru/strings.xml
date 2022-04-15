@@ -285,4 +285,15 @@
     <string name="send">ОТПРАВИТЬ</string>
     <string name="email_sent_error">Пользователь с этим адресом электронной почты не найден.</string>
 
+    <string name="export_csv">Экспорт CSV</string>
+    <string name="export_excel">Экспорт Excel</string>
+    <string name="export_data_title_id">номер</string>
+    <string name="export_data_title_date">дата</string>
+    <string name="export_data_title_type">тип</string>
+    <string name="export_data_title_category">категория</string>
+    <string name="export_data_title_money">сумма</string>
+    <string name="export_data_title_description">описание</string>
+    <string name="export_data_title_currency">валюта</string>
+    <string name="csv_title">номер,дата,тип,категория,сумма,описание,валюта</string>
+
 </resources>

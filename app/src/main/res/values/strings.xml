@@ -286,5 +286,13 @@
 
     <string name="export_csv">Export CSV</string>
     <string name="export_excel">Export Excel</string>
+    <string name="export_data_title_id">id</string>
+    <string name="export_data_title_date">date</string>
+    <string name="export_data_title_type">type</string>
+    <string name="export_data_title_category">category</string>
+    <string name="export_data_title_money">money</string>
+    <string name="export_data_title_description">description</string>
+    <string name="export_data_title_currency">currency</string>
+    <string name="csv_title">id,date,type,category,money,description,currency</string>
 
 </resources>
