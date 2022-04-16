@@ -4,8 +4,9 @@ import android.content.Context
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
+import kotlin.math.floor
 
 sealed class TimeIntervalController(val icon: Int, val name: Int) {
     abstract fun moveBack()
@@ -21,11 +22,11 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         if (this is AllController)
             return true
         val date =
-            (intervalDate.epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
+            ((intervalDate.epochMillis - 1) / TimeUnit.DAYS.toMillis(1)).toInt()
         val startDate =
-            (getStartDate().epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
+            floor( (getStartDate().epochMillis  / TimeUnit.DAYS.toMillis(1).toDouble())).toInt()
         val endDate =
-            (((getEndDate().epochMillis + TimeUnit.DAYS.toMillis(1)) / TimeUnit.HOURS.toMillis(1)).toInt()) - 1
+            ceil( (getEndDate().epochMillis  / TimeUnit.DAYS.toMillis(1).toDouble())).toInt()
         return (date in startDate .. endDate)
     }
 
@@ -245,8 +246,8 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
     class CustomController(private val step: Long? = null) :
         TimeIntervalController(R.drawable.edit_calendar_icon, R.string.custom) {
-        var startIntervalDate: Date = Date(LocalDateTime.now())
-        var endIntervalDate: Date = Date(LocalDateTime.now())
+        var startIntervalDate: Date = Date(LocalDate.now())
+        var endIntervalDate: Date = Date(LocalDate.now())
 
         override fun moveBack() {
             step?.let {
