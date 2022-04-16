@@ -28,8 +28,7 @@ fun SelectTimeIntervalDialog(
     onDismiss: () -> Unit,
     defaultStart: Date,
     defaultEnd: Date,
-    onResult: (startDate: Date, endDate: Date) -> Unit,
-    isDark: Boolean
+    onResult: (startDate: Date, endDate: Date) -> Unit
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
     var isFirst by remember { mutableStateOf(true) }
@@ -49,7 +48,7 @@ fun SelectTimeIntervalDialog(
             },
             onDismissRequest = {
                 isShowDialog = false
-            }, isDark
+            }
         )
     }
 

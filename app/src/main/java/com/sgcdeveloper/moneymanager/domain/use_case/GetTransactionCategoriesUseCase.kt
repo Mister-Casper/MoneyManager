@@ -25,6 +25,10 @@ class GetTransactionCategoriesUseCase @Inject constructor(
         return mapEntries(entries) + Transfers(context)
     }
 
+    suspend fun getAllItems(): List<TransactionCategory> {
+        return listOf(AllExpense(context)) + getCategoryTransactions()
+    }
+
     suspend fun getAllExpenseItems(): List<TransactionCategory> {
         return listOf(AllExpense(context)) + getCategoryTransactions().filter { it.isExpense }
     }

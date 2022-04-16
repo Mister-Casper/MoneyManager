@@ -36,8 +36,7 @@ var yOffset = 0
 fun TimeIntervalPickerDialog(
     defaultTimeIntervalController: TimeIntervalController,
     onAdd: (timeIntervalController: TimeIntervalController) -> Unit = {},
-    onDismiss: () -> Unit = {},
-    isDarkTheme:Boolean
+    onDismiss: () -> Unit = {}
 ) {
     var isShowCreateCustomDialog by remember { mutableStateOf(false) }
     if(isShowCreateCustomDialog){
@@ -57,7 +56,7 @@ fun TimeIntervalPickerDialog(
             timeController.endIntervalDate = end
             onAdd(timeController)
             onDismiss()
-        },isDarkTheme)
+        })
     }
     AlertDialog(
         containerColor = MaterialTheme.colors.background,

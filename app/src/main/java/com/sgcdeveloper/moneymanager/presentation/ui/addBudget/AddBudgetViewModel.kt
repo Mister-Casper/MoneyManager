@@ -100,7 +100,7 @@ open class AddBudgetViewModel @Inject constructor(
                 }
             }
             is AddBudgetEvent.ShowTransactionCategoryPickerDialog -> {
-                dialogState.value = DialogState.SelectExpenseCategoryDialog
+                dialogState.value = DialogState.SelectCategoriesDialog
             }
             is AddBudgetEvent.ChangeExpenseCategories -> {
                 transactionCategories.clear()

@@ -295,6 +295,17 @@
     <string name="export_data_title_description">description</string>
     <string name="export_data_title_currency">currency</string>
     <string name="csv_title">id,date,type,category,money,description,currency</string>
+
     <string name="send_rate">RATE</string>
+
+    <string name="time_range_transactions">Transaction list</string>
+    <string name="search_menu">Search</string>
+    <string name="calendar_menu">Calendar</string>
+
+    <string name="date_search">DATE</string>
+    <string name="category_search">CATEGORY</string>
+    <string name="wallet_search">WALLET</string>
+    <string name="count_founded_transactions">%1$s transactions found</string>
+    <string name="no_result_found">No result found</string>
 
 </resources>

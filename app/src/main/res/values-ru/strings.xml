@@ -297,4 +297,15 @@
     <string name="export_data_title_currency">валюта</string>
     <string name="csv_title">номер,дата,тип,категория,сумма,описание,валюта</string>
 
+    <string name="send_rate">Оценить</string>
+
+    <string name="time_range_transactions">Список транзакций</string>
+    <string name="search_menu">Поиск</string>
+    <string name="calendar_menu">Календарь</string>
+
+    <string name="date_search">ДАТА</string>
+    <string name="category_search">КАТЕГОРИЯ</string>
+    <string name="wallet_search">КОШЕЛЕК</string>
+    <string name="count_founded_transactions">%1$s транзакций найдено</string>
+    <string name="no_result_found">Результатов не найдено</string>
 </resources>

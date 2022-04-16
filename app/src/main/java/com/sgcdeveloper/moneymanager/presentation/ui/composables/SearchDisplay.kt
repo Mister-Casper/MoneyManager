@@ -92,7 +92,8 @@ fun SearchTextField(
     onClearQuery: () -> Unit,
     searching: Boolean,
     focused: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isShowCancel:Boolean = false
 ) {
 
     val focusRequester = remember { FocusRequester() }
@@ -162,7 +163,7 @@ fun SearchTextField(
                                     .size(36.dp)
                             )
                         }
-                        query.text.isNotEmpty() -> {
+                        (query.text.isNotEmpty() && isShowCancel) -> {
                             IconButton(onClick = onClearQuery) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.cancel_icon),
@@ -188,7 +189,8 @@ fun SearchBar(
     onBack: () -> Unit,
     searching: Boolean,
     focused: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isShowCancel:Boolean = false
 ) {
 
     Row(
@@ -202,7 +204,8 @@ fun SearchBar(
             onClearQuery,
             searching,
             focused,
-            modifier.weight(1f)
+            modifier.weight(1f),
+            isShowCancel
         )
     }
 }

@@ -55,7 +55,7 @@ fun TransactionCategoryStatisticScreen(
             statisticViewModel.onEvent(StatisticEvent.ChangeTimeInterval(it))
         }, {
             statisticViewModel.onEvent(StatisticEvent.CloseDialog)
-        }, statisticViewModel.isDarkTheme())
+        })
     }
 
     state.wallet?.let {

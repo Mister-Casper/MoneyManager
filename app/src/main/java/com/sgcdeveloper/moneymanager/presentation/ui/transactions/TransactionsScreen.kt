@@ -100,12 +100,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                     Row(
                         Modifier
                             .align(Alignment.CenterStart)
-                            .clickable {
-                                transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog)
-                                navController.currentBackStackEntry
-                                    ?.savedStateHandle
-                                    ?.set("wallet_id", -1L)
-                            }) {
+                            .clickable { transactionsViewModel.onEvent(TransactionEvent.ShowWalletPickerDialog) }) {
                         state.wallet?.let {
                             Text(
                                 text = state.wallet.name,
@@ -126,30 +121,50 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             .align(Alignment.CenterEnd)
                             .padding(end = 12.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.list_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(32.dp)
-                                .clickable {
+                        var expandedMenu by remember { mutableStateOf(false) }
+                        Box(Modifier.align(Alignment.CenterVertically)) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.dots_icon),
+                                contentDescription = "Show menu",
+                                Modifier
+                                    .size(32.dp)
+                                    .clickable { expandedMenu = true }
+                            )
+                            DropdownMenu(
+                                expanded = expandedMenu,
+                                onDismissRequest = { expandedMenu = false }
+                            ) {
+                                DropdownMenuItem(onClick = {
+                                    expandedMenu = false
+                                }) {
+                                    Text(stringResource(id = R.string.calendar_menu))
+                                }
+                                DropdownMenuItem(onClick = {
+                                    expandedMenu = false
+                                    navController.navigate(Screen.SearchTransactionsScreen.route)
+                                }) {
+                                    Text(stringResource(id = R.string.search_menu))
+                                }
+                                DropdownMenuItem(onClick = {
+                                    expandedMenu = false
                                     if (state.wallet != null)
                                         navController.navigate(
                                             Screen.TimeIntervalTransactions(
                                                 state.wallet
                                             ).route
                                         )
+                                }) {
+                                    Text(stringResource(id = R.string.time_range_transactions))
                                 }
-                        )
-                        Spacer(modifier = Modifier.padding(start = 12.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.settings_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .size(32.dp)
-                                .clickable { navController.navigate(Screen.Settings.route) }
-                        )
+                                Divider()
+                                DropdownMenuItem(onClick = {
+                                    expandedMenu = false
+                                    navController.navigate(Screen.Settings.route)
+                                }) {
+                                    Text(stringResource(id = R.string.settings))
+                                }
+                            }
+                        }
                     }
                 }
                 Row(Modifier.padding(top = 4.dp, start = 12.dp)) {
@@ -170,10 +185,6 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                         )
                     }
                 }
-                Divider(
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
             } else {
                 Row(
                     modifier = Modifier

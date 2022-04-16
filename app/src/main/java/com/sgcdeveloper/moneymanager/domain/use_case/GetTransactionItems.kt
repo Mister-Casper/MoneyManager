@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.time.LocalDate
+import java.util.*
 import javax.inject.Inject
 
 class GetTransactionItems @Inject constructor(
@@ -40,6 +41,33 @@ class GetTransactionItems @Inject constructor(
 
     suspend fun getEntries(wallet: Wallet): List<Transaction> = CoroutineScope(Dispatchers.IO).async {
         return@async getTransactionsUseCase(wallet)
+    }.await()
+
+    suspend fun findTransactions(
+        wallet: Wallet,
+        text: String,
+        wallets: List<Wallet>,
+        timeIntervalController: TimeIntervalController,
+        transactionCategory: List<TransactionCategory>
+    ): List<BaseTransactionItem.TransactionItem> = CoroutineScope(Dispatchers.IO).async {
+        val walletsId = wallets.map { it.walletId }
+        val transactionCategoriesId = transactionCategory.map { it.id }
+        val foundedTransactions = invoke(wallet).filterIsInstance<BaseTransactionItem.TransactionItem>()
+            .filter {
+                (walletsId.isEmpty() || walletsId.contains(it.transactionEntry.fromWalletId) || walletsId.contains(it.transactionEntry.toWalletId))
+                        && (transactionCategoriesId.isEmpty() || transactionCategoriesId.contains(it.transactionEntry.category.id))
+                        && timeIntervalController.isInInterval(it.transactionEntry.date)
+            }
+        return@async foundedTransactions.map { transaction->
+            var score = 0
+            if(transaction.description.lowercase(Locale.getDefault()).contains(text.lowercase()))
+                score += 10
+            if(transaction.category.lowercase(Locale.getDefault()).contains(text.lowercase()))
+                score += 5
+            if(transaction.money.lowercase(Locale.getDefault()).contains(text.lowercase()))
+                score += 5
+            score to transaction
+        }.filter { it.first != 0 }.sortedByDescending { it.first }.map { it.second }
     }.await()
 
     suspend fun getTimeIntervalTransactions(
@@ -143,7 +171,7 @@ class GetTransactionItems @Inject constructor(
             transactionEntry.category.description
     }
 
-    class StringDate(val date: LocalDate, val string: String){
+    class StringDate(val date: LocalDate, val string: String) {
         override fun hashCode(): Int {
             return string.hashCode()
         }

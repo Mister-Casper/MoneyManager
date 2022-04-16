@@ -39,7 +39,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.composables.ColorPicker
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.InputField
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DatePicker
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
-import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectExpenseCategoryDialog
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.SelectCategoriesDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialog
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -48,8 +48,8 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
     val dialog = remember { addBudgetViewModel.dialogState }
     val context = LocalContext.current
 
-    if (dialog.value is DialogState.SelectExpenseCategoryDialog) {
-        SelectExpenseCategoryDialog(addBudgetViewModel.expenseItems, addBudgetViewModel.transactionCategories, {
+    if (dialog.value is DialogState.SelectCategoriesDialog) {
+        SelectCategoriesDialog(addBudgetViewModel.expenseItems, addBudgetViewModel.transactionCategories, {
             addBudgetViewModel.onEvent(AddBudgetEvent.ChangeExpenseCategories(it))
         }, {
             addBudgetViewModel.onEvent(AddBudgetEvent.CloseDialog)

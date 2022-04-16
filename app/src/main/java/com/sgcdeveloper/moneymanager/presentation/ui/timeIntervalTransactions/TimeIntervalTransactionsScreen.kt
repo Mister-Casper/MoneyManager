@@ -47,7 +47,7 @@ fun TimeIntervalTransactionsScreen(
             transactionsViewModel.onEvent(TimeIntervalTransactionEvent.ChangeTimeInterval(it))
         }, {
             transactionsViewModel.onEvent(TimeIntervalTransactionEvent.CloseDialog)
-        }, transactionsViewModel.isDarkTheme())
+        })
     }
 
     CheckDataFromAddTransactionScreen(

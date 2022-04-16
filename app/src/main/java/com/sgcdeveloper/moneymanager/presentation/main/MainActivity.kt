@@ -62,6 +62,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegainAccess
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.RegistrationViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignInScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.registration.SignUpScreen
+import com.sgcdeveloper.moneymanager.presentation.ui.search.SearchTransactionsScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.settings.*
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticEvent
 import com.sgcdeveloper.moneymanager.presentation.ui.statistic.StatisticViewModel
@@ -133,13 +134,6 @@ class MainActivity : FragmentActivity() {
             }
 
             MoneyManagerTheme(darkThemeViewModel.isDarkTheme.value) {
-                LaunchedEffect(Unit) {
-                    val loginStatus = pref.getLoginStatus()
-                    if (loginStatus == LoginStatus.Initing)
-                        navController.navigate(Screen.Init.route)
-                    else if (loginStatus == LoginStatus.None)
-                        navController.navigate(Screen.MoneyManagerScreen.route)
-                }
                 Surface(
                     color = MaterialTheme.colors.background,
                 ) {
@@ -248,6 +242,9 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.AccountSettings.route) {
                             AccountSettings(navController, hiltViewModel(), hiltViewModel())
+                        }
+                        composable(Screen.SearchTransactionsScreen.route){
+                            SearchTransactionsScreen(navController, hiltViewModel())
                         }
                         composable(Screen.RegainAccess.route) {
                             RegainAccess(navController)
