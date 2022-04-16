@@ -236,6 +236,7 @@ fun StatisticScreen(
                         state.expenseEntries,
                         state.expenseColors,
                         {
+                            TimeInternalSingleton.timeIntervalController = state.timeIntervalController
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Expense).route)
                         },
                         onWeeklyStatisticClick = {
@@ -255,6 +256,7 @@ fun StatisticScreen(
                         state.incomeEntries,
                         state.incomeColors,
                         {
+                            TimeInternalSingleton.timeIntervalController = state.timeIntervalController
                             navController.navigate(Screen.TransactionCategoryStatisticScreen(defaultScreen = TransactionScreen.Income).route)
                         },
                         onWeeklyStatisticClick = {

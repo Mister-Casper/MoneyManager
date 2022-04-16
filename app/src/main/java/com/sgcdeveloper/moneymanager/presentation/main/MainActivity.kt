@@ -228,9 +228,9 @@ class MainActivity : FragmentActivity() {
                                             )
                                         )
                                     }
-                                    FirebaseAnalytics.getInstance(context).logEvent("get_review",null)
+                                    FirebaseAnalytics.getInstance(context).logEvent("get_review", null)
                                 }) {
-                                    FirebaseAnalytics.getInstance(context).logEvent("canceled_review",null)
+                                    FirebaseAnalytics.getInstance(context).logEvent("canceled_review", null)
                                     darkThemeViewModel.isNeedRateUs = false
                                 }
                             }
@@ -243,7 +243,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.AccountSettings.route) {
                             AccountSettings(navController, hiltViewModel(), hiltViewModel())
                         }
-                        composable(Screen.SearchTransactionsScreen.route){
+                        composable(Screen.SearchTransactionsScreen.route) {
                             SearchTransactionsScreen(navController, hiltViewModel())
                         }
                         composable(Screen.RegainAccess.route) {
@@ -328,46 +328,22 @@ class MainActivity : FragmentActivity() {
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
-                            if (wallet != null)
-                                timeIntervalTransactionsViewModel.onEvent(
-                                    TimeIntervalTransactionEvent.SetDefaultWallet(
-                                        wallet
+                            LaunchedEffect(Unit) {
+                                if (wallet != null)
+                                    timeIntervalTransactionsViewModel.onEvent(
+                                        TimeIntervalTransactionEvent.SetDefaultWallet(
+                                            wallet
+                                        )
                                     )
-                                )
-                            if (TimeInternalSingleton.timeIntervalController != null) {
-                                val it = TimeInternalSingleton.timeIntervalController!!
-                                val timeInterval = when (it) {
-                                    is TimeIntervalController.DailyController -> {
-                                        TimeIntervalController.DailyController(it.date)
-                                    }
-                                    is TimeIntervalController.WeeklyController -> {
-                                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
-                                    }
-                                    is TimeIntervalController.MonthlyController -> {
-                                        TimeIntervalController.MonthlyController(it.date)
-                                    }
-                                    is TimeIntervalController.QuarterlyController -> {
-                                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
-                                    }
-                                    is TimeIntervalController.YearlyController -> {
-                                        TimeIntervalController.QuarterlyController(it.date)
-                                    }
-                                    is TimeIntervalController.AllController -> {
-                                        TimeIntervalController.AllController(it.allString)
-                                    }
-                                    is TimeIntervalController.CustomController -> {
-                                        val controller = TimeIntervalController.CustomController()
-                                        controller.startIntervalDate = it.startIntervalDate
-                                        controller.endIntervalDate = it.endIntervalDate
-                                        controller
-                                    }
+                                if (TimeInternalSingleton.timeIntervalController != null) {
+                                    val timeInterval = loadTImeInterval(TimeInternalSingleton.timeIntervalController!!)
+                                    timeIntervalTransactionsViewModel.onEvent(
+                                        TimeIntervalTransactionEvent.ChangeTimeInterval(
+                                            timeInterval
+                                        )
+                                    )
+                                    TimeInternalSingleton.timeIntervalController = null
                                 }
-                                timeIntervalTransactionsViewModel.onEvent(
-                                    TimeIntervalTransactionEvent.ChangeTimeInterval(
-                                        timeInterval
-                                    )
-                                )
-                                TimeInternalSingleton.timeIntervalController = null
                             }
                             timeIntervalTransactionsViewModel.onEvent(
                                 TimeIntervalTransactionEvent.ChangeTransactionCategoryFilter(
@@ -376,12 +352,19 @@ class MainActivity : FragmentActivity() {
                             )
 
                             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
-
-                            backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
+                            val statisticViewModel:StatisticViewModel =  hiltViewModel()
+                            LaunchedEffect(Unit) {
+                                val timeInterval = loadTImeInterval(TimeInternalSingleton.timeIntervalController!!)
+                                statisticViewModel.onEvent(
+                                    StatisticEvent.ChangeTimeInterval(
+                                        timeInterval
+                                    )
+                                )
+                            }
                             TransactionCategoryStatisticScreen(
-                                hiltViewModel(),
+                                statisticViewModel,
                                 navController,
                                 gson.fromJson(
                                     backStackEntry.arguments?.getString("screen"),
@@ -422,33 +405,7 @@ class MainActivity : FragmentActivity() {
                                 )
 
                             if (TimeInternalSingleton.timeIntervalController != null) {
-                                val it = TimeInternalSingleton.timeIntervalController!!
-                                val timeInterval = when (it) {
-                                    is TimeIntervalController.DailyController -> {
-                                        TimeIntervalController.DailyController(it.date)
-                                    }
-                                    is TimeIntervalController.WeeklyController -> {
-                                        TimeIntervalController.WeeklyController(it.startDay, it.endDay)
-                                    }
-                                    is TimeIntervalController.MonthlyController -> {
-                                        TimeIntervalController.MonthlyController(it.date)
-                                    }
-                                    is TimeIntervalController.QuarterlyController -> {
-                                        TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
-                                    }
-                                    is TimeIntervalController.YearlyController -> {
-                                        TimeIntervalController.YearlyController(it.date)
-                                    }
-                                    is TimeIntervalController.AllController -> {
-                                        TimeIntervalController.AllController(it.allString)
-                                    }
-                                    is TimeIntervalController.CustomController -> {
-                                        val controller = TimeIntervalController.CustomController()
-                                        controller.startIntervalDate = it.startIntervalDate
-                                        controller.endIntervalDate = it.endIntervalDate
-                                        controller
-                                    }
-                                }
+                                val timeInterval = loadTImeInterval(TimeInternalSingleton.timeIntervalController!!)
                                 timeIntervalTransactionsViewModel.onEvent(
                                     TimeIntervalTransactionEvent.ChangeTimeInterval(
                                         timeInterval
@@ -617,5 +574,35 @@ class MainActivity : FragmentActivity() {
         GlobalScope.launch {
             syncHelper.syncServerData()
         }
+    }
+
+    private fun loadTImeInterval(it: TimeIntervalController): TimeIntervalController {
+        val timeInterval = when (it) {
+            is TimeIntervalController.DailyController -> {
+                TimeIntervalController.DailyController(it.date)
+            }
+            is TimeIntervalController.WeeklyController -> {
+                TimeIntervalController.WeeklyController(it.startDay, it.endDay)
+            }
+            is TimeIntervalController.MonthlyController -> {
+                TimeIntervalController.MonthlyController(it.date)
+            }
+            is TimeIntervalController.QuarterlyController -> {
+                TimeIntervalController.QuarterlyController(it.startDay, it.endDay)
+            }
+            is TimeIntervalController.YearlyController -> {
+                TimeIntervalController.YearlyController(it.date)
+            }
+            is TimeIntervalController.AllController -> {
+                TimeIntervalController.AllController(it.allString)
+            }
+            is TimeIntervalController.CustomController -> {
+                val controller = TimeIntervalController.CustomController()
+                controller.startIntervalDate = it.startIntervalDate
+                controller.endIntervalDate = it.endIntervalDate
+                controller
+            }
+        }
+        return timeInterval
     }
 }
