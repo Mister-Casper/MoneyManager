@@ -18,13 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.presentation.theme.Typography
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
+import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.SearchBar
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.rememberSearchState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
@@ -147,6 +151,78 @@ fun SearchTransactionsScreen(navController: NavController, searchTransactionsVie
                 }
             }else{
                 LazyColumn{
+                    item {
+                        Card(Modifier.fillMaxWidth()) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(6.dp)
+                                    .padding(start = 12.dp)
+                            ) {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
+                                ) {
+                                    Text(
+                                        text = state.countTransactions,
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        fontSize = 20.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                Text(
+                                    text = stringResource(id = R.string.overview),
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(top = 16.dp),
+                                    fontSize = 18.sp
+                                )
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.income),
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Text(
+                                        text = state.income
+                                    )
+                                }
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.expense),
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Text(text = state.expense, color = red)
+                                }
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 12.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.total),
+                                        fontWeight = FontWeight.Medium,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    Text(
+                                        text = state.total
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
                     items(state.transactions.size){
                         val item = state.transactions[it]
                         TransactionItem(item,navController,false,{},{})

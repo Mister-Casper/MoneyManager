@@ -8,12 +8,16 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
+import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
 import com.sgcdeveloper.moneymanager.domain.use_case.GetWallets
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.Date
+import com.sgcdeveloper.moneymanager.util.getExpense
+import com.sgcdeveloper.moneymanager.util.getIncome
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -24,7 +28,8 @@ open class SearchTransactionsViewModel @Inject constructor(
     private val app: Application,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
     private val getWallets: GetWallets,
-    private val getTransactionItems: GetTransactionItems
+    private val getTransactionItems: GetTransactionItems,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
     val state = mutableStateOf(SearchTransactionsState())
     lateinit var categories: List<TransactionCategory>
@@ -34,7 +39,9 @@ open class SearchTransactionsViewModel @Inject constructor(
         viewModelScope.launch {
             categories = getTransactionCategoriesUseCase.getAllItems()
             wallets = getWallets.getWallets()
-            find()
+            moneyManagerRepository.getTransactions().observeForever {
+                find()
+            }
         }
     }
 
@@ -142,13 +149,19 @@ open class SearchTransactionsViewModel @Inject constructor(
         walletText: String = state.value.walletText
     ) {
         viewModelScope.launch {
+            val globalWallet = getWallets.getAllWallet()
+
             val transactions = getTransactionItems.findTransactions(
-                getWallets.getAllWallet(),
+                globalWallet,
                 newText,
                 newWallets,
                 newTimeIntervalController,
                 newCategories
             )
+
+            val expense = transactions.getExpense(globalWallet)
+            val income = transactions.getIncome(globalWallet)
+            val total = income + expense
 
             state.value = state.value.copy(
                 text = newText,
@@ -163,7 +176,10 @@ open class SearchTransactionsViewModel @Inject constructor(
                 walletText = walletText,
                 transactions = transactions,
                 isExistAny = transactions.isNotEmpty(),
-                countTransactions = app.getString(R.string.count_founded_transactions)
+                countTransactions = app.getString(R.string.count_founded_transactions,transactions.size.toString()),
+                expense = getFormattedMoney(globalWallet, expense),
+                income = getFormattedMoney(globalWallet, income),
+                total = getFormattedMoney(globalWallet, total)
             )
         }
     }
@@ -183,5 +199,8 @@ data class SearchTransactionsState(
     val transactions: List<BaseTransactionItem.TransactionItem> = Collections.emptyList(),
     val isExistAny: Boolean = true,
     val countTransactions: String = "",
-    val dialogState: DialogState = DialogState.NoneDialogState
+    val dialogState: DialogState = DialogState.NoneDialogState,
+    val income: String = "",
+    val expense: String = "",
+    val total: String = ""
 )
