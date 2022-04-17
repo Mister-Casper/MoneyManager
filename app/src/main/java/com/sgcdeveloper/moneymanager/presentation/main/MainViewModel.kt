@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.util.CSVCreator
@@ -49,21 +50,25 @@ open class MainViewModel
     fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 
     fun setIsDark(isDark: Boolean) {
+        FirebaseAnalytics.getInstance(app).logEvent("change_theme",null)
         isDarkTheme.value = isDark
         appPreferencesHelper.setIsDarkTheme(isDark)
     }
 
     fun setFirstDayOfWeek(firstDayOfWeek: DayOfWeek) {
+        FirebaseAnalytics.getInstance(app).logEvent("change_first_day",null)
         this.firstDayOfWeek.value = firstDayOfWeek
         appPreferencesHelper.setFirstDayOfWeek(firstDayOfWeek)
     }
 
     fun setStartupScreen(startupScreen: BottomMoneyManagerNavigationScreens) {
+        FirebaseAnalytics.getInstance(app).logEvent("change_startup_screen",null)
         this.defaultStartupScreen.value = startupScreen
         appPreferencesHelper.setStartupScreen(startupScreen)
     }
 
     fun setStartupTransactionType(startupTransactionType: TransactionType) {
+        FirebaseAnalytics.getInstance(app).logEvent("change_startup_type",null)
         this.defaultStartupTransactionType.value = startupTransactionType
         appPreferencesHelper.setStartupTransactionType(startupTransactionType)
     }
@@ -85,6 +90,7 @@ open class MainViewModel
     }
 
     fun setAutoReturn(it: Boolean) {
+        FirebaseAnalytics.getInstance(app).logEvent("change_auto_return",null)
         isAutoReturn.value = it
         appPreferencesHelper.setAutoReturn(it)
     }

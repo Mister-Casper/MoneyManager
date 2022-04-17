@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
@@ -43,6 +44,7 @@ import com.sgcdeveloper.moneymanager.util.WalletSingleton
 @Composable
 fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navController: NavController) {
     val state = remember { transactionsViewModel.state }.value
+    val context = LocalContext.current
 
     if (state.dialogState is DialogState.WalletPickerDialog) {
         WalletPickerDialog(state.wallets, state.wallet, {
@@ -77,7 +79,8 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
         intent.putExtra(Intent.EXTRA_TEXT, transactionsText)
         LocalContext.current.startActivity(Intent.createChooser(intent, stringResource(id = R.string.transactions)))
 
-        transactionsViewModel.state.value = transactionsViewModel.state.value.copy(isShareSelectedTransactions = false, isMultiSelectionMode = false)
+        transactionsViewModel.state.value =
+            transactionsViewModel.state.value.copy(isShareSelectedTransactions = false, isMultiSelectionMode = false)
     }
 
     state.wallet?.let {
@@ -136,18 +139,21 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             ) {
                                 DropdownMenuItem(onClick = {
                                     expandedMenu = false
+                                    FirebaseAnalytics.getInstance(context).logEvent("open_calendar", null)
                                     navController.navigate(Screen.TransactionsCalendarScreen.route)
                                 }) {
                                     Text(stringResource(id = R.string.calendar_menu))
                                 }
                                 DropdownMenuItem(onClick = {
                                     expandedMenu = false
+                                    FirebaseAnalytics.getInstance(context).logEvent("open_search", null)
                                     navController.navigate(Screen.SearchTransactionsScreen.route)
                                 }) {
                                     Text(stringResource(id = R.string.search_menu))
                                 }
                                 DropdownMenuItem(onClick = {
                                     expandedMenu = false
+                                    FirebaseAnalytics.getInstance(context).logEvent("open_time_interval", null)
                                     if (state.wallet != null)
                                         navController.navigate(
                                             Screen.TimeIntervalTransactions(

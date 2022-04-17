@@ -64,9 +64,6 @@ fun AccountSettings(
             isShowDeleteUSerDialog = false
         }
     }
-    if (isShowUpdatePasswordDialog) {
-
-    }
 
     LazyColumn(Modifier.fillMaxSize()) {
         item {
