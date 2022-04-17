@@ -180,6 +180,21 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     onCheckedChange = { darkThemeViewModel.setIsDark(it) }
                 )
             }
+            MenuItem {
+                Row(Modifier.fillMaxWidth()) {
+                    Text(
+                        text = stringResource(id = R.string.autoreturn),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colors.onBackground,
+                        modifier = Modifier.align(Alignment.CenterVertically).weight(8f),
+                    )
+                    Switch(
+                        modifier = Modifier.align(Alignment.CenterVertically).weight(1f),
+                        checked = darkThemeViewModel.isAutoReturn.value,
+                        onCheckedChange = { darkThemeViewModel.setAutoReturn(it) }
+                    )
+                }
+            }
             MenuItem(Modifier.clickable { darkThemeViewModel.saveCSV() }) {
                 Row(
                     Modifier
@@ -189,7 +204,9 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     Icon(
                         painter = painterResource(id = R.drawable.csv_icon),
                         contentDescription = "",
-                        modifier = Modifier.align(Alignment.CenterVertically).size(32.dp)
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.export_csv),
@@ -216,7 +233,9 @@ fun SettingsScreen(navController: NavController, darkThemeViewModel: MainViewMod
                     Icon(
                         painter = painterResource(id = R.drawable.excel_icon),
                         contentDescription = "",
-                        modifier = Modifier.align(Alignment.CenterVertically).size(32.dp)
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .size(32.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.export_excel),
@@ -391,15 +410,15 @@ fun MenuItem(modifier: Modifier = Modifier, context: @Composable BoxScope.() -> 
     Card(
         modifier
             .fillMaxWidth()
-            .padding(4.dp)
-            .padding(start = 4.dp, end = 4.dp)
+            .padding(2.dp)
+            .padding(start = 2.dp, end = 2.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
-                .padding(6.dp)
-                .padding(start = 6.dp)
+                .padding(2.dp)
+                .padding(start = 2.dp)
         ) {
             context()
         }

@@ -145,6 +145,9 @@ class SyncHelper @Inject constructor(
         val startupTransactionType = userDocument.getLong(AppPreferencesHelper.STARTUP_TRANSACTION_TYPE)
         if (startupTransactionType != null)
             appPreferencesHelper.setStartupTransactionType(TransactionType.getByOrdinal(startupTransactionType.toInt()))
+        val autoReturn = userDocument.getBoolean(AppPreferencesHelper.AUTO_RETURN)
+        if (autoReturn != null)
+            appPreferencesHelper.setAutoReturn(autoReturn)
         return false
     }
 
@@ -169,6 +172,7 @@ class SyncHelper @Inject constructor(
                     AppPreferencesHelper.FIRST_DAY_OF_WEEK to appPreferencesHelper.getFirstDayOfWeek().value,
                     AppPreferencesHelper.STARTUP_SCREEN to appPreferencesHelper.getStartupScreen().route,
                     AppPreferencesHelper.STARTUP_TRANSACTION_TYPE to appPreferencesHelper.getStartupTransactionType().ordinal,
+                    AppPreferencesHelper.AUTO_RETURN to appPreferencesHelper.getAutoReturn(),
                     "wallets" to getWallets(),
                     "transactions" to getTransactions(),
                     "rates" to getRate(),

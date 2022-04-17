@@ -47,7 +47,7 @@ fun RateUsDialog(
             .wrapContentHeight()
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
-                    if (offset.y <= ywOffset)
+                    if (offset.y <= ywOffset10)
                         onDismiss()
                 }
             }

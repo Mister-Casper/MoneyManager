@@ -65,6 +65,8 @@ open class AddTransactionViewModel @Inject constructor(
     var isRecurringMode = true
     var isMustBeRecurring = false
 
+    val isAutoReturn = appPreferencesHelper.getAutoReturn()
+
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
     init {

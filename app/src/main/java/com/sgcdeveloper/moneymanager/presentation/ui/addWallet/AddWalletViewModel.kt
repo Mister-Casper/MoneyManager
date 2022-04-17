@@ -43,6 +43,8 @@ open class AddWalletViewModel @Inject constructor(
     val walletColor = mutableStateOf(wallet_colors[0].toArgb())
     val walletIcon = mutableStateOf(R.drawable.wallet_icon_1)
 
+    val isAutoReturn = appPreferencesHelper.getAutoReturn()
+
     val wallet = MutableLiveData<Wallet>()
 
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)

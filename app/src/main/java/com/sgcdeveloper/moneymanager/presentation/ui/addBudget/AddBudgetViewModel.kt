@@ -40,6 +40,7 @@ open class AddBudgetViewModel @Inject constructor(
     val formattedBudgetAmount = mutableStateOf("")
     val budgetName = mutableStateOf("")
     val defaultCurrency = currencyRepository.getDefaultCurrency()
+    val isAutoReturn = appPreferencesHelper.getAutoReturn()
     lateinit var expenseItems:List<TransactionCategory>
 
     val isBudgetCanBeSaved = mutableStateOf(false)

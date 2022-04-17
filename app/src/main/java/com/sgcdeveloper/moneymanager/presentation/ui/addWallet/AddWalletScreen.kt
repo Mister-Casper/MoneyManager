@@ -1,6 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addWallet
 
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -51,6 +52,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
     val signalBack = remember { addWalletViewModel.back }
 
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
 
     if (dialog.value is DialogState.SelectCurrenciesDialogState) {
         SelectCurrenciesDialog(
@@ -149,7 +151,16 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                     Button(
                         onClick = {
                             addWalletViewModel.onEvent(WalletEvent.InsertWallet)
-                            moveBack(navController)
+                            if (addWalletViewModel.isAutoReturn) {
+                                if (navController.backQueue
+                                        .dropLast(1)
+                                        .last().destination.route!! == "WalletScreen/{wallet}"
+                                )
+                                    navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
+                                else
+                                    navController.popBackStack()
+                            } else
+                                Toast.makeText(context, context.getString(R.string.budget_added), Toast.LENGTH_LONG).show()
                         },
                         enabled = addWalletViewModel.walletName.value.isNotEmpty(),
                         modifier = Modifier.padding(end = 12.dp)
@@ -257,11 +268,6 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
 }
 
 fun moveBack(navController: NavController) {
-    Log.e(
-        "QWE", navController.backQueue
-            .dropLast(1)
-            .last().destination.route!!
-    )
     if (navController.backQueue
             .dropLast(1)
             .last().destination.route!! == "WalletScreen/{wallet}"

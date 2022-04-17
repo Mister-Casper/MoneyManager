@@ -32,6 +32,7 @@ open class MainViewModel
     private val rateUsDialogHelper: RateUsDialogHelper
 ) : AndroidViewModel(app) {
 
+    val isAutoReturn = mutableStateOf(appPreferencesHelper.getAutoReturn())
     val isDarkTheme = mutableStateOf(appPreferencesHelper.getIsDarkTheme())
     val firstDayOfWeek = mutableStateOf(appPreferencesHelper.getFirstDayOfWeek())
     val defaultStartupScreen = mutableStateOf(appPreferencesHelper.getStartupScreen())
@@ -81,5 +82,10 @@ open class MainViewModel
 
     fun rated() {
         rateUsDialogHelper.rated()
+    }
+
+    fun setAutoReturn(it: Boolean) {
+        isAutoReturn.value = it
+        appPreferencesHelper.setAutoReturn(it)
     }
 }

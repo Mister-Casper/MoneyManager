@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,8 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
     val createRecurringInterval = CreateRecurringInterval()
     val focusManager = LocalFocusManager.current
 
+    val context = LocalContext.current
+
     if (dialog.value is DialogState.DatePickerDialog) {
         DatePicker(
             defaultDate = addTransactionViewModel.transactionDate.value,
@@ -63,7 +67,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             }, addTransactionViewModel.isDarkTheme()
         )
     } else if (dialog.value is DialogState.CategoryPickerDialog) {
-        SelectTransactionCategoryDialog(navController,incomeItems = addTransactionViewModel.incomeItems,
+        SelectTransactionCategoryDialog(navController, incomeItems = addTransactionViewModel.incomeItems,
             expenseItems = addTransactionViewModel.expenseItems,
             isIncome = addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
             defaultCategory = addTransactionViewModel.getDefaultTransactionCategory(),
@@ -169,7 +173,10 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set("wallet_id", addTransactionViewModel.transactionFromWallet.value!!.walletId)
-                    navController.popBackStack()
+                    if (addTransactionViewModel.isAutoReturn) {
+                        navController.popBackStack()
+                    } else
+                        Toast.makeText(context, context.getString(R.string.budget_added), Toast.LENGTH_LONG).show()
                     addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
                 }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
                 colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray),

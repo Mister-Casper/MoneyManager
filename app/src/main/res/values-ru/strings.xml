@@ -312,4 +312,6 @@
     <string name="no_transactions_yet">Транзакций пока нет</string>
     <string name="add_day_transaction">Добавить</string>
 
+    <string name="autoreturn">Автовозврат. Когда включен, вы сразу вернетесь назад после добавления транзакций/бюджетов/категорий и тд.</string>
+
 </resources>

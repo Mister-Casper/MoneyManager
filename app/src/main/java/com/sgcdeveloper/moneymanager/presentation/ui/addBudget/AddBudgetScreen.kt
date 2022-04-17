@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addBudget
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -112,8 +113,12 @@ fun AddBudgetScreen(addBudgetViewModel: AddBudgetViewModel, navController: NavCo
                 Button(
                     onClick = {
                         addBudgetViewModel.onEvent(AddBudgetEvent.InsertBudget)
-                        if (!navController.popBackStack(Screen.BudgetManagerScreen.route, false))
-                            navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
+                        if(addBudgetViewModel.isAutoReturn) {
+                            if (!navController.popBackStack(Screen.BudgetManagerScreen.route, false))
+                                navController.popBackStack(BottomMoneyManagerNavigationScreens.Home.route, false)
+                        }
+                        else
+                            Toast.makeText(context, context.getString(R.string.budget_added),Toast.LENGTH_LONG).show()
                     }, enabled = addBudgetViewModel.isBudgetCanBeSaved.value,
                     colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray),
                     modifier = Modifier.padding(end = 12.dp)

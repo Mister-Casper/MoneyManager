@@ -129,6 +129,13 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         prefs.edit().putInt(REVIEW_STATUS,reviewStatus.id).apply()
     }
 
+    fun getAutoReturn():Boolean{
+        return prefs.getBoolean(AUTO_RETURN,true)
+    }
+
+    fun setAutoReturn(isAutoReturn:Boolean){
+        prefs.edit().putBoolean(AUTO_RETURN,isAutoReturn).apply()
+    }
 
     companion object {
         const val LOGIN_STATUS = "LOGIN_STATUS"
@@ -145,5 +152,6 @@ class AppPreferencesHelper @Inject constructor(context: Context, private val def
         const val FIRST_OPEN_TIME = "FIRST_OPEN_TIME"
         const val TIMES_OPEN = "TIMES_OPEN"
         const val REVIEW_STATUS = "REVIEW_STATUS"
+        const val AUTO_RETURN = "AUTO_RETURN"
     }
 }
