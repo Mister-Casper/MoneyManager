@@ -72,6 +72,30 @@ fun List<BaseTransactionItem>.getExpense(wallet: Wallet): Double {
     return expenseMoney
 }
 
+fun Collection<List<Transaction>>.getTransactionsIncome(wallet: Wallet): Double {
+    return this.sumOf { it.getTransactionsIncome(wallet) }
+}
+
+fun Collection<List<Transaction>>.getTransactionsExpense(wallet: Wallet): Double {
+    return this.sumOf { it.getTransactionsExpense(wallet) }
+}
+
+fun List<Transaction>.getTransactionsIncome(wallet: Wallet): Double {
+    var incomeMoney = this
+        .filter { it.transactionType == TransactionType.Income }.sumOf { it.value }
+    incomeMoney += this
+        .filter { it.transactionType == TransactionType.Transfer }
+        .filter { it.toWalletId == wallet.walletId }.sumOf { it.value }
+    return incomeMoney
+}
+
+fun List<Transaction>.getTransactionsExpense(wallet: Wallet): Double {
+    var expenseMoney = this.filter { it.transactionType == TransactionType.Expense }.sumOf { it.value } * -1
+    expenseMoney -= this.filter { it.transactionType == TransactionType.Transfer }
+        .filter { it.fromWalletId == wallet.walletId }.sumOf { it.value }
+    return expenseMoney
+}
+
 fun Double.toRoundString(): String {
     return ((this * 100.0).roundToInt() / 100.0).toString()
 }

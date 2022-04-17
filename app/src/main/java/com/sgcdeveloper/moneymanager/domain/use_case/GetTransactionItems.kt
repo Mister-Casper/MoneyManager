@@ -89,7 +89,7 @@ class GetTransactionItems @Inject constructor(
             .filter { timeIntervalController.isInInterval(it.date) && (transactionCategory == null || it.category.id == transactionCategory.id) }
     }
 
-    private suspend fun convertTransactionsToItems(
+    suspend fun convertTransactionsToItems(
         wallet: Wallet,
         transactions: List<Transaction>
     ): MutableList<BaseTransactionItem> {

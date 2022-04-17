@@ -53,6 +53,7 @@ import com.sgcdeveloper.moneymanager.presentation.ui.budget.BudgetScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.BudgetManagerScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManager
 import com.sgcdeveloper.moneymanager.presentation.ui.budgetManager.TimeIntervalBudgetManagerViewModel
+import com.sgcdeveloper.moneymanager.presentation.ui.calendar.TransactionsCalendarScreen
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.RateUsDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.homeScreen.HomeViewModel
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitScreen
@@ -328,13 +329,14 @@ class MainActivity : FragmentActivity() {
 
                             val walletJson = backStackEntry.arguments?.getString("wallet")
                             val wallet = gson.fromJson(walletJson, Wallet::class.java)
-                            LaunchedEffect(Unit) {
-                                if (wallet != null)
-                                    timeIntervalTransactionsViewModel.onEvent(
-                                        TimeIntervalTransactionEvent.SetDefaultWallet(
-                                            wallet
-                                        )
+                            if (wallet != null)
+                                timeIntervalTransactionsViewModel.onEvent(
+                                    TimeIntervalTransactionEvent.SetDefaultWallet(
+                                        wallet
                                     )
+                                )
+
+                            LaunchedEffect(Unit) {
                                 if (TimeInternalSingleton.timeIntervalController != null) {
                                     val timeInterval = loadTImeInterval(TimeInternalSingleton.timeIntervalController!!)
                                     timeIntervalTransactionsViewModel.onEvent(
@@ -352,6 +354,8 @@ class MainActivity : FragmentActivity() {
                             )
 
                             TimeIntervalTransactionsScreen(timeIntervalTransactionsViewModel, navController)
+
+                            backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
                             val statisticViewModel:StatisticViewModel =  hiltViewModel()
@@ -440,6 +444,9 @@ class MainActivity : FragmentActivity() {
                         }
                         composable(Screen.DepositCalculator.route) {
                             DepositCalculatorScreen(navController, darkThemeViewModel)
+                        }
+                        composable(Screen.TransactionsCalendarScreen.route){
+                            TransactionsCalendarScreen(navController, hiltViewModel())
                         }
                         composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
                             val walletViewModel: WalletViewModel = hiltViewModel()

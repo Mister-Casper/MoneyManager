@@ -5,8 +5,6 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.util.Date
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
-import kotlin.math.ceil
-import kotlin.math.floor
 
 sealed class TimeIntervalController(val icon: Int, val name: Int) {
     abstract fun moveBack()
@@ -22,11 +20,11 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
         if (this is AllController)
             return true
         val date =
-            ((intervalDate.epochMillis - 1) / TimeUnit.DAYS.toMillis(1)).toInt()
+            (intervalDate.epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
         val startDate =
-            floor( (getStartDate().epochMillis  / TimeUnit.DAYS.toMillis(1).toDouble())).toInt()
+            (getStartDate().epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
         val endDate =
-            ceil( (getEndDate().epochMillis  / TimeUnit.DAYS.toMillis(1).toDouble())).toInt()
+            (((getEndDate().epochMillis + TimeUnit.DAYS.toMillis(1)) / TimeUnit.HOURS.toMillis(1)).toInt()) +1
         return (date in startDate .. endDate)
     }
 

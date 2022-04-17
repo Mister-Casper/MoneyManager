@@ -136,6 +136,7 @@ fun TransactionsScreen(transactionsViewModel: TransactionsViewModel, navControll
                             ) {
                                 DropdownMenuItem(onClick = {
                                     expandedMenu = false
+                                    navController.navigate(Screen.TransactionsCalendarScreen.route)
                                 }) {
                                     Text(stringResource(id = R.string.calendar_menu))
                                 }
