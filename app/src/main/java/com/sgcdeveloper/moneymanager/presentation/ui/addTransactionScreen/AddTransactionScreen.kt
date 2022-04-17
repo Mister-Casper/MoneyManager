@@ -176,7 +176,7 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
                     if (addTransactionViewModel.isAutoReturn) {
                         navController.popBackStack()
                     } else
-                        Toast.makeText(context, context.getString(R.string.budget_added), Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, context.getString(R.string.tranasction_added), Toast.LENGTH_LONG).show()
                     addTransactionViewModel.onEvent(AddTransactionEvent.InsertTransaction)
                 }, enabled = addTransactionViewModel.isTransactionCanBeSaved.value,
                 colors = ButtonDefaults.buttonColors(disabledBackgroundColor = gray),

@@ -160,7 +160,7 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
                                 else
                                     navController.popBackStack()
                             } else
-                                Toast.makeText(context, context.getString(R.string.budget_added), Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, context.getString(R.string.wallet_added), Toast.LENGTH_LONG).show()
                         },
                         enabled = addWalletViewModel.walletName.value.isNotEmpty(),
                         modifier = Modifier.padding(end = 12.dp)

@@ -313,5 +313,8 @@
 
     <string name="autoreturn">Auto return. When enabled you will automatically go back after adding transactions/budgets/categories etc.</string>
     <string name="budget_added">"Budget added "</string>
+    <string name="category_added">"Category added "</string>
+    <string name="tranasction_added">Transaction added</string>
+    <string name="wallet_added">Wallet added</string>
 
 </resources>

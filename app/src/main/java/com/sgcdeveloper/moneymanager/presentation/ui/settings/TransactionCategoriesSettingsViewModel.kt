@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
+import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.use_case.DeleteTransactionCategoryUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
@@ -25,13 +26,15 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     private val app: Application,
     private val transactionCategoriesDatabase: TransactionCategoriesDatabase,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
-    private val deleteTransactionCategoryUseCase: DeleteTransactionCategoryUseCase
+    private val deleteTransactionCategoryUseCase: DeleteTransactionCategoryUseCase,
+    private val appPreferencesHelper: AppPreferencesHelper
 ) : AndroidViewModel(app) {
 
     private val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     private val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
     val isShowIncomeCategories = mutableStateOf(false)
+    val isAutoReturn = appPreferencesHelper.getAutoReturn()
 
     val items: SnapshotStateList<TransactionCategory> = mutableStateListOf()
 

@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.settings
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,11 +52,13 @@ fun TransactionCategoriesSettings(
             runBlocking {
                 transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
             }
+            if(transactionCategoriesSettingsViewModel.isAutoReturn){
             transactionCategoriesSettingsViewModel.closeDialog()
             scope.launch {
                 delay(250)
                 state.listState.animateScrollToItem(items.size + 1)
-            }
+            }}else
+                Toast.makeText(context, context.getString(R.string.category_added), Toast.LENGTH_LONG).show()
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()
         })
