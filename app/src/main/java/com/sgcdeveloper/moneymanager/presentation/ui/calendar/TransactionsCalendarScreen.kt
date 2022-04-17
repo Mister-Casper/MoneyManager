@@ -28,6 +28,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.blue
 import com.sgcdeveloper.moneymanager.presentation.theme.red
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.AutoSizeText
 import com.sgcdeveloper.moneymanager.presentation.ui.composables.TimeIntervalControllerView
+import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.CalendarTransactionsDialog
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.WalletPickerDialog
 
@@ -46,6 +47,14 @@ fun TransactionsCalendarScreen(
         }, {
             navController.navigate(Screen.AddWallet(it).route)
         })
+    } else if (state.dialogState is DialogState.CalendarTransactionsDialog) {
+        CalendarTransactionsDialog(
+            navController,
+            state.dialogState.dayTransactions,
+            {transactionsCalendarViewModel.moveDayBack()},
+            {transactionsCalendarViewModel.moveDayNext()},
+            {navController.navigate(Screen.AddDateTransaction(state.wallet,it).route)},
+            { transactionsCalendarViewModel.closeDialog() })
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -161,19 +170,24 @@ fun TransactionsCalendarScreen(
                 repeat(6) { row ->
                     Row(Modifier.weight(1f)) {
                         repeat(7) { column ->
+                            val day = state.transactionsCalendar.days[row * 7 + column]
                             Column(
                                 Modifier
                                     .weight(1f)
                                     .fillMaxSize()
                                     .border(BorderStroke(0.1.dp, MaterialTheme.colors.onBackground))
+                                    .clickable {
+                                        if (day.isExist)
+                                            transactionsCalendarViewModel.showDayTransactionsDialog(day.dayTransactions)
+                                    }
                             ) {
-                                Text(text = state.transactionsCalendar.days[row * 7 + column].number, fontSize = 12.sp)
+                                Text(text = day.number, fontSize = 12.sp)
                                 AutoSizeText(
-                                    text = state.transactionsCalendar.days[row * 7 + column].income,
+                                    text = day.income,
                                     color = blue
                                 )
                                 AutoSizeText(
-                                    text = state.transactionsCalendar.days[row * 7 + column].expense,
+                                    text = day.expense,
                                     color = red
                                 )
                             }

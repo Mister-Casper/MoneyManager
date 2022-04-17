@@ -32,6 +32,8 @@ sealed class Screen(val route: String) {
     class AddWallet(wallet: Wallet? = null) : Screen("AddWallet/" + gson.toSafeJson(wallet))
     class AddTransaction(wallet: Wallet? = null) :
         Screen("AddTransaction/" + gson.toSafeJson(wallet))
+    class AddDateTransaction(wallet: Wallet? = null,date: String) :
+        Screen("AddTransaction/" + gson.toSafeJson(wallet) + "/" + gson.toSafeJson(date))
 
     class AddRecurringTransaction(recurringTransaction: RecurringTransaction? = null) :
         Screen("AddRecurringTransaction/" + gson.toSafeJson(recurringTransaction))

@@ -9,6 +9,8 @@ import com.sgcdeveloper.moneymanager.domain.model.calendar.DayTransactions
 import com.sgcdeveloper.moneymanager.domain.model.calendar.TransactionsCalendar
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
+import com.sgcdeveloper.moneymanager.util.Date.Companion.getDayName
+import com.sgcdeveloper.moneymanager.util.Date.Companion.toDateString
 import com.sgcdeveloper.moneymanager.util.getTransactionsExpense
 import com.sgcdeveloper.moneymanager.util.getTransactionsIncome
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +37,7 @@ class GetTransactionsCalendarUseCase @Inject constructor(
             val expenseNum = monthTransactions.values.getTransactionsExpense(wallet)
             val income = getFormattedMoney(wallet, incomeNum)
             val expense = getFormattedMoney(wallet, expenseNum)
-            val total = getFormattedMoney(wallet ,(incomeNum + expenseNum))
+            val total = getFormattedMoney(wallet, (incomeNum + expenseNum))
 
             return@async TransactionsCalendar(
                 income,
@@ -61,23 +63,37 @@ class GetTransactionsCalendarUseCase @Inject constructor(
         val daysInMonth = timeIntervalController.getStartDate().getAsLocalDate().lengthOfMonth()
         val maxDay = dayTransactions.keys.maxOfOrNull { it } ?: daysInMonth
         var existDayNum = 1
+        var day = timeIntervalController.getStartDate().getAsLocalDate().withDayOfMonth(existDayNum)
         for (i in 1..42) {
+            if (existDayNum <= day.lengthOfMonth())
+                day = timeIntervalController.getStartDate().getAsLocalDate().withDayOfMonth(existDayNum)
+            val dayStr = day.getDayName() + " " + day.toDateString()
             if (i < startDay || existDayNum > maxDay) {
                 var money = ""
+                var dayTitle = ""
                 val dayNum = if (existDayNum in startDay..daysInMonth) {
+                    dayTitle = dayStr
                     existDayNum += 1
                     money = "0"
                     (existDayNum - 1).toString()
                 } else ""
-                calendarDays.add(CalendarDay(false, dayNum, false, isHoliday(i), money, money, DayTransactions()))
+                calendarDays.add(
+                    CalendarDay(
+                        money != "",
+                        dayNum,
+                        false,
+                        isHoliday(i),
+                        money,
+                        money,
+                        DayTransactions(dayNumber = i, dayText = dayTitle)
+                    )
+                )
             } else {
-                val dailyIncome = (dayTransactions[existDayNum]?.getTransactionsIncome(wallet)?.toInt() ?: 0).toString()
-                val dailyExpense =
-                    (dayTransactions[existDayNum]?.getTransactionsExpense(wallet)?.toInt() ?: 0).toString()
-                val total = (dailyIncome.toInt() + dailyExpense.toInt()).toString()
-
-                val dayTitle =
-                    timeIntervalController.getStartDate().getAsLocalDate().withDayOfMonth(existDayNum).toString()
+                val dailyIncomeNum = (dayTransactions[existDayNum]?.getTransactionsIncome(wallet) ?: 0).toDouble()
+                val dailyExpenseNum = (dayTransactions[existDayNum]?.getTransactionsExpense(wallet) ?: 0).toDouble()
+                val dailyIncome = dailyIncomeNum.toInt().toString()
+                val dailyExpense = dailyExpenseNum.toInt().toString()
+                val total = getFormattedMoney(wallet, dailyExpenseNum + dailyIncomeNum)
 
                 calendarDays.add(
                     CalendarDay(
@@ -88,7 +104,9 @@ class GetTransactionsCalendarUseCase @Inject constructor(
                         dailyIncome,
                         dailyExpense,
                         DayTransactions(
-                            dayTitle,
+                            i,
+                            dayStr,
+                            day,
                             total,
                             getTransactionItems.convertTransactionsToItems(
                                 wallet,

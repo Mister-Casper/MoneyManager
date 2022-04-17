@@ -6,7 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.calendar.DayTransactions
 import com.sgcdeveloper.moneymanager.domain.model.calendar.TransactionsCalendar
+import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionsCalendarUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
@@ -24,7 +26,8 @@ open class TransactionsCalendarViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val getTransactionsCalendarUseCase: GetTransactionsCalendarUseCase
+    private val getTransactionsCalendarUseCase: GetTransactionsCalendarUseCase,
+    private val moneyManagerRepository: MoneyManagerRepository
 ) : AndroidViewModel(app) {
 
     val state = mutableStateOf(TransactionsCalendarState())
@@ -57,6 +60,9 @@ open class TransactionsCalendarViewModel @Inject constructor(
                 }
             }
         })
+        moneyManagerRepository.getTransactions().observeForever {
+            loadTransactions()
+        }
     }
 
     fun showWalletPickerDialog() {
@@ -88,7 +94,13 @@ open class TransactionsCalendarViewModel @Inject constructor(
         loadTransactions()
     }
 
+    fun showDayTransactionsDialog(dayTransactions: DayTransactions) {
+        state.value = state.value.copy(dialogState = DialogState.CalendarTransactionsDialog(dayTransactions))
+    }
+
     private fun loadTransactions() {
+        if (state.value.wallet == null)
+            return
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
             state.value = state.value.copy(
@@ -97,7 +109,23 @@ open class TransactionsCalendarViewModel @Inject constructor(
                     state.value.timeIntervalController
                 )
             )
+            if (state.value.dialogState is DialogState.CalendarTransactionsDialog)
+                showDayTransactionsDialog(state.value.transactionsCalendar.days.find { it.dayTransactions.dayText == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayText }!!.dayTransactions)
         }
+    }
+
+    fun moveDayNext() {
+        val backDay =
+            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber + 1 }!!
+        if (backDay.isExist)
+            showDayTransactionsDialog(backDay.dayTransactions)
+    }
+
+    fun moveDayBack() {
+        val backDay =
+            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber - 1 }!!
+        if (backDay.isExist)
+            showDayTransactionsDialog(backDay.dayTransactions)
     }
 }
 

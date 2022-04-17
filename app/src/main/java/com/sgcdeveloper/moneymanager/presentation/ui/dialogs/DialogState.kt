@@ -4,6 +4,7 @@ import com.sgcdeveloper.moneymanager.domain.model.Currency
 import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.domain.model.TransactionCategory
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
+import com.sgcdeveloper.moneymanager.domain.model.calendar.DayTransactions
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.util.Date
 
@@ -17,7 +18,8 @@ sealed class DialogState {
     class AddTransactionCategoryDialog(val category: TransactionCategory, val isExpense: Boolean) : DialogState()
     class DeleteTransactionCategoryDialogState(val transactionCategory: TransactionCategory) : DialogState()
     class SelectCustomTImeIntervalDialog(val startDate: Date, val endDate: Date) : DialogState()
-    class SelectWalletsDialog(val allWallets:List<Wallet>,val defaultWallets:List<Wallet>) : DialogState()
+    class SelectWalletsDialog(val allWallets: List<Wallet>, val defaultWallets: List<Wallet>) : DialogState()
+    class CalendarTransactionsDialog(val dayTransactions: DayTransactions) : DialogState()
 
     object StringSelectorDialogState : DialogState()
     object SelectCurrenciesDialogState : DialogState()

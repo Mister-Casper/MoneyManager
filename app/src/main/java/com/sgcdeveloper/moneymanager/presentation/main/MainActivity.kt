@@ -358,7 +358,7 @@ class MainActivity : FragmentActivity() {
                             backStackEntry.arguments?.putString("wallet", "")
                         }
                         composable(Screen.TransactionCategoryStatisticScreen(null).route + "{screen}") { backStackEntry ->
-                            val statisticViewModel:StatisticViewModel =  hiltViewModel()
+                            val statisticViewModel: StatisticViewModel = hiltViewModel()
                             LaunchedEffect(Unit) {
                                 val timeInterval = loadTImeInterval(TimeInternalSingleton.timeIntervalController!!)
                                 statisticViewModel.onEvent(
@@ -445,7 +445,7 @@ class MainActivity : FragmentActivity() {
                         composable(Screen.DepositCalculator.route) {
                             DepositCalculatorScreen(navController, darkThemeViewModel)
                         }
-                        composable(Screen.TransactionsCalendarScreen.route){
+                        composable(Screen.TransactionsCalendarScreen.route) {
                             TransactionsCalendarScreen(navController, hiltViewModel())
                         }
                         composable(Screen.WalletScreen(null).route + "{wallet}") { backStackEntry ->
@@ -476,6 +476,23 @@ class MainActivity : FragmentActivity() {
                             }
                             WeeklyStatisticScreen(navController, weeklyStatisticViewModel)
                             backStackEntry.arguments?.putString("wallet", "")
+                        }
+                        composable("AddTransaction/" + "{wallet}" + "/" + "{date}") {
+                            val addTransactionViewModel = hiltViewModel<AddTransactionViewModel>()
+
+                            val wallet =
+                                gson.fromJson(it.arguments?.getString("wallet"), Wallet::class.java)
+                            val date = gson.fromJson(it.arguments?.getString("date"), String::class.java)
+
+                            if (wallet != null) {
+                                addTransactionViewModel.onEvent(AddTransactionEvent.SetDefaultWallet(wallet))
+                                addTransactionViewModel.isMustBeRecurring = false
+                                addTransactionViewModel.recurringInterval.value = RecurringInterval.None
+                                addTransactionViewModel.onEvent(AddTransactionEvent.ChangeTransactionDate(Date(date.toLong()).getAsLocalDate()))
+                            }
+                            AddTransactionScreen(addTransactionViewModel, navController)
+
+                            it.arguments?.putString("wallet", "")
                         }
                         composable(Screen.WalletsManagerScreen.route) {
                             WalletsManagerScreen(hiltViewModel(), navController)

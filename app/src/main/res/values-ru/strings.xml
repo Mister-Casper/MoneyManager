@@ -308,4 +308,8 @@
     <string name="wallet_search">КОШЕЛЕК</string>
     <string name="count_founded_transactions">%1$s транзакций найдено</string>
     <string name="no_result_found">Результатов не найдено</string>
+
+    <string name="no_transactions_yet">Транзакций пока нет</string>
+    <string name="add_day_transaction">Добавить</string>
+
 </resources>

@@ -308,4 +308,7 @@
     <string name="count_founded_transactions">%1$s transactions found</string>
     <string name="no_result_found">No result found</string>
 
+    <string name="no_transactions_yet">No transaction yet</string>
+    <string name="add_day_transaction">Add</string>
+
 </resources>
