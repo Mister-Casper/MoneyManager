@@ -77,78 +77,79 @@ fun CalendarTransactionsDialog(
             }
         },
         text = {
-            LazyColumn(Modifier.fillMaxWidth()) {
-                item {
-                    Divider(color = MaterialTheme.colors.onSurface)
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
-                if (dayTransactions.transactions.isNotEmpty()) {
-                    items(dayTransactions.transactions.size) {
-                        val transaction = dayTransactions.transactions[it]
-                        TransactionItem(
-                            item = transaction,
-                            navController = navController,
-                            isMultiSelection = false,
-                            onChangedSelection = {}
-                        ) {
-
-                        }
-                    }
-                } else
+            Column(Modifier.fillMaxWidth()) {
+                LazyColumn(Modifier.fillMaxWidth().weight(3f)) {
                     item {
-                        Text(
-                            text = stringResource(id = R.string.no_transactions_yet),
-                            fontSize = 24.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Divider(color = MaterialTheme.colors.onSurface)
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
-                item {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)) {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowLeft,
-                            contentDescription = "move to the back day",
-                            modifier = Modifier
-                                .align(
-                                    Alignment.CenterVertically
-                                )
-                                .weight(1f)
-                                .clickable {
-                                    onBack()
-                                }
-                                .size(40.dp)
-                        )
-                        Button(
-                            onClick = { onAdd(Date(dayTransactions.day).epochMillis.toString()) },
-                            modifier = Modifier
-                                .align(
-                                    Alignment.CenterVertically
-                                )
-                                .padding(start = 16.dp, end = 16.dp)
-                                .weight(10f)
-                        ) {
+                    if (dayTransactions.transactions.isNotEmpty()) {
+                        items(dayTransactions.transactions.size) {
+                            val transaction = dayTransactions.transactions[it]
+                            TransactionItem(
+                                item = transaction,
+                                navController = navController,
+                                isMultiSelection = false,
+                                onChangedSelection = {}
+                            ) {
+
+                            }
+                        }
+                    } else
+                        item {
                             Text(
-                                text = stringResource(id = R.string.add_day_transaction),
-                                fontSize = 20.sp
+                                text = stringResource(id = R.string.no_transactions_yet),
+                                fontSize = 24.sp,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowRight,
-                            contentDescription = "move to the next day",
-                            modifier = Modifier
-                                .align(
-                                    Alignment.CenterVertically
-                                )
-                                .weight(1f)
-                                .clickable {
-                                    onNext()
-                                }
-                                .size(40.dp)
+                }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowLeft,
+                        contentDescription = "move to the back day",
+                        modifier = Modifier
+                            .align(
+                                Alignment.CenterVertically
+                            )
+                            .weight(1f)
+                            .clickable {
+                                onBack()
+                            }
+                            .size(40.dp)
+                    )
+                    Button(
+                        onClick = { onAdd(Date(dayTransactions.day).epochMillis.toString()) },
+                        modifier = Modifier
+                            .align(
+                                Alignment.CenterVertically
+                            )
+                            .padding(start = 16.dp, end = 16.dp)
+                            .weight(10f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.add_day_transaction),
+                            fontSize = 20.sp
                         )
                     }
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        contentDescription = "move to the next day",
+                        modifier = Modifier
+                            .align(
+                                Alignment.CenterVertically
+                            )
+                            .weight(1f)
+                            .clickable {
+                                onNext()
+                            }
+                            .size(40.dp)
+                    )
                 }
             }
         },
@@ -157,6 +158,7 @@ fun CalendarTransactionsDialog(
 }
 
 fun Modifier.customDialogModifier11() = layout { measurable, constraints ->
+    val constraints = constraints.copy(maxHeight = constraints.maxHeight / 2)
     val placeable = measurable.measure(constraints)
     ywOffset11 = constraints.maxHeight - placeable.height
     layout(constraints.maxWidth, constraints.maxHeight) {
