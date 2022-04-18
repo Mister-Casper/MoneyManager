@@ -45,7 +45,7 @@ open class MainViewModel
 
     var csvPath by mutableStateOf(Uri.EMPTY)
     var excelPath by mutableStateOf(Uri.EMPTY)
-    var isNeedRateUs = rateUsDialogHelper.isNeedShow
+    var isNeedRateUs by mutableStateOf(rateUsDialogHelper.isNeedShow)
 
     fun isExistRates(): Boolean = runBlocking { return@runBlocking moneyManagerRepository.getRatesOnce().isNotEmpty() }
 

@@ -73,7 +73,7 @@ fun RecurringDialogPicker(
             return true
         if (selectedRecurring == Weekly && selectedDay.isEmpty())
             return false
-        else if (selectedRecurring == Weekly && selectedDay.isNotEmpty() &&  repeatInterval.isNotEmpty() && repeatInterval.toInt() > 0)
+        else if (selectedRecurring == Weekly && selectedDay.isNotEmpty())
             return true
         if (!repeatInterval.isDigitsOnly() || repeatInterval.isEmpty() || (repeatInterval.toInt() < 1))
             return false

@@ -99,19 +99,20 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         dialogState.value = DialogState.NoneDialogState
     }
 
-    fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) {
+    fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) :Boolean{
         FirebaseAnalytics.getInstance(app).logEvent("insert_transaction_category", null)
         viewModelScope.launch {
             val order = if (category.id == 0L) {
                 if (isIncome)
-                    incomeCategories.maxOf { it.order }
+                    incomeCategories.maxOfOrNull { it.order } ?: 1
                 else
-                    expenseCategories.maxOf { it.order }
+                    expenseCategories.maxOfOrNull { it.order } ?: 1
             } else
                 category.order
             transactionCategoriesDatabase.transactionCategoryDao()
                 .insertTransactionCategory(category.copy(order = order, isDefault = 0))
         }
+        return category.id == 0L
     }
 
     fun deleteCategory(transactionCategory: TransactionCategory) {

@@ -27,7 +27,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.theme.dark_blue
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 
-var ywOffset10 = 0
+var ywOffset9 = 0
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -47,11 +47,11 @@ fun RateUsDialog(
             .wrapContentHeight()
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
-                    if (offset.y <= ywOffset10)
+                    if (offset.y <= ywOffset9)
                         onDismiss()
                 }
             }
-            .customDialogModifier10(),
+            .customDialogModifier9(),
         text = {
             Column {
                 Text(
@@ -116,10 +116,10 @@ fun RateUsDialog(
     )
 }
 
-fun Modifier.customDialogModifier10() = layout { measurable, constraints ->
+fun Modifier.customDialogModifier9() = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
-    ywOffset10 = constraints.maxHeight - placeable.height
+    ywOffset9 = constraints.maxHeight - placeable.height
     layout(constraints.maxWidth, constraints.maxHeight) {
-        placeable.place(0, ywOffset10, 10f)
+        placeable.place(0, ywOffset9, 10f)
     }
 }

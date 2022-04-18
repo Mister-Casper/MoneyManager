@@ -34,7 +34,7 @@ class CurrencyRepositoryImpl @Inject constructor(private val appPreferencesHelpe
         val locale = Locale.getDefault()
         val currency = try {
             getInstance(locale)
-        }catch (ex:IllegalAccessException){
+        }catch (ex:Exception){
             getInstance(Locale.US)
         }
         return getUICurrency(currency, locale)

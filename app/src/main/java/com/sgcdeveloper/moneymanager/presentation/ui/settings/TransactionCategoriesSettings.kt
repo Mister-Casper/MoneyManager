@@ -49,15 +49,19 @@ fun TransactionCategoriesSettings(
 
     if (dialogState is DialogState.AddTransactionCategoryDialog) {
         AddTransactionCategoryDialog(dialogState.category, dialogState.isExpense, {
+            var isNew = false
             runBlocking {
-                transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
+                isNew = transactionCategoriesSettingsViewModel.insertNewCategory(isShowIncomeCategories, it)
             }
-            if(transactionCategoriesSettingsViewModel.isAutoReturn){
-            transactionCategoriesSettingsViewModel.closeDialog()
-            scope.launch {
-                delay(250)
-                state.listState.animateScrollToItem(items.size + 1)
-            }}else
+            if (transactionCategoriesSettingsViewModel.isAutoReturn) {
+                transactionCategoriesSettingsViewModel.closeDialog()
+                scope.launch {
+                    if(isNew) {
+                        delay(250)
+                        state.listState.animateScrollToItem(items.size + 1)
+                    }
+                }
+            } else
                 Toast.makeText(context, context.getString(R.string.category_added), Toast.LENGTH_LONG).show()
         }, {
             transactionCategoriesSettingsViewModel.closeDialog()

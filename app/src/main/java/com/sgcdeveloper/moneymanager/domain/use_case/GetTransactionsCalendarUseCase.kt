@@ -47,7 +47,8 @@ class GetTransactionsCalendarUseCase @Inject constructor(
                 getCalendarDays(
                     wallet,
                     timeIntervalController,
-                    monthTransactions
+                    monthTransactions,
+                    appPreferencesHelper.getFirstDayOfWeek()
                 )
             )
         }.await()
@@ -55,10 +56,12 @@ class GetTransactionsCalendarUseCase @Inject constructor(
     private suspend fun getCalendarDays(
         wallet: Wallet,
         timeIntervalController: TimeIntervalController,
-        dayTransactions: Map<Int, List<Transaction>>
+        dayTransactions: Map<Int, List<Transaction>>,
+        firstDayOfWeek: DayOfWeek
     ): List<CalendarDay> {
         val today = LocalDateTime.now().dayOfMonth
-        val startDay = timeIntervalController.getStartDate().getAsLocalDate().withDayOfMonth(1).dayOfWeek.value
+        val startDay = (timeIntervalController.getStartDate().getAsLocalDate()
+            .withDayOfMonth(1).dayOfWeek.value + (7 - firstDayOfWeek.value) + 1) % 7
         val calendarDays = mutableListOf<CalendarDay>()
         val daysInMonth = timeIntervalController.getStartDate().getAsLocalDate().lengthOfMonth()
         val maxDay = dayTransactions.keys.maxOfOrNull { it } ?: daysInMonth
