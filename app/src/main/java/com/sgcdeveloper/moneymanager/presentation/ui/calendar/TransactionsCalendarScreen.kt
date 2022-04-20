@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -51,9 +52,9 @@ fun TransactionsCalendarScreen(
         CalendarTransactionsDialog(
             navController,
             state.dialogState.dayTransactions,
-            {transactionsCalendarViewModel.moveDayBack()},
-            {transactionsCalendarViewModel.moveDayNext()},
-            {navController.navigate(Screen.AddDateTransaction(state.wallet,it).route)},
+            { transactionsCalendarViewModel.moveDayBack() },
+            { transactionsCalendarViewModel.moveDayNext() },
+            { navController.navigate(Screen.AddDateTransaction(state.wallet, it).route) },
             { transactionsCalendarViewModel.closeDialog() })
     }
 
@@ -160,11 +161,24 @@ fun TransactionsCalendarScreen(
         }
         if (state.transactionsCalendar.days.isNotEmpty()) {
             Column(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 12.dp, end = 12.dp)) {
-                Row(Modifier.fillMaxWidth()) {
-                    val days = state.transactionsCalendar.daysOfWeek
-                    repeat(days.size) {
-                        val day = days[it]
-                        Text(text = day, fontSize = 16.sp, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Card(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 4.dp)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp, bottom = 4.dp)) {
+                        val days = state.transactionsCalendar.daysOfWeek
+                        repeat(days.size) {
+                            val day = days[it]
+                            Text(
+                                text = day,
+                                fontSize = 16.sp,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
                 repeat(6) { row ->

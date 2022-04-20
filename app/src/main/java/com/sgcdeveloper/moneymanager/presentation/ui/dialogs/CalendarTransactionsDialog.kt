@@ -11,6 +11,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,6 +22,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -40,6 +44,8 @@ fun CalendarTransactionsDialog(
     onAdd: (date: String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val height = remember{ mutableStateOf(0.dp)}
+
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
         onDismissRequest = onDismiss,
@@ -53,7 +59,8 @@ fun CalendarTransactionsDialog(
                         onDismiss()
                 }
             }
-            .customDialogModifier11(),
+            .customDialogModifier11(height)
+            .heightIn(0.dp,height.value),
         title = {
             Row(
                 Modifier
@@ -157,10 +164,10 @@ fun CalendarTransactionsDialog(
     )
 }
 
-fun Modifier.customDialogModifier11() = layout { measurable, constraints ->
-    val constraints = constraints.copy(maxHeight = constraints.maxHeight / 2)
+fun Modifier.customDialogModifier11(height: MutableState<Dp>) = layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)
-    ywOffset11 = constraints.maxHeight - placeable.height
+    ywOffset11 = kotlin.math.max(constraints.maxHeight  - placeable.height,constraints.maxHeight/2)
+    height.value = constraints.maxHeight.toDp() / 2
     layout(constraints.maxWidth, constraints.maxHeight) {
         placeable.place(0, ywOffset11, 10f)
     }
