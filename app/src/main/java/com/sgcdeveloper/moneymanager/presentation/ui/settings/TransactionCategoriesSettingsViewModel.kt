@@ -95,6 +95,11 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         dialogState.value = DialogState.AddTransactionCategoryDialog(category, isExpense)
     }
 
+    fun showAddTransactionSunCategoryDialog(category: TransactionCategory, isExpense: Boolean) {
+        save()
+        dialogState.value = DialogState.AddTransactionCategoryDialog(category, isExpense)
+    }
+
     fun closeDialog() {
         dialogState.value = DialogState.NoneDialogState
     }

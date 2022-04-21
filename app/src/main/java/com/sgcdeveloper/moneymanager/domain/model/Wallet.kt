@@ -20,7 +20,9 @@ open class Wallet(
     val color: Int = wallet_color_1.toArgb(),
     val icon: Int = R.drawable.wallet_icon_1,
     open val currency: Currency,
-    var order: Long = -1
+    var order: Long = -1,
+    val fromWalletSum: Double = 0.0,
+    val toWalletSum: Double = 0.0,
 ) : Parcelable {
     fun copy(
         walletId: Long = this.walletId,

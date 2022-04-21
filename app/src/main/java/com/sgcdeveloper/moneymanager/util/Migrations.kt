@@ -33,3 +33,16 @@ val MIGRATION_5_6: Migration = object : Migration(5, 6) {
       //  database.execSQL("CREATE TABLE IF NOT EXISTS `TransactionCategoryEntry` (`id` INTEGER PRIMARY KEY NOT NULL, `color` TEXT NOT NULL, `icon` TEXT NOT NULL,`description` TEXT NOT NULL,`isDefault` INTEGER NOT NULL, 'isExpense' INTEGER NOT NULL)")
     }
 }
+
+val MIGRATION_6_7: Migration = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE TransactionEntry ADD COLUMN fromTransferValue REAL DEFAULT 0 NOT NULL")
+        database.execSQL("ALTER TABLE TransactionEntry ADD COLUMN toTransferValue REAL DEFAULT 0 NOT NULL")
+    }
+}
+
+val MIGRATION_1_2_NEW:Migration = object : Migration(1,2){
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE TransactionCategoryEntry ADD COLUMN parentId INTEGER default 0 NOT NULL")
+    }
+}

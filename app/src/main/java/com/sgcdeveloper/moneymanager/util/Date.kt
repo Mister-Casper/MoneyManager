@@ -127,6 +127,10 @@ data class Date(val epochMillis: Long) {
             return this.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault()).uppercase()
         }
 
+        fun LocalDate.getShortDayName():String{
+            return this.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).uppercase()
+        }
+
         fun LocalDate.getMonthString(): String {
             return this.month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                 .uppercase() + " " + this.year.toString()

@@ -318,4 +318,8 @@
     <string name="tranasction_added">Транзакция добавлена</string>
     <string name="wallet_added">Кошелек добавлен</string>
 
+    <string name="edit_category">Изменить</string>
+    <string name="delete_category">Удалить</string>
+    <string name="add_sybcategory">Добавить подкатегорию</string>
+
 </resources>

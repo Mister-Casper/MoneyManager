@@ -34,14 +34,23 @@ class DeleteWallet @Inject constructor(
 
             when (transaction.transactionType) {
                 TransactionType.Expense -> {
-                    walletsMap[fromWallet.walletId] = fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString())
+                    walletsMap[fromWallet.walletId] =
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString())
                 }
                 TransactionType.Income -> {
-                    walletsMap[fromWallet.walletId] = fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString())
+                    walletsMap[fromWallet.walletId] =
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString())
                 }
                 TransactionType.Transfer -> {
-                    walletsMap[fromWallet.walletId] = (fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
-                    walletsMap[toWallet!!.walletId] = (toWallet.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                    walletsMap[fromWallet.walletId] = if (transaction.fromTransferValue == 0.0)
+                        (fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
+                    else
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() + transaction.fromTransferValue).toString())
+
+                    walletsMap[toWallet!!.walletId] = if (transaction.toTransferValue == 0.0)
+                        (toWallet.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                    else
+                        toWallet.copy(money = (toWallet.money.toSafeDouble() - transaction.toTransferValue).toString())
                 }
             }
         }

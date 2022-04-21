@@ -15,7 +15,9 @@ data class TransactionEntry(
     val transactionType: TransactionType,
     val fromWalletId: Long,
     val toWalletId: Long = 0,
-    val category: TransactionCategory
+    val category: TransactionCategory,
+    val fromTransferValue: Double = 0.0,
+    val toTransferValue: Double = 0.0,
 ) {
     fun toObject(): HashMap<String, Any> {
         return hashMapOf(

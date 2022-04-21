@@ -392,8 +392,8 @@ fun RecurringDialogPicker(
                         selectedRecurringType,
                         until,
                         date,
-                        times.toLong(),
-                        repeatInterval.toLong(),
+                        times.toLongOrNull() ?: 1L,
+                        repeatInterval.toLongOrNull() ?: 1L,
                         selectedDay,
                         isSameDay
                     )

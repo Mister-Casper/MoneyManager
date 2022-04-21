@@ -145,6 +145,7 @@ class GetRecurringTransactionsUseCase @Inject constructor(
             val walletsResult = updateWalletMoney(
                 transaction.transactionType,
                 transaction.value,
+                transaction,
                 fromWallet,
                 toWallet,
                 rates,
@@ -162,6 +163,7 @@ class GetRecurringTransactionsUseCase @Inject constructor(
     private fun updateWalletMoney(
         transactionType: TransactionType,
         amount: Double,
+        transaction:TransactionEntry,
         fromWallet: Wallet,
         toWallet: Wallet?,
         rates:List<RateEntry>,
@@ -175,9 +177,17 @@ class GetRecurringTransactionsUseCase @Inject constructor(
                 listOf(fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString()))
             }
             TransactionType.Transfer -> {
-                listOf(fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString())) + (toWallet!!.copy(
-                    money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[fromWallet.walletId] }!!.rate).toString()
-                ))
+                val from  = if (transaction.fromTransferValue == 0.0)
+                    (fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
+                else
+                    fromWallet.copy(money = (fromWallet.money.toSafeDouble() + transaction.fromTransferValue).toString())
+
+                val to = if (transaction.toTransferValue == 0.0)
+                    (toWallet!!.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                else
+                    toWallet!!.copy(money = (toWallet.money.toSafeDouble() - transaction.toTransferValue).toString())
+
+                listOf(from,to)
             }
         }
     }

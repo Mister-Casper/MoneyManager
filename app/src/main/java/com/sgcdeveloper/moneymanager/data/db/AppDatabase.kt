@@ -9,7 +9,7 @@ import com.sgcdeveloper.moneymanager.data.db.util.*
 
 @Database(
     entities = [WalletEntry::class, TransactionEntry::class, RateEntry::class, BudgetEntry::class, RecurringTransactionEntry::class],
-    version = 6
+    version = 7
 )
 @TypeConverters(
     CurrencyConverter::class,

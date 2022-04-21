@@ -11,9 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.None
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -56,7 +55,7 @@ fun TransactionCategoriesSettings(
             if (transactionCategoriesSettingsViewModel.isAutoReturn) {
                 transactionCategoriesSettingsViewModel.closeDialog()
                 scope.launch {
-                    if(isNew) {
+                    if (isNew) {
                         delay(250)
                         state.listState.animateScrollToItem(items.size + 1)
                     }
@@ -147,6 +146,7 @@ fun TransactionCategoriesSettings(
         LazyColumn(
             state = state.listState, modifier = Modifier
                 .padding(top = 8.dp)
+                .fillMaxSize()
                 .then(
                     Modifier.reorderable(
                         state,
@@ -197,39 +197,57 @@ fun TransactionCategoriesSettings(
                             fontSize = 18.sp
                         )
                     }
-                    Row(Modifier.align(Alignment.CenterVertically)) {
+                    var expandedMenu by remember { mutableStateOf(false) }
+                    Box(Modifier.align(Alignment.CenterVertically)) {
                         Icon(
-                            painter = painterResource(id = R.drawable.delete_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(start = 4.dp)
-                                .clickable {
-                                    transactionCategoriesSettingsViewModel.showDeleteCategoryDialog(item)
-                                }
+                            painter = painterResource(id = R.drawable.dots_icon),
+                            contentDescription = "Show menu",
+                            Modifier
+                                .size(32.dp)
+                                .clickable { expandedMenu = true }
                         )
-                        Icon(
-                            painter = painterResource(id = R.drawable.edit_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(start = 4.dp)
-                                .clickable {
-                                    transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
-                                        item,
-                                        !isShowIncomeCategories
-                                    )
-                                }
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.list_icon),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(start = 4.dp)
-                                .detectReorder(state)
-                        )
+                        DropdownMenu(
+                            expanded = expandedMenu,
+                            onDismissRequest = { expandedMenu = false }
+                        ) {
+                            DropdownMenuItem(onClick = {
+                                expandedMenu = false
+                                FirebaseAnalytics.getInstance(context).logEvent("edit_category", null)
+                                transactionCategoriesSettingsViewModel.showAddTransactionCategoryDialog(
+                                    item,
+                                    !isShowIncomeCategories
+                                )
+                            }) {
+                                Text(stringResource(id = R.string.edit_category))
+                            }
+                            DropdownMenuItem(onClick = {
+                                expandedMenu = false
+                                FirebaseAnalytics.getInstance(context).logEvent("delete_category", null)
+                                transactionCategoriesSettingsViewModel.showDeleteCategoryDialog(item)
+                            }) {
+                                Text(stringResource(id = R.string.delete_category))
+                            }
+                            DropdownMenuItem(onClick = {
+                                expandedMenu = false
+                                FirebaseAnalytics.getInstance(context).logEvent("add_subcategory", null)
+                                transactionCategoriesSettingsViewModel.showAddTransactionSunCategoryDialog(
+                                    item,
+                                    !isShowIncomeCategories
+                                )
+                            }) {
+                                Text(stringResource(id = R.string.add_sybcategory))
+                            }
+                        }
                     }
+                    Icon(
+                        painter = painterResource(id = R.drawable.list_icon),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 4.dp)
+                            .align(Alignment.CenterVertically)
+                            .detectReorder(state)
+                    )
                 }
             }
         }
