@@ -166,7 +166,7 @@ open class TransactionsViewModel @Inject constructor(
         loadTransactionJob = viewModelScope.launch {
             val transactions = walletsUseCases.getTransactionItems(newWallet)
             state.value = state.value.copy(
-                wallet = newWallet,
+                wallet = state.value.wallets.find { it.walletId == newWallet.walletId }!!,
                 transactions = transactions,
                 isEmpty = transactions.isEmpty()
             )
