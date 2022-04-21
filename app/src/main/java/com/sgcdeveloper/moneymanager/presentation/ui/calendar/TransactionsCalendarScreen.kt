@@ -164,19 +164,23 @@ fun TransactionsCalendarScreen(
                 Card(
                     Modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp, bottom = 4.dp)) {
+                        .padding(top = 4.dp, bottom = 4.dp)
+                ) {
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 4.dp, bottom = 4.dp)) {
+                            .padding(top = 4.dp, bottom = 4.dp)
+                    ) {
                         val days = state.transactionsCalendar.daysOfWeek
                         repeat(days.size) {
                             val day = days[it]
+                            val dayColor = if (day.isHoliday) red else MaterialTheme.colors.onSurface
                             Text(
-                                text = day,
+                                text = day.name,
                                 fontSize = 16.sp,
                                 modifier = Modifier.weight(1f),
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Center,
+                                color = dayColor
                             )
                         }
                     }
@@ -185,6 +189,7 @@ fun TransactionsCalendarScreen(
                     Row(Modifier.weight(1f)) {
                         repeat(7) { column ->
                             val day = state.transactionsCalendar.days[row * 7 + column]
+                            val dayColor = if (day.isHoliday) red else MaterialTheme.colors.onSurface
                             Column(
                                 Modifier
                                     .weight(1f)
@@ -195,14 +200,19 @@ fun TransactionsCalendarScreen(
                                             transactionsCalendarViewModel.showDayTransactionsDialog(day.dayTransactions)
                                     }
                             ) {
-                                Text(text = day.number, fontSize = 12.sp)
+                                Text(
+                                    text = day.number,
+                                    fontSize = 12.sp,
+                                    color = dayColor,
+                                    modifier = Modifier.weight(1f)
+                                )
                                 AutoSizeText(
                                     text = day.income,
-                                    color = blue
+                                    color = blue, modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally)
                                 )
                                 AutoSizeText(
                                     text = day.expense,
-                                    color = red
+                                    color = red, modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally)
                                 )
                             }
                         }

@@ -9,7 +9,7 @@ import com.sgcdeveloper.moneymanager.domain.model.calendar.DayTransactions
 import com.sgcdeveloper.moneymanager.domain.model.calendar.TransactionsCalendar
 import com.sgcdeveloper.moneymanager.domain.timeInterval.TimeIntervalController
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems.Companion.getFormattedMoney
-import com.sgcdeveloper.moneymanager.util.Date.Companion.getDayName
+import com.sgcdeveloper.moneymanager.util.Date.Companion.getShortDayName
 import com.sgcdeveloper.moneymanager.util.Date.Companion.toDateString
 import com.sgcdeveloper.moneymanager.util.getTransactionsExpense
 import com.sgcdeveloper.moneymanager.util.getTransactionsIncome
@@ -70,7 +70,7 @@ class GetTransactionsCalendarUseCase @Inject constructor(
         for (i in 1..42) {
             if (existDayNum <= day.lengthOfMonth())
                 day = timeIntervalController.getStartDate().getAsLocalDate().withDayOfMonth(existDayNum)
-            val dayStr = day.getDayName() + " " + day.toDateString()
+            val dayStr = day.getShortDayName() + " " + day.toDateString()
             if (i < startDay || existDayNum > maxDay) {
                 var money = ""
                 var dayTitle = ""
@@ -85,7 +85,7 @@ class GetTransactionsCalendarUseCase @Inject constructor(
                         money != "",
                         dayNum,
                         false,
-                        isHoliday(i),
+                        isHoliday(i,appPreferencesHelper.getFirstDayOfWeek().value),
                         money,
                         money,
                         DayTransactions(dayNumber = i, dayText = dayTitle)
@@ -103,7 +103,7 @@ class GetTransactionsCalendarUseCase @Inject constructor(
                         true,
                         existDayNum.toString(),
                         today == existDayNum,
-                        isHoliday(i),
+                        isHoliday(i,appPreferencesHelper.getFirstDayOfWeek().value),
                         dailyIncome,
                         dailyExpense,
                         DayTransactions(
@@ -126,12 +126,12 @@ class GetTransactionsCalendarUseCase @Inject constructor(
         return calendarDays
     }
 
-    private fun isHoliday(dayNum: Int): Boolean {
-        val day = 1 + (((dayNum - 1) % 7))
-        return day == 6 && day == 7
+    private fun isHoliday(dayNum: Int,startDay:Int): Boolean {
+        val day = (((dayNum + startDay - 1) % 7))
+        return day == 6 || day == 0
     }
 
-    private fun getWeek(): List<String> {
+    private fun getWeek(): List<com.sgcdeveloper.moneymanager.domain.model.calendar.DayOfWeek> {
         val firstDay = appPreferencesHelper.getFirstDayOfWeek()
         val days = mutableListOf<DayOfWeek>()
         for (i in 0..6) {
@@ -139,6 +139,6 @@ class GetTransactionsCalendarUseCase @Inject constructor(
             val day = DayOfWeek.of(dayNumber)
             days.add(day)
         }
-        return days.map { it.getDisplayName(TextStyle.SHORT, Locale.getDefault()) }
+        return days.map { com.sgcdeveloper.moneymanager.domain.model.calendar.DayOfWeek(it.getDisplayName(TextStyle.SHORT, Locale.getDefault()),it.value == 6 || it.value == 7) }
     }
 }

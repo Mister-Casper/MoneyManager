@@ -6,6 +6,8 @@ data class TransactionsCalendar(
     val income: String = "",
     val expense: String = "",
     val total: String = "",
-    val daysOfWeek: List<String> = Collections.emptyList(),
+    val daysOfWeek: List<DayOfWeek> = Collections.emptyList(),
     val days: List<CalendarDay> = Collections.emptyList()
 )
+
+data class DayOfWeek(val name:String,val isHoliday:Boolean)
