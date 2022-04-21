@@ -19,13 +19,9 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
     fun isInInterval(intervalDate: Date): Boolean {
         if (this is AllController)
             return true
-        val date =
-            (intervalDate.epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
-        val startDate =
-            (getStartDate().epochMillis / TimeUnit.HOURS.toMillis(1)).toInt()
-        val endDate =
-            (((getEndDate().epochMillis + TimeUnit.DAYS.toMillis(1)) / TimeUnit.HOURS.toMillis(1)).toInt()) +1
-        return (date in startDate .. endDate)
+        val start = getStartDate()
+        val end = getEndDate()
+        return intervalDate.date == start.date || intervalDate.date == end.date || (intervalDate.epochMillis >= start.epochMillis && intervalDate.epochMillis <= end.epochMillis)
     }
 
     class DailyController(var date: Date = Date(LocalDate.now())) :
@@ -132,9 +128,12 @@ sealed class TimeIntervalController(val icon: Int, val name: Int) {
 
         init {
             val start = startDay.getAsLocalDate()
-            val month = start.monthValue - ((start.monthValue ) % 3)
+            val month = start.monthValue - ((start.monthValue) % 3)
             startDay = Date(start.withMonth(month))
-            endDay = Date(endDay.getAsLocalDate().withDayOfMonth(endDay.getAsLocalDate().lengthOfMonth()).withMonth((month + 2) % 12))
+            endDay = Date(
+                endDay.getAsLocalDate().withDayOfMonth(endDay.getAsLocalDate().lengthOfMonth())
+                    .withMonth((month + 2) % 12)
+            )
         }
 
         constructor(startDay: LocalDate) : this(

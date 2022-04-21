@@ -14,7 +14,7 @@ data class BudgetEntry(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val budgetName: String,
     val amount: Double,
-    val categories: List<TransactionCategory>,
+    var categories: List<TransactionCategory>,
     val color: Int = wallet_color_1.toArgb(),
     val date: Date,
     val period: BudgetPeriod

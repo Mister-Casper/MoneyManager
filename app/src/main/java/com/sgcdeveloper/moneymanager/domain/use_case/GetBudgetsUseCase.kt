@@ -50,6 +50,9 @@ class GetBudgetsUseCase @Inject constructor(
                     val budgetTImeInterval = getTimeIntervalCController(periodBudget.value[0].period, firstDate)
                     val spents = mutableListOf<Double>()
                     periodBudget.value.forEach { budget ->
+                        if (budget.categories.map { it.id }.contains(0)) {
+                            budget.categories = categories
+                        }
                         spents.add(getSpent(transactions, budget, budgetTImeInterval))
                     }
                     if (period == null)
@@ -71,15 +74,16 @@ class GetBudgetsUseCase @Inject constructor(
                             )
                         )
                     periodBudget.value.forEachIndexed { i, budget ->
+                        val categoryDescription =
+                            if (budget.categories.map { it.id }.contains(0)) {
+                                budget.categories = categories
+                                context.getString(R.string.all_category)
+                            } else
+                                budget.categories.filter { it.id != 0L }.joinToString(separator = ", ") {it.description}
                         val spent = spents[i]
                         val progress = kotlin.math.min(1.0, (spent / budget.amount))
                         val left = budget.amount - getSpent(transactions, budget, budgetTImeInterval)
                         val leftStrRes = if (left >= 0) R.string.remain else R.string.overspent
-                        val categoryDescription =
-                            if (budget.categories.size == categories.size)
-                                context.getString(R.string.all_category)
-                            else
-                                budget.categories.filter { it.id != 0L }.joinToString(separator = ", ") {it.description}
 
                         budgets.add(
                             BaseBudget.BudgetItem(

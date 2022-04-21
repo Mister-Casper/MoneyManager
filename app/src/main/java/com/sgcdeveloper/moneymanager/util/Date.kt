@@ -9,8 +9,14 @@ import java.util.*
 
 data class Date(val epochMillis: Long) {
 
+    var date:String
+
     constructor(time: LocalDateTime) : this(time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
     constructor(time: LocalDate) : this(time.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli())
+
+    init {
+        date = toDateString()
+    }
 
     fun getAsLocalDateTime(): LocalDateTime {
         return getZoneDateTime().toLocalDateTime()

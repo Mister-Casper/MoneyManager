@@ -16,6 +16,7 @@ import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUse
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.burnoutcrew.reorderable.ItemPosition
 import org.burnoutcrew.reorderable.move
 import javax.inject.Inject
@@ -119,19 +120,19 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     }
 
     fun deleteCategory(transactionCategory: TransactionCategory) {
-        viewModelScope.launch {
+        runBlocking {
             deleteTransactionCategoryUseCase(transactionCategory.id)
         }
     }
 
-    fun onChangedSelection(id:Long) {
-        updateSelection{if(it.id == id) !it.isSelection else it.isSelection}
+    fun onChangedSelection(id: Long) {
+        updateSelection { if (it.id == id) !it.isSelection else it.isSelection }
     }
 
     fun changeMultiSelection(id: Long) {
         if (isMultiSelection.value) {
             isMultiSelection.value = false
-            updateSelection{false}
+            updateSelection { false }
         } else {
             isMultiSelection.value = true
             onChangedSelection(id)
@@ -145,14 +146,14 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     }
 
     fun selectAll() {
-        updateSelection{true}
+        updateSelection { true }
     }
 
     fun clearAll() {
-        updateSelection{false}
+        updateSelection { false }
     }
 
-    private fun updateSelection(condition:(it:TransactionCategory)->Boolean){
+    private fun updateSelection(condition: (it: TransactionCategory) -> Boolean) {
         val newItems = mutableListOf<TransactionCategory>()
         items.forEach {
             newItems.add(it.copy(isSelection = condition(it)))

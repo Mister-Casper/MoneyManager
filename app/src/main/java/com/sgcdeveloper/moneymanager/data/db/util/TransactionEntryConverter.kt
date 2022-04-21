@@ -40,7 +40,7 @@ class TransactionEntryConverter @Inject constructor(
         } catch (ex: Exception) {
             runBlocking {
                 categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id }
-                categories[entry.category.id]!!
+                categories[entry.category.id] ?: throw Exception("Cant find id = " + entry.category.id)
             }
         }
         return entry.copy(category = category)

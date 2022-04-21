@@ -38,7 +38,7 @@ class TransactionCategoryConverter @Inject constructor(
         }catch (ex:Exception){
             runBlocking {
                 categories = getTransactionCategoriesUseCase.getConverterAllItems().associateBy { it.id }
-                categories[transactionCategoryId.toLong()]!!
+                toCurrency(transactionCategoryId)
             }
         }
     }
