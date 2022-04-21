@@ -103,29 +103,43 @@ open class TransactionsCalendarViewModel @Inject constructor(
             return
         loadingJob?.cancel()
         loadingJob = viewModelScope.launch {
-            state.value = state.value.copy(
-                transactionsCalendar = getTransactionsCalendarUseCase(
-                    state.value.wallet!!,
-                    state.value.timeIntervalController
-                )
+            val transactionsCalendar = getTransactionsCalendarUseCase(
+                state.value.wallet!!,
+                state.value.timeIntervalController
             )
-            if (state.value.dialogState is DialogState.CalendarTransactionsDialog)
-                showDayTransactionsDialog(state.value.transactionsCalendar.days.find { it.dayTransactions.dayText == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayText }!!.dayTransactions)
+            if (state.value.dialogState is DialogState.CalendarTransactionsDialog) {
+                val day =
+                    transactionsCalendar.days.find { it.dayTransactions.dayText == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayText }
+                if (day == null) {
+                    if ((state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber >= 20)
+                        showDayTransactionsDialog(transactionsCalendar.days.first { it.isExist }.dayTransactions)
+                    else
+                        showDayTransactionsDialog(transactionsCalendar.days.last { it.isExist }.dayTransactions)
+                } else
+                    showDayTransactionsDialog(day.dayTransactions)
+            }
+            state.value = state.value.copy(
+                transactionsCalendar = transactionsCalendar
+            )
         }
     }
 
     fun moveDayNext() {
         val backDay =
-            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber + 1 }!!
-        if (backDay.isExist)
+            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber + 1 }
+        if (backDay?.isExist == true)
             showDayTransactionsDialog(backDay.dayTransactions)
+        else
+            moveNext()
     }
 
     fun moveDayBack() {
         val backDay =
-            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber - 1 }!!
-        if (backDay.isExist)
+            state.value.transactionsCalendar.days.find { it.dayTransactions.dayNumber == (state.value.dialogState as DialogState.CalendarTransactionsDialog).dayTransactions.dayNumber - 1 }
+        if (backDay?.isExist == true)
             showDayTransactionsDialog(backDay.dayTransactions)
+        else
+            moveBack()
     }
 }
 
