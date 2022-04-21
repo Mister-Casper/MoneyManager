@@ -138,6 +138,7 @@ open class AddWalletViewModel @Inject constructor(
                 }
             }
             is WalletEvent.AddCurrency -> {
+                dialogState.value = DialogState.NoneDialogState
                 viewModelScope.launch {
                     insertRate(walletEvent.rate)
                     changeCurrency(walletEvent.rate.currency)
@@ -149,9 +150,7 @@ open class AddWalletViewModel @Inject constructor(
     private fun changeCurrency(currency: Currency) {
         walletCurrency.value = currency
         this.wallet.value = this.wallet.value!!.copy(currency = currency)
-        dialogState.value = DialogState.NoneDialogState
         formatMoney(walletMoney.value)
-        dialogState.value = DialogState.NoneDialogState
     }
 
     private fun formatMoney(money: String) {
