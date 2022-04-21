@@ -33,6 +33,8 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
     private val incomeCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     private val expenseCategories: SnapshotStateList<TransactionCategory> = mutableStateListOf()
     val dialogState = mutableStateOf<DialogState>(DialogState.NoneDialogState)
+    val isMultiSelection = mutableStateOf(false)
+    val selectedCount = mutableStateOf("0")
     val isShowIncomeCategories = mutableStateOf(false)
     val isAutoReturn = appPreferencesHelper.getAutoReturn()
 
@@ -57,6 +59,7 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
 
     fun changeCategory() {
         save()
+        isMultiSelection.value = false
         isShowIncomeCategories.value = !isShowIncomeCategories.value
         items.clear()
         items.addAll(if (isShowIncomeCategories.value) incomeCategories else expenseCategories)
@@ -95,16 +98,11 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         dialogState.value = DialogState.AddTransactionCategoryDialog(category, isExpense)
     }
 
-    fun showAddTransactionSunCategoryDialog(category: TransactionCategory, isExpense: Boolean) {
-        save()
-        dialogState.value = DialogState.AddTransactionCategoryDialog(category, isExpense)
-    }
-
     fun closeDialog() {
         dialogState.value = DialogState.NoneDialogState
     }
 
-    fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry) :Boolean{
+    fun insertNewCategory(isIncome: Boolean, category: TransactionCategoryEntry): Boolean {
         FirebaseAnalytics.getInstance(app).logEvent("insert_transaction_category", null)
         viewModelScope.launch {
             val order = if (category.id == 0L) {
@@ -126,5 +124,51 @@ open class TransactionCategoriesSettingsViewModel @Inject constructor(
         }
     }
 
+    fun onChangedSelection(id:Long) {
+        updateSelection{if(it.id == id) !it.isSelection else it.isSelection}
+    }
+
+    fun changeMultiSelection(id: Long) {
+        if (isMultiSelection.value) {
+            isMultiSelection.value = false
+            updateSelection{false}
+        } else {
+            isMultiSelection.value = true
+            onChangedSelection(id)
+        }
+
+        selectedCount.value = items.count { it.isSelection }.toString()
+    }
+
+    fun showDeleteSelectedTransactionsDialog() {
+        dialogState.value = DialogState.DeleteTransactionDialog
+    }
+
+    fun selectAll() {
+        updateSelection{true}
+    }
+
+    fun clearAll() {
+        updateSelection{false}
+    }
+
+    private fun updateSelection(condition:(it:TransactionCategory)->Boolean){
+        val newItems = mutableListOf<TransactionCategory>()
+        items.forEach {
+            newItems.add(it.copy(isSelection = condition(it)))
+        }
+        items.clear()
+        items.addAll(newItems)
+
+        selectedCount.value = items.count { it.isSelection }.toString()
+    }
+
+    fun deleteSelected() {
+        viewModelScope.launch {
+            items.filter { it.isSelection }.forEach {
+                deleteTransactionCategoryUseCase(it.id)
+            }
+        }
+    }
 
 }

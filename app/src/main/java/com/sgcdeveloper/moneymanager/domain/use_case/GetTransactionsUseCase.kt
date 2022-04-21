@@ -62,10 +62,11 @@ class GetTransactionsUseCase @Inject constructor(
                     if (transaction.transactionType == TransactionType.Transfer) {
                         if (transactionCode == wallet.currency.code)
                             toTransaction(transaction)
-                        val transferValue = if (transaction.transactionType == TransactionType.Transfer)
-                            transaction.fromTransferValue
-                        else
-                            transaction.value
+                        val transferValue =
+                            if (transaction.transactionType == TransactionType.Transfer && transaction.fromTransferValue != 0.0)
+                                transaction.fromTransferValue
+                            else
+                                transaction.value
                         when (wallet.walletId) {
                             transaction.fromWalletId -> {
                                 Transaction(
@@ -81,13 +82,13 @@ class GetTransactionsUseCase @Inject constructor(
                                 )
                             }
                             transaction.toWalletId -> {
-                                val value = if (transaction.transactionType == TransactionType.Transfer)
+                                val value = if (transaction.transactionType == TransactionType.Transfer && transaction.toTransferValue != 0.0)
                                     transaction.toTransferValue
                                 else
                                     transaction.value * rates.find { it.currency.code == wallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate
 
                                 val baseCurrencyValue = if (transaction.transactionType == TransactionType.Transfer)
-                                    transaction.toTransferValue
+                                    transaction.fromTransferValue
                                 else
                                     transaction.value * rates.find { it.currency.code == wallet.currency.code }!!.rate * rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate
 

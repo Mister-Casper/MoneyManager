@@ -17,7 +17,8 @@ open class TransactionCategory(
     val isDefault: Boolean,
     val isExpense: Boolean,
     var entry: TransactionCategoryEntry,
-    val order:Int,
+    val order: Int,
+    var isSelection: Boolean = false
 ) {
     fun copy(
         id: Long = this.id,
@@ -27,9 +28,10 @@ open class TransactionCategory(
         isDefault: Boolean = this.isDefault,
         isExpense: Boolean = this.isExpense,
         entry: TransactionCategoryEntry = this.entry,
-        order: Int = this.order
+        order: Int = this.order,
+        isSelection: Boolean = this.isSelection
     ): TransactionCategory {
-        return TransactionCategory(id, icon, color, description, isDefault, isExpense, entry, order)
+        return TransactionCategory(id, icon, color, description, isDefault, isExpense, entry, order,isSelection)
     }
 }
 

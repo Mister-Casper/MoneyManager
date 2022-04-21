@@ -7,7 +7,7 @@ import com.sgcdeveloper.moneymanager.data.db.entry.TransactionCategoryEntry
 
 @Database(
     entities = [TransactionCategoryEntry::class],
-    version = 1
+    version = 2
 )
 abstract class TransactionCategoriesDatabase : RoomDatabase() {
     abstract fun transactionCategoryDao(): TransactionCategoryDao

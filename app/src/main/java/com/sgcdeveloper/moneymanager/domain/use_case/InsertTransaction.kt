@@ -178,14 +178,14 @@ class InsertTransaction @Inject constructor(
 
                 insertWallet(
                     if (transaction.fromTransferValue == 0.0)
-                        (fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
+                        (fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
                     else
                         fromWallet.copy(money = (fromWallet.money.toSafeDouble() + transaction.fromTransferValue).toString())
                 )
 
                 insertWallet(
                     if (transaction.toTransferValue == 0.0)
-                        (toWallet.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                        (toWallet.copy(money = (toWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
                     else
                         toWallet.copy(money = (toWallet.money.toSafeDouble() - transaction.toTransferValue).toString())
                 )

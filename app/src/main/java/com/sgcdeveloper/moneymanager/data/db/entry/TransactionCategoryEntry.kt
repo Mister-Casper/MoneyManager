@@ -11,7 +11,8 @@ data class TransactionCategoryEntry(
     val description: String = "",
     val isDefault: Int = 0,
     val isExpense: Int = 0,
-    val order:Int = 0
+    val order: Int = 0,
+    val parentId: Long = 0
 ) {
     fun toObject(): HashMap<String, Any> {
         return hashMapOf(
@@ -21,12 +22,17 @@ data class TransactionCategoryEntry(
             "description" to description,
             "isDefault" to isDefault,
             "isExpense" to isExpense,
-            "order" to order
+            "order" to order,
+            "parentId" to parentId
         )
     }
 
     companion object {
         fun getTransactionCategoryEntry(data: MutableMap<String, Any>): TransactionCategoryEntry {
+            val parentId = if (data["parentId"] != null)
+                data["parentId"] as Long
+            else
+                0L
             return TransactionCategoryEntry(
                 data["id"] as Long,
                 data["color"] as String,
@@ -34,7 +40,8 @@ data class TransactionCategoryEntry(
                 data["description"] as String,
                 (data["isDefault"] as Long).toInt(),
                 (data["isExpense"] as Long).toInt(),
-                (data["order"] as Long).toInt()
+                (data["order"] as Long).toInt(),
+                parentId
             )
         }
     }

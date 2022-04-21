@@ -322,4 +322,6 @@
     <string name="delete_category">Удалить</string>
     <string name="add_sybcategory">Добавить подкатегорию</string>
 
+    <string name="are_u_sure_delete_selected_transaction_categories">Вы уверены, что хотите удалить %1$s категорий транзакций?</string>
+
 </resources>

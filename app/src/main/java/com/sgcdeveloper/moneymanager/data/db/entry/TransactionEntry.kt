@@ -29,6 +29,8 @@ data class TransactionEntry(
             "fromWalletId" to fromWalletId,
             "toWalletId" to toWalletId,
             "category" to category.id,
+            "fromTransferValue" to fromTransferValue,
+            "toTransferValue" to toTransferValue
         )
     }
 
@@ -37,6 +39,9 @@ data class TransactionEntry(
             categories: Map<Int, TransactionCategory>,
             data: MutableMap<String, Any>
         ): TransactionEntry {
+            val fromTransferValue =  (data["fromTransferValue"]?:"0.0") as Double
+            val toTransferValue =  (data["toTransferValue"]?:"0.0") as Double
+
             return TransactionEntry(
                 data["id"] as Long,
                 Date(data["date"] as Long),
@@ -47,6 +52,8 @@ data class TransactionEntry(
                 data["toWalletId"] as Long,
                 categories[(data["category"] as Long).toInt()]
                     ?: throw Exception("Cant find transaction category with id = " + data["category"] as Long),
+                fromTransferValue,
+                toTransferValue
             )
         }
     }
