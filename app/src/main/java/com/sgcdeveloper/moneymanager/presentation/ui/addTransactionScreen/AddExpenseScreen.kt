@@ -19,7 +19,7 @@ fun AddExpenseScreen(addTransactionViewModel: AddTransactionViewModel) {
                 AmountPicker(addTransactionViewModel)
                 DescriptionItem(addTransactionViewModel)
                 CategoryPicker(addTransactionViewModel, addTransactionViewModel.transactionExpenseCategory.value)
-                WalletPicker(addTransactionViewModel.transactionFromWallet.value, stringResource(
+                WalletPicker(addTransactionViewModel,addTransactionViewModel.currentScreen.value == TransactionScreen.Income,addTransactionViewModel.transactionFromWallet.value, stringResource(
                         id = R.string.wallet_selector
                     ),
                     onClick = { addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true)) }

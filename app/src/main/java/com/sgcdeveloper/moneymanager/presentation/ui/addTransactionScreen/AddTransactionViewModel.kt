@@ -1,7 +1,10 @@
 package com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen
 
 import android.app.Application
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +14,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.*
+import com.sgcdeveloper.moneymanager.domain.use_case.GetAvailableRates
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
 import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
@@ -31,13 +35,14 @@ open class AddTransactionViewModel @Inject constructor(
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
-    private val transactionCategoriesDatabase: TransactionCategoriesDatabase
+    private val transactionCategoriesDatabase: TransactionCategoriesDatabase,
+    private val getAvailableRates: GetAvailableRates
 ) : AndroidViewModel(app) {
 
     lateinit var wallets: LiveData<List<Wallet>>
 
-    lateinit var incomeItems:List<TransactionCategory>
-    lateinit var expenseItems:List<TransactionCategory>
+    lateinit var incomeItems: List<TransactionCategory>
+    lateinit var expenseItems: List<TransactionCategory>
 
     val currentScreen = mutableStateOf(TransactionScreen.Expense)
     val currentScreenName = mutableStateOf(app.getString(R.string.expense))
@@ -50,6 +55,10 @@ open class AddTransactionViewModel @Inject constructor(
     val transactionExpenseCategory = mutableStateOf<TransactionCategory>(None(app))
     val transactionFromWallet = MutableLiveData<Wallet>()
     val transactionToWallet = MutableLiveData<Wallet>()
+    var fromWalletRate by mutableStateOf("")
+    var isShowFromWalletRate by mutableStateOf(false)
+    var toWalletRate by mutableStateOf("")
+    var isShowToWalletRate by mutableStateOf(false)
 
     val isTransactionCanBeSaved = mutableStateOf(false)
     val back = mutableStateOf(false)
@@ -66,16 +75,18 @@ open class AddTransactionViewModel @Inject constructor(
     var isMustBeRecurring = false
 
     val isAutoReturn = appPreferencesHelper.getAutoReturn()
+    val rates = runBlocking { getAvailableRates.getBaseRatesAsync() }
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
     init {
-        transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive().observeForever {
-            viewModelScope.launch {
-                incomeItems = getTransactionCategoriesUseCase.getIncomeItems()
-                expenseItems = getTransactionCategoriesUseCase.getExpenseItems()
+        transactionCategoriesDatabase.transactionCategoryDao().getTransactionCategoriesLive()
+            .observeForever {
+                viewModelScope.launch {
+                    incomeItems = getTransactionCategoriesUseCase.getIncomeItems()
+                    expenseItems = getTransactionCategoriesUseCase.getExpenseItems()
+                }
             }
-        }
         viewModelScope.launch {
             wallets = walletsUseCases.getWallets.getUIWallets()
         }
@@ -100,10 +111,13 @@ open class AddTransactionViewModel @Inject constructor(
                         transactionExpenseCategory.value = transaction.category
                     }
                     viewModelScope.launch {
-                        transactionFromWallet.value = walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
+                        transactionFromWallet.value =
+                            walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
                         if (transaction.transactionType == TransactionType.Transfer)
-                            transactionToWallet.value = walletsUseCases.getWallets.getWallet(transaction.toWalletId)
+                            transactionToWallet.value =
+                                walletsUseCases.getWallets.getWallet(transaction.toWalletId)
                         isTransactionCanBeSaved.value = checkIsCanBeSaved()
+                        updateShowRates()
                         updateFormattedAMount()
                     }
                 }
@@ -124,10 +138,13 @@ open class AddTransactionViewModel @Inject constructor(
                         transactionExpenseCategory.value = transaction.category
                     }
                     viewModelScope.launch {
-                        transactionFromWallet.value = walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
+                        transactionFromWallet.value =
+                            walletsUseCases.getWallets.getWallet(transaction.fromWalletId)
                         if (transaction.transactionType == TransactionType.Transfer)
-                            transactionToWallet.value = walletsUseCases.getWallets.getWallet(transaction.toWalletId)
+                            transactionToWallet.value =
+                                walletsUseCases.getWallets.getWallet(transaction.toWalletId)
                         isTransactionCanBeSaved.value = checkIsCanBeSaved()
+                        updateShowRates()
                         updateFormattedAMount()
                     }
                 }
@@ -137,6 +154,7 @@ open class AddTransactionViewModel @Inject constructor(
                     transactionFromWallet.value = addTransactionEvent.wallet
                     showScreen(appPreferencesHelper.getStartupTransactionType())
                     updateFormattedAMount()
+                    updateShowRates()
                 }
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
@@ -195,9 +213,10 @@ open class AddTransactionViewModel @Inject constructor(
                 } else
                     transactionFromWallet.value = addTransactionEvent.wallet
                 updateFormattedAMount()
+                updateShowRates()
             }
             is AddTransactionEvent.InsertTransaction -> {
-                FirebaseAnalytics.getInstance(app).logEvent("add_transaction",null)
+                FirebaseAnalytics.getInstance(app).logEvent("add_transaction", null)
                 val category =
                     when (currentScreen.value) {
                         TransactionScreen.Expense -> transactionExpenseCategory.value
@@ -226,7 +245,9 @@ open class AddTransactionViewModel @Inject constructor(
                 dialogState.value = DialogState.NoneDialogState
                 runBlocking {
                     if (recurringTransactionId != 0L) {
-                        walletsUseCases.insertTransaction.deleteRecurringTransaction(recurringTransactionId)
+                        walletsUseCases.insertTransaction.deleteRecurringTransaction(
+                            recurringTransactionId
+                        )
                     } else
                         walletsUseCases.insertTransaction.deleteTransaction(transactionId)
                 }
@@ -260,6 +281,37 @@ open class AddTransactionViewModel @Inject constructor(
                 transactionAmount.value.toSafeDouble()
             )
         }
+    }
+
+    private fun updateShowRates() {
+        if (transactionToWallet.value?.currency?.name == transactionFromWallet.value?.currency?.name && currentScreen.value != TransactionScreen.Transfer) {
+            isShowFromWalletRate = false
+            isShowToWalletRate = false
+            return
+        }
+        val defaultCurrency = appPreferencesHelper.getDefaultCurrency()
+        if (defaultCurrency?.name != transactionToWallet.value?.currency?.name) {
+            isShowToWalletRate = true
+            toWalletRate =
+                app.getString(
+                    R.string.rate,
+                    defaultCurrency!!.code,
+                    rates.find { it.currency.name == transactionToWallet.value?.currency?.name },
+                    transactionToWallet.value?.currency?.code
+                )
+        } else
+            isShowToWalletRate = false
+        if (defaultCurrency?.name != transactionFromWallet.value?.currency?.name) {
+            isShowFromWalletRate = true
+            fromWalletRate =
+                app.getString(
+                    R.string.rate,
+                    defaultCurrency!!.code,
+                    rates.find { it.currency.name == transactionFromWallet.value?.currency?.name },
+                    transactionFromWallet.value?.currency?.code
+                )
+        } else
+            isShowFromWalletRate = false
     }
 
     private fun checkIsCanBeSaved(): Boolean {

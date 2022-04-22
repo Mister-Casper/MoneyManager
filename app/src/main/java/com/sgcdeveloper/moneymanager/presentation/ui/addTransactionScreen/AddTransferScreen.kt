@@ -19,16 +19,34 @@ fun AddTransferScreen(addTransactionViewModel: AddTransactionViewModel) {
                 AmountPicker(addTransactionViewModel)
                 DescriptionItem(addTransactionViewModel)
                 WalletPicker(
-                    addTransactionViewModel.transactionFromWallet.value, stringResource(
+                    addTransactionViewModel,
+                    addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
+                    addTransactionViewModel.transactionFromWallet.value,
+                    stringResource(
                         id = R.string.from_wallet
                     ),
-                    onClick = { addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true)) }
+                    onClick = {
+                        addTransactionViewModel.onEvent(
+                            AddTransactionEvent.ShowWalletPickerDialog(
+                                true
+                            )
+                        )
+                    }
                 )
                 WalletPicker(
-                    addTransactionViewModel.transactionToWallet.value, stringResource(
+                    addTransactionViewModel,
+                    addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
+                    addTransactionViewModel.transactionToWallet.value,
+                    stringResource(
                         id = R.string.to_wallet
                     ),
-                    onClick = { addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(false)) }
+                    onClick = {
+                        addTransactionViewModel.onEvent(
+                            AddTransactionEvent.ShowWalletPickerDialog(
+                                false
+                            )
+                        )
+                    }
                 )
             }
         }
