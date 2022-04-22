@@ -1,3 +1,3 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
-class BaseRate (val currency: Currency,var rate:String)
+class BaseRate (val id:Long,val currency: Currency,var rate:String)

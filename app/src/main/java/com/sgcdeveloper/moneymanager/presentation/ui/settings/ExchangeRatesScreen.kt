@@ -108,7 +108,7 @@ fun ExchangeRatesScreen(navController: NavController, addWalletViewModel: AddWal
                     onValueChange = {
                         if (it.isWillBeDouble() && it.length <= InitViewModel.MAX_RATE_LENGTH) {
                             rates.removeAt(item)
-                            rates.add(item, BaseRate(rate.currency, it))
+                            rates.add(item, BaseRate(rate.id,rate.currency, it))
                         }
                     },
                     placeholder = {

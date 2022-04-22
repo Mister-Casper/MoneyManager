@@ -25,8 +25,8 @@ import com.sgcdeveloper.moneymanager.util.isRealDouble
 import com.sgcdeveloper.moneymanager.util.isWillBeDouble
 
 @Composable
-fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel: () -> Unit) {
-    var rate by remember { mutableStateOf("1.00") }
+fun AddCurrencyDialog(id:Long = 0,title:Int = R.string.add_currency,startRate:String = "1.00",defaultCurrency:Currency,currency: Currency, onAdd: (rate: Rate) -> Unit, onCancel: () -> Unit) {
+    var rate by remember { mutableStateOf(startRate) }
 
     AlertDialog(
         containerColor = MaterialTheme.colors.background,
@@ -48,7 +48,7 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
                             .clickable { onCancel() }
                     )
                     Text(
-                        text = stringResource(id = R.string.add_currency),
+                        text = stringResource(title),
                         color = MaterialTheme.colors.secondary,
                         fontSize = 18.sp,
                         modifier = Modifier
@@ -115,7 +115,7 @@ fun AddCurrencyDialog(defaultCurrency:Currency,currency: Currency, onAdd: (rate:
             }
         },
         confirmButton = {
-            Button(onClick = { onAdd(Rate(currency, rate.toDouble())) },
+            Button(onClick = { onAdd(Rate(id,currency, rate.toDouble())) },
                 enabled = rate.isRealDouble() && rate.toDouble() > 0
             ) {
                 Text(text = stringResource(id = R.string.save), color = white)

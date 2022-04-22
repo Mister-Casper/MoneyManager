@@ -12,17 +12,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.RecurringInterval
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
-import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
 
 @Composable
-fun WalletPicker(addTransactionViewModel: AddTransactionViewModel,isIncome:Boolean,defaultWallet: Wallet? = null, textDescription: String, onClick: () -> Unit) {
+fun WalletPicker(
+    isFrom:Boolean,
+    addTransactionViewModel: AddTransactionViewModel,
+    defaultWallet: Wallet? = null,
+    textDescription: String,
+    onClick: () -> Unit
+) {
     val source = remember { MutableInteractionSource() }
 
     if (source.collectIsPressedAsState().value) {
@@ -46,12 +50,12 @@ fun WalletPicker(addTransactionViewModel: AddTransactionViewModel,isIncome:Boole
                 Text(text = textDescription)
             }, interactionSource = source
         )
-        if (isIncome && addTransactionViewModel.isShowFromWalletRate){
+        if (isFrom && addTransactionViewModel.isShowFromWalletRate){
             Column(
                 Modifier
                     .align(Alignment.Bottom)
                     .padding(start = 4.dp)
-                    .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowRepeatIntervalDialog) }) {
+                    .clickable { addTransactionViewModel.changeRate(false) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.repeat_icon),
                     "",
@@ -61,7 +65,7 @@ fun WalletPicker(addTransactionViewModel: AddTransactionViewModel,isIncome:Boole
                     tint = MaterialTheme.colors.secondary
                 )
                 androidx.compose.material3.Text(
-                    text = stringResource(R.string.currency_rate),
+                    text = addTransactionViewModel.fromWalletRate,
                     color = if (addTransactionViewModel.recurringInterval.value != RecurringInterval.None) blue else MaterialTheme.colors.secondary,
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally
@@ -69,12 +73,12 @@ fun WalletPicker(addTransactionViewModel: AddTransactionViewModel,isIncome:Boole
                     fontSize = 12.sp
                 )
             }
-        }else if (!isIncome && addTransactionViewModel.isShowToWalletRate){
+        }else if (! isFrom && addTransactionViewModel.isShowToWalletRate){
             Column(
                 Modifier
                     .align(Alignment.Bottom)
                     .padding(start = 4.dp)
-                    .clickable { addTransactionViewModel.onEvent(AddTransactionEvent.ShowRepeatIntervalDialog) }) {
+                    .clickable { addTransactionViewModel.changeRate(true) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.repeat_icon),
                     "",
@@ -84,7 +88,7 @@ fun WalletPicker(addTransactionViewModel: AddTransactionViewModel,isIncome:Boole
                     tint = MaterialTheme.colors.secondary
                 )
                 androidx.compose.material3.Text(
-                    text = stringResource(id = R.string.currency_rate),
+                    text = addTransactionViewModel.toWalletRate,
                     color = if (addTransactionViewModel.recurringInterval.value != RecurringInterval.None) blue else MaterialTheme.colors.secondary,
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally

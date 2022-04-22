@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class InsertRate @Inject constructor(private val moneyManagerRepository: MoneyManagerRepository) {
     suspend operator fun invoke(rate:Rate){
-        moneyManagerRepository.insertRate(RateEntry(currency = rate.currency, rate = rate.rate))
+        moneyManagerRepository.insertRate(RateEntry(id = rate.id,currency = rate.currency, rate = rate.rate))
     }
 
     suspend fun insertRates(rates:List<BaseRate>){

@@ -18,36 +18,32 @@ fun AddTransferScreen(addTransactionViewModel: AddTransactionViewModel) {
                 DatePicker(addTransactionViewModel)
                 AmountPicker(addTransactionViewModel)
                 DescriptionItem(addTransactionViewModel)
-                WalletPicker(
+                WalletPicker(true,
                     addTransactionViewModel,
-                    addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
                     addTransactionViewModel.transactionFromWallet.value,
                     stringResource(
                         id = R.string.from_wallet
-                    ),
-                    onClick = {
-                        addTransactionViewModel.onEvent(
-                            AddTransactionEvent.ShowWalletPickerDialog(
-                                true
-                            )
+                    )
+                ) {
+                    addTransactionViewModel.onEvent(
+                        AddTransactionEvent.ShowWalletPickerDialog(
+                            true
                         )
-                    }
-                )
-                WalletPicker(
+                    )
+                }
+                WalletPicker(false,
                     addTransactionViewModel,
-                    addTransactionViewModel.currentScreen.value == TransactionScreen.Income,
                     addTransactionViewModel.transactionToWallet.value,
                     stringResource(
                         id = R.string.to_wallet
-                    ),
-                    onClick = {
-                        addTransactionViewModel.onEvent(
-                            AddTransactionEvent.ShowWalletPickerDialog(
-                                false
-                            )
+                    )
+                ) {
+                    addTransactionViewModel.onEvent(
+                        AddTransactionEvent.ShowWalletPickerDialog(
+                            false
                         )
-                    }
-                )
+                    )
+                }
             }
         }
     }

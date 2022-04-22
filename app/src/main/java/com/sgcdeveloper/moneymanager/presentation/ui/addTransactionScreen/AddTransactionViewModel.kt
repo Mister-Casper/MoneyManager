@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,10 +13,7 @@ import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.data.db.TransactionCategoriesDatabase
 import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.*
-import com.sgcdeveloper.moneymanager.domain.use_case.GetAvailableRates
-import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionCategoriesUseCase
-import com.sgcdeveloper.moneymanager.domain.use_case.GetTransactionItems
-import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
+import com.sgcdeveloper.moneymanager.domain.use_case.*
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.presentation.ui.init.InitViewModel.Companion.MAX_DESCRIPTION_SIZE
@@ -36,7 +32,8 @@ open class AddTransactionViewModel @Inject constructor(
     private val appPreferencesHelper: AppPreferencesHelper,
     private val getTransactionCategoriesUseCase: GetTransactionCategoriesUseCase,
     private val transactionCategoriesDatabase: TransactionCategoriesDatabase,
-    private val getAvailableRates: GetAvailableRates
+    private val getAvailableRates: GetAvailableRates,
+    private val insertRate: InsertRate
 ) : AndroidViewModel(app) {
 
     lateinit var wallets: LiveData<List<Wallet>>
@@ -75,7 +72,7 @@ open class AddTransactionViewModel @Inject constructor(
     var isMustBeRecurring = false
 
     val isAutoReturn = appPreferencesHelper.getAutoReturn()
-    val rates = runBlocking { getAvailableRates.getBaseRatesAsync() }
+    var rates = runBlocking { getAvailableRates.getBaseRatesAsync() }
 
     fun isDarkTheme() = appPreferencesHelper.getIsDarkTheme()
 
@@ -159,6 +156,7 @@ open class AddTransactionViewModel @Inject constructor(
             }
             is AddTransactionEvent.ChangeAddTransactionScreen -> {
                 currentScreen.value = addTransactionEvent.transactionScreen
+                updateShowRates()
             }
             is AddTransactionEvent.ShowChangeDateDialog -> {
                 dialogState.value = DialogState.DatePickerDialog
@@ -283,35 +281,43 @@ open class AddTransactionViewModel @Inject constructor(
         }
     }
 
+    val defaultCurrency = appPreferencesHelper.getDefaultCurrency()
+
     private fun updateShowRates() {
-        if (transactionToWallet.value?.currency?.name == transactionFromWallet.value?.currency?.name && currentScreen.value != TransactionScreen.Transfer) {
+        if (transactionToWallet.value?.currency?.name == transactionFromWallet.value?.currency?.name || currentScreen.value != TransactionScreen.Transfer) {
             isShowFromWalletRate = false
             isShowToWalletRate = false
             return
         }
-        val defaultCurrency = appPreferencesHelper.getDefaultCurrency()
-        if (defaultCurrency?.name != transactionToWallet.value?.currency?.name) {
+        if (defaultCurrency?.name != transactionToWallet.value?.currency?.name && transactionToWallet.value != null) {
             isShowToWalletRate = true
             toWalletRate =
                 app.getString(
                     R.string.rate,
                     defaultCurrency!!.code,
-                    rates.find { it.currency.name == transactionToWallet.value?.currency?.name },
+                    rates.find { it.currency.name == transactionToWallet.value?.currency?.name }!!.rate,
                     transactionToWallet.value?.currency?.code
                 )
         } else
             isShowToWalletRate = false
-        if (defaultCurrency?.name != transactionFromWallet.value?.currency?.name) {
+
+        if (defaultCurrency?.name != transactionFromWallet.value?.currency?.name && transactionFromWallet.value != null) {
             isShowFromWalletRate = true
             fromWalletRate =
                 app.getString(
                     R.string.rate,
                     defaultCurrency!!.code,
-                    rates.find { it.currency.name == transactionFromWallet.value?.currency?.name },
+                    rates.find { it.currency.name == transactionFromWallet.value?.currency?.name }!!.rate,
                     transactionFromWallet.value?.currency?.code
                 )
         } else
             isShowFromWalletRate = false
+        if (transactionToWallet.value == null) {
+            isShowFromWalletRate = false
+        }
+        if (transactionFromWallet.value == null) {
+            isShowFromWalletRate = false
+        }
     }
 
     private fun checkIsCanBeSaved(): Boolean {
@@ -345,4 +351,28 @@ open class AddTransactionViewModel @Inject constructor(
             else -> app.getString(R.string.transfer)
         }
     }
+
+    fun changeRate(b: Boolean) {
+        val rate = if (!b)
+            rates.find { it.currency.name == transactionFromWallet.value?.currency?.name }!!
+        else
+            rates.find { it.currency.name == transactionToWallet.value?.currency?.name }!!
+
+        val currency = if (!b)
+            transactionFromWallet.value?.currency
+        else
+            transactionToWallet.value?.currency
+
+        dialogState.value = DialogState.ChangeRateDialogState(rate.id, rate.rate, defaultCurrency!!, currency!!)
+    }
+
+    fun insertCurrency(it: Rate) {
+        viewModelScope.launch {
+            insertRate(it)
+            rates = getAvailableRates.getBaseRatesAsync()
+            updateShowRates()
+        }
+    }
+
+
 }

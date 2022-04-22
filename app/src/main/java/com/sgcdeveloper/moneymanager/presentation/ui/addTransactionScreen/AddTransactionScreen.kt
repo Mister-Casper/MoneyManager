@@ -105,6 +105,14 @@ fun AddTransactionScreen(addTransactionViewModel: AddTransactionViewModel, navCo
             },
             onDismiss = { addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog) }
         )
+    }else if(dialog.value is DialogState.ChangeRateDialogState){
+        val dialogState = dialog.value as DialogState.ChangeRateDialogState
+        AddCurrencyDialog(dialogState.startRateId,R.string.edit_rate,dialogState.startRate,defaultCurrency = dialogState.defaultCurrency, currency = dialogState.currency, onAdd = {
+            addTransactionViewModel.insertCurrency(it)
+            addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
+        }) {
+            addTransactionViewModel.onEvent(AddTransactionEvent.CloseDialog)
+        }
     }
     if (dialogBackOpen.value) {
         DialogBack(dialogBackOpen.value, signalBack.value,

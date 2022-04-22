@@ -19,11 +19,11 @@ fun AddIncomeScreen(addTransactionViewModel: AddTransactionViewModel) {
                 AmountPicker(addTransactionViewModel)
                 DescriptionItem(addTransactionViewModel)
                 CategoryPicker(addTransactionViewModel,addTransactionViewModel.transactionIncomeCategory.value)
-                WalletPicker(addTransactionViewModel,addTransactionViewModel.currentScreen.value == TransactionScreen.Income,addTransactionViewModel.transactionFromWallet.value, stringResource(
-                    id = R.string.wallet_selector
-                ),
-                    onClick = { addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true)) }
-                )
+                WalletPicker(true,
+                    addTransactionViewModel, addTransactionViewModel.transactionFromWallet.value, stringResource(
+                        id = R.string.wallet_selector
+                    )
+                ) { addTransactionViewModel.onEvent(AddTransactionEvent.ShowWalletPickerDialog(true)) }
             }
         }
     }

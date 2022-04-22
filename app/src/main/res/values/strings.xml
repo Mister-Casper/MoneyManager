@@ -197,7 +197,7 @@
 
     <string name="add_currency">Add Currency</string>
     <string name="currency_rate">Rate</string>
-    <string name="rate" translatable="false">1.00 %1$s = %2$s %3$s</string>
+    <string name="rate" translatable="false">1 %1$s = %2$s %3$s</string>
     <string name="exchange_rate">Exchange Rate</string>
 
     <string name="all_wallets">All Wallets</string>
@@ -322,5 +322,6 @@
     <string name="add_sybcategory">Add subcategory</string>
 
     <string name="are_u_sure_delete_selected_transaction_categories">Are you sure you want to delete %1$s transaction categories?</string>
+    <string name="edit_rate">Edit exchange rate</string>
 
 </resources>

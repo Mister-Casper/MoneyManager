@@ -20,6 +20,7 @@ sealed class DialogState {
     class SelectCustomTImeIntervalDialog(val startDate: Date, val endDate: Date) : DialogState()
     class SelectWalletsDialog(val allWallets: List<Wallet>, val defaultWallets: List<Wallet>) : DialogState()
     class CalendarTransactionsDialog(val dayTransactions: DayTransactions) : DialogState()
+    class ChangeRateDialogState(val startRateId:Long,val startRate:String = "1.00",val defaultCurrency:Currency,val currency: Currency) : DialogState()
 
     object StringSelectorDialogState : DialogState()
     object SelectCurrenciesDialogState : DialogState()

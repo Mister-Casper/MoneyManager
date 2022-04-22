@@ -77,9 +77,9 @@ fun AddWalletScreen(navController: NavController, addWalletViewModel: AddWalletV
         }
     } else if (dialog.value is DialogState.AddCurrencyRateDialog) {
         AddCurrencyDialog(
-            addWalletViewModel.defaultCurrency,
-            (dialog.value as DialogState.AddCurrencyRateDialog).currency,
-            {
+            defaultCurrency = addWalletViewModel.defaultCurrency,
+            currency = (dialog.value as DialogState.AddCurrencyRateDialog).currency,
+            onAdd = {
                 addWalletViewModel.onEvent(WalletEvent.AddCurrency(it))
             }) {
             addWalletViewModel.onEvent(WalletEvent.ShowChangeCurrencyDialog)
