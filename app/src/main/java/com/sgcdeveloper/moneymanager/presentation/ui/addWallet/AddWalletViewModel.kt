@@ -84,7 +84,7 @@ open class AddWalletViewModel @Inject constructor(
                 isEditingMode.value = (wallet.walletId != 0L)
             }
             is WalletEvent.ChangeWalletName -> {
-                if (walletEvent.name.length <= InitViewModel.MAX_WALLET_NAME_LENGTH || walletEvent.name.length <= walletName.value.length) {
+                if ((walletEvent.name.length <= InitViewModel.MAX_WALLET_NAME_LENGTH || walletEvent.name.length <= walletName.value.length) && !walletEvent.name.contains("[/{}]".toRegex()) ) {
                     walletName.value = walletEvent.name
                     this.wallet.value = this.wallet.value!!.copy(name = walletEvent.name)
                 }

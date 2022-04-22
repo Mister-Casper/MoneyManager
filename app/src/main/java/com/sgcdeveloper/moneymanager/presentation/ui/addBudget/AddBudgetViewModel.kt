@@ -80,7 +80,7 @@ open class AddBudgetViewModel @Inject constructor(
                 }
             }
             is AddBudgetEvent.ChangeBudgetName -> {
-                if (addBudgetEvent.name.length <= InitViewModel.MAX_DESCRIPTION_SIZE)
+                if (addBudgetEvent.name.length <= InitViewModel.MAX_DESCRIPTION_SIZE && !addBudgetEvent.name.contains("[/{}]".toRegex()))
                     budgetName.value = addBudgetEvent.name
             }
             is AddBudgetEvent.CloseDialog -> {

@@ -174,7 +174,7 @@ open class AddTransactionViewModel @Inject constructor(
                 }
             }
             is AddTransactionEvent.ChangeTransactionDescription -> {
-                if (addTransactionEvent.description.length <= MAX_DESCRIPTION_SIZE)
+                if (addTransactionEvent.description.length <= MAX_DESCRIPTION_SIZE  && !addTransactionEvent.description.contains("[/{}]".toRegex()))
                     transactionDescription.value = addTransactionEvent.description
             }
             is AddTransactionEvent.ShowTransactionCategoryPickerDialog -> {
