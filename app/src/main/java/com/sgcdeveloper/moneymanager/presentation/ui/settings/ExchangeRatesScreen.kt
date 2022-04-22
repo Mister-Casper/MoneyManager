@@ -106,7 +106,7 @@ fun ExchangeRatesScreen(navController: NavController, addWalletViewModel: AddWal
                 TextField(
                     value = rate.rate,
                     onValueChange = {
-                        if (rate.rate.isWillBeDouble() && rate.rate.length <= InitViewModel.MAX_RATE_LENGTH) {
+                        if (it.isWillBeDouble() && it.length <= InitViewModel.MAX_RATE_LENGTH) {
                             rates.removeAt(item)
                             rates.add(item, BaseRate(rate.currency, it))
                         }
