@@ -13,6 +13,9 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/Theme.MoneyManager">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5494709043617393~9076198029"/>
         <activity android:name=".presentation.ui.util.MyEnterPinActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity

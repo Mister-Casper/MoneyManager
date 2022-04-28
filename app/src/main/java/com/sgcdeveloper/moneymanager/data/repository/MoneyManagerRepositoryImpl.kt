@@ -179,6 +179,38 @@ class MoneyManagerRepositoryImpl @Inject constructor(private val appDatabase: Ap
         appDatabase.recurringTransactionDao().removeRecurringTransactions(walletId)
     }
 
+    override fun getGoalsOnce(): List<GoalEntry> {
+        return appDatabase.goal.getGoalsOnce()
+    }
+
+    override fun getGoals(): LiveData<List<GoalEntry>> {
+        return appDatabase.goal.getGoals()
+    }
+
+    override suspend fun getAsyncWGoals(): List<GoalEntry> {
+        return appDatabase.goal.getAsyncWGoals()
+    }
+
+    override suspend fun getGoal(id: Long): GoalEntry {
+        return appDatabase.goal.getGoal(id)
+    }
+
+    override suspend fun insertGoal(budgetEntry: GoalEntry): Long {
+        return appDatabase.goal.insertGoal(budgetEntry)
+    }
+
+    override suspend fun removeGoal(id: Long) {
+        appDatabase.goal.removeGoal(id)
+    }
+
+    override suspend fun deleteAllGoals() {
+        appDatabase.goal.deleteAllGoals()
+    }
+
+    override suspend fun insertGoals(budgetEntries: List<GoalEntry>) {
+        return appDatabase.goal.insertGoals(budgetEntries)
+    }
+
     override suspend fun removeRecurringTransactionsWithCategoryId(categoryId: Long) {
         val recurringTransaction = appDatabase.recurringTransactionDao().getRecurringTransactionsOnce()
         appDatabase.recurringTransactionDao()

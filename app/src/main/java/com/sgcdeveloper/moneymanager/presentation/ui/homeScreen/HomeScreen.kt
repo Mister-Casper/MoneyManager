@@ -15,7 +15,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.domain.model.AddNewWallet
 import com.sgcdeveloper.moneymanager.domain.model.AddRecurringTransaction
@@ -89,6 +93,16 @@ fun HomeScreen(homeViewModel: HomeViewModel, navController: NavController) {
                 }
             }
             item {
+                AndroidView(
+                    modifier = Modifier.fillMaxWidth(),
+                    factory = { context ->
+                        AdView(context).apply {
+                            adSize = AdSize.LARGE_BANNER
+                            adUnitId = "ca-app-pub-5494709043617393/2510789678"
+                            loadAd(AdRequest.Builder().build())
+                        }
+                    }
+                )
                 RecurringTransactionsDashboard(state.recurringTransactions) {
                     if (it is RecurringTransaction) {
                         navController.navigate(Screen.AddRecurringTransaction(it).route)

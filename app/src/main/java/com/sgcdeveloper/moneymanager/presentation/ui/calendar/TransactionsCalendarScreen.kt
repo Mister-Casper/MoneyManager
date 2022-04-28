@@ -22,7 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.sgcdeveloper.moneymanager.R
 import com.sgcdeveloper.moneymanager.presentation.nav.Screen
 import com.sgcdeveloper.moneymanager.presentation.theme.blue
@@ -220,5 +224,15 @@ fun TransactionsCalendarScreen(
                 }
             }
         }
+        AndroidView(
+            modifier = Modifier.fillMaxWidth(),
+            factory = { context ->
+                AdView(context).apply {
+                    adSize = AdSize.LARGE_BANNER
+                    adUnitId = "ca-app-pub-5494709043617393/2510789678"
+                    loadAd(AdRequest.Builder().build())
+                }
+            }
+        )
     }
 }
