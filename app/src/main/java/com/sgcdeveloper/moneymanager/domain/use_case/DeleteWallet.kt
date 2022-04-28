@@ -21,7 +21,44 @@ class DeleteWallet @Inject constructor(
         moneyManagerRepository.removeRecurringTransactions(walletId)
     }
 
-    private suspend fun cancelTransactions(transactions: List<TransactionEntry>, walletId: Long) {
+    suspend fun cancelTransactions(transactions: List<TransactionEntry>) {
+        val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.currency.code }
+        val walletsMap = getWallets.getWallets().associateBy { it.walletId }.toMutableMap()
+        val rates =
+            moneyManagerRepository.getRatesOnce() + RateEntry(0, currencyRepository.getDefaultCurrency(), 1.0)
+
+        transactions.forEach { transaction ->
+            val fromWallet = walletsMap[transaction.fromWalletId]!!
+            val toWallet = walletsMap[transaction.toWalletId]
+            val amount = transaction.value
+
+            when (transaction.transactionType) {
+                TransactionType.Expense -> {
+                    walletsMap[fromWallet.walletId] =
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount).toString())
+                }
+                TransactionType.Income -> {
+                    walletsMap[fromWallet.walletId] =
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() - amount).toString())
+                }
+                TransactionType.Transfer -> {
+                    walletsMap[fromWallet.walletId] = if (transaction.fromTransferValue == 0.0)
+                        (fromWallet.copy(money = (fromWallet.money.toSafeDouble() + amount * rates.find { it.currency.code == toWallet!!.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.toWalletId] }!!.rate).toString()))
+                    else
+                        fromWallet.copy(money = (fromWallet.money.toSafeDouble() + transaction.fromTransferValue).toString())
+
+                    walletsMap[toWallet!!.walletId] = if (transaction.toTransferValue == 0.0)
+                        (toWallet.copy(money = (toWallet.money.toSafeDouble() - amount * rates.find { it.currency.code == toWallet.currency.code }!!.rate / rates.find { it.currency.code == wallets[transaction.fromWalletId] }!!.rate).toString()))
+                    else
+                        toWallet.copy(money = (toWallet.money.toSafeDouble() - transaction.toTransferValue).toString())
+                }
+            }
+        }
+        moneyManagerRepository.removeTransactions(transactions.map { it.id.toInt() })
+        insertWallet.insertWallets(walletsMap.map { it.value })
+    }
+
+    suspend fun cancelTransactions(transactions: List<TransactionEntry>, walletId: Long) {
         val wallets = moneyManagerRepository.getAsyncWallets().associate { it.id to it.currency.code }
         val walletsMap = getWallets.getWallets().associateBy { it.walletId }.toMutableMap()
         val rates =

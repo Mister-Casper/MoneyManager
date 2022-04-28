@@ -50,7 +50,8 @@ class GetTransactionsUseCase @Inject constructor(
                             transaction.transactionType,
                             transaction.fromWalletId,
                             transaction.toWalletId,
-                            transaction.category
+                            transaction.category,
+                            transaction
                         )
                     } else {
                         toTransaction(transaction)
@@ -78,7 +79,8 @@ class GetTransactionsUseCase @Inject constructor(
                                     transaction.transactionType,
                                     transaction.fromWalletId,
                                     transaction.toWalletId,
-                                    transaction.category
+                                    transaction.category,
+                                    transaction
                                 )
                             }
                             transaction.toWalletId -> {
@@ -101,7 +103,8 @@ class GetTransactionsUseCase @Inject constructor(
                                     transaction.transactionType,
                                     transaction.fromWalletId,
                                     transaction.toWalletId,
-                                    transaction.category
+                                    transaction.category,
+                                    transaction
                                 )
                             }
                             else -> toTransaction(transaction)
@@ -123,7 +126,8 @@ class GetTransactionsUseCase @Inject constructor(
             transaction.transactionType,
             transaction.fromWalletId,
             transaction.toWalletId,
-            transaction.category
+            transaction.category,
+            transaction
         )
     }
 }

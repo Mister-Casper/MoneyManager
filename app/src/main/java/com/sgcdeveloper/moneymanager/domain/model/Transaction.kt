@@ -1,5 +1,6 @@
 package com.sgcdeveloper.moneymanager.domain.model
 
+import com.sgcdeveloper.moneymanager.data.db.entry.TransactionEntry
 import com.sgcdeveloper.moneymanager.domain.util.TransactionType
 import com.sgcdeveloper.moneymanager.util.Date
 
@@ -12,5 +13,6 @@ data class Transaction(
     val transactionType: TransactionType,
     val fromWalletId: Long,
     val toWalletId: Long = 0,
-    val category: TransactionCategory
+    val category: TransactionCategory,
+    val entry:TransactionEntry
 )

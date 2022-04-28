@@ -8,6 +8,7 @@ import com.sgcdeveloper.moneymanager.data.prefa.AppPreferencesHelper
 import com.sgcdeveloper.moneymanager.domain.model.BaseTransactionItem
 import com.sgcdeveloper.moneymanager.domain.model.Wallet
 import com.sgcdeveloper.moneymanager.domain.repository.MoneyManagerRepository
+import com.sgcdeveloper.moneymanager.domain.use_case.DeleteWallet
 import com.sgcdeveloper.moneymanager.domain.use_case.WalletsUseCases
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.DialogState
 import com.sgcdeveloper.moneymanager.util.WalletChangerListener
@@ -23,7 +24,8 @@ open class TransactionsViewModel @Inject constructor(
     private val app: Application,
     private val walletsUseCases: WalletsUseCases,
     private val appPreferencesHelper: AppPreferencesHelper,
-    private val moneyManagerRepository: MoneyManagerRepository
+    private val moneyManagerRepository: MoneyManagerRepository,
+    private val deleteWallet: DeleteWallet
 ) : AndroidViewModel(app) {
 
     var state = mutableStateOf(TransactionsState())
@@ -122,7 +124,7 @@ open class TransactionsViewModel @Inject constructor(
             }
             TransactionEvent.DeleteSelectedTransactions -> {
                 viewModelScope.launch {
-                    moneyManagerRepository.removeTransactions(getSelectedTransactions().map { it.transactionEntry.id.toInt() })
+                    deleteWallet.cancelTransactions(getSelectedTransactions().map { it.transactionEntry.entry })
                     loadTransactions(state.value.wallet!!)
                 }
             }
