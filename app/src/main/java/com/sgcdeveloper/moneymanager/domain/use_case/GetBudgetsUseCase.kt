@@ -23,6 +23,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 import kotlin.math.max
 
 class GetBudgetsUseCase @Inject constructor(
@@ -96,7 +97,7 @@ class GetBudgetsUseCase @Inject constructor(
                                 ),
                                 left = getFormattedMoney(
                                     appPreferencesHelper.getDefaultCurrency()!!.code,
-                                    kotlin.math.abs(left)
+                                    abs(left)
                                 ),
                                 budgetValue = budget.amount,
                                 budget = getFormattedMoney(
@@ -156,11 +157,13 @@ class GetBudgetsUseCase @Inject constructor(
     }
 
     private fun getStartDate(now: Date, firstDay: DayOfWeek): Date {
-        val dif = if (firstDay == now.getAsLocalDate().dayOfWeek)
-            0
-        else
-            kotlin.math.abs(now.getAsLocalDate().dayOfWeek.value - firstDay.value + 7)
-        return Date(now.getAsLocalDate().minusDays(dif.toLong()))
+        var nextNow = now.getAsLocalDate()
+        if (firstDay != now.getAsLocalDate().dayOfWeek)
+            while (nextNow.dayOfWeek != firstDay){
+               nextNow = nextNow.minusDays(1)
+            }
+
+        return Date(nextNow)
     }
 
     private fun getTimeIntervalCController(period: BudgetPeriod, now: Date): TimeIntervalController {
