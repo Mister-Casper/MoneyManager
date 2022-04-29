@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
@@ -246,6 +247,16 @@ fun StatisticScreen(
                                     TransactionType.Expense
                                 ).route
                             )
+                        }
+                    )
+                    AndroidView(
+                        modifier = Modifier.fillMaxWidth(),
+                        factory = { context ->
+                            AdView(context).apply {
+                                adSize = AdSize.LARGE_BANNER
+                                adUnitId = "ca-app-pub-5494709043617393/2510789678"
+                                loadAd(AdRequest.Builder().build())
+                            }
                         }
                     )
                 }

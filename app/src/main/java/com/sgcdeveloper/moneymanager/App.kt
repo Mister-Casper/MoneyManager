@@ -8,7 +8,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltAndroidApp
 open class App : Application() {
 
@@ -17,7 +16,11 @@ open class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        MobileAds.initialize(this) { }
+        try {
+            MobileAds.initialize(this) { }
+        }catch (e:Exception) {
+
+        }
         GlobalScope.launch {
             getRecurringTransactionsUseCase.loadTransactions()
         }

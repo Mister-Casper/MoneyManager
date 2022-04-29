@@ -37,10 +37,12 @@ class GetTransactionsUseCase @Inject constructor(
                 transactions.map { transaction ->
                     val transactionCode = wallets[transaction.fromWalletId]
                     if (transactionCode != defaultCurrency.code) {
+                        val rate = rates.find { it.currency.code == transactionCode }?.rate
+
                         val transferValue = if (transaction.transactionType == TransactionType.Transfer)
                             transaction.fromTransferValue
                         else
-                            transaction.value
+                            transaction.value * (rate ?: 1.0).toDouble()
                         Transaction(
                             transaction.id,
                             transaction.date,

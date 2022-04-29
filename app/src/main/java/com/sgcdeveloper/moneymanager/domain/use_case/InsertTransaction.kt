@@ -59,7 +59,7 @@ class InsertTransaction @Inject constructor(
         val transactionEntry = TransactionEntry(
             id = transactionId,
             date = date,
-            value = amount.toDouble() / rates.find { it.currency.code == fromWallet.currency.code }!!.rate,
+            value = amount.toDouble() ,
             description = description,
             transactionType = transactionType,
             fromWalletId = fromWallet.walletId,
