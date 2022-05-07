@@ -134,9 +134,9 @@ fun CalculatorsScreen(navController: NavController, darkThemeViewModel: MainView
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
+            MenuItem(Modifier.clickable { navController.navigate(Screen.CreditCalculator.route) }) {
                 Text(
-                    text = stringResource(id = R.string.credit_card_payoff_calculator),
+                    text = stringResource(id = R.string.credit_calculator),
                     Modifier.align(Alignment.CenterStart),
                     color = white,
                     fontSize = 20.sp
@@ -148,21 +148,7 @@ fun CalculatorsScreen(navController: NavController, darkThemeViewModel: MainView
                     modifier = Modifier.align(Alignment.CenterEnd)
                 )
             }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
-                Text(
-                    text = stringResource(id = R.string.loan_calculator),
-                    Modifier.align(Alignment.CenterStart),
-                    color = white,
-                    fontSize = 20.sp
-                )
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowRight,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                )
-            }
-            MenuItem(Modifier.clickable { navController.navigate(Screen.AccountSettings.route) }) {
+            MenuItem(Modifier.clickable { navController.navigate(Screen.DiscountAndTaxCalculator.route) }) {
                 Text(
                     text = stringResource(id = R.string.discount_and_tax_calculator),
                     Modifier.align(Alignment.CenterStart),

@@ -41,14 +41,16 @@ import java.time.format.TextStyle
 import java.util.*
 
 @Composable
-fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
+fun CreditCalculatorScreen(navController: NavController, darkThemeViewModel: MainViewModel) {
     val context = LocalContext.current
     val depositCalculatoorOn = remember{mutableStateOf(false)}
     val mainAccount = rememberSaveable { mutableStateOf("") }
     val months = rememberSaveable { mutableStateOf("") }
     val percent = rememberSaveable { mutableStateOf("") }
     val textCompate = rememberSaveable { mutableStateOf("") }
-    val amountEndOfTheTerm = rememberSaveable { mutableStateOf("") }
+    val totalLoanAmount = rememberSaveable { mutableStateOf("") }
+    val totalPercentage = rememberSaveable { mutableStateOf("") }
+    val monthlyPayment = rememberSaveable { mutableStateOf("") }
     if (darkThemeViewModel.isShowSelectFirstDayDialog) {
         StringSelectorDialog(stringResource(id = R.string.first_day),
             DayOfWeek.values().map { it.getDisplayName(TextStyle.FULL, Locale.getDefault()) },
@@ -106,7 +108,7 @@ fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: Ma
         Spacer(Modifier.weight(1f))
         Row(Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(id = R.string.deposit_calculator),
+                text = stringResource(id = R.string.credit_calculator),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.secondary,
                 fontSize = 22.sp,
@@ -176,13 +178,16 @@ fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: Ma
                     .clickable {
                         if (depositCalculatoorOn.value) {
                             depositCalculatoorOn.value = false
-                            amountEndOfTheTerm.value = ""
+                            totalLoanAmount.value = ""
+                            monthlyPayment.value = ""
+                            totalPercentage.value = ""
                         }
                         else if (mainAccount.value.toDouble() > 0 || months.value.toDouble() > 0 || percent.value.isDouble()){
                             depositCalculatoorOn.value = true
-                            amountEndOfTheTerm.value = ((mainAccount.value.toDouble() +
-                                    (mainAccount.value.toDouble() * percent.value.toDouble() / 100
-                                            / 365 * months.value.toDouble() * 30)).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                            totalLoanAmount.value =
+                                (mainAccount.value.toDouble() * (1 + percent.value.toDouble() / 100 / 12 * months.value.toDouble())).toBigDecimal().setScale(2, RoundingMode.UP).toDouble().toString()
+                            totalPercentage.value = ((totalLoanAmount.value.toDouble() - mainAccount.value.toDouble()).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                            monthlyPayment.value = ((totalLoanAmount.value.toDouble() / months.value.toDouble()).toBigDecimal().setScale(2, RoundingMode.UP).toDouble()).toString()
                         }
                     }
             )
@@ -190,7 +195,7 @@ fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: Ma
         Spacer(Modifier.weight(1f))
         Row(Modifier.fillMaxWidth()) {
             Text(
-                text = stringResource(id = R.string.amount_at_the_end_of_the_term),
+                text = stringResource(id = R.string.total_loan_amount),
                 color = white,
                 fontSize = 20.sp,
                 modifier = Modifier
@@ -198,7 +203,7 @@ fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: Ma
                     .weight(0.5f)
             )
             Text(
-                text = amountEndOfTheTerm.value,
+                text = totalLoanAmount.value,
                 color = white,
                 fontSize = 20.sp,
                 modifier = Modifier
@@ -206,7 +211,44 @@ fun DepositCalculatorScreen(navController: NavController, darkThemeViewModel: Ma
                     .weight(0.5f)
             )
         }
-
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.total_percentage),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = totalPercentage.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.monthly_payment),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = monthlyPayment.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+        }
     }
 
 }

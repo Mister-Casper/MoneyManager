@@ -18,6 +18,8 @@ sealed class Screen(val route: String) {
     object Calculator : Screen("Calculator")
     object TipCalculator: Screen("TipCalculator")
     object DepositCalculator: Screen("DepositCalculatorScreen")
+    object CreditCalculator: Screen("CreditCalculatorScreen")
+    object DiscountAndTaxCalculator: Screen("DiscountAndTaxCalculatorScreen")
     object SignUp : Screen("SignUp")
     object Init : Screen("Init")
     object Settings : Screen("Settings")

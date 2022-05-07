@@ -143,11 +143,15 @@
 
     <string name="deposit_calculator">Калькулятор вкладов</string>
     <string name="main_account">Основной счёт</string>
-    <string name="deposit">Депозит</string>
     <string name="months">Месяцы</string>
-    <string name="credit_card_payoff_calculator">Калькулятор выплат по кредиту</string>
-    <string name="loan_calculator">Кредитный калькулятор</string>
+    <string name="amount_at_the_end_of_the_term">Сумма в конце срока</string>
+
+    <string name="credit_calculator">Кредитный калькулятор</string>
+    <string name="total_loan_amount">Общая сумма кредита</string>
+    <string name="monthly_payment">Ежемесячный платёж</string>
+    <string name="total_percentage">Общий процент</string>
     <string name="discount_and_tax_calculator">Калькулятор скидок и налогов</string>
+    <string name="discount">Скидка %</string>
 
     <string name="settings">Настройки</string>
     <string name="account">Учетная запись</string>

@@ -33,6 +33,7 @@ import com.sgcdeveloper.moneymanager.presentation.theme.gray
 import com.sgcdeveloper.moneymanager.presentation.theme.white
 import com.sgcdeveloper.moneymanager.presentation.ui.addTransactionScreen.*
 import com.sgcdeveloper.moneymanager.presentation.ui.dialogs.StringSelectorDialog
+import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.*
@@ -103,7 +104,7 @@ fun TipCalculatorScreen(navController: NavController, darkThemeViewModel: MainVi
         textCompate.value = stringResource(R.string.compute)
     }
     Column {
-        Column(Modifier.weight(1f)) {
+        Spacer(Modifier.weight(1f))
             Row(Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(id = R.string.tip_calculator),
@@ -111,214 +112,194 @@ fun TipCalculatorScreen(navController: NavController, darkThemeViewModel: MainVi
                     color = MaterialTheme.colors.secondary,
                     fontSize = 22.sp,
                     modifier = Modifier
-                            .padding(20.dp)
+                        .padding(20.dp)
                 )
             }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.check),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    TextField(
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        value = money.value,
-                        onValueChange = {newText -> money.value = newText},
-                        modifier = Modifier
-                            .padding(20.dp))
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.split),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    TextField(
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        value = split.value,
-                        onValueChange = {newText -> split.value = newText},
-                        modifier = Modifier
-                            .padding(20.dp))
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.tips),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .weight(0.25f)
-                            .padding(20.dp)
-                    )
-                    Text(
-                        text = "$sliderPosition",
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .weight(0.25f)
-                            .padding(20.dp)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.percent),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .weight(0.25f)
-                            .padding(20.dp)
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Slider(
-                        modifier = Modifier
-                            .padding(20.dp),
-                        value = sliderPosition,
-                        valueRange = 0f..100f,
-                        steps = 99,
-                        onValueChange = { sliderPosition = it },
-                        colors = SliderDefaults.colors(
-                            thumbColor = Color(0xFFB71C1C),
-                            activeTrackColor = Color(0xFFEF9A9A),
-                            inactiveTrackColor = Color(0xFFFFEBEE),
-                            inactiveTickColor = Color(0xFFEF9A9A),
-                            activeTickColor = Color(0xFFB71C1C)
-                        )
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = textCompate.value,
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .clickable {
-                                if (tipCalculatoorOn.value){
-                                    tipCalculatoorOn.value = false
-                                    tipAmount.value = ""
-                                    totalAmountReceipt.value = ""
-                                    checkTips.value = ""
-                                    everyRayment.value = ""
-                                }
-                                if(!tipCalculatoorOn.value || money.value != "" || split.value != "") {
-                                    tipCalculatoorOn.value = true
-                                    tipAmount.value =
-                                        (money.value.toDouble() * sliderPosition / 100).toString()
-                                    totalAmountReceipt.value =
-                                        (money.value.toDouble() + tipAmount.value.toDouble()).toString()
-                                    checkTips.value =
-                                        (tipAmount.value.toDouble() / split.value.toDouble()).toString()
-                                    everyRayment.value =
-                                        (totalAmountReceipt.value.toDouble() / split.value.toDouble()).toString()
-                                }
-                            }
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.tip_amount),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = tipAmount.value,
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.Total_amount_receipt),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = totalAmountReceipt.value,
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.Check_tips),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = checkTips.value,
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-            }
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(id = R.string.Every_payment),
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = everyRayment.value,
-                        color = white,
-                        fontSize = 20.sp,
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .weight(0.5f)
-                    )
-                }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.check),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+            TextField(
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                value = money.value,
+                onValueChange = { newText -> money.value = newText },
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.split),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+            TextField(
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                value = split.value,
+                onValueChange = { newText -> split.value = newText },
+                modifier = Modifier
+                    .padding(20.dp)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.tips),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .weight(0.25f)
+                    .padding(20.dp)
+            )
+            Text(
+                text = "$sliderPosition",
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .weight(0.25f)
+                    .padding(20.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.percent),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .weight(0.25f)
+                    .padding(20.dp)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Slider(
+                modifier = Modifier
+                    .padding(20.dp),
+                value = sliderPosition,
+                valueRange = 0f..100f,
+                steps = 99,
+                onValueChange = { sliderPosition = it },
+                colors = SliderDefaults.colors(
+                    thumbColor = Color(0xFFB71C1C),
+                    activeTrackColor = Color(0xFFEF9A9A),
+                    inactiveTrackColor = Color(0xFFFFEBEE),
+                    inactiveTickColor = Color(0xFFEF9A9A),
+                    activeTickColor = Color(0xFFB71C1C)
+                )
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = textCompate.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .clickable {
+                        if (tipCalculatoorOn.value) {
+                            tipCalculatoorOn.value = false
+                            tipAmount.value = ""
+                            totalAmountReceipt.value = ""
+                            checkTips.value = ""
+                            everyRayment.value = ""
+                        }
+                        else if (money.value != "" || split.value != "") {
+                            tipCalculatoorOn.value = true
+                            tipAmount.value =
+                                ((money.value.toDouble() * sliderPosition / 100).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                            totalAmountReceipt.value =
+                                ((money.value.toDouble() + tipAmount.value.toDouble()).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                            checkTips.value =
+                                ((tipAmount.value.toDouble() / split.value.toDouble()).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                            everyRayment.value =
+                                ((totalAmountReceipt.value.toDouble() / split.value.toDouble()).toBigDecimal().setScale(2, RoundingMode.UP)).toString()
+                        }
+                    }
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.tip_amount),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = tipAmount.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.Total_amount_receipt),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = totalAmountReceipt.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.Check_tips),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = checkTips.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Row(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(id = R.string.Every_payment),
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
+            Text(
+                text = everyRayment.value,
+                color = white,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .weight(0.5f)
+            )
             }
         }
-    }
 
 }

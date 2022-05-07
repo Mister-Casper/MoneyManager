@@ -131,30 +131,35 @@ fun CalculatorScreen(navController: NavController, darkThemeViewModel: MainViewM
                             val listStr = mutableListOf<String>()
                             val index = 0
                             for (i in arrayNumber) {
-                                Log.d(TAG, i)
                                 if (i != "+" && i != "-" && i != "/" && i != "*") {
                                     listNumer.add(i.toDouble())
                                 } else {
                                     listStr.add(i)
                                 }
                             }
-                            for (i in listStr) {
-                                if (i == "-") {
-                                    listNumer[index + 1] = listNumer[index] - listNumer[index + 1]
+                            Log.d(TAG, listStr.size.toString())
+                            Log.d(TAG, listNumer.size.toString())
+                            if (listStr.size % 2 != 0 && listNumer.size % 2 == 0) {
+                                for (i in listStr) {
+                                    if (i == "-") {
+                                        listNumer[index + 1] =
+                                            listNumer[index] - listNumer[index + 1]
+                                    }
+                                    if (i == "+") {
+                                        listNumer[index + 1] =
+                                            listNumer[index] + listNumer[index + 1]
+                                    }
+                                    if (i == "*") {
+                                        listNumer[index + 1] =
+                                            listNumer[index] * listNumer[index + 1]
+                                    }
+                                    if (i == "/") {
+                                        listNumer[index + 1] =
+                                            listNumer[index] / listNumer[index + 1]
+                                    }
                                 }
-                                if (i == "+"){
-                                    listNumer[index + 1] = listNumer[index] + listNumer[index + 1]
-                                }
-                                if (i == "*"){
-                                    listNumer[index + 1] = listNumer[index] * listNumer[index + 1]
-                                }
-                                if (i == "/"){
-                                    listNumer[index + 1] = listNumer[index] / listNumer[index + 1]
-                                }
+                                number.value = listNumer.last().toString()
                             }
-                            Log.d(TAG, listNumer.toString())
-                            Log.d(TAG, listStr.toString())
-                            number.value = listNumer.last().toString()
                         }
                 )
             }
